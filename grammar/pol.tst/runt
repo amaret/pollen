@@ -1,0 +1,40 @@
+#!/bin/bash
+export TSTID=`date "+%y%m%d%H%M%S"`
+echo "Grammar testing."
+
+if [[ ${1} = new ]]
+then
+   echo "Test grammar is NOT production grammar!"
+   echo "Create new tester."
+   echo "Old grammar saved in directory OLD."
+   cp pollen.g OLD/pollen.g.${TSTID}
+   cp AntlrWorks*/pollen.g  .
+   cp AntlrWorks*/*.java .
+   rm *Test*.java
+  # comment out the lines specifying package and imports because 
+  # they break the default test harness
+   # sed -e 's/ package com.amaret/\/\/package com.amaret/' pol.tmp > x
+   # sed -e 's/ import com.amaret/\/\/import com.amaret/' x  > pollen.g
+  java org.antlr.Tool pollen.g
+  javac *.java
+fi
+set  \
+tst_class.gunit
+#tst_codeunits3.gunit  \
+#tst_codeunits.gunit  \
+#tst_compos.gunit  \
+#tst_class.gunit    \
+#tst_compos.gunit    \
+#tst_enum.gunit    \
+#tst_module.gunit    \
+#tst_protocol.gunit    \
+#tst_stmts.gunit    \
+#tst_unit.gunit 
+
+for i in "$@"
+do
+  echo "###################"
+  echo "###" $i
+  echo "###################"
+  tstg $i
+done

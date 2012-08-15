@@ -1,0 +1,102 @@
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.time/TimerManager_.p
+
+from pollen.interfaces import Timer as TimerI
+from pollen.interfaces import TimerDriver
+from pollen.interfaces import GlobalInterrupts
+from pollen.events import Events
+from pollen.events import Event{uint8} as Event
+
+module TimerManager {
+
+	class Timer implements TimerI {
+
+		public host init() { 
+			id = numTimers
+			numTimers++
+			repeat = false
+			print "\nTIMER INIT"
+		}
+		
+		public bool repeats() { return repeat }
+
+	    public bool running() { return timers[id] != 0 }
+
+    	public uint16 ticksPerSecond() { return 1000 }
+
+    	public start(Event e, uint16 d, bool r = true) {
+			bool state = gint.disable()
+			if (!running()) {
+				expired = e
+	    		duration = d
+	    		elapsed = 0
+	    		repeat = r
+	    		timers[id] = @
+	    	}
+	   		gint.restore(state)
+    
+    		if (!hw_timer.running()) {
+    			hw_timer.start()
+    		}
+    	}
+    	
+    	public stop() {
+			bool state = gint.disable()
+			timers[id] = null
+    		gint.restore(state)
+    	}
+
+		#======================
+		# Private members
+		#======================
+		host uint8 id
+		Event expired
+		uint32 duration
+		uint32 elapsed
+		bool repeat	
+	}
+	
+	public host bindGlobalInterrupts(GlobalInterrupts gi) { 
+		gint = gi 
+	}
+	
+	public host bindTimerDriver(TimerDriver t) { 
+		hw_timer = t 
+	}
+
+	#======================
+	# Private members
+	#======================	
+	host GlobalInterrupts gint
+	host TimerDriver hw_timer
+	host uint8 numTimers = 0
+	Timer timers[numTimers]
+
+	timerISR() {		
+		bool off = true
+
+		for (uint8 i = 0; i < numTimers; i++) {
+			if (timers[i] != 0) {
+				timers[i].elapsed++
+				
+				if (timers[i].elapsed == timers[i].duration) {
+					if (timers[i].expired != 0) {
+						Events.postFromInterrupt(timers[i].expired)
+						if (timers[i].repeat) {
+							timers[i].elapsed = 0
+						} else {
+							timers[i].stop()
+						}					
+					} else {
+						timers[i].stop()
+					}					
+				}
+				off = false
+			}
+		}
+		
+		# all timers are off, turn hardware timer off
+		if (off) {
+			hw_timer.stop()
+		}
+	}
+}

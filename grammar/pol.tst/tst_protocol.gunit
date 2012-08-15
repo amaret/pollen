@@ -1,0 +1,54 @@
+gunit pollen;
+
+////////////////////////////////////////////////////
+//test rule: parse protocol defn
+unit:
+"package cc.arduino
+
+import Duemilanove as Board
+from Board import Led
+from Board import Mcu
+from Mcu import GlobalInterrupts
+from Mcu import TimerMilli8BitTimer0 as TD
+
+from pollen.time import Time
+from pollen.events import Events
+
+protocol Environment {       # This should extend Board when protocol inheritance exits!
+
+        host Environment()
+        host bool fcn1(uint8 x, bool y) 
+        public host setHandler(Handler.handle h)
+	public host uint32 getSystemFrequency() 
+
+}" -> ""
+////////////////////////////////////////////////////
+//test rule: parse protocol with non-host fcn (error)
+unit:
+"package cc.arduino
+
+protocol Environment {       
+
+        bool fcn1(uint8 x, bool y)
+        typ1 fcn2(uint8 x, bool y)
+        voidfcn(uint8 x, bool y)
+}" -> ""
+
+////////////////////////////////////////////////////
+//test rule: parse protocol with injected code as feature
+unit:
+"package cc.arduino
+
+protocol Environment {       
+
+        host bool fcn1(uint8 x, bool y) 
+	+{ #include <avr/io.h> 
+           #include <avr/interrupt.h> }+
+
+        +{ ISR( }+
+        +{name}+
+        +{ ) { }+
+        +{isr()}+
+    +{;} }+
+}" -> ""
+

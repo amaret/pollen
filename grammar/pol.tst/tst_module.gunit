@@ -1,0 +1,78 @@
+gunit pollen;
+
+////////////////////////////////////////////////////
+//test rule: parse module defn
+unit:
+"package cc.arduino
+
+import Duemilanove as Board
+from Board import Led
+from Board import Mcu
+from Mcu import GlobalInterrupts
+from Mcu import TimerMilli8BitTimer0 as TD
+
+from pollen.time import Time
+from pollen.events import Events
+
+module M {     
+
+        host M() {
+        }
+        host fcn1(uint8 x, bool y) {
+        }
+        uint8 var1
+        Led led1
+        public host setHandler(Handler.handle h) { }
+	public host uint32 getSystemFrequency() {
+ 			uint8 x, y=7, z=1, s
+			int16 t
+			int8 arr[]
+                        int32 arr1[7]
+                        int32 arr2[y]
+                        Environment e
+        }
+
+}" -> ""
+////////////////////////////////////////////////////
+//test rule: parse module with export stmt (error)
+unit:
+"package cc.arduino
+
+module Environment {       
+
+        export GlobalInterrupts
+}" -> ""
+
+////////////////////////////////////////////////////
+//test rule: parse module with injected code as feature
+unit:
+"package cc.arduino
+
+module Environment {       
+
+	+{ #include <avr/io.h> 
+           #include <avr/interrupt.h> }+
+        host bool fcn1(uint8 x, bool y) {
+        }
+
+        +{ ISR( }+
+        +{name}+
+        +{ ) { }+
+        +{isr()}+
+    +{;} }+
+}" -> ""
+
+////////////////////////////////////////////////////
+//test rule: parse module which contains class
+unit:
+"package cc.arduino
+
+module Environment {       
+	class XYZ {
+	  uint8 xy
+          host bool fcn1() {
+          }
+	}
+
+}" -> ""
+

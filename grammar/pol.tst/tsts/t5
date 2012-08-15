@@ -1,0 +1,13 @@
+package mcu.ti.msp430
+
+from pollen.interfaces import GlobalInterrupts as GI
+
+module GlobalInterrupts implements GI {
+
+	public bool disable() {
+		uint16 x = 0
+		# This is specific to msp430-gcc		
+		+{x}+ = +{ __read_status_register() }+
+		+{dint()}+
+	}
+}
