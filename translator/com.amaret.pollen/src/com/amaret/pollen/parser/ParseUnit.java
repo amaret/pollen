@@ -6,17 +6,23 @@ import java.io.PrintStream;
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.tree.TreeAdaptor;
 
 
 public class ParseUnit {
 	
 	private String path;
 	private int parseErrors;
+	public int getParseErrors() {
+		return parseErrors;
+	}
+
 	private ANTLRFileStream in;
 	private PrintStream out;
 	private PrintStream err;
 	private PrintStream info;
 	private static ParseUnit currUnit;
+	private UnitNode currUnitNode = null;
 	private SymbolTable symbolTable;
 	
 	public SymbolTable getSymbolTable() {
@@ -38,6 +44,7 @@ public class ParseUnit {
 
 		currUnit = new ParseUnit(inputPath, outputStream, errorStream,
 				infoStream, symtab);
+		
 
 	}
 	
@@ -45,18 +52,45 @@ public class ParseUnit {
 		return currUnit;
 	}
 	
-	public void parseUnit() throws Exception{
+	public UnitNode parseUnit() throws Exception{
 
 		in = new ANTLRFileStream(path);
+        pollenLexer lexer = new pollenLexer(in, getFileName());
+
+        AtomStream tokens = new AtomStream(lexer);
+        tokens.discardOffChannelTokens(true);
+        pollenParser parser = new pollenParser(tokens);
+
+        parser.setTreeAdaptor((TreeAdaptor)new BaseNodeAdaptor());
+        pollenParser.unit_return result = parser.unit();
+
+        if (!(result.getTree() instanceof UnitNode)) {
+            return null;
+        }
+        
+        currUnitNode = (UnitNode)result.getTree();
+        if (getParseErrors() > 0) {
+            return null;
+        }       
+        currUnitNode.init();
+        return currUnitNode;
 
 	}
 	
+	public UnitNode getCurrUnitNode() {
+		return currUnitNode;
+	}
+
 	public String getFileName() {
 		if (path.indexOf(File.separator) != -1) {
 			return path.substring(path.lastIndexOf(File.separator)+1);			
 		}
 		return path;
 	}
+	public String getPath() {
+		return path;
+	}
+
 	/**
 	 * 
 	 * @param node
@@ -97,5 +131,10 @@ public class ParseUnit {
         err.printf("%s, line %d:%d, %s\n", fileName, line, col, msg);
         parseErrors += 1;
     }
+
+	public boolean getHostFlag() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

@@ -1,5 +1,6 @@
 package com.amaret.pollen.parser;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,83 +15,142 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     // DeclNode.Formal (parameter)
     static public class Formal extends DeclNode implements ITypeSpecInit {
 
-        static final private int INIT = 2;
-        static final private int TYPE = 1;
-        
+        static final private int TYPE = 0;
+        static final private int NAME = 1;
+        // subtree
+        static final private int INIT = 0;
+      
         Formal(int ttype, String ttext) {
-            super(ttype, ttext, Flags.EMPTY);
+            super(ttype, ttext, EnumSet.noneOf(Flags.class));
         }
         
-        Formal(int ttype, String ttext, int flags) {
+        Formal(int ttype, String ttext, EnumSet<Flags> f) {
+            super(ttype, ttext, f);
+        }
+
+        @Override
+        public ExprNode getInit() {
+        	return (getChild(NAME).getChildCount() > 0) ? (ExprNode) getChild(NAME).getChild(INIT) : null;
+        }
+        @Override
+        public Atom getName() {
+        	return ((BaseNode) getChild(NAME)).getAtom();
+        }
+
+        @Override
+        public BaseNode getTypeSpec() {
+            return (TypeNode) getChild(TYPE);
+        }
+    }
+    static public class Arr extends DeclNode implements ITypeSpecInit {
+
+        static final private int BASE = 0;
+        static final private int NAME = 1;
+        static final private int DIM = 2;
+        static final private int INIT = 3;
+        
+        Arr(int ttype, String ttext, EnumSet<Flags> flags) {
             super(ttype, ttext, flags);
         }
         
         @Override
-        public ExprNode getInit() {
-            return getChildCount() > INIT ? (ExprNode) getChild(INIT) : null;
+        public BaseNode getTypeSpec() {
+            return (TypeNode) getChild(BASE);
         }
 
-        @Override
-        public TypeNode getTypeSpec() {
-            return (TypeNode) getChild(TYPE);
+        public ExprNode getDim() {
+            return getChildCount() > DIM ? (ExprNode) getChild(DIM) : null;
         }
+        
+        @Override
+        public Atom getName() {
+        	return ((BaseNode) getChild(NAME)).getAtom();
+        }
+        
+        public boolean hasDim() {
+            return getChildCount() > DIM;
+        }
+        
+        @Override
+        public void pass2End() {
+
+        }
+
+		
+		/**
+		 * @return  null as the initializer for an array is a list
+		 */
+        @Override
+		public ExprNode getInit() {
+			return null;
+		}
+		/**
+		 * 
+		 * @return a List of initializers
+		 */
+		public ListNode getInitList() {
+			return getChildCount() > INIT ? (ListNode) getChild(INIT) : null;
+			
+		}
     }
     
     // DeclNode.Enum
     static public class Enum extends DeclNode implements ITypeInfo {
-
-        static final private int VALS = 1;
         
-        Enum(int ttype, String ttext, int flags) {
-            super(ttype, ttext, flags);
+        Enum(int ttype, String ttext, EnumSet<Flags> f) {
+            super(ttype, ttext, f);
         }
         
         @SuppressWarnings("unchecked")
         public List<DeclNode.EnumVal> getVals() {
-            return ((ListNode<DeclNode.EnumVal>) getChild(VALS)).getElems();
+            return ((ListNode<DeclNode.EnumVal>) getChild(NAME)).getElems();
         }
 
         @Override
         public TypeInfo getTypeInfo() {
-            return Session.current().getTarget().getTypeInfo(TypeId.INT8);
+        	// TODO
+        	TypeInfo rtn = null;
+        	assert rtn != null;
+        	return rtn;
+           // return ParseUnit.current().getTarget().getTypeInfo(TypeId.INT8);
         }
     }
     
     // DeclNode.EnumVal
-    static public class EnumVal extends DeclNode implements IConstVal {
+    static public class EnumVal extends DeclNode {
 
-        EnumVal(int ttype, String ttext, int flags) {
-            super(ttype, ttext, flags);
+        EnumVal(int ttype, String ttext, EnumSet<Flags> f) {
+            super(ttype, ttext, f);
+        }
+        
+        Atom getVal() {
+        	// grammar requires integer literal
+        	return ((BaseNode) this.getChild(0)).getAtom();
         }
     }
-    
-    
-    
+       
     // DeclNode.Fcn
     static public class Fcn extends DeclNode implements ITypeSpec, IScope {
 
-        static final private int ARGS = 1;
-        static final private int TYPE = 2;
+        static final private int TYPE_NAME = 0;
+    	static final private int FORMALS = 1;
+        static final private int BODY = 2;
+        
+        // subtree
+        static final private int TYPE = 0;
+        static final private int NAME = 1;
 
-        private String cname;
-        private DeclNode.Struct struct;
-        private boolean isTemplate;
-        private int minArgc = -1;
         private NestedScope scopeDeleg = new NestedScope(this);
+		private boolean isVoid = false;
         
-        Fcn(int ttype, String ttext, int flags) {
-            this(ttype, ttext, flags, false);
-        }
-        
-        Fcn(int ttype, String ttext, int flags, boolean isTemplate) {
+        Fcn(int ttype, String ttext, EnumSet<Flags>  flags) {
             super(ttype, ttext, flags);
-            this.isTemplate = isTemplate;
         }
         
         private int checkArgs() {
             int res = 0;
             boolean initFlg = false;
-            for (DeclNode.Formal arg : getArgs()) {
+            for (DeclNode.Formal arg : getFormals()) {
                 initFlg = initFlg || (arg.getInit() != null);
                 if (!initFlg) {
                     res += 1;
@@ -102,10 +162,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             }
             return res;
         }
-
-        public String cname() {
-            return cname;
-        }
         
         @Override
         public boolean defineSymbol(Atom name, ISymbolNode symbol) {
@@ -113,8 +169,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
         
         @SuppressWarnings("unchecked")
-        public List<DeclNode.Formal> getArgs() {
-            return ((ListNode<DeclNode.Formal>) getChild(ARGS)).getElems();
+        public List<DeclNode.Formal> getFormals() {
+            return ((ListNode<DeclNode.Formal>) getChild(FORMALS)).getElems();
         }
 
         @Override
@@ -126,46 +182,57 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public Set<Map.Entry<String,SymbolEntry>> getEntrySet() {
             return scopeDeleg.getEntrySet();
         }
-
-        public int getMinArgc() {
-            return minArgc;
+        
+        @Override
+        public BaseNode getTypeSpec() {    
+        	BaseNode b = (BaseNode) getChild(TYPE_NAME);
+        	ListNode<TypeNode> rtnTypes = (ListNode<TypeNode>) b.getChild(TYPE);       
+            return  rtnTypes;
+        }        
+        public boolean isVoid() {
+        	return isVoid;
         }
         
         @Override
-        public TypeNode getTypeSpec() {
-            return !isTemplate ? (TypeNode) getChild(TYPE) : null;
-        }
-        
-        public DeclNode.Struct getStruct() {
-            return struct;
-        }
-        
-        public boolean isTemplate() {
-            return isTemplate;
-        }
-        
-        public boolean isVoid() {
-            Cat.Fcn fxnCat = (Cat.Fxn) getTypeCat();
-            return fxnCat.retCat().isVoid();
-        }
-        
+        public Atom getName() {
+        	BaseNode b = ((BaseNode) getChild(TYPE_NAME));
+        	return ((BaseNode) b.getChild(NAME)).getAtom();
+        }        
         @Override
         protected boolean pass1Begin() {
             super.pass1Begin();
-            Session.current().getSymbolTable().enterScope(this);
+            ParseUnit currUnit = ParseUnit.current();
+            currUnit.getSymbolTable().enterScope(this);
             IScope scope = getEnclosingScope();
-            struct = scope instanceof DeclNode.Struct ? (DeclNode.Struct) scope : null;
-            cname = (struct == null) ? ("" + getName()) : ("" + struct.getName() + "__" + getName());
-            minArgc = checkArgs();
+            if (currUnit.getCurrUnitNode().isProtocol()) {
+                currUnit.reportError(getName(), "protocols can't have function definitions");
+                return false;
+            }
+            
+            String path[] = getName().getText().split("\\.");
+            if (path.length > 2) {
+                currUnit.reportError(getName(), "too many levels of qualification");
+                return false;
+            }
+            
+            //SymbolEntry symbol = currUnit.getSymbolTable().lookupName(path[0]);
+            //ISymbolNode snode = symbol == null ? null : symbol.node();
+            // TODO: create signature set
+            
+        	BaseNode b = (BaseNode) getChild(TYPE_NAME);
+        	ListNode<TypeNode> rtnTypes = (ListNode<TypeNode>) b.getChild(TYPE);       
+			if (rtnTypes.getElems().isEmpty())
+        		isVoid = true;
+			
+			currUnit.getCurrUnitNode().addFcn(getName().getText(), this);
+ 
             return true;
         }
-
         @Override
         protected void pass1End() {
-            Session.current().getSymbolTable().leaveScope();
+            ParseUnit.current().getSymbolTable().leaveScope();
             super.pass1End();
         }
-
         @Override
         public void replaceSymbol(Atom name, ISymbolNode symbol) {
             scopeDeleg.replaceSymbol(name, symbol);
@@ -173,7 +240,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
         @Override
         public SymbolEntry resolveSymbol(Atom name) {
-            return scopeDeleg.resolveSymbol(name);
+             return scopeDeleg.resolveSymbol(name);
         }
 
         @Override
@@ -185,11 +252,57 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public SymbolEntry lookupName(String name) {
             return scopeDeleg.lookupName(name);
         }
-    }
+     }
+    static public class FcnRef extends DeclNode implements ITypeSpecInit {
+
+        static final private int FCN = 0;
+    	static final private int FORMALS = 1;
+        static final private int NAME = 2;
+        
+		private boolean isVoid = false;
+        
+        FcnRef(int ttype, String ttext, EnumSet<Flags>  flags) {
+            super(ttype, ttext, flags);
+        }      
+         /**
+         * @return a list of formal parameter types (no names).
+         */
+        @SuppressWarnings("unchecked")
+        public List<BaseNode> getFormals() {
+            return ((ListNode<BaseNode>) getChild(FORMALS)).getElems();
+        }
+        public BaseNode getTypeSpec() {
+            return (BaseNode) getChild(FCN);
+        }
     
-    // DeclNode.IAuxDef
-    static public interface IAuxDef {
-    }
+        public boolean isVoid() {
+        	return isVoid;
+        }
+        
+        @Override
+        public Atom getName() {
+        	return ((BaseNode) getChild(NAME)).getAtom();
+        }        
+        @Override
+        protected boolean pass1Begin() {
+            super.pass1Begin();
+            ParseUnit currUnit = ParseUnit.current();
+            // TODO lookup fcn and get return type (void?)           
+            // TODO: create signature set
+            			
+            return true;
+        }
+
+        @Override
+        protected void pass1End() {
+            ParseUnit.current().getSymbolTable().leaveScope();
+            super.pass1End();
+        }
+
+		public ExprNode getInit() {
+			return null;
+		}
+     }
     
     // DeclNode.ITypeInfo
     static public interface ITypeInfo {
@@ -200,7 +313,13 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     static public interface ITypeSpec {
         public Atom getName();
         public Cat getTypeCat();
-        public TypeNode getTypeSpec();
+        /**
+         * 
+         * @return a BaseNode
+         * It may be a TypeNode or a List<TypeNode>.
+         * The latter is a function with a set of return values.
+         */
+        public BaseNode getTypeSpec();
     }
     
     // DeclNode.ITypeSpecInit
@@ -208,147 +327,92 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public ExprNode getInit();
     }
     
-    // DeclNode.Proxy
-    static public class Proxy extends DeclNode implements ISealable, IScope, IUnitWrapper {
+    // DeclNode.ProtocolMember
+    static public class ProtocolMember extends DeclNode implements ITypeSpecInit {
         
-        static final private int INHER = 1;
         
-        private UnitNode inter;
-        private NestedScope scopeDeleg = new NestedScope(this);
-        
-        Proxy(int ttype, String ttext, int flags) {
-            super(ttype, ttext, flags);
-        }
-        
-        public Atom getInherits() {
-            return ((BaseNode) getChild(INHER)).getAtom();
-        }
-        
-        public UnitNode getInterface() {
-            return inter;
-        }
-        
-        @Override
-        public String getQualName() {
-            return ((UnitNode) getDefiningScope()).getQualName() + '.' + getName();
-        }
-        
-        @Override
-        public UnitNode getUnit() {
-            return inter;
+        ProtocolMember(int ttype, String ttext, EnumSet<Flags> f) {
+            super(ttype, ttext, f);
         }
         
         @Override
         protected boolean pass1Begin() {
             super.pass1Begin();
-            Session ses = Session.current();
-            SymbolEntry sym = ses.curUnit().resolveSymbol(getInherits());
-            ISymbolNode snode = sym != null ? sym.node() : null;
-            if (snode instanceof ImportNode) {
-                inter = ((ImportNode) snode).getUnit();
-            }
-            else if (snode instanceof UnitNode) {
-                inter = (UnitNode) snode;
-            }
-            if (inter == null || inter.isModule()) {
-                ses.reportError(getInherits(), "must be an interface");
-            }
-            else {
-                scopeDeleg.addSymbols(inter.getEntrySet());
-            }
+            ParseUnit currUnit = ParseUnit.current();
+            // TODO
+            // check that the type of this protocol member is a protocol
+            
             return false;
         }
 
-        @Override
-        public boolean defineSymbol(Atom name, ISymbolNode node) {
-            return scopeDeleg.defineSymbol(name, node);
-        }
+		/* (non-Javadoc)
+		 * @see com.amaret.pollen.parser.DeclNode.ITypeSpecInit#getInit()
+		 */
+		@Override
+		public ExprNode getInit() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
-        @Override
-        public IScope getEnclosingScope() {
-            return scopeDeleg.getEnclosingScope();
-        }
-
-        @Override
-        public Set<Entry<String, SymbolEntry>> getEntrySet() {
-            return scopeDeleg.getEntrySet();
-        }
-
-        @Override
-        public SymbolEntry lookupName(String name) {
-            return scopeDeleg.lookupName(name);
-        }
-
-        @Override
-        public void replaceSymbol(Atom name, ISymbolNode node) {
-            scopeDeleg.replaceSymbol(name, node);
-        }
-
-        @Override
-        public SymbolEntry resolveSymbol(Atom name) {
-            return scopeDeleg.resolveSymbol(name);
-        }
-
-        @Override
-        public void setEnclosingScope(IScope scope) {
-            scopeDeleg.setEnclosingScope(scope);
-        }
+		/* (non-Javadoc)
+		 * @see com.amaret.pollen.parser.DeclNode.ITypeSpec#getTypeSpec()
+		 */
+		@Override
+		public BaseNode getTypeSpec() {
+			// TODO Auto-generated method stub
+			return null;
+		}
     }
 
-    // DeclNode.Struct
-    static public class Struct extends DeclNode implements IScope, ITypeInfo {
+    // DeclNode.UserTypeDef
+    static public class UserTypeDef extends DeclNode implements IScope, ITypeInfo {
 
-        static final private int MEMBERS = 1;
+     	static final private int FEATURES = 1;
         
-        private boolean hasMethods;
-        private boolean isOpaque;
-        private DeclNode.Struct classParent = null;
+       
+        private DeclNode.UserTypeDef classParent = null;
         private NestedScope scopeDeleg = new NestedScope(this);
         
-        Struct(int ttype, String ttext, int flags, boolean isOpaque, boolean hasMethods) {
+        UserTypeDef(int ttype, String ttext,  EnumSet<Flags>  flags) {
             super(ttype, ttext, flags);
-            this.hasMethods = hasMethods;
-            this.isOpaque = isOpaque;
+        }
+        public EnumSet<Flags> getFlags() {
+        	return flags;	// Except for nested class, these apply to unit.
         }
         
-        DeclNode.Struct findChild() {
-            DeclNode.Struct strA = this;
-            if (strA.isOpaque() && strA.hasMethods()) {
-                SymbolEntry sym = ParseUnit.current().curUnit().lookupName(strA.getName().getText());
-                if (sym != null && sym.node() instanceof DeclNode.Struct) {
-                    DeclNode.Struct strB = (DeclNode.Struct) sym.node();
-                    if (strB.isOpaque() && strB.getClassParent() == strA) {
-                        return strB;
-                    }
-                }
-            }
-            return strA;
+        public boolean isModule() {
+        	if (flags.contains(Flags.MODULE))
+        		return true;
+        	return false;
+        }       
+        public boolean isProtocol() {
+        	if (flags.contains(Flags.PROTOCOL))
+        		return true;
+        	return false;
         }
-        
-        @SuppressWarnings("unchecked")
-        public List<DeclNode.Field> getFields() {
-            return ((ListNode<DeclNode.Field>) getChild(MEMBERS)).getElems();
+        public boolean isComposition() {
+        	if (flags.contains(Flags.COMPOSITION))
+        		return true;
+        	return false;
         }
-        
-        @SuppressWarnings("unchecked")
-        public List<DeclNode.Fcn> getFxns() {
-            return ((ListNode<DeclNode.Fcn>) getChild(MEMBERS)).getElems();
+        public boolean isClass() {
+        	if (flags.contains(Flags.CLASS))
+        		return true;
+        	return false;
         }
-        
-        public boolean hasMethods() {
-            return hasMethods;
+        public boolean isMeta() {
+        	if (flags.contains(Flags.META))
+        		return true;
+        	return false;
         }
 
-        public boolean isOpaque() {
-            return isOpaque;
-        }
 
         @Override
         public boolean defineSymbol(Atom name, ISymbolNode symbol) {
             return scopeDeleg.defineSymbol(name, symbol);
         }
 
-        public DeclNode.Struct getClassParent() {
+        public DeclNode.UserTypeDef getClassParent() {
             return classParent;
         }
         
@@ -364,29 +428,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
         @Override
         public TypeInfo getTypeInfo() {
-            return getTypeInfo(null);
-        }
-        
-        public TypeInfo getTypeInfo(String fn) {
-            int a0 = -1, sz = 0, d;
-            for (DeclNode.Field fld : getFields()) {
-                TypeInfo ti = fld.getTypeSpec().getTypeInfo();
-                if (a0 == -1) {
-                    a0 = ti.align;
-                }
-                if (fld.getName().getText().equals(fn)) {
-                    break;
-                }
-                if ((d = sz % ti.align) != 0) {
-                    sz += ti.align - d;
-                }
-                sz += ti.size;
-            }
-            if ((d = sz % a0) != 0) {
-                sz += a0 - d;
-            }
-            return new TypeInfo(sz, a0);
-            
+        	// TODO
+            return (null);
         }
         
         public String getUnitQualName() {
@@ -395,11 +438,14 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         
         @Override
         protected boolean pass1Begin() {
+        	// TODO check that any implemented protocols are actually implemented.
             ParseUnit currUnit = ParseUnit.current();
             super.pass1Begin();
-            if (isOpaque() && !hasMethods() && isPublic()) {
-                currUnit.reportError(getName(), "opaque structure representations can't be declared publically");
+            
+            if (currUnit.getCurrUnitNode().getUnitType() != this && this.isClass()) {
+            	classParent = currUnit.getCurrUnitNode().getUnitType();
             }
+         
             SymbolTable symtab = currUnit.getSymbolTable();
             if (classParent != null) {
                 scopeDeleg.addSymbols(classParent.scopeDeleg.getEntrySet());
@@ -434,59 +480,54 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public SymbolEntry lookupName(String name) {
             return scopeDeleg.lookupName(name);
         }
-        
-        public void setClassParent(DeclNode.Struct classParent) {
-            this.classParent = classParent;
-        }
-    }
-    
-    // DeclNode.Typedef
-    static public class Typedef extends DeclNode implements IAuxDef, ITypeInfo, ITypeSpec {
-
-        static final private int TYPE = 1;
-        
-        Typedef(int ttype, String ttext, int flags) {
-            super(ttype, ttext, flags);
-        }
-        
-        @Override
-        public TypeInfo getTypeInfo() {
-            return getTypeSpec().getTypeInfo();
-        }
-        
-        @Override
-        public TypeNode getTypeSpec() {
-            return (TypeNode) getChild(TYPE);
-        }
-
     }
     
     // DeclNode.Var
     static public class Var extends DeclNode implements ITypeSpecInit {
-
+    	
+    	static final private int NAME = 1;
+        static final private int TYPE = 0;
+        // subtree
         static final private int INIT = 2;
-        static final private int TYPE = 1;
-        
-        Var(int ttype, String ttext, int flags) {
+ 
+        Var(int ttype, String ttext, EnumSet<Flags>  flags) {
             super(ttype, ttext, flags);
         }
 
         @Override
         public ExprNode getInit() {
-            return getChildCount() > INIT ? (ExprNode) getChild(INIT) : null;
+        	if (getChild(NAME).getChildCount() > 0) {
+        		BaseNode b = ((BaseNode) getChild(NAME));
+            	return ((ExprNode) getChild(INIT));        		
+        	}        
+            return null;
+        }
+        /**
+         * 
+         * @return true if this has 'new' on the dcln
+         */
+        boolean isStaticInstance() {
+        	return (flags.contains(Flags.NEW));
+        }
+        @Override
+        public Atom getName() {
+        	return ((BaseNode) getChild(NAME)).getAtom();
         }
 
         @Override
-        public TypeNode getTypeSpec() {
+        public BaseNode getTypeSpec() {
             return (TypeNode) getChild(TYPE);
         }
 
         @Override
         protected boolean pass1Begin() {
             super.pass1Begin();
-            ParseUnit ses = ParseUnit.current();
+            ParseUnit currUnit = ParseUnit.current();
+            // if type is protocol check that this is module or module fcn
+            // and set flag for protocol member
+            // if static instance check that type is a class
             if (isPublic()) {
-                ses.reportError(getName(), "variables can't be declared publically");
+                currUnit.reportError(getName(), "variables can't be \'public\'");
             }
             return true;
         }
@@ -497,14 +538,16 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     static final private int NAME = 0;
     
     private IScope definingScope;
-    private int flags;
     private Cat typeCat;
     
-    DeclNode(int ttype, String ttext, int flags) {
-      	this.token = new CommonToken(ttype, ttext);
-    	this.flags = flags;
-    }
+    EnumSet<Flags> flags = EnumSet.noneOf(Flags.class);
 
+    
+    DeclNode(int ttype, String ttext, EnumSet<Flags> f) {
+      	this.token = new CommonToken(ttype, ttext);
+    	this.flags = f;
+    }
+    
     @Override
     public IScope getDefiningScope() {
         return definingScope;
@@ -517,45 +560,36 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     
     @Override
     public Cat getTypeCat() {
-        if (typeCat == null) {
-            typeCat = Cat.fromSymbolNode(this, this.getDefiningScope());
-        }
-        return typeCat;
+    	// TODO
+    	Cat rtn = null;
+    	assert rtn != null;
+        return rtn;
+    }
+    public boolean isPublic() {
+    	return flags.contains(Flags.PUBLIC);
     }
 
     public boolean isHost() {
-        return (flags & Flags.HOST) != 0;
+    	return flags.contains(Flags.HOST);
     }
 
-    public boolean isPrivate() {
-        return (flags & Flags.PRIVATE) != 0;
+    public boolean isConst() {
+        return flags.contains(Flags.CONST);
     }
 
-    public boolean isPublic() {
-        return !isPrivate();
-    }
-    
     @Override
     protected boolean pass1Begin() {
-        ParseUnit ses = ParseUnit.current();
+        ParseUnit currUnit = ParseUnit.current();
         Atom name = getName();
-        SymbolEntry sym = ses.getSymbolTable().resolveSymbol(name);
-        ISymbolNode snode = sym != null ? sym.node() : null;
-        if (snode instanceof DeclNode.Struct && this instanceof DeclNode.Struct) {
-            ((DeclNode.Struct) this).setClassParent((DeclNode.Struct) snode);
-            return true;
-        }
-        if (ses.getSymbolTable().defineSymbol(name, this) == false) {
-            ses.reportError(name, "identifier already defined in the current scope");
+
+        if (currUnit.getSymbolTable().defineSymbol(name, this) == false) {
+            currUnit.reportError(name, "identifier already defined in the current scope");
         }
         return true;
     }
     
     @Override
     protected boolean pass2Begin() {
-        if (BodyNode.current() == null) {
-            ParseUnit.current().setHostFlag(isHost());
-        }
         return true;
     }
     
@@ -573,7 +607,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             ParseUnit.current().reportError(init, "initializer must be a constant expression");
             return;
         }
-        TypeRules.checkInit(tsi.getTypeCat(), init);
+        //TypeRules.checkInit(tsi.getTypeCat(), init);
     }
 
     @Override

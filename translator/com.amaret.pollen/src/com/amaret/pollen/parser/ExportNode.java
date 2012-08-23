@@ -4,7 +4,6 @@ import org.antlr.runtime.CommonToken;
 
 public class ExportNode extends BaseNode {
 
-    static private final int INHERITS = 1;
     static private final int NAME = 0;
     
     ExportNode(int ttype, String ttext) {
@@ -13,10 +12,6 @@ public class ExportNode extends BaseNode {
     
     public Atom getName() {
         return ((BaseNode) getChild(NAME)).getAtom();
-    }
-    
-    public Atom getInherits() {
-        return getChildCount() > INHERITS ? ((BaseNode) getChild(INHERITS)).getAtom() : null;
     }
     
     @Override
@@ -28,9 +23,7 @@ public class ExportNode extends BaseNode {
         if (!(snode instanceof ImportNode)) {
             currUnit.reportError(name, "not an imported unit");
         }
-        else {
-            ((ImportNode) snode).export();
-        }
+        currUnit.getCurrUnitNode().getExportList().add(this);
         return false;
     }
 }

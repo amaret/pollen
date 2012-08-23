@@ -1,4 +1,4 @@
-gunit pollen;
+gunit pol;
 // test TWO pollen code functions etc
 unit:
 "package mcu.ti.msp430

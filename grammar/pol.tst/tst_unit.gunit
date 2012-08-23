@@ -1,4 +1,4 @@
-gunit pollen;
+gunit pol;
 
 //test rule: parse simple module defn
 unit:

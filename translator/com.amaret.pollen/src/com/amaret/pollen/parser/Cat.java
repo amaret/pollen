@@ -1,10 +1,18 @@
 package com.amaret.pollen.parser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Cat implements Cloneable {
 
     // Cat.Agg
     static public class Agg extends Cat {
+
+		public IScope aggScope() {
+			// TODO Auto-generated method stub
+			return null;
+		}
         
         /*private IScope aggScope;
         private IScope defScope;
@@ -71,6 +79,11 @@ public class Cat implements Cloneable {
     
     // Cat.Arr
     static public class Arr extends Cat {
+
+		public Cat getBase() {
+			// TODO Auto-generated method stub
+			return null;
+		}
         
         /*private Cat baseCat;
         private TypeNode.Arr tarr;
@@ -120,37 +133,43 @@ public class Cat implements Cloneable {
         }
     }
     
-    // Cat.Fxn
-    /*static public class Fxn extends Cat {
+    // Cat.Fcn
+    static public class Fcn extends Cat {
+    	private List<Cat> argCats = new ArrayList<Cat>();
 
+		public int minArgc() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+/*
         private IScope aggScope;
         private Cat retCat;
         private List<Cat> argCats = new ArrayList<Cat>();
         private int minArgc = 0;
-        private DeclNode.Fxn fxnD = null;
-        private TypeNode.Fxn fxnT = null;
+        private DeclNode.Fcn fcnD = null;
+        private TypeNode.Fcn fcnT = null;
 
-        public Fxn(DeclNode.Fxn fxnD) {
-            if (fxnD.isTemplate()) {
+        public Fcn(DeclNode.Fcn fcnD) {
+            if (fcnD.isTemplate()) {
                 retCat = new Cat.Scalar("s", 0);
             }
             else {
-                retCat = Cat.fromType(fxnD.getTypeSpec());
+                retCat = Cat.fromType(fcnD.getTypeSpec());
             }
-            for (DeclNode.Arg arg : fxnD.getArgs()) {
+            for (DeclNode.Arg arg : fcnD.getArgs()) {
                 argCats.add(Cat.fromType(arg.getTypeSpec()));
             }
-            minArgc = fxnD.getMinArgc();
-            this.fxnD = fxnD;
+            minArgc = fcnD.getMinArgc();
+            this.fcnD = fcnD;
         }
 
-        public Fxn(TypeNode.Fxn fxnT) {
-            retCat = Cat.fromType(fxnT.getBase());
-            for (TypeNode argT : fxnT.getArgs()) {
+        public Fcn(TypeNode.Fcn fcnT) {
+            retCat = Cat.fromType(fcnT.getBase());
+            for (TypeNode argT : fcnT.getArgs()) {
                 argCats.add(Cat.fromType(argT));
             }
-            minArgc = fxnT.getArgs().size();
-            this.fxnT = fxnT;
+            minArgc = fcnT.getArgs().size();
+            this.fcnT = fcnT;
         }
 
         public IScope aggScope() {
@@ -165,12 +184,12 @@ public class Cat implements Cloneable {
             this.aggScope = aggScope;
         }
         
-        public DeclNode.Fxn fxnD() {
-            return fxnD;
+        public DeclNode.Fcn fcnD() {
+            return fcnD;
         }
         
-        public TypeNode.Fxn fxnT() {
-            return fxnT;
+        public TypeNode.Fcn fcnT() {
+            return fcnT;
         }
         
         public int maxArgc() {
@@ -193,7 +212,7 @@ public class Cat implements Cloneable {
                 sb.append(cat.mkType());
             }
             sb.append(")");
-             don't ptr-to-fxn versus fxn 
+             don't ptr-to-fcn versus fcn 
             return sb.toString();
         }
         
@@ -204,10 +223,36 @@ public class Cat implements Cloneable {
         public Cat retCat() {
             return retCat;
         }
-    }*/
+        */
+
+		public int maxArgc() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		public Cat retCat() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public List<Cat> argCats() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public void bindAggScope(IScope scope) {
+			// TODO Auto-generated method stub
+			
+		}
+    }
     
     // Cat.Scalar
     static public class Scalar extends Cat {
+
+		public char kind() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
 
         /*static final private HashMap<String,String> codeMap = new HashMap<String,String>();
         
@@ -296,8 +341,35 @@ public class Cat implements Cloneable {
             return sb.toString();
         }*/
     }
-    
+
+	public static Cat fromType(TypeNode typeSpec) {
+		// TODO Auto-generated method stub
+		return null;
+	}
     // Cat
+
+	public static Cat fromScalarCode(String string) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public static final Cat INJECT = new Cat();
+    public static final Cat HASH = new Cat();
+    public static final Cat UNKNOWN = new Cat();
+    public static final Cat VEC = new Cat();
+	public static Cat fromNew(TypeNode typeSpec) {
+		// TODO check that this type can be instantiated.
+		return null;
+	}
+
+	public boolean isString() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean isVoid() {
+		// TODO Auto-generated method stub
+		return false;
+	}
     
 /*    public static final Cat ESCAPE = new Cat();
     public static final Cat HASH = new Cat();
@@ -357,8 +429,8 @@ public class Cat implements Cloneable {
         else if (snode instanceof DeclNode.Struct) {
             return new Cat.Agg((DeclNode.Struct) snode, defScope, isRef);
         }
-        else if (snode instanceof DeclNode.Fxn) {
-            return new Cat.Fxn((DeclNode.Fxn) snode);
+        else if (snode instanceof DeclNode.Fcn) {
+            return new Cat.Fcn((DeclNode.Fcn) snode);
         }
         else if (snode instanceof DeclNode.Proxy) {
             return new Cat.Agg((DeclNode.Proxy) snode, defScope, false);
@@ -393,7 +465,7 @@ public class Cat implements Cloneable {
             SymbolEntry sym = ((TypeNode.Def) typeNode).getSymbol();
             return Cat.fromSymbolNode(sym.node(), sym.scope(), isRef);
         case EmParser.T_FXN:
-            Cat cat = new Cat.Fxn((TypeNode.Fxn) typeNode);
+            Cat cat = new Cat.Fcn((TypeNode.Fcn) typeNode);
             cat.ptrCnt++;
             return cat;
         case EmParser.T_PTR:

@@ -1,4 +1,4 @@
-gunit pollen;
+gunit pol;
 // test pollen code functions etc
 unit:
 "package pollen.data.test

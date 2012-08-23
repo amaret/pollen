@@ -5,10 +5,14 @@ import java.util.Set;
 
 import org.antlr.runtime.CommonToken;
 
-public class ImportNode extends BaseNode implements ISymbolNode, IScope {
+public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWrapper {
 
     
-    
+	static private final int FROM = 0;
+	static private final int UNIT = 1;
+	static private final int AS = 2;
+	static private final int META = 3; // might not be present
+	
     private Cat cat;
     private IScope definingScope;
     private UnitNode unit;
@@ -17,21 +21,34 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope {
         this.token = new CommonToken(ttype, ttext);
     }
    
+    /**
+     * 
+     * @return 'As' node. Might be NIL node.
+     */
     public Atom getAs() {
-        return getChildCount() > AS ? ((BaseNode) getChild(AS)).getAtom() : null;
+    	 return ((BaseNode) getChild(AS)).getAtom();
     }
 
+    /**
+     * 
+     * @return 'From' node. Might be NIL node.
+     */
     public Atom getFrom() {
         return ((BaseNode) getChild(FROM)).getAtom();
     }
-    
-    public ExprNode.Hash getGenArgs() {
-        return getChild(ARGS).getType() != EmLexer.NIL ? (ExprNode.Hash) getChild(ARGS) : null;
+    /**
+     * 
+     * @return Meta args node or null, if none.
+     */
+    public BaseNode getMeta() {
+    	return this.getChildCount() > AS ?  (BaseNode) getChild(META) : null;   	
     }
-    
+       
     @Override
     public Atom getName() {
-        return getChildCount() > AS ? getAs() : getUnitName();
+    	if (!getAs().getText().equals("NIL"))
+    		return getAs();
+    	return getUnitName();
     }
     
  
@@ -51,10 +68,7 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope {
     public IScope getDefiningScope() {
         return definingScope;
     }
-    void export() {
-    	// TODO
-    }
-  
+    
     public Cat getTypeCat() {
     	cat = null;
     	// TODO

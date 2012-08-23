@@ -1,4 +1,4 @@
-gunit pollen;
+gunit pol;
 // enum in unit
 unit:
 "package em.distro.arduino.diecimila

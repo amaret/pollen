@@ -1,6 +1,8 @@
 package com.amaret.pollen.parser;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,35 +10,64 @@ import java.util.Set;
 
 import org.antlr.runtime.CommonToken;
 
-public class UnitNode extends BaseNode implements ISymbolNode, IScope {
+public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrapper {
 	
-    static private final int BODIES = 5;
-    static private final int DECLS = 4;
-    static private final int EXPORTS = 2;
     static private final int IMPORTS = 1;
     static private final int PKGNAME = 0;
+    // features are injections and the unit type definition, child index >= 2
+    static private final int FEATURES = 2; 
     
-    private enum Children {
-    	BODIES, DECLS, EXPORTS, IMPORTS, PKGNAME   	
-    }
-    
-    private Map<String,BodyNode> bodyMap = new HashMap<String,BodyNode>();
+    // Each name can map to multiple DeclNode.Fcn nodes, for overloads.
+    private Map<String,List<DeclNode.Fcn>> fcnMap = new HashMap<String,List<DeclNode.Fcn>>();
     private Map<String,UnitNode> clientMap = new HashMap<String,UnitNode>();
+    private List<ExportNode> exportList = new ArrayList<ExportNode>();
+    private DeclNode.UserTypeDef unitType;
     private IScope definingScope;
 	private IScope enclosingScope;
 	private int errorCount;
-	private long fileDate;
     private String filePath;
-	private int flags;
+	private EnumSet<Flags> flags;
 	private Atom name;
-	private Map<String,Integer> stringTable = new HashMap<String,Integer>();
-    private UnitNode supInter;
+	private Map<String,Integer> exprConstStringTable = new HashMap<String,Integer>();
     private Map<String,SymbolEntry> symbolTable = new HashMap<String,SymbolEntry>();
-    //private Cat typeCat;
+    private Cat typeCat;
+
+	public List<ExportNode> getExportList() {
+		return exportList;
+	}
+
+	public Map<String, List<DeclNode.Fcn>> getFcnMap() {
+		return fcnMap;
+	}
+	
+	/**
+	 * Add Fcn Node to Map. Handle overloaded function names.
+	 * @param name
+	 * @param fcn
+	 */
+	public void addFcn(String name, DeclNode.Fcn fcn) {
+		if (!fcnMap.containsKey(name)) {
+			List<DeclNode.Fcn> fcnEntry = new ArrayList<DeclNode.Fcn>();
+			fcnEntry.add(fcn);
+			fcnMap.put(name, fcnEntry);
+			return;
+		}
+		fcnMap.get(name).add(fcn);		
+	}
+		
+	public DeclNode.UserTypeDef getUnitType() {
+		return unitType;
+	}
+
+	public void setUnitType(DeclNode.UserTypeDef unitType) {
+		this.unitType = unitType;
+	}
+
+	
     
-    UnitNode(int ttype, String ttext, int flags) {
+    UnitNode(int ttype, String ttext, EnumSet<Flags> f) {
       	this.token = new CommonToken(ttype, ttext);
-      	this.flags = flags;
+      	this.flags = f;
     }
 	
     void addClient(UnitNode u) {
@@ -44,46 +75,11 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope {
     }
     
     void addString(String s) {
-        if (!stringTable.containsKey(s)) {
-            stringTable.put(s, stringTable.size());
+        if (!exprConstStringTable.containsKey(s)) {
+            exprConstStringTable.put(s, exprConstStringTable.size());
         }
     }
     
-    private void checkFxns(UnitNode su) {
-//        if (su.getSuper() == null) {
-//            return;
-//        }
-//        Atom interName = (su != this) ? getSuperNode().getInter() : null;
-//        checkFxns(su.getSuper());
-//        for (DeclNode d : su.getDecls()) {
-//            if (d instanceof DeclNode.Fxn) {
-//                if (!bodyMap.containsKey(d.getName().getText())) {
-//                    if (interName != null) {
-//                        currUnit.reportError(interName, "no function definition found for '" + d.getName() + "'");
-//                    }
-//                    else {
-//                        currUnit.reportError(d.getName(), "no function definition found");
-//                    }
-//                }
-//            }
-//            else if (d instanceof DeclNode.Struct) {
-//                DeclNode.Struct str = (DeclNode.Struct) d;
-//                if (str.hasMethods()) {
-//                    for (DeclNode.Fxn fxn : str.getFxns()) {
-//                        String fn = str.getName().getText() + "." + fxn.getName().getText();
-//                        if (!bodyMap.containsKey(fn)) {
-//                            if (interName != null) {
-//                                currUnit.reportError(interName, "no function definition found for '" + fn + "'");
-//                            }
-//                            else {
-//                                currUnit.reportError(d.getName(), "no function definition found");
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-    }
     
     @Override
     public boolean defineSymbol(Atom name, ISymbolNode node) {
@@ -96,26 +92,19 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope {
     }
     
     void destruct() {
-        bodyMap = null;
+        fcnMap = null;
         clientMap = null;
+        exportList = null;
         definingScope = null;;
         enclosingScope = null;
-        stringTable = null;
-        supInter = null;
+        exprConstStringTable = null;
         symbolTable = null;
-        //typeCat = null;
+        typeCat = null;
     }
     
     public int findString(String s) {
-        Integer id = stringTable.get(s);
+        Integer id = exprConstStringTable.get(s);
         return id != null ? id : -1;
-    }
-    
-    @SuppressWarnings("unchecked")
-    public List<BodyNode> getBodies() {
-    	// TODO
-    	return null;
-        //return ((ListNode<BodyNode>)getChild(BODIES)).getElems();
     }
     
     public Collection<UnitNode> getClients() {
@@ -123,10 +112,8 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope {
     }
     
     @SuppressWarnings("unchecked")
-	public List<DeclNode> getDecls() {
-    	// TODO
-    	return null;
-    	//return ((ListNode<DeclNode>)getChild(DECLS)).getElems();
+	public List<BaseNode> getFeatures() {
+    	return ((ListNode<BaseNode>)getChild(FEATURES)).getElems();
     }
     
     @Override
@@ -149,17 +136,8 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope {
     }
     
     @SuppressWarnings("unchecked")
-    public List<ExportNode> getExports() {
-        return ((ListNode<ExportNode>)getChild(EXPORTS)).getElems();
-    }
-    
-    @SuppressWarnings("unchecked")
     public List<ImportNode> getImports() {
         return ((ListNode<ImportNode>)getChild(IMPORTS)).getElems();
-    }
-    
-    public long getFileDate() {
-        return fileDate;
     }
     
     public String getFilePath() {
@@ -180,11 +158,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope {
     }
 
     public Set<Map.Entry<String,Integer>> getStrings() {
-        return stringTable.entrySet();
-    }
-
-    public UnitNode getSuper() {
-        return supInter;
+        return exprConstStringTable.entrySet();
     }
     
     public UnitNode getUnit() {
@@ -207,47 +181,43 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope {
     }
 
     void init() {
-        // TODO
+    	filePath = ParseUnit.current().getPath();
     }
     
-    public boolean isComposite() {
-    	// TODO
+   public boolean isHost() {
+    	if (flags.contains(Flags.HOST))
+    		return true;
         return false;
-    }
-    
-    public boolean isInterface() {
-    	// TODO
-        return false;
- 
-    }
 
-    public boolean isHost() {
-    	// TODO
-        return false;
- 
     }
-
     public boolean isModule() {
-    	// TODO
-        return false;
- 
+    	if (flags.contains(Flags.MODULE))
+    		return true;
+    	return false;
+    }       
+    public boolean isProtocol() {
+    	if (flags.contains(Flags.PROTOCOL))
+    		return true;
+    	return false;
     }
-    
-    public boolean isTarget() {
-    	// TODO
-        return false;
- 
+    public boolean isComposition() {
+    	if (flags.contains(Flags.COMPOSITION))
+    		return true;
+    	return false;
+    }
+    public boolean isClass() {
+    	if (flags.contains(Flags.CLASS))
+    		return true;
+    	return false;
+    }
+    public boolean isMeta() {
+    	if (flags.contains(Flags.META))
+    		return true;
+    	return false;
     }
 
-    public boolean isTemplate() {
-    	// TODO
-        return false;
- 
-    }
-    
-    
-    public BodyNode lookupBody(String name) {
-        return bodyMap.get(name);
+    public List<DeclNode.Fcn> lookupFcn(String name) {
+        return fcnMap.get(name);
     }
     
     @Override
@@ -257,25 +227,11 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope {
     
     @Override
     protected boolean pass1Begin() {
-    	
-    	ParseUnit currUnit = ParseUnit.current();
-        
-        for (BodyNode body : getBodies()) {
-            if (bodyMap.containsKey(body.getName().getText())) {
-                currUnit.reportError(body.getName(), "function already defined");
-                return false;
-            }
-            else {
-                bodyMap.put(body.getName().getText(), body);
-            }
-        }
-        
-        
-        
+    	flags = unitType.getFlags();
+    	ParseUnit currUnit = ParseUnit.current();               
         currUnit.getSymbolTable().enterScope(this);
-        
-        // TODO
-        // check for valid imports, implements, extends
+    	// TODO The unitType is now known. 
+    	//      Check for valid features (imports, implements, extends, etc).
        return true;
     }
     

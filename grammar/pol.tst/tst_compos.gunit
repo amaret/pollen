@@ -1,4 +1,4 @@
-gunit pollen;
+gunit pol;
 
 ////////////////////////////////////////////////////
 //test rule: parse composition defn
@@ -33,13 +33,15 @@ composition Environment {       # This should extend Board when composition inhe
 	public host uint32 getSystemFrequency() {
  			uint8 x, y=7, z=1, s
 			int16 t
-			int8 arr[]
-                        int32 arr1[7]
+ 			int8 arr[] = { 3, 2, 1 }
+                        int32 arr1[7][3]
                         int32 arr2[y]
+            		int32 arr3[2][2] = { {1, 2} , {3, 4} }
                         Environment e
         }
 
 }" -> ""
+
 ////////////////////////////////////////////////////
 //test rule: parse composition with non-host fcn (error)
 unit:
