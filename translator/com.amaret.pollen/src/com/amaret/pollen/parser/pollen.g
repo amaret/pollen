@@ -651,8 +651,9 @@ arrayAccess
 	:	'['	(exprList)?	']'	-> ^(E_INDEX exprList?)
 	;
 	
+	
 stmtBlock
-	:	braceOpen stmts braceClose	 -> ^(S_BLOCK stmts)
+	:	braceOpen stmts braceClose	 -> ^(S_BLOCK<StmtNode.Block>["S_BLOCK"] stmts)
 	;
 stmts
 	:	(stmt)+ -> ^(LIST<ListNode>["LIST"] stmt+) 
@@ -660,9 +661,10 @@ stmts
 	;
 stmt
 	:  varDeclaration 
-	|  stmtAssign	delim  // delim here so syntax can be embedded
+	|  stmtAssign
 	|	stmtAssert
 	|	stmtBind
+	|	stmtBlock
 	|	stmtPrint
 	|	stmtReturn
 	|	stmtBreak
@@ -678,14 +680,14 @@ stmt
 	|	expr delim
 	;
 stmtAssign
-	:	varOrFcnOrArray ASSIGN expr	
-		-> ^(S_ASSIGN ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] ASSIGN varOrFcnOrArray expr))
-	|	injectionCode ASSIGN expr		
-		-> ^(S_ASSIGN ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] ASSIGN injectionCode expr))
-	|	varOrFcnOrArray assignOp expr  
-		-> ^(S_ASSIGN ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] assignOp varOrFcnOrArray expr))
-	|	injectionCode assignOp expr	
-		-> ^(S_ASSIGN ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] assignOp injectionCode expr))
+	:	varOrFcnOrArray ASSIGN expr	delim
+		-> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] ASSIGN varOrFcnOrArray expr))
+	|	injectionCode ASSIGN expr		delim
+		-> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] ASSIGN injectionCode expr))
+	|	varOrFcnOrArray assignOp expr  delim
+		-> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] assignOp varOrFcnOrArray expr))
+	|	injectionCode assignOp expr	delim
+		-> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] assignOp injectionCode expr))
 	;
 stmtAssert
 	:	'assert' exprList	delim -> ^(S_ASSERT exprList)
@@ -713,19 +715,19 @@ stmtContinue
 	:	'continue' delim -> ^(S_CONTINUE)
 	;
 stmtFor
-    :   'for' '(' stmtForInit SEMI stmtForCond SEMI stmtForNext ')' stmtBlock
-            -> ^(S_FOR stmtForInit stmtForCond stmtForNext stmtBlock)
+    :   'for' '(' stmtForInit stmtForCond stmtForNext ')' stmtBlock
+            -> ^(S_FOR<StmtNode.For>["S_FOR"] stmtForInit stmtForCond stmtForNext stmtBlock)
     ;
 stmtForCond
-    :   //empty
+    :   SEMI
            -> NIL
-    |   expr
+    |   expr SEMI -> expr
     ;
 
 stmtForInit
-    :   //empty
+    :   SEMI
             -> NIL
-    |   typeName IDENT '=' expr
+    |   typeName IDENT '=' expr SEMI
             -> ^(S_DECL ^(typeName IDENT  expr))
     |   stmtAssign
     ;
@@ -932,10 +934,8 @@ injectionCode
 delim
 	:	(SEMI) (NL)*	-> 
 	|	(NL)+	-> 
+	// needed when the last stmt in a block ends with '}' (no NL or SEMI)
 	|	((NL)* '}') =>  NL* -> 
-	;
-delim_implicit
-	:	
 	;
 // lexer
 // convention: lexer rules are upper case.

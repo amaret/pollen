@@ -184,7 +184,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
         
         @Override
-        public BaseNode getTypeSpec() {    
+        public ListNode<TypeNode> getTypeSpec() {    
         	BaseNode b = (BaseNode) getChild(TYPE_NAME);
         	ListNode<TypeNode> rtnTypes = (ListNode<TypeNode>) b.getChild(TYPE);       
             return  rtnTypes;
@@ -489,7 +489,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         static final private int TYPE = 0;
         // subtree
         static final private int INIT = 2;
- 
+        
         Var(int ttype, String ttext, EnumSet<Flags>  flags) {
             super(ttype, ttext, flags);
         }
@@ -523,9 +523,13 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         protected boolean pass1Begin() {
             super.pass1Begin();
             ParseUnit currUnit = ParseUnit.current();
-            // if type is protocol check that this is module or module fcn
-            // and set flag for protocol member
+            // TODO
+            // if flags.contains(Flags.PROTOCOL_MEMBER)
+            // check that this is module or module fcn
+            // being bound to a protocol
+            // TODO
             // if static instance check that type is a class
+           
             if (isPublic()) {
                 currUnit.reportError(getName(), "variables can't be \'public\'");
             }

@@ -1,0 +1,462 @@
+Grammar testing.
+###################
+### tst_codeunits.gunit
+###################
+-----------------------------------------------------------------------
+executing testsuite for grammar:pol with 27 tests
+-----------------------------------------------------------------------
+27 failures found:
+test1 (unit, line4) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME cc arduino)) (S_IMPORT (from (QNAME mcu atmel atmega328p)) (QNAME Mcu)) (S_IMPORT (from (QNAME Mcu)) (QNAME PB4) (as (QNAME D12))) (S_IMPORT (from (QNAME Mcu)) (QNAME PB5) (as (QNAME D13))) (S_IMPORT (from (QNAME pollen parts)) (QNAME Led) { false } (as (QNAME Led))) (D_COMPOSITION Duemilanove (export (QNAME Mcu)) (export (QNAME Led)) (export (QNAME D12)) (export (QNAME D13)) (D_FCN_DEF (D_FCN_CTOR (QNAME Duemilanove)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME Mcu setSystemFrequency) (E_CALL_ARGS (E_EXPR (E_NUMLIT 16000000)))) (E_EXPR (QNAME Led bindPin) (E_CALL_ARGS (E_EXPR (QNAME D13))))))) null)
+
+test2 (unit, line31) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME cc arduino)) (S_IMPORT (QNAME Duemilanove) (as (QNAME Board))) (S_IMPORT (from (QNAME Board)) (QNAME Led)) (S_IMPORT (from (QNAME Board)) (QNAME Mcu)) (S_IMPORT (from (QNAME Mcu)) (QNAME GlobalInterrupts)) (S_IMPORT (from (QNAME Mcu)) (QNAME TimerMilli8BitTimer0) (as (QNAME TD))) (S_IMPORT (from (QNAME pollen time)) (QNAME Time)) (S_IMPORT (from (QNAME pollen events)) (QNAME Events)) (D_COMPOSITION Environment (export (QNAME GlobalInterrupts)) (export (QNAME Led)) (export (QNAME Mcu)) (export (QNAME Mcu reset)) (export (QNAME Mcu wait)) (export (QNAME Events run)) (export (QNAME Events post)) (export (QNAME Events postFromInterrupt)) (D_FCN_DEF (D_FCN_CTOR (QNAME Environment)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME Events bindGlobalInterrupts) (E_CALL_ARGS (E_EXPR (QNAME GlobalInterrupts)))) (E_EXPR (QNAME Time bindGlobalInterrupts) (E_CALL_ARGS (E_EXPR (QNAME GlobalInterrupts)))) (E_EXPR (QNAME Time bindTimerDriver) (E_CALL_ARGS (E_EXPR (QNAME TD))))))) null)
+
+test3 (unit, line61) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME distro arduino)) (S_IMPORT (from (QNAME mcu atmel atmega328p)) (QNAME Mcu)) (S_IMPORT (from (QNAME Mcu)) (QNAME PB4) (as (QNAME D12))) (S_IMPORT (from (QNAME Mcu)) (QNAME PB5) (as (QNAME D13))) (S_IMPORT (from (QNAME Mcu)) (QNAME TimerMilli8BitTimer0) (as (QNAME Timer0))) (S_IMPORT (from (QNAME Mcu)) (QNAME Uart)) (S_IMPORT (from (QNAME pollen parts)) (QNAME Led) { false } (as (QNAME Led))) (D_COMPOSITION Board (export (QNAME Mcu)) (export (QNAME Timer0)) (export (QNAME Uart)) (export (QNAME Led)) (export (QNAME D12)) (export (QNAME D13)) (D_FCN_DEF (D_FCN_CTOR (QNAME Board)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME Mcu setSystemFrequency) (E_CALL_ARGS (E_EXPR (E_NUMLIT 16000000)))) (E_EXPR (QNAME Led bindPin) (E_CALL_ARGS (E_EXPR (QNAME D13))))))) null)
+
+test4 (unit, line92) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME distro arduino)) (S_IMPORT (QNAME Board)) (S_IMPORT (from (QNAME Board)) (QNAME Mcu)) (S_IMPORT (from (QNAME Board)) (QNAME Led)) (S_IMPORT (from (QNAME Board)) (QNAME Pin0)) (S_IMPORT (from (QNAME Board)) (QNAME Timer0)) (S_IMPORT (from (QNAME Board)) (QNAME Uart)) (S_IMPORT (from (QNAME Mcu)) (QNAME GlobalInterrupts)) (S_IMPORT (from (QNAME pollen events)) (QNAME Events)) (S_IMPORT (from (QNAME pollen time)) (QNAME Time)) (D_COMPOSITION Distro (export (QNAME Led)) (export (QNAME Mcu)) (export (QNAME Pin0)) (export (QNAME Uart)) (D_FCN_DEF (D_FCN_CTOR (QNAME Distro)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME Events bindGlobalInterrupts) (E_CALL_ARGS (E_EXPR (QNAME GlobalInterrupts)))) (E_EXPR (QNAME Time bindGlobalInterrupts) (E_CALL_ARGS (E_EXPR (QNAME GlobalInterrupts)))) (E_EXPR (QNAME Time bindTimerDriver) (E_CALL_ARGS (E_EXPR (QNAME Timer0)))) (E_EXPR (QNAME Uart setBaud) (E_CALL_ARGS (E_EXPR (E_NUMLIT 57600))))))) null)
+
+test5 (unit, line122) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME distro arduino)) (D_MODULE (Lifecycle (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME pollen reset)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME pollen ready)) (FCNPARMS NIL) (FCNBODY NIL)))) null)
+
+test6 (unit, line165) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME distro ti launchpad)) (S_IMPORT (from (QNAME mcu ti msp430g2231)) (QNAME Mcu)) (S_IMPORT (from (QNAME Mcu)) (QNAME P1_0) (as (QNAME Pin0))) (S_IMPORT (from (QNAME pollen parts)) (QNAME Led) { false } (as (QNAME Led))) (D_COMPOSITION Board (export (QNAME Mcu)) (export (QNAME Pin0)) (export (QNAME Led)) (D_FCN_DEF (D_FCN_CTOR (QNAME Board)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME Led bindPin) (E_CALL_ARGS (E_EXPR (QNAME Pin0))))))) null)
+
+test7 (unit, line185) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME distro ti launchpad)) (S_IMPORT (from (QNAME Board)) (QNAME Mcu)) (S_IMPORT (from (QNAME Board)) (QNAME Pin0)) (S_IMPORT (from (QNAME Mcu)) (QNAME GlobalInterrupts)) (S_IMPORT (from (QNAME pollen events)) (QNAME Events)) (S_IMPORT (from (QNAME pollen time)) (QNAME Time)) (D_COMPOSITION Distro (export (QNAME Mcu)) (export (QNAME Pin0)) (D_FCN_DEF (D_FCN_CTOR (QNAME Distro)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME Events bindGlobalInterrupts) (E_CALL_ARGS (E_EXPR (QNAME GlobalInterrupts))))))) null)
+
+test8 (unit, line206) - 
+expected: 
+actual: (UNIT S_PACKAGE (S_IMPORT (from (QNAME pollen interfaces)) (QNAME I2C)) (D_MODULE (MMA845x (D_VAR byte (REG_STATUS (E_EXPR (E_NUMLIT 0x00)))) (D_VAR byte (REG_OUT_X_MSB (E_EXPR (E_NUMLIT 0x01)))) (D_VAR byte (REG_OUT_X_LSB (E_EXPR (E_NUMLIT 0x02)))) (D_VAR byte (REG_OUT_Y_MSB (E_EXPR (E_NUMLIT 0x03)))) (D_VAR byte (REG_OUT_Y_LSB (E_EXPR (E_NUMLIT 0x04)))) (D_VAR byte (REG_OUT_Z_MSB (E_EXPR (E_NUMLIT 0x05)))) (D_VAR byte (REG_OUT_Z_LSB (E_EXPR (E_NUMLIT 0x06)))) (D_VAR byte (REG_SYSMOD (E_EXPR (E_NUMLIT 0x0b)))) (D_VAR byte (REG_INT_SOURCE (E_EXPR (E_NUMLIT 0x0c)))) (D_VAR byte (REG_WHO_AM_I (E_EXPR (E_NUMLIT 0x0d)))) (D_VAR byte (REG_XYZ_DATA_CFG (E_EXPR (E_NUMLIT 0xe)))) (D_VAR byte (REG_HP_FILTER_CUTOFF (E_EXPR (E_NUMLIT 0x0f)))) (D_VAR byte (REG_PL_STATUS (E_EXPR (E_NUMLIT 0x10)))) (D_VAR byte (REG_PL_CFG (E_EXPR (E_NUMLIT 0x11)))) (D_VAR byte (REG_PL_COUNT (E_EXPR (E_NUMLIT 0x12)))) (D_VAR byte (REG_PL_BF_ZCOMP (E_EXPR (E_NUMLIT 0x13)))) (D_VAR byte (REG_P_L_THS_REG (E_EXPR (E_NUMLIT 0x14)))) (D_VAR byte (REG_FF_MT_CFG (E_EXPR (E_NUMLIT 0x15)))) (D_VAR byte (REG_FF_MT_SRC (E_EXPR (E_NUMLIT 0x16)))) (D_VAR byte (REG_FF_MT_THS (E_EXPR (E_NUMLIT 0x17)))) (D_VAR byte (REG_FF_MT_COUNT (E_EXPR (E_NUMLIT 0x18)))) (D_VAR byte (REG_TRANSIENT_CFG (E_EXPR (E_NUMLIT 0x1d)))) (D_VAR byte (REG_TRANSIENT_SRC (E_EXPR (E_NUMLIT 0x1e)))) (D_VAR byte (REG_TRANSIENT_THS (E_EXPR (E_NUMLIT 0x1f)))) (D_VAR byte (REG_TRANSIENT_COUNT (E_EXPR (E_NUMLIT 0x20)))) (D_VAR byte (REG_PULSE_CFG (E_EXPR (E_NUMLIT 0x21)))) (D_VAR byte (REG_PULSE_SRC (E_EXPR (E_NUMLIT 0x22)))) (D_VAR byte (REG_PULSE_THSX (E_EXPR (E_NUMLIT 0x23)))) (D_VAR byte (REG_PULSE_THSY (E_EXPR (E_NUMLIT 0x24)))) (D_VAR byte (REG_PULSE_THSZ (E_EXPR (E_NUMLIT 0x25)))) (D_VAR byte (REG_PULSE_TMLT (E_EXPR (E_NUMLIT 0x26)))) (D_VAR byte (REG_PULSE_LTCY (E_EXPR (E_NUMLIT 0x27)))) (D_VAR byte (REG_PULSE_WIND (E_EXPR (E_NUMLIT 0x28)))) (D_VAR byte (REG_ASLP_COUNT (E_EXPR (E_NUMLIT 0x29)))) (D_VAR byte (REG_CTRL_REG1 (E_EXPR (E_NUMLIT 0x2a)))) (D_VAR byte (REG_CTRL_REG2 (E_EXPR (E_NUMLIT 0x2b)))) (D_VAR byte (REG_CTRL_REG3 (E_EXPR (E_NUMLIT 0x2c)))) (D_VAR byte (REG_CTRL_REG4 (E_EXPR (E_NUMLIT 0x2d)))) (D_VAR byte (REG_CTRL_REG5 (E_EXPR (E_NUMLIT 0x2e)))) (D_VAR byte (REG_OFF_X (E_EXPR (E_NUMLIT 0x2f)))) (D_VAR byte (REG_OFF_Y (E_EXPR (E_NUMLIT 0x30)))) (D_VAR byte (REG_OFF_Z (E_EXPR (E_NUMLIT 0x31)))) (D_VAR byte (FULL_SCALE_RANGE_2g (E_EXPR (E_NUMLIT 0x0)))) (D_VAR byte (FULL_SCALE_RANGE_4g (E_EXPR (E_NUMLIT 0x1)))) (D_VAR byte (FULL_SCALE_RANGE_8g (E_EXPR (E_NUMLIT 0x2)))) (D_VAR uint8 (i2c_addr (E_EXPR (E_NUMLIT 0x1C)))) (D_VAR int16 x y z) (D_VAR bool (dataMode (E_EXPR false))) (D_VAR bool (highResolutionData (E_EXPR true))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setI2CAddr)) (FCNPARMS uint8 address) (FCNBODY (S_ASSIGN (@ i2c_addr) = (E_EXPR (QNAME address))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME dataMode)) (FCNPARMS bool highRes uint8 gScaleRange) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM int16 (QNAME x)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (@ x))))) (D_FCN_DEF (D_FCN_TYP_NM int16 (QNAME y)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (@ y))))) (D_FCN_DEF (D_FCN_TYP_NM int16 (QNAME z)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (@ z))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME update)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME regRead)) (FCNPARMS byte reg byte buf byte count (E_NUMLIT 1)) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME regWrite)) (FCNPARMS byte reg byte val) (FCNBODY NIL)))) null)
+
+test9 (unit, line289) - 
+expected: 
+actual: (UNIT S_PACKAGE (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Handler)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Interrupt)) (D_META (string name) (string enableRegister) (string enableBit) (string clearRegister) (string clearBit)) (D_MODULE (InterruptMeta (implements Interrupt) (INJECT_CODE +{ #include <avr/io.h> }+) (INJECT_CODE +{ #include <avr/interrupt.h> }+) (INJECT_CODE +{ ISR( }+) (INJECT_CODE +{name}+) (INJECT_CODE +{ ) { }+) (INJECT_CODE +{isr()}+) (INJECT_CODE +{;} }+) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setHandler)) (FCNPARMS (QNAME Handler handle) h) (FCNBODY (S_ASSIGN (@ h) = (E_EXPR (QNAME h))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setHandler)) (FCNPARMS (QNAME Handler handle) h) (FCNBODY (S_ASSIGN (@ h) = (E_EXPR (QNAME h))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME enable)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{enableRegister}+)) |= (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (INJECT_CODE +{enableBit}+)) ))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME enabled)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (INJECT_CODE +{enableRegister}+) & ( (E_EXPR (E_NUMLIT 1) << (INJECT_CODE +{enableBit}+)) ))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME disable)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{enableRegister}+)) &= (E_EXPR ~ (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (INJECT_CODE +{enableBit}+)) )))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME clear)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{clearRegister}+)) &= (E_EXPR ~ (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (INJECT_CODE +{clearBit}+)) )))))) (D_VAR (QNAME Handler handle) (h (E_EXPR (E_NUMLIT 0)))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME isr)) (FCNPARMS NIL) (FCNBODY (S_IF (E_COND (E_EXPR (QNAME h) != null)) (S_BLOCK (E_EXPR (QNAME h) (E_CALL_ARGS NIL)))))))) null)
+
+test10 (unit, line343) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu atmel atmega328p)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Mcu) (as (QNAME McuI))) (D_MODULE (Atmega328p (implements McuI) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME reset)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME shutdown)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME wait)) (FCNPARMS uint32 us) (FCNBODY (S_FOR NIL (E_EXPR (QNAME us) > (E_NUMLIT 0)) (E_EXPR (QNAME us) --) (S_BLOCK (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME nop)) (FCNPARMS NIL) (FCNBODY (INJECT_CODE +{ asm(nop) }+))) (D_FCN_DEF (D_FCN_TYP_NM uint32 (QNAME getSystemFrequency)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (@ sysFreq))))) (D_FCN_DEF (D_FCN_TYP_NM uint32 (QNAME getSystemFrequency)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (@ sysFreq))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setSystemFrequency)) (FCNPARMS uint32 hz) (FCNBODY (S_ASSIGN (@ sysFreq) = (E_EXPR (QNAME hz))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setSystemFrequency)) (FCNPARMS uint32 hz) (FCNBODY (S_ASSIGN (@ sysFreq) = (E_EXPR (QNAME hz))))) (D_VAR uint32 sysFreq))) null)
+
+test11 (unit, line415) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu atmel atmega328p)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME GlobalInterrupts) (as (QNAME GI))) (D_MODULE (GlobalInterrupts (implements GI) (INJECT_CODE +{ #include <avr/io.h>\n       #include <avr/interrupt.h> }+) (D_FCN_DEF (D_FCN_TYP_NM uint16 (QNAME disable)) (FCNPARMS NIL) (FCNBODY (D_VAR uint16 (key (E_EXPR (INJECT_CODE +{SREG}+) & ( (E_EXPR (E_NUMLIT 1) << (E_NUMLIT 7)) )))) (INJECT_CODE +{cli()}+) (S_RETURN (E_EXPR (QNAME key))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME enable)) (FCNPARMS NIL) (FCNBODY (INJECT_CODE +{sei()}+))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME restore)) (FCNPARMS uint16 key) (FCNBODY (S_IF (E_COND (E_EXPR (QNAME key) != (E_NUMLIT 0))) (S_BLOCK (INJECT_CODE +{sei()}+)) (S_ELSE (S_BLOCK (INJECT_CODE +{cli()}+)))))))) null)
+
+test12 (unit, line445) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu atmel atmega328p)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Gpio)) (D_META (string (port \"\")) (string (ddr \"\")) (uint8 (pin (E_NUMLIT 0)))) (D_MODULE (GpioMeta (implements Gpio) (INJECT_CODE +{ #include <avr/io.h> }+) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME set)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{port}+)) |= (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (QNAME pin)) ))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME clear)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{port}+)) &= (E_EXPR ~ (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (QNAME pin)) )))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME get)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_QUEST ( (E_EXPR (INJECT_CODE +{port}+) & ( (E_EXPR (E_NUMLIT 1) << (QNAME pin)) )) ) (E_EXPR true) (E_EXPR false))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME toggle)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{port}+)) ^= (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (QNAME pin)) ))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME makeInput)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{ddr}+)) &= (E_EXPR ~ (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (QNAME pin)) )))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME isInput)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_QUEST ( (E_EXPR (INJECT_CODE +{ddr}+) & ( (E_EXPR (E_NUMLIT 1) << (QNAME pin)) )) ) (E_EXPR false) (E_EXPR true))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME makeOutput)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{ddr}+)) |= (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (QNAME pin)) ))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME isOutput)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_QUEST ( (E_EXPR (INJECT_CODE +{ddr}+) & ( (E_EXPR (E_NUMLIT 1) << (QNAME pin)) )) ) (E_EXPR true) (E_EXPR false))))))) null)
+
+test13 (unit, line479) - 
+expected: 
+actual: (UNIT S_PACKAGE (S_IMPORT (from (QNAME pollen interfaces)) (QNAME I2C) (as (QNAME I2CI))) (D_MODULE (I2C (implements I2CI) (D_VAR uint32 (slowestSlaveFrequency (E_EXPR (E_NUMLIT 100000)))) (D_VAR uint32 (mcuFrequency (E_EXPR (E_NUMLIT 16000000)))) (D_VAR uint8 (MT_SLA_ACK (E_EXPR (E_NUMLIT 0x18)))) (D_VAR uint8 (MR_SLA_ACK (E_EXPR (E_NUMLIT 0x40)))) (D_VAR uint8 (MT_DATA_ACK (E_EXPR (E_NUMLIT 0x28)))) (D_VAR uint8 (START (E_EXPR (E_NUMLIT 0x08)))) (D_VAR uint8 (RESTART (E_EXPR (E_NUMLIT 0x10)))) (INJECT_CODE +{ #include <avr/io.h> }+) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME ready)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_QUEST ( (E_EXPR (INJECT_CODE +{TWCR}+) & ( (E_EXPR (E_NUMLIT 1) << (INJECT_CODE +{TWINT}+)) )) ) (E_EXPR true) (E_EXPR false))))) (D_FCN_DEF (D_FCN_CTOR (QNAME I2C)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME enableAsMaster)) (FCNPARMS NIL) (FCNBODY (D_VAR uint32 (sclFrequency (E_EXPR (E_NUMLIT 0)))) (D_VAR uint8 (prescaler (E_EXPR (E_NUMLIT 0)))) (INJECT_CODE +{PRR &= ~(1<<PRTWI)}+) (S_ASSIGN (QNAME sclFrequency) = (E_EXPR ( (E_EXPR ( (E_EXPR (QNAME mcuFrequency) / (QNAME slowestSlaveFrequency)) ) - (E_NUMLIT 16)) ) / (E_NUMLIT 2))) (S_WHILE (S_BLOCK (S_ASSIGN (QNAME sclFrequency) >>= (E_EXPR (E_NUMLIT 2))) (E_EXPR (QNAME prescaler) ++))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TWSR}+)) = (E_EXPR ( (E_EXPR (QNAME prescaler) << (INJECT_CODE +{TWPS0}+)) ))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TWBR}+)) = (E_EXPR (QNAME sclFrequency))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TWSR}+)) = (E_EXPR (E_NUMLIT 0))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TWBR}+)) = (E_EXPR (E_NUMLIT 72))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TWCR}+)) = (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (INJECT_CODE +{TWEN}+)) ) | ( (E_EXPR (E_NUMLIT 1) << (INJECT_CODE +{TWEA}+)) ))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME enableAsSlave)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM uint8 (QNAME get)) (FCNPARMS bool ack) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TWCR}+)) = (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (INJECT_CODE +{TWINT}+)) ) | ( (E_EXPR (E_NUMLIT 1) << (INJECT_CODE +{TWEN}+)) ) | ( (E_QUEST (QNAME ack) (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (INJECT_CODE +{TWEA}+)) )) (E_EXPR (E_NUMLIT 0))) ))) (S_WHILE (S_BLOCK NIL)) (S_RETURN (E_EXPR (INJECT_CODE +{TWDR}+))))) (D_FCN_DEF (D_FCN_TYP_NM uint8 (QNAME put)) (FCNPARMS uint8 data) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TWDR}+)) = (E_EXPR (QNAME data))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TWCR}+)) = (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (INJECT_CODE +{TWINT}+)) ) | ( (E_EXPR (E_NUMLIT 1) << (INJECT_CODE +{TWEN}+)) ) | ( (E_EXPR (E_NUMLIT 1) << (INJECT_CODE +{TWEA}+)) ))) (S_WHILE (S_BLOCK NIL)) (S_IF (E_COND (E_EXPR ( (E_EXPR (INJECT_CODE +{TWSR}+) & (E_NUMLIT 0xF8)) ) != (QNAME MT_DATA_ACK))) (S_BLOCK (S_RETURN (E_EXPR (E_NUMLIT 1))))) (S_RETURN (E_EXPR (E_NUMLIT 0))))) (D_FCN_DEF (D_FCN_TYP_NM uint8 (QNAME start)) (FCNPARMS uint8 address bool write) (FCNBODY (INJECT_CODE +{TWCR = (1 << TWINT) | (1 << TWSTA) | (1 << TWEN) | (1 << TWEA)}+) (S_WHILE (S_BLOCK NIL)) (S_IF (E_COND (E_EXPR ( (E_EXPR ( (E_EXPR (INJECT_CODE +{TWSR}+) & (E_NUMLIT 0xF8)) ) != (QNAME START)) ) && ( (E_EXPR ( (E_EXPR (INJECT_CODE +{TWSR}+) & (E_NUMLIT 0xF8)) ) != (QNAME RESTART)) ))) (S_BLOCK (S_RETURN (E_EXPR (E_NUMLIT 1))))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TWDR}+)) = (E_EXPR ( (E_EXPR (QNAME address) << (E_NUMLIT 1)) ) | ( (E_QUEST (QNAME write) (E_EXPR (E_NUMLIT 0)) (E_EXPR (E_NUMLIT 1))) ))) (INJECT_CODE +{TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWEA)}+) (S_WHILE (S_BLOCK NIL)) (S_IF (E_COND (E_EXPR ( (E_EXPR ( (E_EXPR (INJECT_CODE +{TWSR}+) & (E_NUMLIT 0xF8)) ) != (QNAME MT_SLA_ACK)) ) && ( (E_EXPR ( (E_EXPR (INJECT_CODE +{TWSR}+) & (E_NUMLIT 0xF8)) ) != (QNAME MR_SLA_ACK)) ))) (S_BLOCK (S_RETURN (E_EXPR (E_NUMLIT 2))))) (S_RETURN (E_EXPR (E_NUMLIT 0))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME stop)) (FCNPARMS NIL) (FCNBODY (INJECT_CODE +{TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO) | (1 << TWEA)}+))))) null)
+
+test14 (unit, line598) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu atmel atmega328p)) (S_IMPORT (from (QNAME mcu atmel atmega)) (QNAME InterruptMeta) { \"TIMER0_COMPA_vect\" , \"TIMSK0\" , \"OCIE0A\" , \"TIFR0\" , \"OCF0A\" } (as (QNAME Timer0MatchA))) (D_COMPOSITION Interrupts (export (QNAME Timer0MatchA))) null)
+
+test15 (unit, line609) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu atmel atmega328p)) (S_IMPORT (QNAME Atmega328p)) (S_IMPORT (QNAME GlobalInterrupts)) (S_IMPORT (QNAME Interrupts)) (S_IMPORT (QNAME TimerMilli8BitTimer0)) (S_IMPORT (QNAME Uart)) (S_IMPORT (QNAME GpioMeta) { \"PORTB\" , \"DDRB\" , (E_NUMLIT 3) } (as (QNAME PB3))) (S_IMPORT (QNAME GpioMeta) { \"PORTB\" , \"DDRB\" , (E_NUMLIT 4) } (as (QNAME PB4))) (S_IMPORT (QNAME GpioMeta) { \"PORTB\" , \"DDRB\" , (E_NUMLIT 5) } (as (QNAME PB5))) (D_COMPOSITION Mcu (export (QNAME Atmega328p reset)) (export (QNAME Atmega328p shutdown)) (export (QNAME Atmega328p wait)) (export (QNAME Atmega328p nop)) (D_FCN_DEF (D_FCN_TYP_NM uint32 (QNAME getSystemFrequency)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (QNAME Atmega328p getSystemFrequency) (E_CALL_ARGS NIL))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setSystemFrequency)) (FCNPARMS uint32 hz) (FCNBODY (E_EXPR (QNAME Atmega328p setSystemFrequency) (E_CALL_ARGS (E_EXPR (QNAME hz)))))) (export (QNAME GlobalInterrupts)) (export (QNAME Interrupts)) (export (QNAME TimerMilli8BitTimer0)) (export (QNAME Uart)) (export (QNAME PB3)) (export (QNAME PB4)) (export (QNAME PB5))) null)
+
+test16 (unit, line662) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu atmel atmega328p)) (S_IMPORT (QNAME Atmega328p)) (S_IMPORT (QNAME Interrupts)) (S_IMPORT (from (QNAME Interrupts)) (QNAME Timer0MatchA) (as (QNAME Interrupt))) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Handler)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME TimerDriver)) (D_MODULE (TimerMilli8BitTimer0 (implements TimerDriver) (INJECT_CODE +{ #include <avr/io.h> }+) (D_FCN_DEF (D_FCN_CTOR (QNAME TimerMilli8BitTimer0)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (QNAME ticksPerMs) = (E_EXPR (QNAME Atmega328p getSystemFrequency) (E_CALL_ARGS NIL) / ( (E_EXPR (E_NUMLIT 64) * (E_NUMLIT 1000)) ))))) (D_FCN_DEF (D_FCN_CTOR (QNAME TimerMilli8BitTimer0)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TCCR0A}+)) = (E_EXPR (QNAME TIMER0_MODE_CTC))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TCCR0B}+)) = (E_EXPR (QNAME TIMER0_STOP))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{OCR0A}+)) = (E_EXPR (QNAME ticksPerMs))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setHandler)) (FCNPARMS (QNAME Handler handle) h null) (FCNBODY (E_EXPR (QNAME Interrupt setHandler) (E_CALL_ARGS (E_EXPR (QNAME h)))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME start)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TCNT0}+)) = (E_EXPR (E_NUMLIT 0))) (E_EXPR (QNAME Interrupt clear) (E_CALL_ARGS NIL)) (E_EXPR (QNAME Interrupt enable) (E_CALL_ARGS NIL)) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TCCR0B}+)) = (E_EXPR (QNAME TIMER0_DIV64))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME stop)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME Interrupt disable) (E_CALL_ARGS NIL)) (E_EXPR (QNAME Interrupt clear) (E_CALL_ARGS NIL)) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TCCR0B}+)) = (E_EXPR (QNAME TIMER0_STOP))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME running)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (INJECT_CODE +{TCCR0B}+) != (E_NUMLIT 0) && (QNAME Interrupt enabled) (E_CALL_ARGS NIL))))) (D_VAR uint16 (ticksPerMs (E_EXPR (E_NUMLIT 0)))) (D_VAR uint8 (TIMER0_MODE_CTC (E_EXPR (E_NUMLIT 0x02)))) (D_VAR uint8 (TIMER0_STOP (E_EXPR (E_NUMLIT 0x00)))) (D_VAR uint8 (TIMER0_DIV1 (E_EXPR (E_NUMLIT 0x01)))) (D_VAR uint8 (TIMER0_DIV8 (E_EXPR (E_NUMLIT 0x02)))) (D_VAR uint8 (TIMER0_DIV64 (E_EXPR (E_NUMLIT 0x03)))) (D_VAR uint8 (TIMER0_DIV256 (E_EXPR (E_NUMLIT 0x04)))))) null)
+
+test17 (unit, line725) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu atmel atmega328p)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Uart) (as (QNAME UartI))) (S_IMPORT (QNAME Atmega328p) (as (QNAME Mcu))) (D_MODULE (Uart (implements UartI) (INJECT_CODE +{ #include <avr/io.h> }+) (D_FCN_DEF (D_FCN_CTOR (QNAME Uart)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (QNAME baudh) = (E_EXPR ( (E_EXPR ( (E_EXPR ( (E_EXPR (QNAME Mcu getSystemFrequency) (E_CALL_ARGS NIL) / ( (E_EXPR (QNAME baudRate) * (E_NUMLIT 16)) )) ) - (E_NUMLIT 1)) ) >> (E_NUMLIT 8)) ))) (S_ASSIGN (QNAME baudl) = (E_EXPR ( (E_EXPR ( (E_EXPR ( (E_EXPR (QNAME Mcu getSystemFrequency) (E_CALL_ARGS NIL) / ( (E_EXPR (QNAME baudRate) * (E_NUMLIT 16)) )) ) - (E_NUMLIT 1)) )) ))))) (D_FCN_DEF (D_FCN_CTOR (QNAME Uart)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{UBRR0H}+)) = (E_EXPR (QNAME baudh))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{UBRR0L}+)) = (E_EXPR (QNAME baudl))) (INJECT_CODE +{UCSR0B |= (1 << RXEN0) | (1 << TXEN0)}+) (INJECT_CODE +{UCSR0C |= (1 << UCSZ00) | (1 << UCSZ01)}+))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME put)) (FCNPARMS uint8 data) (FCNBODY (S_WHILE (S_BLOCK NIL)) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{UDR0}+)) = (E_EXPR (QNAME data))))) (D_FCN_DEF (D_FCN_TYP_NM uint8 (QNAME get)) (FCNPARMS NIL) (FCNBODY (S_WHILE (S_BLOCK NIL)) (S_RETURN (E_EXPR (INJECT_CODE +{UDR0}+))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME flush)) (FCNPARMS NIL) (FCNBODY (D_VAR uint8 (dummy (E_EXPR (E_NUMLIT 0)))) (S_WHILE (S_BLOCK (S_ASSIGN (QNAME dummy) = (E_EXPR (INJECT_CODE +{UDR0}+))))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setBaud)) (FCNPARMS uint32 baud) (FCNBODY (S_ASSIGN (QNAME baudRate) = (E_EXPR (QNAME baud))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{UBRR0H}+)) = (E_EXPR ( (E_EXPR ( (E_EXPR ( (E_EXPR (QNAME Mcu getSystemFrequency) (E_CALL_ARGS NIL) / ( (E_EXPR (QNAME baudRate) * (E_NUMLIT 16)) )) ) - (E_NUMLIT 1)) ) >> (E_NUMLIT 8)) ))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{UBRR0L}+)) = (E_EXPR ( (E_EXPR ( (E_EXPR ( (E_EXPR (QNAME Mcu getSystemFrequency) (E_CALL_ARGS NIL) / ( (E_EXPR (QNAME baudRate) * (E_NUMLIT 16)) )) ) - (E_NUMLIT 1)) )) ))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setBaud)) (FCNPARMS uint32 baud) (FCNBODY (S_ASSIGN (QNAME baudRate) = (E_EXPR (QNAME baud))) (S_ASSIGN (QNAME baudh) = (E_EXPR ( (E_EXPR ( (E_EXPR ( (E_EXPR (QNAME Mcu getSystemFrequency) (E_CALL_ARGS NIL) / ( (E_EXPR (QNAME baudRate) * (E_NUMLIT 16)) )) ) - (E_NUMLIT 1)) ) >> (E_NUMLIT 8)) ))) (S_ASSIGN (QNAME baudl) = (E_EXPR ( (E_EXPR ( (E_EXPR ( (E_EXPR (QNAME Mcu getSystemFrequency) (E_CALL_ARGS NIL) / ( (E_EXPR (QNAME baudRate) * (E_NUMLIT 16)) )) ) - (E_NUMLIT 1)) )) ))))) (D_VAR uint32 (baudRate (E_EXPR (E_NUMLIT 9600)))) (D_VAR uint8 (dataBits (E_EXPR (E_NUMLIT 8)))) (D_VAR uint8 (stopBits (E_EXPR (E_NUMLIT 1)))) (D_VAR uint8 (parity (E_EXPR (E_NUMLIT 0)))) (D_VAR uint8 baudh) (D_VAR uint8 baudl))) null)
+
+test18 (unit, line790) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu atmel atmega328p)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Wait) (as (QNAME WaitI))) (D_MODULE (Wait (implements WaitI) (D_FCN_DEF (D_FCN_CTOR (QNAME Wait)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME us)) (FCNPARMS uint32 microseconds) (FCNBODY (S_FOR (S_DECL (uint32 i (E_EXPR (E_NUMLIT 0)))) (E_EXPR (QNAME i) < (QNAME microseconds)) (E_EXPR (QNAME i) ++) (S_BLOCK (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+) (INJECT_CODE +{ asm(nop) }+))))))) null)
+
+test19 (unit, line831) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu localhost)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME GlobalInterrupts) (as (QNAME GI))) (D_MODULE (GlobalInterrupts (implements GI) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME disable)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR false)))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME enable)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME restore)) (FCNPARMS bool state) (FCNBODY NIL)))) null)
+
+test20 (unit, line857) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu localhost)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Mcu) (as (QNAME McuI))) (D_MODULE (Mcu (implements McuI) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME reset)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME shutdown)) (FCNPARMS NIL) (FCNBODY NIL)))) null)
+
+test21 (unit, line872) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu localhost)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Wait) (as (QNAME WaitI))) (D_MODULE (Wait (implements WaitI) (INJECT_CODE +{ #include <unistd.h> }+) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME us)) (FCNPARMS uint32 microseconds) (FCNBODY (INJECT_CODE +{ usleep(microseconds) }+))))) null)
+
+test22 (unit, line886) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu localhost)) (D_MODULE (Write (INJECT_CODE +{ #include <stdio.h> }+) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME outs)) (FCNPARMS string s) (FCNBODY (INJECT_CODE +{printf(\"s\" s)}+))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME outi)) (FCNPARMS uint32 i) (FCNBODY (INJECT_CODE +{printf(\"i\" i)}+))))) null)
+
+test23 (unit, line906) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu ti msp430)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME GlobalInterrupts) (as (QNAME GI))) (D_MODULE (GlobalInterrupts (implements GI) (INJECT_CODE +{ #include <msp430g2231.h> }+) (INJECT_CODE +{ #include <legacymsp430.h> }+) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME disable)) (FCNPARMS NIL) (FCNBODY (D_VAR uint16 (x (E_EXPR (E_NUMLIT 0)))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{x}+)) = (E_EXPR (INJECT_CODE +{ __read_status_register() }+))) (INJECT_CODE +{dint()}+) (S_RETURN (E_QUEST ( (E_EXPR (QNAME x) & (INJECT_CODE +{GIE}+)) ) != (E_NUMLIT 0) (E_EXPR true) (E_EXPR false))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME enable)) (FCNPARMS NIL) (FCNBODY (INJECT_CODE +{eint()}+))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME restore)) (FCNPARMS bool state) (FCNBODY (S_IF (E_COND (E_EXPR (QNAME state) == true)) (S_BLOCK (E_EXPR (QNAME enable) (E_CALL_ARGS NIL)))))))) null)
+
+test24 (unit, line941) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu ti msp430)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Gpio)) (D_META (string part) (string dirr) (string inr) (string outr) (uint8 pin)) (D_MODULE (GpioMeta (implements Gpio) (INJECT_CODE +{ #include <msp430g2231.h> }+) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME set)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{outr}+)) |= (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (QNAME pin)) ))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME clear)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{outr}+)) &= (E_EXPR ~ (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (QNAME pin)) )))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME toggle)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{outr}+)) ^= (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (QNAME pin)) ))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME get)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_QUEST (INJECT_CODE +{inr}+) & ( (E_EXPR (E_NUMLIT 1) << (QNAME pin)) ) (E_EXPR true) (E_EXPR false))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME makeInput)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{dirr}+)) &= (E_EXPR ~ (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (QNAME pin)) )))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME isInput)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_QUEST (INJECT_CODE +{dirr}+) & ( (E_EXPR (E_NUMLIT 1) << (QNAME pin)) ) (E_EXPR false) (E_EXPR true))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME makeOutput)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{dirr}+)) |= (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (QNAME pin)) ))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME isOutput)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_QUEST (INJECT_CODE +{dirr}+) & ( (E_EXPR (E_NUMLIT 1) << (QNAME pin)) ) (E_EXPR true) (E_EXPR false))))))) null)
+
+test25 (unit, line988) - 
+expected: 
+actual: (UNIT S_PACKAGE (S_IMPORT (from (QNAME pollen interfaces)) (QNAME I2C)) (D_MODULE (I2CUsi (implements I2C) (D_VAR uint32 (slowestSlaveFrequency (E_EXPR (E_NUMLIT 100000)))) (D_VAR uint32 (mcuFreq (E_EXPR (E_NUMLIT 1000000)))) (D_VAR uint8 divisor) (D_VAR uint8 source) (D_FCN_DEF (D_FCN_CTOR (QNAME I2CUsi)) (FCNPARMS NIL) (FCNBODY (D_VAR uint32 SCLFreq) (S_ASSIGN (QNAME SCLFreq) = (E_EXPR (E_NUMLIT 0))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{P1OUT}+)) = (E_EXPR (E_NUMLIT 0xC0))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{P1REN}+)) |= (E_EXPR (E_NUMLIT 0xC0))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{P1DIR}+)) = (E_EXPR (E_NUMLIT 0xFF))) (S_ASSIGN (QNAME source) = (E_EXPR (INJECT_CODE +{USISSEL_2}+))) (S_ASSIGN (QNAME SCLFreq) = (E_EXPR (QNAME mcuFreq))) (S_ASSIGN (QNAME divisor) = (E_EXPR (E_NUMLIT 0))) (S_WHILE (S_BLOCK (S_ASSIGN (QNAME SCLFreq) >>= (E_EXPR (E_NUMLIT 1))) (E_EXPR (QNAME divisor) ++))) (S_ASSIGN (QNAME divisor) <<= (E_EXPR (E_NUMLIT 5))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME enableAsMaster)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{ADC10AE0}+)) = (E_EXPR (E_NUMLIT 0))) (INJECT_CODE +{USICTL0    = USIPE7 | USIPE6 | USIMST | USISWRST}+) (INJECT_CODE +{USICTL1    = USII2C}+) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{USICKCTL}+)) = (E_EXPR (QNAME divisor) | (QNAME source) | (INJECT_CODE +{USICKPL}+))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{USICNT}+)) = (E_EXPR (E_NUMLIT 0))) (INJECT_CODE +{USICTL0   &= ~USISWRST}+) (INJECT_CODE +{USICTL1   &= ~USIIFG}+))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME enableAsSlave)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM uint8 (QNAME get)) (FCNPARMS bool ack) (FCNBODY (D_VAR uint8 data) (INJECT_CODE +{USICTL0 &= ~USIOE}+) (INJECT_CODE +{USICNT = (USICNT & 0xE0) | 0x08}+) (S_WHILE (S_BLOCK NIL)) (S_ASSIGN (QNAME data) = (E_EXPR (INJECT_CODE +{USISRL}+))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{USISRL}+)) = (E_QUEST (QNAME ack) (E_EXPR (E_NUMLIT 0x00)) (E_EXPR (E_NUMLIT 0x80)))) (INJECT_CODE +{USICTL0 |= USIOE}+) (INJECT_CODE +{USICNT = (USICNT & 0xE0) | 0x01}+) (S_WHILE (S_BLOCK NIL)) (S_RETURN (E_EXPR (QNAME data))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME put)) (FCNPARMS uint8 data) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{USISRL}+)) = (E_EXPR (QNAME data))) (INJECT_CODE +{USICTL0 |= USIOE}+) (INJECT_CODE +{USICNT = (USICNT & 0xE0) | 0x08}+) (S_WHILE (S_BLOCK NIL)) (INJECT_CODE +{USICTL0 &= ~USIOE}+) (INJECT_CODE +{USICNT = (USICNT & 0xE0) | 0x01}+) (S_WHILE (S_BLOCK NIL)) (S_RETURN (E_QUEST ( (E_EXPR (INJECT_CODE +{USISRL}+) & (E_NUMLIT 0x01)) ) (E_EXPR true) (E_EXPR false))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME start)) (FCNPARMS uint8 address bool write) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{USISRL}+)) = (E_EXPR (E_NUMLIT 0))) (INJECT_CODE +{USICTL0 |= USIOE | USIGE}+) (INJECT_CODE +{USICTL0 &= ~USIGE}+) (S_RETURN (E_EXPR (QNAME put) (E_CALL_ARGS (E_EXPR ( (E_EXPR (QNAME address) << (E_NUMLIT 1)) ) | ( (E_QUEST (QNAME write) (E_EXPR (E_NUMLIT 0)) (E_EXPR (E_NUMLIT 1))) ))))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME stop)) (FCNPARMS NIL) (FCNBODY (INJECT_CODE +{USICTL0 |= USIOE}+) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{USISRL}+)) = (E_EXPR (E_NUMLIT 0))) (INJECT_CODE +{USICNT = (USICNT & 0xE0) | 0x01}+) (S_WHILE (S_BLOCK NIL)) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{USISRL}+)) = (E_EXPR (E_NUMLIT 0xFF))) (INJECT_CODE +{USICTL0 |= USIGE}+) (INJECT_CODE +{USICTL0 &= ~USIOE & ~USIGE}+))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME ready)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_QUEST (INJECT_CODE +{(USICTL1 & USIIFG)}+) (E_EXPR true) (E_EXPR false))))))) null)
+
+test26 (unit, line1137) - 
+expected: 
+actual: (UNIT S_PACKAGE (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Handler)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Interrupt)) (D_META (string part) (string vector) (string enableRegister) (string enableBit) (string clearRegister) (string clearBit)) (D_MODULE (InterruptMeta (implements Interrupt) (INJECT_CODE +{ #include <msp430g2231.h> }+) (INJECT_CODE +{ #include <legacymsp430.h> }+) (D_VAR string (v2 (E_EXPR (QNAME vector) + \"_ISR() {\"))) (INJECT_CODE +{ interrupt (}+) (INJECT_CODE +{vector}+) (INJECT_CODE +{) }+) (INJECT_CODE +{vector + \"_ISR() {\"\t\n   \t+{ isr() }+) (INJECT_CODE +{;} }+) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setHandler)) (FCNPARMS (QNAME Handler handle) h) (FCNBODY (S_ASSIGN (@ h) = (E_EXPR (QNAME h))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setHandler)) (FCNPARMS (QNAME Handler handle) h) (FCNBODY (S_ASSIGN (@ h) = (E_EXPR (QNAME h))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME enable)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{enableRegister}+)) |= (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (INJECT_CODE +{enableBit}+)) ))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME enabled)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (INJECT_CODE +{enableRegister}+) & ( (E_EXPR (E_NUMLIT 1) << (INJECT_CODE +{enableBit}+)) ))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME disable)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{enableRegister}+)) &= (E_EXPR ~ (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (INJECT_CODE +{enableBit}+)) )))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME clear)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{clearRegister}+)) &= (E_EXPR ~ (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (INJECT_CODE +{clearBit}+)) )))))) (D_VAR (QNAME Handler handle) (h (E_EXPR (E_NUMLIT 0)))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME isr)) (FCNPARMS NIL) (FCNBODY (S_IF (E_COND (E_EXPR (QNAME h) != null)) (S_BLOCK (E_EXPR (QNAME h) (E_CALL_ARGS NIL)))))))) null)
+
+test27 (unit, line1195) - 
+expected: 
+actual: (UNIT S_PACKAGE (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Mcu)) (D_PROTOCOL (Msp430 (extends Mcu) (D_FCN_DCL (D_FCN_TYP_NM uint32 (QNAME getMasterClock)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM uint32 (QNAME getSubMasterClock)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM uint32 (QNAME getAuxiliaryClock)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME setMasterClock)) (FCNPARMS uint32 freq)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME setSubMasterClock)) (FCNPARMS uint32 freq)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME setAuxiliaryClock)) (FCNPARMS uint32 freq)))) null)
+
+
+Tests run: 27, Failures: 27
+###################
+### tst_codeunits2.gunit
+###################
+-----------------------------------------------------------------------
+executing testsuite for grammar:pol with 34 tests
+-----------------------------------------------------------------------
+34 failures found:
+test1 (unit, line4) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu ti msp430)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Interrupt)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Handler)) (D_MODULE (TimerA0Interrupt (implements Interrupt) (D_VAR (QNAME Handler handle) h) (INJECT_CODE +{ #include <msp430g2231.h> }+) (INJECT_CODE +{ #include <legacymsp430.h> }+) (INJECT_CODE +{ interrupt (TIMERA0_VECTOR) TimerA0Interrupt_ISR() { }+) (INJECT_CODE +{isr()}+) (INJECT_CODE +{;} }+) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setHandler)) (FCNPARMS (QNAME Handler handle) h) (FCNBODY (S_ASSIGN (@ h) = (E_EXPR (QNAME h))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setHandler)) (FCNPARMS (QNAME Handler handle) h) (FCNBODY (S_ASSIGN (@ h) = (E_EXPR (QNAME h))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME enable)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TACCTL0}+)) |= (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (E_NUMLIT 4)) ))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME enabled)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_QUEST (INJECT_CODE +{TACCTL0}+) & ( (E_EXPR (E_NUMLIT 1) << (E_NUMLIT 4)) ) (E_EXPR true) (E_EXPR false))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME disable)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TACCTL0}+)) &= (E_EXPR ~ (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (E_NUMLIT 4)) )))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME clear)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TACCTL0}+)) &= (E_EXPR ~ (E_EXPR ( (E_EXPR (E_NUMLIT 1) << (E_NUMLIT 0)) )))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME isr)) (FCNPARMS NIL) (FCNBODY (S_IF (E_COND (E_EXPR (QNAME h) != null)) (S_BLOCK (E_EXPR (QNAME h) (E_CALL_ARGS NIL)))))))) null)
+
+test2 (unit, line47) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu ti msp430)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME TimerDriver)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Handler)) (S_IMPORT (QNAME TimerA0Interrupt) (as (QNAME Interrupt))) (D_MODULE (TimerMilliA0 (implements TimerDriver) (INJECT_CODE +{ #include <msp430g2231.h> }+) (D_VAR uint16 (ticksPerMs (E_EXPR (E_NUMLIT 1000)))) (D_FCN_DEF (D_FCN_CTOR (QNAME TimerMilliA0)) (FCNPARMS NIL) (FCNBODY (INJECT_CODE +{TACTL = TASSEL_2 + MC_0}+) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TACCR0}+)) = (E_EXPR (QNAME ticksPerMs))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setHandler)) (FCNPARMS (QNAME Handler handle) h null) (FCNBODY (E_EXPR (QNAME Interrupt setHandler) (E_CALL_ARGS (E_EXPR (QNAME h)))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME start)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TAR}+)) = (E_EXPR (E_NUMLIT 0))) (E_EXPR (QNAME Interrupt clear) (E_CALL_ARGS NIL)) (E_EXPR (QNAME Interrupt enable) (E_CALL_ARGS NIL)) (INJECT_CODE +{TACTL |= MC_1}+))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME stop)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME Interrupt disable) (E_CALL_ARGS NIL)) (E_EXPR (QNAME Interrupt clear) (E_CALL_ARGS NIL)) (D_VAR uint16 (mask (E_EXPR ~ (E_EXPR ( (E_EXPR (E_NUMLIT 3) << (E_NUMLIT 4)) ))))) (S_ASSIGN (INJECT_CODE (INJECT_CODE +{TACTL}+)) &= (E_EXPR (QNAME mask))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME running)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_QUEST ( (E_EXPR (INJECT_CODE +{TACTL & MC_1}+) && (QNAME Interrupt enabled) (E_CALL_ARGS NIL)) ) (E_EXPR true) (E_EXPR false))))))) null)
+
+test3 (unit, line98) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu ti msp430)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Timer) (as (QNAME TimerI))) (S_IMPORT (from (QNAME pollen events)) (QNAME Events)) (S_IMPORT (from (QNAME pollen events)) (QNAME Event) { uint8 } (as (QNAME Event))) (S_IMPORT (QNAME TimerMilliA0) (as (QNAME TA0))) (D_MODULE (TimerMilli (implements TimerI) (D_VAR (QNAME Event) event) (D_VAR uint16 duration) (D_VAR uint16 current) (D_VAR bool repeat) (D_FCN_DEF (D_FCN_CTOR (QNAME TimerMilli)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME TA0 setHandler) (E_CALL_ARGS (E_EXPR (QNAME timerInterrupt)))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME start)) (FCNPARMS (QNAME Event) onTick uint16 duration bool repeat true) (FCNBODY (S_ASSIGN (@ event) = (E_EXPR (QNAME onTick))) (S_ASSIGN (@ duration) = (E_EXPR (QNAME duration))) (S_ASSIGN (@ repeat) = (E_EXPR (QNAME repeat))) (S_ASSIGN (@ current) = (E_EXPR (E_NUMLIT 0))) (E_EXPR (QNAME TA0 start) (E_CALL_ARGS NIL)))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME stop)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME TA0 stop) (E_CALL_ARGS NIL)))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME periodic)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (QNAME repeat))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME running)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (QNAME TA0 running) (E_CALL_ARGS NIL))))) (D_FCN_DEF (D_FCN_TYP_NM uint16 (QNAME ticksPerSecond)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (E_NUMLIT 1000))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME timerInterrupt)) (FCNPARMS NIL) (FCNBODY (S_IF (E_COND (E_EXPR ++ (QNAME current) == (QNAME duration))) (S_BLOCK (S_IF (E_COND (E_EXPR (QNAME repeat) == true)) (S_BLOCK (S_ASSIGN (QNAME current) = (E_EXPR (E_NUMLIT 0)))) (S_ELSE (S_BLOCK (E_EXPR (QNAME TA0 stop) (E_CALL_ARGS NIL))))) (S_IF (E_COND (E_EXPR (QNAME event) != (E_NUMLIT 0))) (S_BLOCK (E_EXPR (QNAME Events postFromInterrupt) (E_CALL_ARGS (E_EXPR (QNAME event)))))))))))) null)
+
+test4 (unit, line153) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu ti msp430)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Wait) (as (QNAME WaitI))) (D_MODULE (Wait (implements WaitI) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME us)) (FCNPARMS uint32 microseconds) (FCNBODY (D_VAR uint32 t) (S_FOR (S_DECL (uint32 i (E_EXPR (E_NUMLIT 0)))) (E_EXPR (QNAME i) < ( (E_EXPR (QNAME microseconds) / (E_NUMLIT 10)) ) + (E_NUMLIT 1)) (E_EXPR (QNAME i) ++) (S_BLOCK (S_ASSIGN (QNAME t) = (E_EXPR (E_NUMLIT 0))))))))) null)
+
+test5 (unit, line180) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu ti msp430g2231)) (S_IMPORT (from (QNAME mcu ti msp430)) (QNAME InterruptMeta) { } (as (QNAME GpioP1))) (S_IMPORT (from (QNAME mcu ti msp430)) (QNAME InterruptMeta) { } (as (QNAME GpioP2))) (D_COMPOSITION Interrupts (export (QNAME GpioP1)) (export (QNAME GpioP2))) null)
+
+test6 (unit, line193) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu ti msp430g2231)) (S_IMPORT (QNAME Msp430g2231)) (S_IMPORT (from (QNAME mcu ti msp430)) (QNAME GlobalInterrupts)) (S_IMPORT (from (QNAME mcu ti msp430)) (QNAME TimerMilliA0)) (S_IMPORT (from (QNAME mcu ti msp430)) (QNAME GpioMeta) { \"msp430g2231.h\" , \"P1DIR\" , \"P1IN\" , \"P1OUT\" , (E_NUMLIT 0) } (as (QNAME P1_0))) (S_IMPORT (from (QNAME mcu ti msp430)) (QNAME GpioMeta) { \"msp430g2231.h\" , \"P1DIR\" , \"P1IN\" , \"P1OUT\" , (E_NUMLIT 6) } (as (QNAME P1_6))) (D_COMPOSITION Mcu (export (QNAME Msp430g2231 reset)) (export (QNAME Msp430g2231 shutdown)) (export (QNAME Msp430g2231 wait)) (export (QNAME Msp430g2231 nop)) (export (QNAME GlobalInterrupts)) (export (QNAME TimerMilliA0)) (export (QNAME P1_0)) (export (QNAME P1_6))) null)
+
+test7 (unit, line233) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME mcu ti msp430g2231)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Mcu) (as (QNAME McuI))) (S_IMPORT (from (QNAME mcu ti msp430)) (QNAME Wait)) (D_MODULE (Msp430g2231 (implements McuI) (D_VAR uint32 (mclkFrequency (E_EXPR (E_NUMLIT 1000000)))) (D_VAR uint32 (smclkFrequency (E_EXPR (E_NUMLIT 1000000)))) (D_VAR uint32 (aclkFrequency (E_EXPR (E_NUMLIT 0)))) (INJECT_CODE +{ #include <msp430g2231.h> }+) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME reset)) (FCNPARMS NIL) (FCNBODY (INJECT_CODE +{WDTCTL = WDTPW | WDTHOLD}+) (INJECT_CODE +{BCSCTL1 = CALBC1_1MHZ}+) (INJECT_CODE +{DCOCTL = CALDCO_1MHZ}+) (S_IF (E_COND (E_EXPR (QNAME mclkFrequency) == (E_NUMLIT 1000000))) (S_BLOCK (S_IF (E_COND (E_EXPR (QNAME smclkFrequency) == (E_NUMLIT 500000))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVS_1}+)) (S_ELIF (E_COND (E_EXPR (QNAME smclkFrequency) == (E_NUMLIT 250000))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVS_2}+))) (S_ELIF (E_COND (E_EXPR (QNAME smclkFrequency) == (E_NUMLIT 125000))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVS_3}+))))) (S_ELIF (E_COND (E_EXPR (QNAME mclkFrequency) == (E_NUMLIT 500000))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVM_1}+) (S_IF (E_COND (E_EXPR (QNAME smclkFrequency) == (E_NUMLIT 250000))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVS_1}+)) (S_ELIF (E_COND (E_EXPR (QNAME smclkFrequency) == (E_NUMLIT 125000))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVS_2}+))) (S_ELIF (E_COND (E_EXPR (QNAME smclkFrequency) == (E_NUMLIT 62500))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVS_3}+)))))) (S_ELIF (E_COND (E_EXPR (QNAME mclkFrequency) == (E_NUMLIT 250000))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVM_2}+) (S_IF (E_COND (E_EXPR (QNAME smclkFrequency) == (E_NUMLIT 125000))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVS_1}+)) (S_ELIF (E_COND (E_EXPR (QNAME smclkFrequency) == (E_NUMLIT 62500))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVS_2}+))) (S_ELIF (E_COND (E_EXPR (QNAME smclkFrequency) == (E_NUMLIT 31250))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVS_3}+)))))) (S_ELIF (E_COND (E_EXPR (QNAME mclkFrequency) == (E_NUMLIT 125000))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVM_3}+) (S_IF (E_COND (E_EXPR (QNAME smclkFrequency) == (E_NUMLIT 62500))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVS_1}+)) (S_ELIF (E_COND (E_EXPR (QNAME smclkFrequency) == (E_NUMLIT 31250))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVS_2}+))) (S_ELIF (E_COND (E_EXPR (QNAME smclkFrequency) == (E_NUMLIT 15625))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVS_3}+)))))) (S_ELSE (S_BLOCK NIL))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME shutdown)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME wait)) (FCNPARMS uint32 us) (FCNBODY (E_EXPR (QNAME Wait us) (E_CALL_ARGS (E_EXPR (QNAME us)))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME nop)) (FCNPARMS NIL) (FCNBODY (INJECT_CODE +{ asm(\"nop\") }+))))) null)
+
+test8 (unit, line329) - 
+expected: 
+actual: (UNIT S_PACKAGE (S_IMPORT (from (QNAME pollen interfaces)) (QNAME TimerDriver)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Uart)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Gpio)) (D_MODULE (SoftwareUart (implements Uart) (D_VAR (QNAME TimerDriver) (Timer (E_EXPR (E_NUMLIT 0)))) (D_VAR (QNAME Gpio) (RxPin (E_EXPR (E_NUMLIT 0)))) (D_VAR (QNAME Gpio) (TxPin (E_EXPR (E_NUMLIT 0)))) (D_VAR uint32 (baudRate (E_EXPR (E_NUMLIT 9600)))) (D_VAR uint8 (dataBits (E_EXPR (E_NUMLIT 8)))) (D_VAR uint8 (stopBits (E_EXPR (E_NUMLIT 1)))) (D_VAR uint8 (parity (E_EXPR (E_NUMLIT 0)))) (D_VAR uint8 baudh) (D_VAR uint8 baudl) (D_FCN_DEF (D_FCN_CTOR (QNAME SoftwareUart)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME bindInterfaces)) (FCNPARMS (QNAME TimerDriver) TD (QNAME Gpio) Rx (QNAME Gpio) Tx) (FCNBODY (S_ASSIGN (QNAME Timer) = (E_EXPR (QNAME TD))) (S_ASSIGN (QNAME RxPin) = (E_EXPR (QNAME Rx))) (S_ASSIGN (QNAME TxPin) = (E_EXPR (QNAME Tx))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME put)) (FCNPARMS uint8 data) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM uint8 (QNAME get)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME flush)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setBaud)) (FCNPARMS uint32 baud) (FCNBODY NIL)))) null)
+
+test9 (unit, line373) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME board ti)) (S_IMPORT (from (QNAME mcu ti msp430g2231)) (QNAME Mcu)) (S_IMPORT (from (QNAME Mcu)) (QNAME P1_0)) (S_IMPORT (from (QNAME pollen parts)) (QNAME Led) { false } (as (QNAME Led))) (D_COMPOSITION LaunchPad (export (QNAME Mcu)) (export (QNAME Led)) (export (QNAME P1_0)) (D_FCN_DEF (D_FCN_CTOR (QNAME LaunchPad)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME Led bindPin) (E_CALL_ARGS (E_EXPR (QNAME P1_0))))))) null)
+
+test10 (unit, line394) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen data)) (D_META (type T) (uint8 cap)) (D_CLASS (Queue (D_VAR uint8 (capacity (E_EXPR (QNAME cap)))) (D_VAR (D_ARR (QNAME T) elements (D_ARR_DIM capacity))) (D_VAR uint8 (head (E_EXPR (E_NUMLIT 0))) (tail (E_EXPR (E_NUMLIT 0))) (num (E_EXPR (E_NUMLIT 0)))) (D_FCN_DEF (D_FCN_CTOR (QNAME Queue)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (@ head) = (E_EXPR (E_NUMLIT 0))) (S_ASSIGN (@ tail) = (E_EXPR (E_NUMLIT 0))) (S_ASSIGN (@ num) = (E_EXPR (E_NUMLIT 0))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setCapacity)) (FCNPARMS uint8 cap) (FCNBODY (S_ASSIGN (@ capacity) = (E_EXPR (QNAME cap))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME enqueue)) (FCNPARMS (QNAME T) t) (FCNBODY (S_IF (E_COND (E_EXPR (QNAME num) < (QNAME capacity))) (S_BLOCK (S_ASSIGN (QNAME elements) (E_INDEX (E_EXPR (QNAME tail))) = (E_EXPR (QNAME t))) (E_EXPR (QNAME num) ++) (E_EXPR (QNAME tail) ++) (S_IF (E_COND (E_EXPR (QNAME tail) == (QNAME capacity))) (S_BLOCK (S_ASSIGN (QNAME tail) = (E_EXPR (E_NUMLIT 0))))) (S_RETURN (E_EXPR true))) (S_ELSE (S_BLOCK (S_RETURN (E_EXPR false))))))) (D_FCN_DEF (D_FCN_TYP_NM (QNAME T) (QNAME dequeue)) (FCNPARMS NIL) (FCNBODY (D_VAR (QNAME T) (t (E_EXPR (E_NUMLIT 0)))) (S_IF (E_COND (E_EXPR (QNAME num) > (E_NUMLIT 0))) (S_BLOCK (S_ASSIGN (QNAME t) = (E_EXPR (QNAME elements) (E_INDEX (E_EXPR (QNAME head))))) (E_EXPR (QNAME head) ++) (S_IF (E_COND (E_EXPR (QNAME head) == (QNAME capacity))) (S_BLOCK (S_ASSIGN (QNAME head) = (E_EXPR (E_NUMLIT 0))))) (E_EXPR (QNAME num) --))) (S_RETURN (E_EXPR (QNAME t))))) (D_FCN_DEF (D_FCN_TYP_NM uint8 (QNAME length)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (QNAME num))))) (D_FCN_DEF (D_FCN_TYP_NM uint8 (QNAME getCapacity)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (QNAME capacity))))) (D_FCN_DEF (D_FCN_TYP_NM uint8 (QNAME getCapacity)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (QNAME capacity))))))) null)
+
+test11 (unit, line461) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen events)) (S_IMPORT (QNAME Event) { (QNAME any) } (as (QNAME AE))) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME GlobalInterrupts)) (S_IMPORT (from (QNAME pollen data)) (QNAME Queue) { (QNAME AE) , (E_NUMLIT 10) } (as (QNAME AEQueue))) (D_MODULE (Dispatcher (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME bindGlobalInterrupts)) (FCNPARMS (QNAME GlobalInterrupts) gi) (FCNBODY (S_ASSIGN (QNAME GI) = (E_EXPR (QNAME gi))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME post)) (FCNPARMS (QNAME AE) e) (FCNBODY (D_VAR bool (on (E_EXPR (QNAME GI disable) (E_CALL_ARGS NIL)))) (E_EXPR (QNAME events enqueue) (E_CALL_ARGS (E_EXPR (QNAME e)))) (E_EXPR (QNAME GI restore) (E_CALL_ARGS (E_EXPR (QNAME on)))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME postFromInterrupt)) (FCNPARMS (QNAME AE) e) (FCNBODY (E_EXPR (QNAME events enqueue) (E_CALL_ARGS (E_EXPR (QNAME e)))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME run)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME GI enable) (E_CALL_ARGS NIL)) (S_WHILE (S_BLOCK (D_VAR bool (on (E_EXPR (QNAME GI disable) (E_CALL_ARGS NIL)))) (D_VAR (QNAME AE) (e (E_EXPR (QNAME events dequeue) (E_CALL_ARGS NIL)))) (E_EXPR (QNAME GI restore) (E_CALL_ARGS (E_EXPR (QNAME on)))) (S_IF (E_COND (E_EXPR (QNAME e) != null)) (S_BLOCK (E_EXPR (QNAME e handle) (E_CALL_ARGS NIL)))))))) (D_VAR (QNAME GlobalInterrupts) GI) (D_VAR (QNAME value) { (QNAME AEQueue) } events))) null)
+
+test12 (unit, line519) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen events)) (D_META (type T)) (D_PROTOCOL (EventHandler (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME handle)) (FCNPARMS (QNAME T) e)))) null)
+
+test13 (unit, line532) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen events)) (S_IMPORT (QNAME EventHandler) { (QNAME any) } (as (QNAME EH))) (D_META (type (T uint8))) (D_CLASS (Event (D_VAR uint8 (priority (E_EXPR (E_NUMLIT 0)))) (D_VAR (QNAME EH handle) (handler (E_EXPR (E_NUMLIT 0)))) (D_VAR (QNAME T) (data (E_EXPR (E_NUMLIT 0)))) (D_FCN_DEF (D_FCN_CTOR (QNAME Event)) (FCNPARMS (QNAME EH handle) handler (E_NUMLIT 0) (QNAME T) data (E_NUMLIT 0) uint8 priority (E_NUMLIT 0)) (FCNBODY (S_ASSIGN (@ handler) = (E_EXPR (QNAME handler))) (S_ASSIGN (@ data) = (E_EXPR (QNAME data))) (S_ASSIGN (@ priority) = (E_EXPR (QNAME priority))))) (D_FCN_DEF (D_FCN_TYP_NM uint8 (QNAME getPriority)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (QNAME priority))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setPriority)) (FCNPARMS uint8 priority) (FCNBODY (S_ASSIGN (@ priority) = (E_EXPR (QNAME priority))))) (D_FCN_DEF (D_FCN_TYP_NM (QNAME EH handle) (QNAME getHandler)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (@ handler))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setHandler)) (FCNPARMS (QNAME EH handle) handler) (FCNBODY (S_ASSIGN (@ handler) = (E_EXPR (QNAME handler))))) (D_FCN_DEF (D_FCN_TYP_NM (QNAME T) (QNAME getData)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (QNAME data))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setData)) (FCNPARMS (QNAME T) data) (FCNBODY (S_ASSIGN (@ data) = (E_EXPR (QNAME data))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME handle)) (FCNPARMS NIL) (FCNBODY (S_IF (E_COND (E_EXPR (QNAME handler) != null)) (S_BLOCK (E_EXPR (QNAME handler) (E_CALL_ARGS (E_EXPR @))))))))) null)
+
+test14 (unit, line570) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen events)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME GlobalInterrupts)) (S_IMPORT (QNAME Dispatcher)) (D_COMPOSITION Events (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME bindGlobalInterrupts)) (FCNPARMS (QNAME GlobalInterrupts) gi) (FCNBODY (E_EXPR (QNAME Dispatcher bindGlobalInterrupts) (E_CALL_ARGS (E_EXPR (QNAME gi)))))) (export (QNAME Dispatcher post)) (export (QNAME Dispatcher postFromInterrupt)) (export (QNAME Dispatcher run))) null)
+
+test15 (unit, line588) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen interfaces)) (D_PROTOCOL (GlobalInterrupts (D_FCN_DCL (D_FCN_TYP_NM bool (QNAME disable)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME enable)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME restore)) (FCNPARMS bool state)))) null)
+
+test16 (unit, line616) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen interfaces)) (D_PROTOCOL (Gpio (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME set)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME clear)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME toggle)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM bool (QNAME get)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME makeInput)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM bool (QNAME isInput)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME makeOutput)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM bool (QNAME isOutput)) (FCNPARMS NIL)))) null)
+
+test17 (unit, line643) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen interfaces)) (D_PROTOCOL (Handler (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME handle)) (FCNPARMS NIL)))) null)
+
+test18 (unit, line660) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen interfaces)) (D_PROTOCOL (I2C (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME enableAsMaster)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME enableAsSlave)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM uint8 (QNAME get)) (FCNPARMS bool ack)) (D_FCN_DCL (D_FCN_TYP_NM uint8 (QNAME put)) (FCNPARMS uint8 data)) (D_FCN_DCL (D_FCN_TYP_NM uint8 (QNAME start)) (FCNPARMS uint8 address bool write)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME stop)) (FCNPARMS NIL)))) null)
+
+test19 (unit, line690) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen interfaces)) (S_IMPORT (QNAME Handler)) (D_PROTOCOL (Interrupt (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME setHandler)) (FCNPARMS (QNAME Handler handle) h)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME enable)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM bool (QNAME enabled)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME disable)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME clear)) (FCNPARMS NIL)))) null)
+
+test20 (unit, line718) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen interfaces)) (D_PROTOCOL (Led (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME on)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME off)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME toggle)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM bool (QNAME isOn)) (FCNPARMS NIL)))) null)
+
+test21 (unit, line734) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen interfaces)) (D_PROTOCOL (Mcu (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME reset)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME shutdown)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME wait)) (FCNPARMS uint32 us)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME nop)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM uint32 (QNAME getSystemFrequency)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME setSystemFrequency)) (FCNPARMS uint32 hz)))) null)
+
+test22 (unit, line762) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen interfaces)) (S_IMPORT (QNAME Handler)) (D_PROTOCOL (TimerDriver (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME setHandler)) (FCNPARMS (QNAME Handler handle) h null)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME start)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME stop)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM bool (QNAME running)) (FCNPARMS NIL)))) null)
+
+test23 (unit, line781) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen interfaces)) (S_IMPORT (from (QNAME pollen events)) (QNAME Event) { (QNAME any) } (as (QNAME Event))) (D_PROTOCOL (Timer (D_FCN_DCL (D_FCN_TYP_NM bool (QNAME repeats)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM bool (QNAME running)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM uint16 (QNAME ticksPerSecond)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME start)) (FCNPARMS (QNAME Event) onTick uint16 duration bool repeat true)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME stop)) (FCNPARMS NIL)))) null)
+
+test24 (unit, line800) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen interfaces)) (D_PROTOCOL (Uart (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME put)) (FCNPARMS uint8 data)) (D_FCN_DCL (D_FCN_TYP_NM uint8 (QNAME get)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME flush)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME setBaud)) (FCNPARMS uint32 baud)))) null)
+
+test25 (unit, line819) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen interfaces)) (D_PROTOCOL (Wait (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME us)) (FCNPARMS uint32 dt)))) null)
+
+test26 (unit, line832) - 
+expected: 
+actual: (UNIT S_PACKAGE (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Gpio)) (D_META (bool (isActiveLow true))) (D_MODULE (Led (D_VAR (QNAME Gpio) LedPin) (D_FCN_DEF (D_FCN_CTOR (QNAME Led)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME LedPin clear) (E_CALL_ARGS NIL)) (E_EXPR (QNAME LedPin makeOutput) (E_CALL_ARGS NIL)))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME bindPin)) (FCNPARMS (QNAME Gpio) p) (FCNBODY (S_ASSIGN (QNAME LedPin) = (E_EXPR (QNAME p))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME toggle)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME LedPin toggle) (E_CALL_ARGS NIL)))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME on)) (FCNPARMS NIL) (FCNBODY (S_PROVIDED (E_EXPR (QNAME isActiveLow) == false) (S_BLOCK (E_EXPR (QNAME LedPin set) (E_CALL_ARGS NIL))) (S_ELSE (S_BLOCK (E_EXPR (QNAME LedPin clear) (E_CALL_ARGS NIL))))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME off)) (FCNPARMS NIL) (FCNBODY (S_PROVIDED (E_EXPR (QNAME isActiveLow) == false) (S_BLOCK (E_EXPR (QNAME LedPin clear) (E_CALL_ARGS NIL))) (S_ELSE (S_BLOCK (E_EXPR (QNAME LedPin set) (E_CALL_ARGS NIL))))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME isOn)) (FCNPARMS NIL) (FCNBODY (S_PROVIDED (E_EXPR (QNAME isActiveLow) == false) (S_BLOCK (S_RETURN (E_EXPR (QNAME LedPin get) (E_CALL_ARGS NIL) == false))) (S_ELSE (S_BLOCK (S_RETURN (E_EXPR (QNAME LedPin get) (E_CALL_ARGS NIL) == true))))))))) null)
+
+test27 (unit, line878) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen time)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME GlobalInterrupts)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME TimerDriver)) (S_IMPORT (QNAME TimerMilli)) (D_COMPOSITION Time (export (QNAME TimerMilli)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME bindGlobalInterrupts)) (FCNPARMS (QNAME GlobalInterrupts) gi) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME bindTimerDriver)) (FCNPARMS (QNAME TimerDriver) t) (FCNBODY (E_EXPR (QNAME TimerMilli bindTimerDriver) (E_CALL_ARGS (E_EXPR (QNAME t))))))) null)
+
+test28 (unit, line898) - 
+expected: 
+actual: (UNIT S_PACKAGE (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Timer) (as (QNAME TimerI))) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME TimerDriver)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME GlobalInterrupts)) (S_IMPORT (from (QNAME pollen events)) (QNAME Events)) (S_IMPORT (from (QNAME pollen events)) (QNAME Event) { uint8 } (as (QNAME Event))) (D_MODULE (TimerManager (D_CLASS (Timer (implements TimerI) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME init)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (QNAME id) = (E_EXPR (QNAME numTimers))) (E_EXPR (QNAME numTimers) ++) (S_ASSIGN (QNAME repeat) = (E_EXPR false)) (S_PRINT (E_EXPR \"TIMER INIT\")))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME repeats)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (QNAME repeat))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME running)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (QNAME timers) (E_INDEX (E_EXPR (QNAME id))) != (E_NUMLIT 0))))) (D_FCN_DEF (D_FCN_TYP_NM uint16 (QNAME ticksPerSecond)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (E_NUMLIT 1000))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME start)) (FCNPARMS (QNAME Event) e uint16 d bool r true) (FCNBODY (D_VAR bool (state (E_EXPR (QNAME gint disable) (E_CALL_ARGS NIL)))) (S_IF (E_COND (E_EXPR ! (E_EXPR (QNAME running) (E_CALL_ARGS NIL)))) (S_BLOCK (S_ASSIGN (QNAME expired) = (E_EXPR (QNAME e))) (S_ASSIGN (QNAME duration) = (E_EXPR (QNAME d))) (S_ASSIGN (QNAME elapsed) = (E_EXPR (E_NUMLIT 0))) (S_ASSIGN (QNAME repeat) = (E_EXPR (QNAME r))) (S_ASSIGN (QNAME timers) (E_INDEX (E_EXPR (QNAME id))) = (E_EXPR @)))) (E_EXPR (QNAME gint restore) (E_CALL_ARGS (E_EXPR (QNAME state)))) (S_IF (E_COND (E_EXPR ! (E_EXPR (QNAME hw_timer running) (E_CALL_ARGS NIL)))) (S_BLOCK (E_EXPR (QNAME hw_timer start) (E_CALL_ARGS NIL)))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME stop)) (FCNPARMS NIL) (FCNBODY (D_VAR bool (state (E_EXPR (QNAME gint disable) (E_CALL_ARGS NIL)))) (S_ASSIGN (QNAME timers) (E_INDEX (E_EXPR (QNAME id))) = (E_EXPR null)) (E_EXPR (QNAME gint restore) (E_CALL_ARGS (E_EXPR (QNAME state)))))) (D_VAR uint8 id) (D_VAR (QNAME Event) expired) (D_VAR uint32 duration) (D_VAR uint32 elapsed) (D_VAR bool repeat))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME bindGlobalInterrupts)) (FCNPARMS (QNAME GlobalInterrupts) gi) (FCNBODY (S_ASSIGN (QNAME gint) = (E_EXPR (QNAME gi))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME bindTimerDriver)) (FCNPARMS (QNAME TimerDriver) t) (FCNBODY (S_ASSIGN (QNAME hw_timer) = (E_EXPR (QNAME t))))) (D_VAR (QNAME GlobalInterrupts) gint) (D_VAR (QNAME TimerDriver) hw_timer) (D_VAR uint8 (numTimers (E_EXPR (E_NUMLIT 0)))) (D_VAR (D_ARR (QNAME Timer) timers (D_ARR_DIM numTimers))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME timerISR)) (FCNPARMS NIL) (FCNBODY (D_VAR bool (off (E_EXPR true))) (S_FOR (S_DECL (uint8 i (E_EXPR (E_NUMLIT 0)))) (E_EXPR (QNAME i) < (QNAME numTimers)) (E_EXPR (QNAME i) ++) (S_BLOCK (S_IF (E_COND (E_EXPR (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) != (E_NUMLIT 0))) (S_BLOCK (E_EXPR (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD elapsed) ++) (S_IF (E_COND (E_EXPR (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD elapsed) == (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD duration))) (S_BLOCK (S_IF (E_COND (E_EXPR (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD expired) != (E_NUMLIT 0))) (S_BLOCK (E_EXPR (QNAME Events postFromInterrupt) (E_CALL_ARGS (E_EXPR (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD expired)))) (S_IF (E_COND (E_EXPR (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD repeat))) (S_BLOCK (S_ASSIGN (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD elapsed) = (E_EXPR (E_NUMLIT 0)))) (S_ELSE (S_BLOCK (E_EXPR (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD stop (E_CALL_ARGS NIL))))))) (S_ELSE (S_BLOCK (E_EXPR (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD stop (E_CALL_ARGS NIL)))))))) (S_ASSIGN (QNAME off) = (E_EXPR false)))))) (S_IF (E_COND (E_EXPR (QNAME off))) (S_BLOCK (E_EXPR (QNAME hw_timer stop) (E_CALL_ARGS NIL)))))))) null)
+
+test29 (unit, line1001) - 
+expected: 
+actual: (UNIT S_PACKAGE (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Timer) (as (QNAME TimerI))) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME TimerDriver)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME GlobalInterrupts)) (S_IMPORT (from (QNAME pollen events)) (QNAME Events)) (S_IMPORT (from (QNAME pollen events)) (QNAME Event) { uint8 } (as (QNAME Event))) (D_MODULE (TimerManager (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME bindTimerDriver)) (FCNPARMS (QNAME TimerDriver) t) (FCNBODY (S_ASSIGN (QNAME hw_timer) = (E_EXPR (QNAME t))))) (D_VAR (QNAME GlobalInterrupts) gint) (D_VAR (QNAME TimerDriver) hw_timer) (D_VAR uint8 (numTimers (E_EXPR (E_NUMLIT 0)))) (D_VAR (D_ARR (QNAME Timer) timers (D_ARR_DIM numTimers))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME timerISR)) (FCNPARMS NIL) (FCNBODY (D_VAR bool (off (E_EXPR true))) (S_FOR (S_DECL (uint8 i (E_EXPR (E_NUMLIT 0)))) (E_EXPR (QNAME i) < (QNAME numTimers)) (E_EXPR (QNAME i) ++) (S_BLOCK (S_IF (E_COND (E_EXPR (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) != (E_NUMLIT 0))) (S_BLOCK (E_EXPR (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD elapsed) ++) (S_IF (E_COND (E_EXPR (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD elapsed) == (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD duration))) (S_BLOCK (S_IF (E_COND (E_EXPR (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD expired) != (E_NUMLIT 0))) (S_BLOCK (E_EXPR (QNAME Events postFromInterrupt) (E_CALL_ARGS (E_EXPR (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD expired)))) (S_IF (E_COND (E_EXPR (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD repeat))) (S_BLOCK (S_ASSIGN (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD elapsed) = (E_EXPR (E_NUMLIT 0)))) (S_ELSE (S_BLOCK (E_EXPR (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD stop (E_CALL_ARGS NIL))))))) (S_ELSE (S_BLOCK (E_EXPR (QNAME timers) (E_INDEX (E_EXPR (QNAME i))) (E_FIELD stop (E_CALL_ARGS NIL)))))))) (S_ASSIGN (QNAME off) = (E_EXPR false)))))) (S_IF (E_COND (E_EXPR (QNAME off))) (S_BLOCK (E_EXPR (QNAME hw_timer stop) (E_CALL_ARGS NIL)))))))) null)
+
+test30 (unit, line1054) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen time)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Handler)) (D_PROTOCOL (TimerMilli (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME start)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME stop)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM bool (QNAME running)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME setHandlerH)) (FCNPARMS (QNAME Handler handle) h)))) null)
+
+test31 (unit, line1070) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen time)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Handler)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME TimerDriver)) (D_MODULE (TimerMilli (D_VAR (QNAME TimerDriver) timer) (D_VAR uint16 (count (E_EXPR (E_NUMLIT 0)))) (D_VAR uint16 (duration (E_EXPR (E_NUMLIT 0)))) (D_VAR bool (repeat (E_EXPR true))) (D_VAR (QNAME Handler handle) clientTick) (D_FCN_DEF (D_FCN_CTOR (QNAME TimerMilli)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME timer setHandler) (E_CALL_ARGS (E_EXPR (QNAME timerTick)))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME bindTimerDriver)) (FCNPARMS (QNAME TimerDriver) td) (FCNBODY (S_ASSIGN (@ timer) = (E_EXPR (QNAME td))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME start)) (FCNPARMS (QNAME Handler handle) h uint16 duration bool repeat true) (FCNBODY (S_ASSIGN (@ clientTick) = (E_EXPR (QNAME h))) (S_ASSIGN (@ count) = (E_EXPR (E_NUMLIT 0))) (S_ASSIGN (@ duration) = (E_EXPR (QNAME duration))) (S_ASSIGN (@ repeat) = (E_EXPR (QNAME repeat))) (E_EXPR (QNAME timer start) (E_CALL_ARGS NIL)))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME stop)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME timer stop) (E_CALL_ARGS NIL)) (S_ASSIGN (@ duration) = (E_EXPR (E_NUMLIT 0))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME running)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (QNAME duration) != (E_NUMLIT 0) && (QNAME timer running) (E_CALL_ARGS NIL))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME timerTick)) (FCNPARMS NIL) (FCNBODY (E_EXPR ++ (QNAME count)) (S_IF (E_COND (E_EXPR (QNAME count) == (QNAME duration))) (S_BLOCK (S_IF (E_COND (E_EXPR (QNAME clientTick) != (E_NUMLIT 0))) (S_BLOCK (E_EXPR (QNAME clientTick) (E_CALL_ARGS NIL)))) (S_ASSIGN (QNAME count) = (E_EXPR (E_NUMLIT 0))) (S_IF (E_COND (E_EXPR ! (E_EXPR (QNAME repeat)))) (S_BLOCK (E_EXPR (QNAME stop) (E_CALL_ARGS NIL)))))))))) null)
+
+test32 (unit, line1122) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME pollen time)) (S_IMPORT (from (QNAME pollen events)) (QNAME Events)) (S_IMPORT (from (QNAME pollen events)) (QNAME Event) { uint8 } (as (QNAME Event))) (S_IMPORT (QNAME TimerManager)) (D_CLASS (Timer (D_FCN_DEF (D_FCN_CTOR (QNAME Timer)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (QNAME active) = (E_EXPR (E_NUMLIT 0))) (S_ASSIGN (QNAME repeat) = (E_EXPR (E_NUMLIT 0))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME start)) (FCNPARMS (QNAME Event) e uint32 duration bool repeat true) (FCNBODY (S_ASSIGN (@ e) = (E_EXPR (QNAME e))) (S_ASSIGN (@ duration) = (E_EXPR (QNAME duration))) (S_ASSIGN (@ repeat) = (E_EXPR (QNAME repeat))) (S_ASSIGN (@ active) = (E_EXPR true)))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME stop)) (FCNPARMS NIL) (FCNBODY (S_ASSIGN (@ active) = (E_EXPR false)))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME tick)) (FCNPARMS NIL) (FCNBODY (S_IF (E_COND (E_EXPR (QNAME active) == true)) (S_BLOCK (E_EXPR (QNAME elapsed) ++) (S_IF (E_COND (E_EXPR (QNAME elapsed) == (QNAME duration))) (S_BLOCK (S_IF (E_COND (E_EXPR (QNAME e) != (E_NUMLIT 0))) (S_BLOCK (E_EXPR (QNAME Events post) (E_CALL_ARGS (E_EXPR (QNAME e)))))) (S_IF (E_COND (E_EXPR (QNAME repeat) == true)) (S_BLOCK (S_ASSIGN (QNAME elapsed) = (E_EXPR (E_NUMLIT 0)))) (S_ELSE (S_BLOCK (E_EXPR (QNAME stop) (E_CALL_ARGS NIL))))))))))) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME running)) (FCNPARMS NIL) (FCNBODY (S_RETURN (E_EXPR (@ active))))) (D_VAR (QNAME Event) e) (D_VAR uint32 duration) (D_VAR uint32 elapsed) (D_VAR bool repeat) (D_VAR bool active))) null)
+
+test33 (unit, line1180) - 
+expected: 
+actual: (UNIT S_PACKAGE (S_IMPORT (from (QNAME cc arduino)) (QNAME Environment) (as (QNAME Env))) (S_IMPORT (from (QNAME Env)) (QNAME Led)) (S_IMPORT (from (QNAME pollen events)) (QNAME Event) { uint8 } (as (QNAME Event))) (S_IMPORT (from (QNAME pollen time)) (QNAME TimerMilli)) (D_MODULE (BlinkMilliEvents (D_VAR (QNAME value) { (QNAME Event) } e) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME toggle)) (FCNPARMS (QNAME Event) e) (FCNBODY (E_EXPR (QNAME Led toggle) (E_CALL_ARGS NIL)))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME tick)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME Env postFromInterrupt) (E_CALL_ARGS (E_EXPR (QNAME e)))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME pollen run)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME e setHandler) (E_CALL_ARGS (E_EXPR (QNAME toggle)))) (E_EXPR (QNAME TimerMilli start) (E_CALL_ARGS (E_EXPR (QNAME tick)) (E_EXPR (E_NUMLIT 1000)))) (E_EXPR (QNAME Env run) (E_CALL_ARGS NIL)))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME pollen reset)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME Env reset) (E_CALL_ARGS NIL)))))) null)
+
+test34 (unit, line1206) - 
+expected: 
+actual: (UNIT S_PACKAGE (S_IMPORT (from (QNAME cc arduino)) (QNAME Environment) (as (QNAME Env))) (S_IMPORT (from (QNAME Env)) (QNAME Led)) (S_IMPORT (from (QNAME pollen time)) (QNAME TimerMilli)) (D_MODULE (BlinkMilli (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME madams_chkArray)) (FCNPARMS NIL) (FCNBODY (D_VAR (D_ARR uint8 arr (D_ARR_DIM 8))) (D_VAR (D_ARR uint8 arr2d (D_ARR_DIM 8) (D_ARR_DIM 2))))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME toggle)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME Led toggle) (E_CALL_ARGS NIL)))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME pollen run)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME TimerMilli start) (E_CALL_ARGS (E_EXPR (QNAME toggle)) (E_EXPR (E_NUMLIT 50)))) (E_EXPR (QNAME Env GlobalInterrupts enable) (E_CALL_ARGS NIL)) (S_WHILE (S_BLOCK NIL)))) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME pollen reset)) (FCNPARMS NIL) (FCNBODY (E_EXPR (QNAME Env reset) (E_CALL_ARGS NIL)))))) null)
+
+
+Tests run: 34, Failures: 34
+###################
+### tst_compos.gunit
+###################
+-----------------------------------------------------------------------
+executing testsuite for grammar:pol with 3 tests
+-----------------------------------------------------------------------
+3 failures found:
+test1 (unit, line6) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME cc arduino)) (S_IMPORT (QNAME Duemilanove) (as (QNAME Board))) (S_IMPORT (from (QNAME Board)) (QNAME Led)) (S_IMPORT (from (QNAME Board)) (QNAME Mcu)) (S_IMPORT (from (QNAME Mcu)) (QNAME GlobalInterrupts)) (S_IMPORT (from (QNAME Mcu)) (QNAME TimerMilli8BitTimer0) (as (QNAME TD))) (S_IMPORT (from (QNAME pollen time)) (QNAME Time)) (S_IMPORT (from (QNAME pollen events)) (QNAME Events)) (D_COMPOSITION Environment (export (QNAME GlobalInterrupts)) (export (QNAME Led)) (export (QNAME Mcu)) (export (QNAME Mcu reset)) (export (QNAME Mcu wait)) (export (QNAME Events run)) (export (QNAME Events post)) (export (QNAME Events postFromInterrupt)) (D_FCN_DEF (D_FCN_CTOR (QNAME Environment)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME fcn1)) (FCNPARMS uint8 x bool y) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setHandler)) (FCNPARMS (QNAME Handler handle) h) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM uint32 (QNAME getSystemFrequency)) (FCNPARMS NIL) (FCNBODY (D_VAR uint8 x (y (E_EXPR (E_NUMLIT 7))) (z (E_EXPR (E_NUMLIT 1))) s) (D_VAR int16 t) (D_VAR (D_ARR int8 arr (D_ARR_DIM NIL))) (D_VAR (D_ARR int32 arr1 (D_ARR_DIM 7))) (D_VAR (D_ARR int32 arr2 (D_ARR_DIM y))) (D_VAR (QNAME Environment) e)))) null)
+
+test2 (unit, line46) - 
+expected: 
+actual: line 7:0 PollenException(Composition features must be one of host functions, export statements, or enum definitions.)
+
+
+test3 (unit, line57) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME cc arduino)) (D_COMPOSITION Environment (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME fcn1)) (FCNPARMS uint8 x bool y) (FCNBODY NIL)) (INJECT_CODE +{ #include <avr/io.h> \n           #include <avr/interrupt.h> }+) (INJECT_CODE +{ ISR( }+) (INJECT_CODE +{name}+) (INJECT_CODE +{ ) { }+) (INJECT_CODE +{isr()}+) (INJECT_CODE +{;} }+)) null)
+
+
+Tests run: 3, Failures: 3
+###################
+### tst_class.gunit
+###################
+-----------------------------------------------------------------------
+executing testsuite for grammar:pol with 4 tests
+-----------------------------------------------------------------------
+4 failures found:
+test1 (unit, line6) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME cc arduino)) (S_IMPORT (QNAME Duemilanove) (as (QNAME Board))) (S_IMPORT (from (QNAME Board)) (QNAME Led)) (S_IMPORT (from (QNAME Board)) (QNAME Mcu)) (S_IMPORT (from (QNAME Mcu)) (QNAME GlobalInterrupts)) (S_IMPORT (from (QNAME Mcu)) (QNAME TimerMilli8BitTimer0) (as (QNAME TD))) (S_IMPORT (from (QNAME pollen time)) (QNAME Time)) (S_IMPORT (from (QNAME pollen events)) (QNAME Events)) (D_CLASS (Environment (D_FCN_DEF (D_FCN_CTOR (QNAME Environment)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME fcn1)) (FCNPARMS uint8 x bool y) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setHandler)) (FCNPARMS (QNAME Handler handle) h) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM uint32 (QNAME getSystemFrequency)) (FCNPARMS NIL) (FCNBODY (D_VAR uint8 x (y (E_EXPR (E_NUMLIT 7))) (z (E_EXPR (E_NUMLIT 1))) s) (D_VAR int16 t) (D_VAR (D_ARR int8 arr (D_ARR_DIM NIL))) (D_VAR (D_ARR int32 arr1 (D_ARR_DIM 7))) (D_VAR (D_ARR int32 arr2 (D_ARR_DIM y))) (D_VAR (QNAME Environment) e))))) null)
+
+test2 (unit, line37) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME cc arduino)) (D_CLASS (Environment (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME fcn1)) (FCNPARMS uint8 x bool y) (FCNBODY NIL)))) null)
+
+test3 (unit, line48) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME cc arduino)) (D_CLASS (Environment (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME fcn1)) (FCNPARMS uint8 x bool y) (FCNBODY NIL)) (INJECT_CODE +{ #include <avr/io.h> \n           #include <avr/interrupt.h> }+) (INJECT_CODE +{ ISR( }+) (INJECT_CODE +{name}+) (INJECT_CODE +{ ) { }+) (INJECT_CODE +{isr()}+) (INJECT_CODE +{;} }+))) null)
+
+test4 (unit, line68) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME cc arduino)) (D_CLASS (Environment (D_CLASS (XYZ (D_VAR uint8 xy) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME fcn1)) (FCNPARMS NIL) (FCNBODY NIL)))))) null)
+
+
+Tests run: 4, Failures: 4
+###################
+### tst_compos.gunit
+###################
+-----------------------------------------------------------------------
+executing testsuite for grammar:pol with 3 tests
+-----------------------------------------------------------------------
+3 failures found:
+test1 (unit, line6) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME cc arduino)) (S_IMPORT (QNAME Duemilanove) (as (QNAME Board))) (S_IMPORT (from (QNAME Board)) (QNAME Led)) (S_IMPORT (from (QNAME Board)) (QNAME Mcu)) (S_IMPORT (from (QNAME Mcu)) (QNAME GlobalInterrupts)) (S_IMPORT (from (QNAME Mcu)) (QNAME TimerMilli8BitTimer0) (as (QNAME TD))) (S_IMPORT (from (QNAME pollen time)) (QNAME Time)) (S_IMPORT (from (QNAME pollen events)) (QNAME Events)) (D_COMPOSITION Environment (export (QNAME GlobalInterrupts)) (export (QNAME Led)) (export (QNAME Mcu)) (export (QNAME Mcu reset)) (export (QNAME Mcu wait)) (export (QNAME Events run)) (export (QNAME Events post)) (export (QNAME Events postFromInterrupt)) (D_FCN_DEF (D_FCN_CTOR (QNAME Environment)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME fcn1)) (FCNPARMS uint8 x bool y) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setHandler)) (FCNPARMS (QNAME Handler handle) h) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM uint32 (QNAME getSystemFrequency)) (FCNPARMS NIL) (FCNBODY (D_VAR uint8 x (y (E_EXPR (E_NUMLIT 7))) (z (E_EXPR (E_NUMLIT 1))) s) (D_VAR int16 t) (D_VAR (D_ARR int8 arr (D_ARR_DIM NIL))) (D_VAR (D_ARR int32 arr1 (D_ARR_DIM 7))) (D_VAR (D_ARR int32 arr2 (D_ARR_DIM y))) (D_VAR (QNAME Environment) e)))) null)
+
+test2 (unit, line46) - 
+expected: 
+actual: line 7:0 PollenException(Composition features must be one of host functions, export statements, or enum definitions.)
+
+
+test3 (unit, line57) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME cc arduino)) (D_COMPOSITION Environment (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME fcn1)) (FCNPARMS uint8 x bool y) (FCNBODY NIL)) (INJECT_CODE +{ #include <avr/io.h> \n           #include <avr/interrupt.h> }+) (INJECT_CODE +{ ISR( }+) (INJECT_CODE +{name}+) (INJECT_CODE +{ ) { }+) (INJECT_CODE +{isr()}+) (INJECT_CODE +{;} }+)) null)
+
+
+Tests run: 3, Failures: 3
+###################
+### tst_enum.gunit
+###################
+-----------------------------------------------------------------------
+executing testsuite for grammar:pol with 3 tests
+-----------------------------------------------------------------------
+3 failures found:
+test1 (unit, line4) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME em distro arduino diecimila)) (S_IMPORT (QNAME BoardC)) (D_ENUM (ClockSource (SCLK 2) (ACLK 1))) null)
+
+test2 (unit, line12) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME em distro arduino diecimila)) (S_IMPORT (QNAME BoardC)) (D_COMPOSITION DistroC (extends BoardC) (D_ENUM (ClockSource SCLK ACLK SMCLK USISWCLK TACCR0 TACCR1))) null)
+
+test3 (unit, line21) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME em distro arduino diecimila)) (S_IMPORT (QNAME BoardC)) (D_PROTOCOL (DistroC (extends BoardC) (D_ENUM (ClockSource SCLK ACLK SMCLK USISWCLK TACCR0 TACCR1)))) null)
+
+
+Tests run: 3, Failures: 3
+###################
+### tst_module.gunit
+###################
+-----------------------------------------------------------------------
+executing testsuite for grammar:pol with 4 tests
+-----------------------------------------------------------------------
+4 failures found:
+test1 (unit, line6) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME cc arduino)) (S_IMPORT (QNAME Duemilanove) (as (QNAME Board))) (S_IMPORT (from (QNAME Board)) (QNAME Led)) (S_IMPORT (from (QNAME Board)) (QNAME Mcu)) (S_IMPORT (from (QNAME Mcu)) (QNAME GlobalInterrupts)) (S_IMPORT (from (QNAME Mcu)) (QNAME TimerMilli8BitTimer0) (as (QNAME TD))) (S_IMPORT (from (QNAME pollen time)) (QNAME Time)) (S_IMPORT (from (QNAME pollen events)) (QNAME Events)) (D_MODULE (M (D_FCN_DEF (D_FCN_CTOR (QNAME M)) (FCNPARMS NIL) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME fcn1)) (FCNPARMS uint8 x bool y) (FCNBODY NIL)) (D_VAR uint8 var1) (D_VAR (QNAME Led) led1) (D_FCN_DEF (D_FCN_TYP_NM D_VOID (QNAME setHandler)) (FCNPARMS (QNAME Handler handle) h) (FCNBODY NIL)) (D_FCN_DEF (D_FCN_TYP_NM uint32 (QNAME getSystemFrequency)) (FCNPARMS NIL) (FCNBODY (D_VAR uint8 x (y (E_EXPR (E_NUMLIT 7))) (z (E_EXPR (E_NUMLIT 1))) s) (D_VAR int16 t) (D_VAR (D_ARR int8 arr (D_ARR_DIM NIL))) (D_VAR (D_ARR int32 arr1 (D_ARR_DIM 7))) (D_VAR (D_ARR int32 arr2 (D_ARR_DIM y))) (D_VAR (QNAME Environment) e))))) null)
+
+test2 (unit, line39) - 
+expected: 
+actual: line 5:8 no viable alternative at input 'export'
+
+
+test3 (unit, line49) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME cc arduino)) (D_MODULE (Environment (INJECT_CODE +{ #include <avr/io.h> \n           #include <avr/interrupt.h> }+) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME fcn1)) (FCNPARMS uint8 x bool y) (FCNBODY NIL)) (INJECT_CODE +{ ISR( }+) (INJECT_CODE +{name}+) (INJECT_CODE +{ ) { }+) (INJECT_CODE +{isr()}+) (INJECT_CODE +{;} }+))) null)
+
+test4 (unit, line68) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME cc arduino)) (D_MODULE (Environment (D_CLASS (XYZ (D_VAR uint8 xy) (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME fcn1)) (FCNPARMS NIL) (FCNBODY NIL)))))) null)
+
+
+Tests run: 4, Failures: 4
+###################
+### tst_protocol.gunit
+###################
+-----------------------------------------------------------------------
+executing testsuite for grammar:pol with 3 tests
+-----------------------------------------------------------------------
+3 failures found:
+test1 (unit, line6) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME cc arduino)) (S_IMPORT (QNAME Duemilanove) (as (QNAME Board))) (S_IMPORT (from (QNAME Board)) (QNAME Led)) (S_IMPORT (from (QNAME Board)) (QNAME Mcu)) (S_IMPORT (from (QNAME Mcu)) (QNAME GlobalInterrupts)) (S_IMPORT (from (QNAME Mcu)) (QNAME TimerMilli8BitTimer0) (as (QNAME TD))) (S_IMPORT (from (QNAME pollen time)) (QNAME Time)) (S_IMPORT (from (QNAME pollen events)) (QNAME Events)) (D_PROTOCOL (Environment (D_FCN_DCL (D_FCN_CTOR (QNAME Environment)) (FCNPARMS NIL)) (D_FCN_DCL (D_FCN_TYP_NM bool (QNAME fcn1)) (FCNPARMS uint8 x bool y)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME setHandler)) (FCNPARMS (QNAME Handler handle) h)) (D_FCN_DCL (D_FCN_TYP_NM uint32 (QNAME getSystemFrequency)) (FCNPARMS NIL)))) null)
+
+test2 (unit, line28) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME cc arduino)) (D_PROTOCOL (Environment (D_FCN_DCL (D_FCN_TYP_NM bool (QNAME fcn1)) (FCNPARMS uint8 x bool y)) (D_FCN_DCL (D_FCN_TYP_NM (QNAME typ1) (QNAME fcn2)) (FCNPARMS uint8 x bool y)) (D_FCN_DCL (D_FCN_TYP_NM D_VOID (QNAME voidfcn)) (FCNPARMS uint8 x bool y)))) null)
+
+test3 (unit, line40) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME cc arduino)) (D_PROTOCOL (Environment (D_FCN_DCL (D_FCN_TYP_NM bool (QNAME fcn1)) (FCNPARMS uint8 x bool y)) (INJECT_CODE +{ #include <avr/io.h> \n           #include <avr/interrupt.h> }+) (INJECT_CODE +{ ISR( }+) (INJECT_CODE +{name}+) (INJECT_CODE +{ ) { }+) (INJECT_CODE +{isr()}+) (INJECT_CODE +{;} }+))) null)
+
+
+Tests run: 3, Failures: 3
+###################
+### tst_stmts.gunit
+###################
+-----------------------------------------------------------------------
+executing testsuite for grammar:pol with 1 tests
+-----------------------------------------------------------------------
+1 failures found:
+test1 (unit, line6) - 
+expected: 
+actual: (UNIT (S_PACKAGE (QNAME cc arduino)) (S_IMPORT (QNAME Duemilanove) (as (QNAME Board))) (S_IMPORT (from (QNAME Board)) (QNAME Led)) (S_IMPORT (from (QNAME Board)) (QNAME Mcu)) (S_IMPORT (from (QNAME Mcu)) (QNAME GlobalInterrupts)) (S_IMPORT (from (QNAME Mcu)) (QNAME TimerMilli8BitTimer0) (as (QNAME TD))) (S_IMPORT (from (QNAME pollen time)) (QNAME Time)) (S_IMPORT (from (QNAME pollen events)) (QNAME Events)) (D_MODULE (Environment (D_FCN_DEF (D_FCN_TYP_NM bool (QNAME fcn1)) (FCNPARMS uint8 x bool y) (FCNBODY (S_WHILE (S_BLOCK (D_VAR (QNAME uint) (z (E_EXPR (E_NUMLIT 2)))))) (S_IF (E_COND (E_EXPR (E_NUMLIT 1))) (S_BLOCK (D_VAR uint32 (y (E_EXPR (E_NUMLIT 2)))) (D_VAR (QNAME uint1i6) t1 (t2 (E_EXPR (E_NUMLIT 3))) t3) (D_VAR bool t))) (S_IF (E_COND (E_EXPR (E_NUMLIT 2))) (S_BLOCK NIL) (S_ELSE (S_BLOCK (D_VAR bool t2)))) (S_IF (E_COND (E_EXPR (E_NUMLIT 3))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVS_1}+)) (S_ELIF (E_COND (E_EXPR (E_NUMLIT 7))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVS_2}+))) (S_ELIF (E_COND (E_EXPR (E_NUMLIT 7))) (S_BLOCK (INJECT_CODE +{BCSCTL2 = DIVS_3}+))) (S_ELSE (S_BLOCK (D_VAR (QNAME uint) (x3 (E_EXPR (E_NUMLIT 7))))))) (S_DO_WHILE (S_BLOCK (D_VAR bool t)) (E_COND (E_EXPR true))) (S_SWITCH (E_COND (E_EXPR (E_NUMLIT 7))) (S_CASE 2 NIL) (S_CASE 3 NIL) (S_DEFAULT NIL)) (S_FOREACH x (E_IDENT (E_EXPR (E_NUMLIT 7))) (S_BLOCK NIL)))))) null)
+
+
+Tests run: 1, Failures: 1
+###################
+### tst_unit.gunit
+###################
+-----------------------------------------------------------------------
+executing testsuite for grammar:pol with 10 tests
+-----------------------------------------------------------------------
+10 failures found:
+test1 (unit, line5) - 
+expected: (UNIT package em mcu avr atmega328p DELIM (module stuff (implements moreStuff) { } DELIM) null)
+actual: (UNIT (S_PACKAGE (QNAME em mcu avr atmega328p)) (D_MODULE (stuff (implements moreStuff))) null)
+
+test2 (unit, line11) - 
+expected: (UNIT package em bios DELIM (import from em bios EventDispatcherI) DELIM (import from em bios EventDispatcherProviderI) DELIM (module EventDispatcher (implements EventDispatcherI) { }) null)
+actual: (UNIT (S_PACKAGE (QNAME em bios)) (S_IMPORT (from (QNAME em bios)) (QNAME EventDispatcherI)) (S_IMPORT (from (QNAME em bios)) (QNAME EventDispatcherProviderI)) (D_MODULE (EventDispatcher (implements EventDispatcherI))) null)
+
+test3 (unit, line22) - 
+expected: (UNIT package em bios DELIM (import from em bios EventDispatcherI) DELIM (import from em bios EventDispatcherProviderI) DELIM (module EventDispatcher (implements EventDispatcherI) { }) null)
+actual: (UNIT (S_PACKAGE (QNAME em bios)) (S_IMPORT (from (QNAME em bios)) (QNAME EventDispatcherI)) (S_IMPORT (from (QNAME em bios)) (QNAME EventDispatcherProviderI)) (D_MODULE (EventDispatcher (implements EventDispatcherI))) null)
+
+test4 (unit, line34) - 
+expected: (UNIT package pollen tst DELIM (import from pollen interfaces Gpio) DELIM (import from mcu atmel atmega328p PD5) DELIM (module FancyPD5 (implements Gpio) { }) null)
+actual: (UNIT (S_PACKAGE (QNAME pollen tst)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Gpio)) (S_IMPORT (from (QNAME mcu atmel atmega328p)) (QNAME PD5)) (D_MODULE (FancyPD5 (implements Gpio))) null)
+
+test5 (unit, line45) - 
+expected: (UNIT package mcu atmel atmega328p DELIM (import from pollen interfaces GlobalInterrupts as GI) DELIM (module GlobalInterrupts (implements GI) { }) null)
+actual: (UNIT (S_PACKAGE (QNAME mcu atmel atmega328p)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME GlobalInterrupts) (as (QNAME GI))) (D_MODULE (GlobalInterrupts (implements GI))) null)
+
+test6 (unit, line55) - 
+expected: (UNIT package mcu atmel atmega328p DELIM (import from pollen interfaces Uart as UartI) DELIM (import Atmega328p as Mcu) DELIM (module Uart (implements UartI) { }) null)
+actual: (UNIT (S_PACKAGE (QNAME mcu atmel atmega328p)) (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Uart) (as (QNAME UartI))) (S_IMPORT (QNAME Atmega328p) (as (QNAME Mcu))) (D_MODULE (Uart (implements UartI))) null)
+
+test7 (unit, line67) - 
+expected: (UNIT (import from pollen interfaces Mcu) DELIM (protocol Msp430 (extends Mcu) { }) null)
+actual: (UNIT S_PACKAGE (S_IMPORT (from (QNAME pollen interfaces)) (QNAME Mcu)) (D_PROTOCOL (Msp430 (extends Mcu))) null)
+
+test8 (unit, line76) - 
+expected: (UNIT package em distro arduino diecimila DELIM (import BoardC) DELIM (import from em bios KernelC) DELIM (import from em utils AssertC) DELIM (import from McuC TimerMilli8BitTimer0 as TimerMilliDriver) DELIM (composition DistroC (extends BoardC) { }) null)
+actual: (UNIT (S_PACKAGE (QNAME em distro arduino diecimila)) (S_IMPORT (QNAME BoardC)) (S_IMPORT (from (QNAME em bios)) (QNAME KernelC)) (S_IMPORT (from (QNAME em utils)) (QNAME AssertC)) (S_IMPORT (from (QNAME McuC)) (QNAME TimerMilli8BitTimer0) (as (QNAME TimerMilliDriver))) (D_COMPOSITION DistroC (extends BoardC)) null)
+
+test9 (unit, line89) - 
+expected: (UNIT (package em distro arduino diecimila DELIM) (import BoardC DELIM) (composition (DistroC (extends BoardC) { (enum (ClockSource { SCLK ACLK SMCLK USISWCLK TACCR0 TACCR1 } DELIM)) })) null)
+actual: (UNIT (S_PACKAGE (QNAME em distro arduino diecimila)) (S_IMPORT (QNAME BoardC)) (D_COMPOSITION DistroC (extends BoardC) (D_ENUM (ClockSource SCLK ACLK SMCLK USISWCLK TACCR0 TACCR1))) null)
+
+test10 (unit, line98) - 
+expected: (UNIT (package em distro arduino diecimila DELIM) (import BoardC DELIM) (enum (ClockSource { (SCLK 2) (ACLK true) })) null)
+actual: (UNIT (S_PACKAGE (QNAME em distro arduino diecimila)) (S_IMPORT (QNAME BoardC)) (D_ENUM (ClockSource (SCLK 2) (ACLK 7))) null)
+
+
+Tests run: 10, Failures: 10

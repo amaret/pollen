@@ -1,0 +1,305 @@
+1c1
+< grammar pol;
+---
+> grammar pollen;
+8,9c8,9
+<     //ASTLabelType=BaseNode;
+<     //TokenLabelType=Atom;
+---
+>     ASTLabelType=BaseNode; 
+>     TokenLabelType=Atom;
+26,27c26,27
+<     D_FIELD; 
+<     D_FORMAL; 
+---
+>     D_FORMAL;
+>     D_FIELD;  
+52a53
+>     E_VEC;
+84d84
+<     T_DEF;
+92,93c92
+<     //package com.amaret.pollen.parser;
+<     import org.antlr.runtime.tree.CommonTree;
+---
+>     package com.amaret.pollen.parser;
+97a97
+>     import com.amaret.pollen.parser.*;
+101,103d100
+< 	protected enum UnitFlags {
+<         MODULE, CLASS, COMPOSITION, PROTOCOL, ENUM, META
+<     }
+109,112c106
+<     protected enum AttrFlags {
+<         HOST, PUBLIC, VOLATILE, CONST, NEW
+<     }
+<     EnumSet<AttrFlags> atFlags = EnumSet.noneOf(AttrFlags.class);
+---
+>     EnumSet<Flags> atFlags = EnumSet.noneOf(Flags.class);
+115c109
+<     	public EnumSet<UnitFlags> getUnitFlags() {
+---
+>     	public EnumSet<Flags> getUnitFlags() {
+118c112
+< 		public void setUnitFlags(EnumSet<UnitFlags> unitFlags) {
+---
+> 		public void setUnitFlags(EnumSet<Flags> unitFlags) {
+127c121
+< 		EnumSet<UnitFlags> uf = EnumSet.noneOf(UnitFlags.class);
+---
+> 		EnumSet<Flags> uf = EnumSet.noneOf(Flags.class);
+158c152
+<     //package com.amaret.pollen.parser;
+---
+>     package com.amaret.pollen.parser;
+160c154
+<     //import com.amaret.pollen.parser.Atom;
+---
+>     import com.amaret.pollen.parser.Atom;
+168c162
+<     polLexer( CharStream input, String fileName ) {
+---
+>     pollenLexer( CharStream input, String fileName ) {
+172a167,182
+>     public Token emit() {
+>         Atom a = new Atom(
+>             input,
+>             state.type,
+>             state.channel,
+>             state.tokenStartCharIndex,
+>             getCharIndex() - 1
+>         );
+>         a.setLine(state.tokenStartLine);
+>         a.setText(state.text);
+>         a.setCharPositionInLine(state.tokenStartCharPositionInLine);
+>         a.setFileName(fileName);
+>         emit(a);
+>         return a;
+>     }
+> 
+206c216,217
+<     :   stmtExport+  -> ^(LIST stmtExport+)
+---
+>     :   stmtExport+  
+>     	-> ^(LIST<ListNode>["LIST"] stmtExport+)
+225c236
+< 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(UnitFlags.CLASS));}
+---
+> 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.CLASS));}
+239c250
+< 	      { ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(UnitFlags.MODULE));}
+---
+> 	      { ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.MODULE));}
+252c263
+< 	:	'enum' enumDef ->  enumDef
+---
+> 	:	'enum' enumDef -> enumDef
+267,268c278,279
+< 	:  (IDENT
+< 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(UnitFlags.ENUM));}
+---
+> 	:  (IDENT 
+> 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.ENUM));}
+270c281
+< 		-> ^(D_ENUM ^(IDENT enumList))
+---
+> 		-> ^(D_ENUM<DeclNode.Enum>["D_ENUM", ti.getUnitFlags()] ^(IDENT enumList))
+273c284
+< 	:	enumElement (',' enumElement)* -> ^(LIST enumElement+)
+---
+> 	:	enumElement (',' enumElement)* -> ^(LIST<ListNode>["LIST"] enumElement+)
+276c287
+< 	:	IDENT ASSIGN INT_LIT (delim)? -> ^(D_ENUMVAL ^(IDENT INT_LIT))
+---
+> 	:	IDENT ASSIGN INT_LIT (delim)? -> ^(D_ENUMVAL<DeclNode.EnumVal>["D_ENUMVAL", ti.getUnitFlags()] ^(IDENT INT_LIT))
+281c292
+< 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(UnitFlags.PROTOCOL));}
+---
+> 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.PROTOCOL));}
+294,295c305,306
+< 		  //DBG("$IDENT " + $IDENT.text);
+< 		  ti.setUnitFlags(EnumSet.of(UnitFlags.COMPOSITION));
+---
+> 		  //DBG("$IDENT " + $IDENT.text); 
+> 		  ti.setUnitFlags(EnumSet.of(Flags.COMPOSITION));
+300c311
+< 			-> ^(D_COMPOSITION IDENT extendsClause? compositionFeature*)
+---
+> 			-> ^(D_COMPOSITION<DeclNode.UserTypeDef>["D_COMPOSITION", ti.getUnitFlags()] IDENT extendsClause? compositionFeature*)
+303c314
+<  	:  exportList 
+---
+>  	:  exportList
+323,324c334,335
+<     :   stmtImport (stmtImport)*	-> ^(LIST stmtImport+)
+<     |		-> ^(LIST)
+---
+>     :   stmtImport*  
+>     	-> ^(LIST<ListNode>["LIST"] stmtImport*)
+326d336
+< 
+329c339
+< 		{ ti.setUnitFlags(EnumSet.of(UnitFlags.META));}
+---
+> 		{ ti.setUnitFlags(EnumSet.of(Flags.META));}
+360c370
+< 	//System.out.print("typeName: "); DBG_LT();
+---
+> 	//System.out.print("typeName: "); DBG_LT(); <DeclNode.Fcn>["D_FCN_DCL", atFlags]
+362c372
+< 	:	typeNameScalar 
+---
+> 	:	typeNameScalar
+369,370c379,380
+< 	:	qualName metaArguments	-> ^(T_USER_TYPE qualName metaArguments)
+< 	|	qualName		-> ^(T_USER_TYPE qualName)
+---
+> 	:	qualName metaArguments	-> ^(T_USER_TYPE<TypeNode.UserDef>["T_USER_TYPE", atFlags] qualName metaArguments)
+> 	|	qualName		-> ^(T_USER_TYPE<TypeNode.UserDef>["T_USER_TYPE", atFlags] qualName)
+435,436c445,446
+< 	:	expr (',' expr)*
+< 		-> ^(LIST expr+ )
+---
+> 	:	expr (',' expr)*	
+> 		-> ^(LIST<ListNode>["LIST"] expr+)
+526a537
+> 	|	exprNew
+535,538c546,549
+< 	: ('public' { atFlags.add(AttrFlags.PUBLIC); } )? 
+< 		('host' { atFlags.add(AttrFlags.HOST); } )? 
+< 		fcnType_fcnName fcnFormalParameterList fcnBody 
+< 		-> ^(D_FCN_DEF fcnType_fcnName fcnFormalParameterList fcnBody)
+---
+> 	: ('public' { atFlags.add(Flags.PUBLIC); } )? 
+> 		('host' { atFlags.add(Flags.HOST); } )? 
+> 		fcnType_fcnName fcnFormalParameterList fcnBody[$fcnFormalParameterList.tree]
+> 		-> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", atFlags] fcnType_fcnName fcnFormalParameterList fcnBody)
+548,551c559,562
+< 	:	('public')? ('host' { atFlags.add(AttrFlags.HOST); })?
+< 	   	fcnType_fcnName  fcnFormalParameterList fcnBody
+< 		{ 	atFlags.add(AttrFlags.PUBLIC); /* enforce */ 	
+< 			if (!atFlags.contains(AttrFlags.HOST))
+---
+> 	:	('public')? ('host' { atFlags.add(Flags.HOST); })?
+> 	   	fcnType_fcnName  fcnFormalParameterList fcnBody[$fcnFormalParameterList.tree]
+> 		{ 	atFlags.add(Flags.PUBLIC); /* enforce */ 	
+> 			if (!atFlags.contains(Flags.HOST))
+554c565
+< 		-> ^(D_FCN_DEF fcnType_fcnName fcnFormalParameterList fcnBody)		
+---
+> 		-> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", atFlags] fcnType_fcnName fcnFormalParameterList fcnBody)		
+562,563c573,574
+< 	:	('public' { atFlags.add(AttrFlags.PUBLIC); } )? 
+< 		('host' { atFlags.add(AttrFlags.HOST); } )?
+---
+> 	:	('public' { atFlags.add(Flags.PUBLIC); } )? 
+> 		('host' { atFlags.add(Flags.HOST); } )?
+565,566c576,577
+< fcnBody
+<   :	braceOpen (stmts)  braceClose  -> ^(FCNBODY stmts)
+---
+> fcnBody[CommonTree formals]
+>   :	braceOpen (stmts)  braceClose  -> ^(FCNBODY<FcnBodyNode>["FCNBODY"] {$formals} stmts) 
+575,576c586,587
+<    :	('public' { atFlags.add(AttrFlags.PUBLIC); } )? 
+< 		('host' { atFlags.add(AttrFlags.HOST); } )? 
+---
+>    :	('public' { atFlags.add(Flags.PUBLIC); } )? 
+> 		('host' { atFlags.add(Flags.HOST); } )? 
+578c589
+<    -> ^(D_FCN_DCL fcnType_fcnName fcnFormalParameterList)
+---
+>    -> ^(D_FCN_DCL<DeclNode.Fcn>["D_FCN_DCL", atFlags] fcnType_fcnName fcnFormalParameterList)
+584,586c595,597
+< 		-> ^(D_FCN_TYP_NM  ^(LIST typeName) qualName)      // int myfcn()
+< 	|	{input.LT(1).getText().equals(ti.getTypeName()) }? t=typeName	    
+< 		-> ^(D_FCN_CTOR ^(LIST $t) typeName) 					// constructor
+---
+> 		-> ^(D_FCN_TYP_NM  ^(LIST<ListNode>["LIST"] typeName) qualName)      // int myfcn()
+> 	|	{input.LT(1).getText().equals(ti.getTypeName()) }? typeName	    
+> 		-> ^(D_FCN_CTOR ^(LIST<ListNode>["LIST"] typeName) typeName) 					// constructor
+588c599
+< 		-> ^(D_FCN_TYP_NM ^(LIST) qualName)               // myfcn() returns void
+---
+> 		-> ^(D_FCN_TYP_NM ^(LIST<ListNode>["LIST"]) qualName)               // myfcn() returns void
+595c606
+< 	:	typeName (',' typeName)* -> ^(LIST typeName+)
+---
+> 	:	typeName (',' typeName)* -> ^(LIST<ListNode>["LIST"] typeName+)
+602,603c613,614
+< 		-> ^(LIST fcnFormalParameter+)
+< 	|	-> ^(LIST)
+---
+> 		-> ^(LIST<ListNode>["LIST"] fcnFormalParameter+)
+> 	|	-> ^(LIST<ListNode>["LIST"])
+607c618
+< 		-> ^(D_FORMAL typeName ^(IDENT (expr)?))
+---
+> 		-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL"] typeName ^(IDENT (expr)?))
+616c627,628
+< 	:	('new' typeName '(') => exprNew fieldOrArrayAccess? 
+---
+> 	:	'new' typeName fcnArgumentList fieldOrArrayAccess?
+> 		-> ^(E_NEW typeName fcnArgumentList fieldOrArrayAccess?)
+640c652
+< 	:	(stmt)+	 -> ^(LIST stmt+)
+---
+> 	:	(stmt)+ -> ^(LIST<ListNode>["LIST"] stmt+) 
+644,645c656
+< 	:  varDeclaration 
+< 	|	stmtAssign	delim  // delim here so syntax can be embedded
+---
+> 	:  stmtAssign	delim  // delim here so syntax can be embedded
+658a670
+> 	|	varDeclaration 
+755a768,773
+> @init {
+> 	atFlags.clear();			
+> }
+> @after{
+>   atFlags.clear();
+> }
+759,761c777,780
+< 	:	(	 'const' { atFlags.add(AttrFlags.CONST); }
+< 		|	 'volatile' { atFlags.add(AttrFlags.VOLATILE); }
+< 		|   'host' { atFlags.add(AttrFlags.HOST); } 
+---
+>  // todo set symbol flags for these
+> 	:	(	 'const' { atFlags.add(Flags.CONST); }
+> 		|	 'volatile' { atFlags.add(Flags.VOLATILE); }
+> 		|   'host' { atFlags.add(Flags.HOST); } 
+778c797,798
+< 		-> ^(D_VAR typeName 
+---
+> 		 { atFlags.add(Flags.NEW); } 
+> 		-> ^(D_VAR<DeclNode.Var>["D_VAR", atFlags] typeName 
+783c803
+< 		-> ^(D_FCN_REF typeName fcnRefTypeList IDENT)
+---
+> 		-> ^(D_FCN_REF<DeclNode.FcnRef>["D_FCN_REF", atFlags] typeName fcnRefTypeList IDENT) 
+790,791c810,811
+< 		-> ^(LIST typeName+)
+< 	|	-> ^(LIST)
+---
+> 		-> ^(LIST<ListNode>["LIST"] typeName+)
+> 	|	-> ^(LIST<ListNode>["LIST"])
+795,796c815,816
+< 	->  ^(D_ARR typeName IDENT varArraySpec initializer?)
+< 	;
+---
+> 	->  ^(D_ARR<DeclNode.Arr>["D_Arr", atFlags] typeName IDENT varArraySpec initializer?)
+> 	;	
+798c818
+< 	:	('[' varDim ']')+	->   ^(LIST varDim+)
+---
+> 	:	('[' varDim ']')+	->   ^(LIST<ListNode>["LIST"] varDim+)
+809c829
+< 	: initializer (',' initializer)* -> ^(LIST initializer+)
+---
+> 	: initializer (',' initializer)* -> ^(LIST<ListNode>["LIST"] initializer+)
+811d830
+< 
+822c841
+< 		-> ^(D_VAR {$varDecl::typ} ^(IDENT expr?))
+---
+> 	-> ^(D_VAR<DeclNode.Var>["D_VAR", atFlags] {$varDecl::typ} ^(IDENT expr?))

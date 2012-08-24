@@ -1,0 +1,867 @@
+gunit pol;
+// test THREE pollen code functions etc
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/examples/blink/Blink.p
+from cc.arduino import Environment as Env
+
+from Env import Led
+
+module Blink {
+
+	pollen.run() {
+		while (true) {
+			Led.toggle()
+			Env.wait(500000)
+		}
+	}
+	
+	pollen.reset() { Env.reset() }
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/examples/blink/Board.p
+
+#from board.arduino import Duemilanove as Hw
+from board.ti import LaunchPad as Hw
+
+from Hw import Mcu
+from Mcu import GlobalInterrupts
+#from Mcu import TimerMilli8BitTimer0 as TD
+from Mcu import TimerMilliA0 as TD
+
+from Hw import Led
+
+from pollen.time import Time
+
+composition Board {
+	
+	# Export composition modules
+	export Led
+	export Mcu
+
+	host Board() {
+		Time.bindGlobalInterrupts(GlobalInterrupts)
+		Time.bindTimerDriver(TD)
+	}	
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-amaret/distro.arduino.test/BoardWaitBlink.p
+from distro.arduino import Board
+from Board import Mcu
+from Board import Pin0
+
+module BoardWaitBlink {
+
+	pollen.run() {
+		Mcu.reset()
+		Pin0.makeOutput()
+		
+		while(true) {
+			Pin0.toggle()
+			Mcu.wait(50000)
+		}
+	}
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-amaret/distro.arduino.test/DistroWaitBlink.p
+from distro.arduino import Distro
+from Distro import Mcu
+from Distro import Pin0
+
+module DistroWaitBlink {
+
+	pollen.run() {
+		Mcu.reset()
+		Pin0.makeOutput()
+		
+		while(true) {
+			Pin0.toggle()
+			Mcu.wait(500000)
+		}
+	}
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-amaret/distro.arduino.test/UartHello.p
+from distro.arduino import Distro
+from Distro import Mcu
+from Distro import Uart
+
+module UartHello {
+
+
+	pollen.run() {
+		Mcu.reset()
+		
+		---
+		Uart.put(72)
+		Uart.put(73)
+		Uart.put(33)
+		Uart.put(13)
+		Uart.put(10)
+		---
+		
+		
+		Uart.put('H')
+		Uart.put('e')
+		Uart.put('l')
+		Uart.put('l')
+		Uart.put('o')
+		Uart.put('!')
+		Uart.put('\n')
+		
+	}
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-amaret/distro.ti.launchpad.test/BoardWaitBlink.p
+from distro.ti.launchpad import Board
+from Board import Mcu
+from Board import Pin0
+
+module BoardWaitBlink {
+
+	pollen.run() {
+		Mcu.reset()
+		Pin0.makeOutput()
+		
+		while(true) {
+			Pin0.toggle()
+			Mcu.wait(500000)
+		}
+	}
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-amaret/distro.ti.launchpad.test/DistroWaitBlink.p
+from distro.ti.launchpad import Distro
+from Distro import Mcu
+from Distro import Pin0
+
+module DistroWaitBlink {
+
+	pollen.run() {
+		Mcu.reset()
+		Pin0.makeOutput()
+		
+		while(true) {
+			Pin0.toggle()
+			Mcu.wait(50000)
+		}
+	}
+}" -> ""
+unit:
+"package mcu.atmel.atmega328p.test
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-amaret/mcu.atmel.atmega328p.test/TimerInterruptTest.p
+
+from distro.arduino import Board
+from Board import Mcu
+from Board import Pin0
+from Mcu import GlobalInterrupts
+from mcu.atmel.atmega328p import TimerMilli8BitTimer0 as Timer
+
+module TimerInterruptTest {
+
+	uint16 count = 0
+
+	#host TimerInterruptTest() {
+	#	Timer.setHandler(blink)
+	#}
+	
+	pollen.run() {
+		Mcu.reset()
+		Timer.setHandler(blink)
+		Pin0.makeOutput()
+		Timer.start()
+		GlobalInterrupts.enable()
+		while (true) { }
+	}
+
+	blink() {
+		if (++count == 75) {
+			Pin0.toggle()
+			count = 0
+		}
+	}
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-amaret/mcu.ti.msp430.test/TimerMilliA0Test.p
+from mcu.ti.msp430g2231 import Mcu
+from Mcu import P1_0 as Pin
+from Mcu import GlobalInterrupts as GI
+
+from mcu.ti.msp430 import TimerMilliA0 as TA0
+
+module TimerMilliA0Test {
+
+	uint32 counter = 0
+
+	TimerMilliA0Test() {
+		Mcu.reset()
+		TA0.setHandler(handleISR)
+		Pin.clear()
+		Pin.makeOutput()
+	}
+
+	pollen.run() {
+		TA0.start()
+		GI.enable()
+		while(true) { }		
+	}
+	
+	handleISR() {
+		if (counter++ == 500) {
+			Pin.toggle()
+			counter = 0
+		}
+	}
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-amaret/mcu.ti.msp430.test/TimerMilliTest.p
+---
+
+TimerMilliTest
+
+---
+
+package mcu.ti.msp430g2231.test	
+
+from mcu.ti.msp430g2231.McuLayout import GlobalInterrupts
+from mcu.ti.msp430g2231.McuLayout import Mcu
+from mcu.ti.msp430g2231.McuLayout import P1_0 as Pin
+from mcu.ti.msp430 import TimerMilli
+
+from pollen.events import Events
+from pollen.events import Event{uint8} as Event
+
+
+module TimerMilliTest {
+
+	value{Event} e
+
+    host TimerMilliTest() {
+        Events.assignGlobalInterrupts(GlobalInterrupts)
+    }
+
+	TimerMilliTest() {
+		Mcu.reset()
+		e.setHandler(tick)
+		Pin.clear()
+		Pin.makeOutput()
+	}
+
+	pollen.run() {
+		TimerMilli.start(e, 25, true)
+		Events.run()
+	}
+			
+	tick(Event t) {
+		Pin.toggle()
+	}
+}" -> ""
+unit:
+"package pollen.data.test
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.data.test/QueueCapacity.p
+
+from pollen.data import Queue{uint8, 10} as Queue
+from mcu.localhost import Write
+
+module QueueCapacity {
+
+	value{Queue} q
+	
+	pollen.run() {
+		
+		Write.outs("Capacity running: ")
+		Write.outi(q.getCapacity())
+		Write.outs("\n")
+	}
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.data.test/QueueTest.p
+package pollen.data.test
+
+from pollen.data import Queue{uint8, 10} as Queue10
+from pollen.data import Queue{uint8, 22} as Queue22
+from mcu.localhost import Write
+
+module QueueTest {
+	
+	value{Queue22} q22
+	value{Queue10} q10
+		
+	host QueueTest() {
+		q22.setCapacity(33)
+		q10.setCapacity(13)
+	}	
+		
+	pollen.run() {
+		uint8 i = 0
+		
+		Write.outs("q22 capacity: ")		
+		Write.outi(q22.getCapacity())		
+		Write.outs("\n")		
+		
+		Write.outs("q10 capacity: ")		
+		Write.outi(q10.getCapacity())		
+		Write.outs("\n")				
+
+		for (i = 0; i < 13; i++) {
+			Write.outs("e22: ")
+			if (q22.enqueue(5 + i)) {
+				Write.outi(5 + i)
+				Write.outs(", ")
+			} else {
+				Write.outs("full, ")
+			}
+			
+			Write.outi(q22.length())
+			Write.outs("\n")			
+		}
+		
+		for (i = 0; i < 13; i++) {
+			uint8 x = q22.dequeue()
+			Write.outs("d: ")
+			Write.outi(x)
+			Write.outs(", ")
+			Write.outi(q22.length())
+			Write.outs("\n")
+		}
+		
+		for (i = 0; i < 13; i++) {
+			Write.outs("e10: ")
+			if (q10.enqueue(5 + i)) {
+				Write.outi(5 + i)
+				Write.outs(", ")
+			} else {
+				Write.outs("full, ")
+			}
+			
+			Write.outi(q10.length())
+			Write.outs("\n")			
+		}
+		
+		for (i = 0; i < 13; i++) {
+			uint8 x = q10.dequeue()
+			Write.outs("d: ")
+			Write.outi(x)
+			Write.outs(", ")
+			Write.outi(q10.length())
+			Write.outs("\n")
+		}
+	}
+}" -> ""
+unit:
+"package pollen.runtime.test
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.events.test/DispatcherTest.p
+
+---
+
+Simple test program for the event dispatcher
+
+---
+
+from pollen.runtime import Dispatcher
+from pollen.runtime import Event{uint8} as Event
+
+from mcu.localhost import Write
+
+module DispatcherTest {
+
+	DispatcherTest() {
+		e1.setPriority(1)
+		e1.setHandler(func1)
+		e1.setData(11)
+		
+		e2.setPriority(2)
+		e2.setHandler(func2)
+		e2.setData(22)
+		
+		e3.setPriority(3)
+		e3.setHandler(func3)
+		e3.setData(33)
+	}
+
+	pollen.run() {
+		Dispatcher.post(e1)
+		Dispatcher.run()
+		Dispatcher.post(e2)
+		Dispatcher.post(e3)
+		Dispatcher.post(e2)
+		Dispatcher.post(e1)
+		Dispatcher.post(e3)
+		Dispatcher.post(e3)
+		Dispatcher.post(e2)
+		Dispatcher.post(e1)
+
+		Dispatcher.run()
+		Dispatcher.run()
+		Dispatcher.run()
+		Dispatcher.run()
+		Dispatcher.run()
+		Dispatcher.run()
+		Dispatcher.run()
+		Dispatcher.run()
+		Dispatcher.run()
+		Dispatcher.run()		
+	}
+
+	value{Event} e1, e2, e3
+
+	func1(Event id) { Write.outs("func1 "); Write.outi(id.getData()); Write.outs("\n") }
+
+	func2(Event id) { Write.outs("func2 "); Write.outi(id.getData()); Write.outs("\n") }
+
+	func3(Event id) { Write.outs("func3 "); Write.outi(id.getData()); Write.outs("\n") }
+
+}
+" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.events.test/EventHandlerTest.p
+from pollen.runtime import EventHandler{any} as EH
+
+module EventHandlerTest {
+
+	EH.handle h
+	
+	EventHandlerTest() {
+		#h = func
+	}
+	
+	func(uint8 x) {
+	
+	}
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.events.test/EventTest.p
+from pollen.runtime import Event{uint8} as Event
+
+from mcu.localhost import Write
+
+module EventTest {
+
+	value{Event} e
+		
+	pollen.run() {
+		e.setPriority(1)
+		e.setHandler(func)
+		e.setData(99)
+		e.handle()
+		
+		e.setPriority(2)
+		e.setHandler(func2)
+		e.setData(23)
+		e.handle()
+		
+		e.setPriority(3)
+		e.setHandler(func)
+		e.setData(12)
+		e.handle()
+
+		e.setPriority(4)
+		e.setHandler(func2)
+		e.setData(139)
+		e.handle()
+	}
+	
+	func(Event e) {
+		Write.outs("FUNC ")	
+		Write.outi(e.getData())
+		Write.outs("\n")		
+	}
+	
+	func2(Event e) {
+		Write.outs("FUNC2 ")	
+		Write.outi(e.getData())
+		Write.outs("\n")		
+	}	
+
+}" -> ""
+unit:
+"package pollen.test
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.test/BlinkLedDistro.p
+
+---
+Blink using a busy wait 
+---
+
+#from distro.ti.launchpad import Distro
+from distro.arduino import Distro
+
+from Distro import Mcu
+from Distro import Led
+
+module BlinkLed {
+
+
+    pollen.run() {
+        
+    	Mcu.reset()
+
+		while (true) {
+
+            Led.toggle()
+			Mcu.wait(500000)
+		}
+	}
+}
+" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.test/BlinkLed.p
+package pollen.test
+
+---
+Blink using a busy wait 
+---
+
+#from distro.ti.launchpad import Board
+from distro.arduino import Board
+
+from Board import Mcu
+from Board import Led
+
+module BlinkLed {
+
+    pollen.reset() {
+        Mcu.reset() 
+    }
+
+    pollen.run() {
+        
+        while (true) {
+
+            Led.toggle()
+            Mcu.wait(500000)
+        }
+    }
+}
+" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.test/Blink.p
+package pollen.test
+
+---
+Blink using a busy wait 
+---
+
+from distro.ti.launchpad import Board
+#from distro.arduino import Board
+
+from Board import Mcu
+from Board import Pin0 as Pin
+
+module Blink {
+
+
+	pollen.run() {
+        
+		Mcu.reset()
+		Pin.clear()
+		Pin.makeOutput()
+
+		while (true) {
+			Pin.toggle()
+			Mcu.wait(500000)
+		}
+	}
+}
+" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.test/Comp1.p
+
+from mcu.ti.msp430g2231.McuLayout import Mcu
+from mcu.ti.msp430g2231.McuLayout import P1_0
+from mcu.ti.msp430g2231.McuLayout import Wait
+
+composition Comp1 {
+
+    export Mcu
+    export P1_0 
+    export Wait
+    export Mcu.reset
+    export Wait.us
+    export P1_0.clear
+    export P1_0.makeOutput
+    export P1_0.toggle
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.test/Comp2.p
+
+from mcu.ti.msp430g2231.McuLayout import Mcu
+from mcu.ti.msp430g2231.McuLayout import P1_0
+from mcu.ti.msp430g2231.McuLayout import Wait
+
+import Led
+
+composition Comp2 {
+
+    export Mcu
+    export P1_0 
+    export Wait
+    export Mcu.reset
+    export Wait.us
+    export P1_0.clear
+    export P1_0.makeOutput
+    export P1_0.toggle
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.test/CompBusyBlink.p
+---
+
+Blink an LED using events and the event dispatcher
+
+---
+
+package pollen.test
+
+from distro.ti.launchpad import Distro
+from Distro import Mcu
+from Distro import Pin
+from Distro import Wait
+
+from pollen.events import Event{uint8} as Event
+
+module CompBusyBlink {
+
+	pollen.run() {
+        Mcu.reset()
+        Pin.clear()
+        Pin.makeOutput()
+        
+        while (true) {
+            Pin.toggle()
+            Wait.us(50000)
+        }
+	}
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.test/CompTest1.p
+---
+Test: composition can have functions called on it
+---
+
+import Comp
+
+module CompTest1 {
+
+    pollen.run() {
+        Comp.reset()
+        Comp.clear()
+        Comp.makeOutput()
+        
+        while(true) {
+            Comp.toggle()
+            Comp.us(20000)
+        }
+    }
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.test/CompTest2.p
+---
+Test: composition binds a module interface member
+---
+
+import Comp
+
+module CompTest1 {
+
+    pollen.run() {
+        Comp.reset()
+        Comp.clear()
+        Comp.makeOutput()
+        
+        while(true) {
+            Comp.toggle()
+            Comp.us(20000)
+        }
+    }
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.test/DistroTest.p
+from distro.ti.launchpad import Distro
+from Distro import Mcu
+from Distro import Pin
+from Distro import Wait
+
+module DistroTest {
+
+    pollen.run() {
+        Mcu.reset()
+        Pin.makeOutput()
+        
+        while(true) {
+            Pin.toggle()
+            Wait.us(500000)
+        }
+    }
+}" -> ""
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.test/EventBlinkLong.p
+unit:
+---
+
+Blink an LED using events and the event dispatcher
+
+---
+
+package pollen.test
+
+from distro.ti.launchpad import Board
+from Board import GlobalInterrupts
+from Board import Mcu
+from Board import Pin
+from Board import TimerMilli
+
+from pollen.events import Dispatcher
+from pollen.events import Event{uint8} as Event
+
+module EventBlink {
+
+	value{Event} e			# will be: Event e(toggle)
+
+    host EventBlink() {
+        Dispatcher.assignGlobalInterrupts(GlobalInterrupts)
+    }
+
+	pollen.run() {
+		e.setHandler(toggle)
+        TimerMilli.start(e, 250, true)
+		Dispatcher.run()
+	}
+	
+	toggle(Event e) {
+        Pin.toggle()
+	}
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.test/EventBlink.p
+---
+
+Blink an LED using events and the event dispatcher
+
+---
+
+package pollen.test
+
+from distro.ti.launchpad import Distro
+from Distro import Mcu
+from Distro import Pin
+from Distro import TimerMilli
+
+from pollen.events import Events
+from pollen.events import Event{uint8} as Event
+
+module EventBlink {
+
+	value{Event} e			# will be: Event e(toggle) or Events.createEvent()
+
+    pollen.reset() {
+        Mcu.reset()
+        Pin.makeOutput()
+        Pin.clear()
+		e.setHandler(toggle)
+    }
+
+	pollen.run() {
+        TimerMilli.start(e, 250, true)
+		Dispatcher.run()
+	}
+	
+	toggle(Event e) {
+        Pin.toggle()
+	}
+
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.test/GpioForward.p
+from pollen.interfaces import Gpio
+
+from mcu.atmel.atmega328p import PD5
+
+module FancyPD5 implements Gpio {
+    
+ 
+    public bool get() { 
+    
+        # do my own stuff
+        
+        x = PD5.get()
+        
+        # do something with x
+            
+        return x
+    }
+        
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.test/Led.p
+from mcu.ti.msp430g2231.McuLayout import Mcu
+from mcu.ti.msp430g2231.McuLayout import P1_0 as Pin
+from mcu.ti.msp430g2231.McuLayout import Wait
+from pollen.interfaces import Gpio
+
+module Led {
+
+    host Gpio LedPin
+    
+    public host bindPin(Gpio p) {
+        LedPin = p
+    }
+    
+    public toggle() { LedPin.toggle() }
+    
+    public on() { LedPin.set() }
+
+    public off() { LedPin.clear() }
+    
+    public bool isOn() { return LedPin.get() }
+
+    pollen.run() {
+        Mcu.reset()
+        LedPin.clear()
+        LedPin.makeOutput()
+    
+        while (true) {
+            LedPin.toggle()
+            Wait.us(500000)
+        }
+    }
+    
+    host Led() {
+    	bindPin(Pin)
+    }
+
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.time.test/TimerManagerTest.p
+
+from distro.arduino import Distro
+from Distro import Mcu
+
+from pollen.time import TimerManager
+
+module TimerManagerTest {
+
+	value{TimerManager.Timer} t
+
+	host TimerManagerTest() {
+		t.init()
+	}
+
+	pollen.run() {
+		Mcu.reset()		
+
+		while(true) {
+		
+		}
+	}
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.time.test/TimerTest.p
+
+from pollen.time import Timer
+
+
+module TimerTest {
+
+	value{Timer} t
+	
+	pollen.run() {
+	
+	}
+}" -> ""

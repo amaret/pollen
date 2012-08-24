@@ -1,0 +1,78 @@
+gunit pol;
+
+////////////////////////////////////////////////////
+//test rule: parse class defn
+unit:
+"package cc.arduino
+
+import Duemilanove as Board
+from Board import Led
+from Board import Mcu
+from Mcu import GlobalInterrupts
+from Mcu import TimerMilli8BitTimer0 as TD
+
+from pollen.time import Time
+from pollen.events import Events
+
+class Environment {       
+
+        host Environment() {
+        }
+        host bool fcn1(uint8 x, bool y) {
+        }
+        public host setHandler(Handler.handle h) { }
+	public host uint32 getSystemFrequency() {
+ 			uint8 x, y=7, z=1, s
+			int16 t
+			int8 arr[]
+                        int32 arr1[7]
+                        int32 arr2[y]
+                        Environment e
+        }
+
+}" -> ""
+////////////////////////////////////////////////////
+//test rule: parse class with non-host fcn (error)
+unit:
+"package cc.arduino
+
+class Environment {       
+
+        bool fcn1(uint8 x, bool y) {
+        }
+}" -> ""
+
+////////////////////////////////////////////////////
+//test rule: parse class with injected code as feature
+unit:
+"package cc.arduino
+
+class Environment {       
+
+        host bool fcn1(uint8 x, bool y) {
+        }
+	+{ #include <avr/io.h> 
+           #include <avr/interrupt.h> }+
+
+        +{ ISR( }+
+        +{name}+
+        +{ ) { }+
+        +{isr()}+
+    +{;} }+
+}" -> ""
+
+
+////////////////////////////////////////////////////
+//test rule: parse class which contains class
+unit:
+"package cc.arduino
+
+class Environment {       
+	class XYZ {
+	  uint8 xy
+          host bool fcn1() {
+          }
+	}
+
+}" -> ""
+

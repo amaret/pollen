@@ -1,0 +1,28 @@
+package cc.arduino
+
+import Duemilanove as Board
+from Board import Led
+from Board import Mcu
+from Mcu import GlobalInterrupts
+from Mcu import TimerMilli8BitTimer0 as TD
+
+from pollen.time import Time
+from pollen.events import Events
+
+class Environment {
+
+        host bool fcn1(uint8 x, bool y) {
+        }
+        public host uint32 getSystemFrequency() {
+                        
+               Environment.fcn1(uint8, bool) fcnRef
+               new Environment e2()
+		       int x, y
+               x = y + 3 - 2 * x
+			   x = y || x && y
+               x = e2.field.stuff.callIt(3).z
+
+
+        }
+}
+
