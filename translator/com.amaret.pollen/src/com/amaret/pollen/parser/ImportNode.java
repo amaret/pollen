@@ -1,5 +1,6 @@
 package com.amaret.pollen.parser;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,13 +16,22 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 	
     private Cat cat;
     private IScope definingScope;
+    private boolean isExport;
     private UnitNode unit;
     
     ImportNode(int ttype, String ttext) {
         this.token = new CommonToken(ttype, ttext);
     }
    
-    /**
+    public boolean isExport() {
+		return isExport;
+	}
+
+	public void setExport(boolean isExport) {
+		this.isExport = isExport;
+	}
+
+	/**
      * 
      * @return 'As' node. Might be NIL node.
      */
@@ -38,10 +48,12 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     }
     /**
      * 
-     * @return Meta args node or null, if none.
+     * @return Meta args LIST node or null, if none.
+     * Note '{}' returns an empty LIST. 
      */
-    public BaseNode getMeta() {
-    	return this.getChildCount() > AS ?  (BaseNode) getChild(META) : null;   	
+    @SuppressWarnings("unchecked")
+    public List<BaseNode> getMeta() {
+    	return this.getChildCount() > AS ?  ((ListNode<BaseNode>)getChild(META)).getElems() : null;   	
     }
        
     @Override
@@ -113,4 +125,15 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     @Override
     public void setEnclosingScope(IScope scope) {
     }
+
+	/**
+	 * Connect the importNode to its defining Unit (unitNode). 
+	 * @param impUnit
+	 */
+	public void bindUnit(UnitNode impUnit) {
+		unit = impUnit;
+        cat = Cat.fromSymbolNode(unit, unit.getDefiningScope());
+
+		
+	}
 }

@@ -1,5 +1,7 @@
 package com.amaret.pollen.parser;
 
+import java.util.List;
+
 public class TypeRules {
 
 	public static Cat checkUnary(String op, Cat cat) {
@@ -42,6 +44,15 @@ public class TypeRules {
 			Atom name, boolean b) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/**
+	 * @param impUnit
+	 * @param meta
+	 */
+	public static void checkMetaArgs(UnitNode impUnit, List<BaseNode> meta) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

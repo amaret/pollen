@@ -71,6 +71,21 @@ composition Environment {	# This should extend Board when composition inheritanc
 	export Events.run
 	export Events.post
 	export Events.postFromInterrupt	
+	host bool fcn1(unit8 x, bool y) {
+        }
+
+        public host bool get() { 
+          return (+{port}+ & (1 << pin)) ? true : false }
+
+        public host uint32 getSystemFrequency() {
+                        
+               Environment.fcn1(uint8, bool) fcnRef
+               new Environment e2()
+	       int x, y
+               x = y + 3 - 2 * x
+               {  x = y || x && y }
+               x = e2.field.stuff.callIt(3).z
+        }
 	
 	host Environment() {
 		Events.bindGlobalInterrupts(GlobalInterrupts)
@@ -330,6 +345,7 @@ module InterruptMeta implements Interrupt {
     	+{isr()}+
     +{;} }+ 
 
+
 	public host setHandler(Handler.handle h) { @h = h }
 	
 	public setHandler(Handler.handle h) { @h = h }
@@ -354,8 +370,11 @@ module InterruptMeta implements Interrupt {
 	# Private members
 	#====================
 	Handler.handle h = 0
+        Interrupt j := InterruptMeta
 	
 	isr() {
+        Interrupt i 
+        i := InterruptMeta
 		if (h != null) { h() }
 	}
 }

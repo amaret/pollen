@@ -19,6 +19,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     
     // Each name can map to multiple DeclNode.Fcn nodes, for overloads.
     private Map<String,List<DeclNode.Fcn>> fcnMap = new HashMap<String,List<DeclNode.Fcn>>();
+    // A client is a unit that imports this unit.
     private Map<String,UnitNode> clientMap = new HashMap<String,UnitNode>();
     private List<ExportNode> exportList = new ArrayList<ExportNode>();
     private DeclNode.UserTypeDef unitType;
@@ -69,7 +70,10 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
       	this.token = new CommonToken(ttype, ttext);
       	this.flags = f;
     }
-	
+	/**
+	 * This unit is imported by another unit 'u'
+	 * @param u
+	 */
     void addClient(UnitNode u) {
         clientMap.put(u.getQualName(), u);
     }

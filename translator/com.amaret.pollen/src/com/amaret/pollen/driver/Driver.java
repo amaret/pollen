@@ -12,7 +12,7 @@ public class Driver {
 		
 		try {
 			
-			pu.processUnits(pu.setupInputs(args), System.out, System.err, System.err);
+			pu.processUnits(args, System.out, System.err, System.err);
 			
 		} catch (Exception e) {
 			System.err.println("" + e);

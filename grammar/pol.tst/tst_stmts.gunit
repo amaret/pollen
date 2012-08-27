@@ -58,6 +58,15 @@ module Environment {
            default:
         }
         ## test ##
+        switch (7) {
+           case 2:
+             y = false; break;
+           case 3:
+             y = true
+           default:
+            break;
+        }   
+        ## test ##
         foreach (x in 7) {
                         
         }

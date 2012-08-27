@@ -28,7 +28,6 @@ tokens {
     D_FIELD;  
     D_INSTANCE; 
     D_META;
-    D_META_ARGS;
     D_MODULE;
     D_PROTOCOL;
     D_PROTOCOL_MEM;
@@ -67,10 +66,7 @@ tokens {
     S_CASE;
     S_CONTINUE;
     S_DECL;
-    S_DEFAULT;
-    S_DO_WHILE;
     S_ELIF;
-    S_ELSE;
     S_FOR;
     S_FOREACH;
     S_IF;
@@ -324,8 +320,19 @@ stmtImport
          importAs? delim) -> ^(S_IMPORT importFrom? qualName importAs? metaArguments?)
     ;
 importFrom
+@init{
+	String defaultPkg = "";
+
+}
     :   'from' qualName -> qualName
-    |		-> NIL
+    |		{
+    			String path = this.getTokenStream().getSourceName();
+        		int k = path.lastIndexOf('.');
+        		int j = path.lastIndexOf(".", k-1);
+        		j = j == -1 ? 0 : j+1;
+        		defaultPkg = path.substring(j, k);
+    		}
+    		-> ^(E_IDENT <ExprNode.Ident>["E_IDENT"]  IDENT[defaultPkg])
     ;
 importAs
 	:	'as' qualName -> qualName
@@ -355,8 +362,8 @@ metaFormalParameterType
 	 |	builtinType
 	;
 metaArguments
-   :  '{' metaArgument  (',' metaArgument)* '}' -> ^(D_META_ARGS metaArgument+)
-   |	'{' '}'      -> ^(D_META_ARGS NIL)	// defer metaArgument binding 
+   :  '{' metaArgument  (',' metaArgument)* '}' -> ^(LIST<ListNode>["LIST"] metaArgument+)
+   |	'{' '}'      -> LIST<ListNode>["LIST"]	// defer metaArgument binding  
    ;
  	
 metaArgument
@@ -445,7 +452,7 @@ bitwiseNotOp
 exprList 
 	:	expr (',' expr)*	
 		-> ^(LIST<ListNode>["LIST"] expr+)
-	|	-> NIL
+	|	-> LIST<ListNode>["LIST"]
 	;
 expr
 	:	exprLogicalOr '?' expr ':' expr -> ^(E_QUEST<ExprNode.Quest>["E_QUEST"] exprLogicalOr expr expr)
@@ -657,7 +664,7 @@ stmtBlock
 	;
 stmts
 	:	(stmt)+ -> ^(LIST<ListNode>["LIST"] stmt+) 
-	|	(NL*) -> NIL
+	|	(NL*) -> LIST<ListNode>["LIST"]
 	;
 stmt
 	:  varDeclaration 
@@ -669,7 +676,6 @@ stmt
 	|	stmtReturn
 	|	stmtBreak
 	|  stmtContinue
-	|  stmtForEach
 	|  stmtFor
 	|	stmtSwitch
 	|  stmtDoWhile
@@ -693,26 +699,33 @@ stmtAssert
 	:	'assert' exprList	delim -> ^(S_ASSERT exprList)
 	;
 stmtBind
-	:	varOrFcnOrArray BIND  expr	 delim -> ^(S_BIND varOrFcnOrArray  expr)	
+	:	varOrFcnOrArray BIND  expr	 delim -> ^(S_BIND<StmtNode.Bind>["S_BIND"] varOrFcnOrArray  expr)	
 	;
 stmtPrint
-	:	'print' (stmtPrintTarget)? exprList	
-		-> ^(S_PRINT stmtPrintTarget? exprList)
+@init {
+	EnumSet<Flags> flags = EnumSet.noneOf(Flags.class);
+}
+	:	'print' (stmtPrintTarget[flags])? exprList	
+		-> ^(S_PRINT<StmtNode.Print>["S_PRINT", flags] exprList)
 	;
-stmtPrintTarget
-	:	('log' | 'err'	| 'out')
+stmtPrintTarget[EnumSet<Flags> f]
+	:	
+		(	  'log'  {f.add(Flags.LOG); }
+			| 'err'	{f.add(Flags.ERR); }
+			| 'out'  {f.add(Flags.OUT); }
+		)
 	;
 stmtReturn
 // Note rules below require that returns of multiple values be surrounded by parens.
 // This is required to disambiguate with question mark expression.
-	:	'return' ('(') (expr (',' expr)+) (')') delim	-> ^(S_RETURN expr+)
-	|	'return'  (expr)  delim	-> ^(S_RETURN expr)
+	:	'return' ('(') (expr (',' expr)+) (')') delim	-> ^(S_RETURN<ExprNode.Vec>["S_RETURN"] ^(LIST<ListNode>["LIST"] expr+))
+	|	'return'  (expr)  delim	-> ^(S_RETURN<ExprNode.Vec>["S_RETURN"] ^(LIST<ListNode>["LIST"] expr))
 	;
 stmtBreak
-	:	'break' delim -> ^(S_BREAK)
+	:	'break' delim -> ^(S_BREAK<StmtNode.Break>["S_BREAK"])
 	;
 stmtContinue
-	:	'continue' delim -> ^(S_CONTINUE)
+	:	'continue' delim -> ^(S_CONTINUE<StmtNode.Continue>["S_CONTINUE"])
 	;
 stmtFor
     :   'for' '(' stmtForInit stmtForCond stmtForNext ')' stmtBlock
@@ -736,45 +749,48 @@ stmtForNext
             -> NIL
     |   expr
     ;
+    /*
+    Implement after collections are available.
 stmtForEach
 	:	'foreach' '(' IDENT 'in' expr ')' stmtBlock -> ^(S_FOREACH IDENT ^(E_IDENT expr) stmtBlock)
 	;
+	*/
 stmtSwitch
-	:	'switch' '(' expr ')' braceOpen stmtsCase braceClose	-> ^(S_SWITCH ^(E_COND expr) stmtsCase)
+	:	'switch' '(' expr ')' braceOpen stmtsCase stmtDefault? braceClose	-> ^(S_SWITCH<StmtNode.Switch>["S_SWITCH"]  expr stmtsCase stmtDefault?)
 	;
 stmtsCase
-	:	stmtCase* -> stmtCase+
+	:	stmtCase* -> ^(LIST<ListNode>["LIST"] stmtCase*)
+	;
+stmtDefault
+	:	'default'	':' NL* stmts	-> ^(S_CASE<StmtNode.Case>["S_CASE"] stmts)
 	;
 stmtCase
-	:	'case' (INT_LIT)	':' stmts	-> ^(S_CASE INT_LIT stmts)
-	|	'default'	':' stmts	-> ^(S_DEFAULT stmts)
+	:	'case' (INT_LIT)	':' NL* stmts	-> ^(S_CASE<StmtNode.Case>["S_CASE"] stmts INT_LIT)
 	;
 stmtDoWhile
-	:	'do' stmtBlock 'while' '(' expr ')' delim 	-> ^(S_DO_WHILE stmtBlock ^(E_COND expr))
+	:	'do' stmtBlock 'while' '(' expr ')' delim 	-> ^(S_WHILE<StmtNode.While>["S_WHILE", true] expr stmtBlock)
 	;
 stmtIf
-	:	'if' stmtIfBlock stmtsElif stmtElse?	-> ^(S_IF stmtIfBlock stmtsElif stmtElse?)
-	|	'if' stmtIfBlock stmtElse	-> ^(S_IF stmtIfBlock stmtElse)
-	|	'if' stmtIfBlock -> ^(S_IF stmtIfBlock)
+	:	'if' stmtIfBlock stmtsElif stmtElse?	-> ^(S_IF<StmtNode.If>["S_IF"] stmtIfBlock stmtsElif stmtElse?)
 	;
 stmtIfBlock
-	:	'(' expr ')' stmtBlock -> ^(E_COND expr) stmtBlock
+	:	'(' expr ')' stmtBlock -> expr stmtBlock
 	;
 stmtsElif
-	:	stmtElif+
+	:	stmtElif* -> ^(LIST stmtElif*)
 	;
 stmtElif
-	:	'elif' stmtIfBlock -> ^(S_ELIF stmtIfBlock)
+	:	'elif' stmtIfBlock -> ^(S_ELIF<StmtNode.Elif>["S_ELIF"] stmtIfBlock)
 	;
 stmtElse
-	:	'else' stmtBlock -> ^(S_ELSE stmtBlock)
+	:	'else' stmtBlock -> stmtBlock
 	;
 stmtProvided
 	:	'provided' '(' expr ')' stmtBlock (stmtElse)?
 		-> ^(S_PROVIDED expr stmtBlock stmtElse?)
 	;
 stmtWhile
-	:	'while' '('	expr')' stmtBlock -> ^(S_WHILE stmtBlock)
+	:	'while' '('	expr')' stmtBlock -> ^(S_WHILE<StmtNode.While>["S_WHILE"] expr stmtBlock)
 	;
 varDeclaration    
 @init {

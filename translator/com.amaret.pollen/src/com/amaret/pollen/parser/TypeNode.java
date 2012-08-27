@@ -7,7 +7,7 @@ import java.util.List;
 import org.antlr.runtime.CommonToken;
 
 import com.amaret.pollen.parser.pollenParser.TypeInfo;
-import com.amaret.pollen.translate.ITarget.TypeId;
+import com.amaret.pollen.translator.ITarget.TypeId;
 
 public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 	

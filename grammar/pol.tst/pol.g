@@ -34,7 +34,6 @@ tokens {
     D_VAR;
     DELIM;
     E_ADDR; 		// E_ expression
-    E_ARRLIT;
     E_BINARY;
     E_CALL;
     E_COND;
@@ -67,10 +66,8 @@ tokens {
     S_CASE;
     S_CONTINUE;
     S_DECL;
-    S_DEFAULT;
     S_DO_WHILE;
     S_ELIF;
-    S_ELSE;
     S_FOR;
     S_FOREACH;
     S_IF;
@@ -107,7 +104,7 @@ tokens {
     EnumSet<LitFlags> litFlags = EnumSet.noneOf(LitFlags.class);
     
     protected enum AttrFlags {
-        HOST, PUBLIC, VOLATILE, CONST, NEW
+        HOST, PUBLIC, VOLATILE, CONST, NEW, PROTOCOL_MEMBER
     }
     EnumSet<AttrFlags> atFlags = EnumSet.noneOf(AttrFlags.class);
     
@@ -644,17 +641,19 @@ arrayAccess
 	:	'['	(exprList)?	']'	-> ^(E_INDEX exprList?)
 	;	
 stmtBlock
+// No delim because braceClose eats any NL's
 	:	braceOpen stmts braceClose	 -> ^(S_BLOCK stmts)
 	;
 stmts
 	:	(stmt)+	 -> ^(LIST stmt+)
-	|	(NL*) -> NIL
+	|	(NL*) -> LIST
 	;
 stmt
 	:  varDeclaration 
-	|	stmtAssign	delim  // delim here so syntax can be embedded
+	|	stmtAssign
 	|	stmtAssert
 	|	stmtBind
+	|  stmtBlock
 	|	stmtPrint
 	|	stmtReturn
 	|	stmtBreak
@@ -670,13 +669,13 @@ stmt
 	|	expr delim
 	;
 stmtAssign
-	:	varOrFcnOrArray ASSIGN expr	
+	:	varOrFcnOrArray ASSIGN expr delim
 		-> ^(S_ASSIGN ^(E_BINARY ASSIGN varOrFcnOrArray expr))
-	|	injectionCode ASSIGN expr		
+	|	injectionCode ASSIGN expr	delim
 		-> ^(S_ASSIGN ^(E_BINARY ASSIGN injectionCode expr))
-	|	varOrFcnOrArray assignOp expr  
+	|	varOrFcnOrArray assignOp expr  delim
 		-> ^(S_ASSIGN ^(E_BINARY assignOp varOrFcnOrArray expr))
-	|	injectionCode assignOp expr	
+	|	injectionCode assignOp expr	delim
 		-> ^(S_ASSIGN ^(E_BINARY assignOp injectionCode expr))
 	;
 stmtAssert
@@ -705,21 +704,21 @@ stmtContinue
 	:	'continue' delim -> ^(S_CONTINUE)
 	;
 stmtFor
-    :   'for' '(' stmtForInit SEMI stmtForCond SEMI stmtForNext ')' stmtBlock
+    :   'for' '(' stmtForInit stmtForCond stmtForNext ')' stmtBlock
             -> ^(S_FOR stmtForInit stmtForCond stmtForNext stmtBlock)
     ;
 stmtForCond
-    :   //empty
+    :   SEMI
            -> NIL
-    |   expr
+    |   expr SEMI -> expr
     ;
 
 stmtForInit
-    :   //empty
+    :   SEMI
             -> NIL
-    |   typeName IDENT '=' expr
+    |   typeName IDENT '=' expr SEMI
             -> ^(S_DECL ^(typeName IDENT  expr))
-    |   stmtAssign
+    |   stmtAssign 
     ;
 stmtForNext
     :   //empty
@@ -730,41 +729,41 @@ stmtForEach
 	:	'foreach' '(' IDENT 'in' expr ')' stmtBlock -> ^(S_FOREACH IDENT ^(E_IDENT expr) stmtBlock)
 	;
 stmtSwitch
-	:	'switch' '(' expr ')' braceOpen stmtsCase braceClose	-> ^(S_SWITCH ^(E_COND expr) stmtsCase)
+	:	'switch' '(' expr ')' braceOpen stmtsCase stmtDefault? braceClose	-> ^(S_SWITCH  expr stmtsCase stmtDefault?)
 	;
 stmtsCase
-	:	stmtCase* -> stmtCase+
+	:	stmtCase* -> ^(LIST stmtCase*)
+	;
+stmtDefault
+	:	'default'	':' NL* stmts	-> ^(S_CASE stmts)
 	;
 stmtCase
-	:	'case' (INT_LIT)	':' stmts	-> ^(S_CASE INT_LIT stmts)
-	|	'default'	':' stmts	-> ^(S_DEFAULT stmts)
+	:	'case' (INT_LIT)	':' NL* stmts	-> ^(S_CASE stmts INT_LIT)
 	;
 stmtDoWhile
-	:	'do' stmtBlock 'while' '(' expr ')' delim 	-> ^(S_DO_WHILE stmtBlock ^(E_COND expr))
+	:	'do' stmtBlock 'while' '(' expr ')' delim 	-> ^(S_WHILE expr stmtBlock)
 	;
 stmtIf
 	:	'if' stmtIfBlock stmtsElif stmtElse?	-> ^(S_IF stmtIfBlock stmtsElif stmtElse?)
-	|	'if' stmtIfBlock stmtElse	-> ^(S_IF stmtIfBlock stmtElse)
-	|	'if' stmtIfBlock -> ^(S_IF stmtIfBlock)
 	;
 stmtIfBlock
-	:	'(' expr ')' stmtBlock -> ^(E_COND expr) stmtBlock
+	:	'(' expr ')' stmtBlock -> expr stmtBlock
 	;
 stmtsElif
-	:	stmtElif+
+	:	stmtElif* -> ^(LIST stmtElif*)
 	;
 stmtElif
 	:	'elif' stmtIfBlock -> ^(S_ELIF stmtIfBlock)
 	;
 stmtElse
-	:	'else' stmtBlock -> ^(S_ELSE stmtBlock)
+	:	'else' stmtBlock -> stmtBlock
 	;
 stmtProvided
 	:	'provided' '(' expr ')' stmtBlock (stmtElse)?
 		-> ^(S_PROVIDED expr stmtBlock stmtElse?)
 	;
 stmtWhile
-	:	'while' '('	expr')' stmtBlock -> ^(S_WHILE stmtBlock)
+	:	'while' '('	expr')' stmtBlock -> ^(S_WHILE expr stmtBlock)
 	;
 varDeclaration    
    :	 varAttr varDecl delim	-> varDecl
@@ -784,7 +783,7 @@ scope {
 @init {
 	$varDecl::typ = null;
 }
-	:	(typeName IDENT (ASSIGN expr)? ',') => varDeclList	
+	:	(typeName IDENT ((ASSIGN | BIND) expr)? ',') => varDeclList	
 	|  (typeName IDENT '[') => varArray 
 	|  (typeName '(' ) => varFcnRef 
 	|   (typeName varInit) => varDeclList
@@ -832,10 +831,11 @@ varDeclList  // int x, y=3, z=3, a
 	;
 varInit	
 // child is inital value
-	: IDENT (ASSIGN expr)?
+	: IDENT BIND expr { atFlags.add(AttrFlags.PROTOCOL_MEMBER); }	
+		-> ^(D_VAR {$varDecl::typ} ^(IDENT expr?))
+	| IDENT (ASSIGN expr)?
 		-> ^(D_VAR {$varDecl::typ} ^(IDENT expr?))
 	;
-
 builtinType
     :   'bool'
     |   'byte'
@@ -910,10 +910,8 @@ injectionCode
 delim
 	:	(SEMI) (NL)*	-> 
 	|	(NL)+	-> 
+	// needed when the last stmt in a block ends with '}' (no NL or SEMI)
 	|	((NL)* '}') =>  NL* -> 
-	;
-delim_implicit
-	:	
 	;
 // lexer
 // convention: lexer rules are upper case.
@@ -967,7 +965,7 @@ fragment I:       ('a'..'z'|'A'..'Z'|'_'|'$') ;
 fragment D:        '0'..'9' ;
 fragment O:			 '0'..'7';
 fragment H:        'a'..'f' | 'A'..'F' | '0'..'9' ;
-fragment E:        ('E' | 'e') ('+' | MINUS)? (D)+ ;
+fragment E:        ('E' | 'e') (PLUS | MINUS)? (D)+ ;
 fragment LU:       'LU' | 'Lu' | 'lU' | 'lu' | 'UL' | 'uL' | 'Ul' | 'ul' | 'l' | 'u' | 'L' | 'U' ;
 fragment IJ_BEG:	 '+{';
 fragment IJ_END:	 '}+';

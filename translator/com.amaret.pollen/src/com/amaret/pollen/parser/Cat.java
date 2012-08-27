@@ -370,6 +370,16 @@ public class Cat implements Cloneable {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	/**
+	 * @param unit
+	 * @param definingScope
+	 * @return
+	 */
+	public static Cat fromSymbolNode(UnitNode unit, IScope definingScope) {
+		// TODO Auto-generated method stub
+		return null;
+	}
     
 /*    public static final Cat ESCAPE = new Cat();
     public static final Cat HASH = new Cat();

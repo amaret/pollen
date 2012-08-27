@@ -4,13 +4,27 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.SymbolTable;
+import com.amaret.pollen.parser.UnitNode;
 
 public class ProcessUnits {
 	private SymbolTable symbolTable;
-	
+
+	String inputPath = "";
+
+	@SuppressWarnings("serial")
+	static public class Termination extends RuntimeException {
+		public Termination(String msg) {
+			super(msg);
+		}
+		public Termination() {
+			super();
+		}
+	}
+
 	/**
 	 * 
 	 * @param path
@@ -18,7 +32,7 @@ public class ProcessUnits {
 	 */
 	private boolean isRelativePath(String path) {
 		boolean relativePath = false;
-    	
+
 		if (File.separatorChar == '\\') { // windows
 			relativePath = !path.matches(".*:\\\\.*");
 		}
@@ -29,38 +43,15 @@ public class ProcessUnits {
 	}
 	/**
 	 * 
-	 * @param path - a absolute path for a package
-	 * @return ArrayList of pollen files
-	 */
-	private ArrayList<String> getPollenFiles(String path) {
-		
-		File pkg = new File(path);
-		FilenameFilter filter = new FilenameFilter() {
-			public boolean accept(File pathname, String s) {				
-				if (s.endsWith(".p"))
-					return true;
-				return false;
-			}
-		};
-		String[] pfs = pkg.list(filter);
-		if (pfs != null) {
-			ArrayList<String> pollenFiles = new ArrayList<String>();
-			for (int i=0; i< pfs.length; i++) {
-				pollenFiles.add(path + File.separator + pfs[i]);				
-			}	
-			return pollenFiles;
-		}		
-		return new ArrayList<String>();
-	}
- 
-	/**
-	 * 
 	 * @param path - a absolute path for a bundle
-	 * @return ArrayList of packages
+	 * @return a HashMap of (package name, package path)
 	 */
-	private ArrayList<String> getPackages(String path) {
-		
+	private HashMap<String, String> getPackages(String path) {
+
 		File bundle = new File(path);
+
+		HashMap<String, String>	map = new HashMap<String, String>();					
+
 		FilenameFilter filter = new FilenameFilter() {
 			public boolean accept(File pathname, String s) {
 				File f = new File(pathname.getAbsolutePath() + File.separator + s);
@@ -71,85 +62,115 @@ public class ProcessUnits {
 		};
 		String[] pkgs = bundle.list(filter);
 		if (pkgs != null) {
-			ArrayList<String> packages = new ArrayList<String>();
 			for (int i=0; i< pkgs.length; i++) {
-				packages.add(path + File.separator + pkgs[i]);				
-			}	
-			return packages;
-		}		
-		return new ArrayList<String>();
+				if (!map.containsKey(pkgs[i]))
+					map.put(pkgs[i], path + File.separator + pkgs[i]);		
+			}			
+		}	
+		return map;
 	}
-   	
+	/**
+	 * Inputs: a pollen file and a HashMap of packages <name, path>
+	 * @author lucidbee
+	 *
+	 */
+	class Inputs {
+		String pollenFile = "";
+		HashMap<String, String> packages = new HashMap<String, String>();
+	}
 	/**
 	 * 
-	 * @param args - bundles and pollen files
-	 * @return list of fully qualified pollen file names
+	 * @param args - bundles and pollen file
+	 * @return a HashMap of packages <name, path>
 	 */
-	public ArrayList<String> setupInputs(String[] args) throws Exception {
+	private Inputs getInputs(String[] args) throws Exception {
 		
+		Inputs inputs = new Inputs();
+
 		String p = "";
-		ArrayList<String> paths = new ArrayList<String>();
 		for (int i=0; i < args.length; i++) {
 			p = args[i];
 			if (this.isRelativePath(p)) {
 				p = System.getProperty("user.dir") + File.separator + p;
 			}
 			if (p.endsWith(".p")) { // pollen file
-				paths.add(p);
+				if (!inputs.pollenFile.isEmpty()) {
+					throw new Termination ("Invalid inputs: translator accepts one pollen file and a set of bundles");					
+				}
+				inputs.pollenFile = p;
 				continue;
 			}			
 			// else 'p' is a bundle
-			ArrayList<String> packages = this.getPackages(p);
-			for (String pkg : packages) {
-				ArrayList<String> pollenFiles = this.getPollenFiles(pkg);	
-				for (String pf : pollenFiles) {
-					paths.add(pf);
-				}
-			}						
+			inputs.packages.putAll(this.getPackages(p));
+			
+	        int k = p.lastIndexOf('.');
+	        int j = p.lastIndexOf(".", k-1);
+	        j = j == -1 ? 0 : j +1;
+	        String pname = p.substring(j, k);
+	        if (!inputs.packages.containsKey(pname)) {
+	        	// add the package of the pollen file 
+	        	inputs.packages.put(pname, p.substring(0,k));
+	        }
 		}
-		if (paths.size() == 0) 
-			throw new Exception("No valid input files");
-		return paths;
+		if (inputs.pollenFile.isEmpty() || inputs.packages.isEmpty()) {
+			throw new Termination ("Invalid inputs: translator accepts one pollen file and a set of bundles");					
+		}
+		return inputs;
 	}
-	protected void parseUnit(
-			String inputPath,
+	/**
+	 * Parse the pollen file and all its dependencies (imports). 
+	 * @param args
+	 * @param outputStream
+	 * @param errorStream
+	 * @param infoStream
+	 * @param symtab
+	 * @return a HashMap of unit names and unit nodes.
+	 * @throws Exception
+	 */
+	protected HashMap<String, UnitNode> parseUnit(
+			String[] args,
 			PrintStream outputStream,
-            PrintStream errorStream,
-            PrintStream infoStream, 
-            SymbolTable symtab) throws Exception {
-				
-		ParseUnit.startUnit(inputPath, outputStream, errorStream, infoStream, symtab);
-		ParseUnit.current().parseUnit();
-		// for each file...
-		// createAST
-		// if errors = 0
-		// doPass1(), etc.	
+			PrintStream errorStream,
+			PrintStream infoStream, 
+			SymbolTable symtab) throws Exception {
+		
+		Inputs files = this.getInputs(args);
+
+		ParseUnit.initParse(files.pollenFile, files.packages, outputStream, errorStream, infoStream, symtab);
+
+		return ParseUnit.current().parseUnits();
 	}
-	protected void translateUnit() {
-		// walk the AST generating javascript, executing javascript and creating 'c' files
+	protected void translateUnit(HashMap<String, UnitNode> unitMap) {
+		
+		if (ParseUnit.current().getErrorCount() == 0) {
+			UnitNode curUnit = ParseUnit.current().getCurrUnitNode();
+			com.amaret.pollen.translator.Generator.genUnits(curUnit, unitMap);
+		}
+		
 	}
 	/**
 	 * Entry to translator.
-	 * @param files - absolute paths to pollen files
+	 * @param args 
 	 * @param outputStream
 	 * @param errorStream
 	 * @param infoStream
 	 */
 	public void processUnits(
-			ArrayList<String> files,
+			String[] args,
 			PrintStream outputStream,
-            PrintStream errorStream,
-            PrintStream infoStream) throws Exception {
-		
+			PrintStream errorStream,
+			PrintStream infoStream) throws Exception {
+
 		SymbolTable symbolTable = new SymbolTable();
+
+		HashMap<String, UnitNode> unitNodes;
+
+		unitNodes = this.parseUnit(args, outputStream, infoStream, errorStream, symbolTable);
 		
-		for (String input : files) {
-			this.parseUnit(input, outputStream, infoStream, errorStream, symbolTable);
-			// TODO 
-			this.translateUnit();
-			
-		}
-		
+		this.translateUnit(unitNodes);
+
+
+
 	}
 
 }
