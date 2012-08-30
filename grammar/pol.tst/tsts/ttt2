@@ -1,0 +1,25 @@
+package pollen.data.test
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/test-base/pollen.data.test/QueueCapacity.p
+
+from pollen.data import Queue{uint8, 10} as Queue
+from pollen.data import Queue as Queue1
+from mcu.localhost import Write
+
+module QueueCapacity {
+
+        Queue1{bool, Queue{uint8, 10}} q
+        Queue q //= new Queue 
+
+        Queue q() {
+        }
+
+        (uint8, bool) myfcn() {
+            return (8, true)
+        }
+    
+        pollen.run() {
+       
+          
+    
+        }   
+}

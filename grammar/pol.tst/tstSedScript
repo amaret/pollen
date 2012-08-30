@@ -1,0 +1,6 @@
+#!/bin/bash
+for i in tst_*.gunit
+do
+  sed -e 's/gunit pol;/gunit pollen;/' $i  > $i.new
+  mv $i.new $i
+done

@@ -1,0 +1,27 @@
+gunit pol;
+// enum in unit
+unit:
+"package em.distro.arduino.diecimila
+
+import BoardC
+enum ClockSource {SCLK=2, ACLK=1}" 
+->""
+
+// enum in composition
+unit:
+"package em.distro.arduino.diecimila
+
+import BoardC
+composition DistroC extends BoardC {
+enum ClockSource {SCLK, ACLK, SMCLK, USISWCLK, TACCR0, TACCR1}
+}" ->""
+
+// enum in protocol
+unit:
+"package em.distro.arduino.diecimila
+
+import BoardC
+protocol DistroC extends BoardC {
+enum ClockSource {SCLK, ACLK, SMCLK, USISWCLK, TACCR0, TACCR1}
+}" ->""
+

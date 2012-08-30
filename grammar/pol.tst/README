@@ -1,0 +1,25 @@
+This is the testable grammar version. 
+It requires certain options in antlr
+(ASTLabelType, TokenLabelType)
+to have their default values or it will 
+not work. The generated AntlrWorks code
+has dependencies. 
+
+Therefore it has to be maintained
+separately from the production grammar.
+
+It is useful for checking new 
+features in the grammar.
+
+Correct 'expected' test output is 
+not implemented, just grep output 
+against the master file.
+
+The directory 'AntlrWorks workspace'
+is the development dir for this 
+grammar version. 
+
+use runt or runt_all for running tests.
+the parameter 'new' will create a new
+testable grammar from the pollen.g
+in directory 'AntlrWorks workspace'.

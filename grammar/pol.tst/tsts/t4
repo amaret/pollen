@@ -1,0 +1,118 @@
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.atmel.atmega328p/I2C.p
+from pollen.interfaces import I2C as I2CI
+
+#import McuLayout.PC4 as sdaPin
+#import McuLayout.PC5 as sclPin
+
+module I2C implements I2CI {
+
+	# host Gpio sclPin
+	# host Gpio sdaPin
+	#host 
+	uint32 slowestSlaveFrequency = 100000
+	#host 
+	uint32 mcuFrequency = 16000000 		# THIS MUST BE CHANGED!!
+
+	#host setSlowestSlaveFrequency(uint32 freq) { }
+	
+	#const
+	uint8 MT_SLA_ACK = 0x18
+        uint8 MR_SLA_ACK = 0x40
+        uint8 MT_DATA_ACK = 0x28
+        uint8 START = 0x08
+        uint8 RESTART = 0x10	
+
+	+{ #include <avr/io.h> }+
+    
+    bool ready() {
+	    return (+{TWCR}+ & (1 << +{TWINT}+)) ? true : false    	
+    }
+    
+    I2C() {
+		#sclPin.set()
+    	#sclPin.makeOutput()
+    	
+		#sdaPin.set()
+    	#sdaPin.makeOutput()
+    }
+    
+    public enableAsMaster() { 
+   	uint32 sclFrequency = 0
+    	uint8 prescaler = 0
+    
+    	# Ensure that TWI is not in power reduction
+    	+{PRR &= ~(1<<PRTWI)}+
+    
+    	sclFrequency = ((mcuFrequency / slowestSlaveFrequency) - 16) / 2
+    	while(sclFrequency > 255) {
+        	sclFrequency >>= 2
+        	prescaler++
+    	}
+    
+    	+{TWSR}+ = (prescaler << +{TWPS0}+)
+    	+{TWBR}+ = sclFrequency    
+	    +{TWSR}+ = 0
+    	+{TWBR}+ = 72
+    	+{TWCR}+ = (1 << +{TWEN}+) | (1 << +{TWEA}+)
+    }
+	
+	public enableAsSlave() {
+	}
+	
+	---
+	Read a single byte from the bus. If ack is true, an ack will be sent.
+	---
+	public uint8 get(bool ack) {
+	    +{TWCR}+ = (1 << +{TWINT}+) | (1 << +{TWEN}+) | (ack ? (1 << +{TWEA}+) : 0)    
+	    while(!ready()) {}
+
+    	return +{TWDR}+		
+	}
+	
+	---
+	Write a single byte to the bus. Returns 0 if no error. 
+	--- 
+	public uint8 put(uint8 data) {
+	    +{TWDR}+ = data    
+    	+{TWCR}+ = (1 << +{TWINT}+) | (1 << +{TWEN}+) | (1 << +{TWEA}+)    
+    	while(!ready()) {}
+    
+    	if((+{TWSR}+ & 0xF8) != MT_DATA_ACK) {
+    		return 1
+    	}
+    
+    	return 0
+	}
+	
+	---
+	Sends a start condition to the addressed client and true if writing to the bus.
+	---
+	public uint8 start(uint8 address, bool write) {
+	    +{TWCR = (1 << TWINT) | (1 << TWSTA) | (1 << TWEN) | (1 << TWEA)}+    
+    	while(!ready()) {}
+    
+    	if(((+{TWSR}+ & 0xF8) != START) && ((+{TWSR}+ & 0xF8) != RESTART)) {
+        	#printf \"TWSR (1): 0x%x\" (TWSR & 0xF8)
+        	return 1
+    	}
+    
+    	+{TWDR}+ = (address << 1) | (write ? 0 : 1)
+    
+    	# changed from |= to =
+    	+{TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWEA)}+    
+    	while(!ready()) {}
+    
+    	if(((+{TWSR}+ & 0xF8) != MT_SLA_ACK) && ((+{TWSR}+ & 0xF8) != MR_SLA_ACK)) {
+        	#printf \"TWSR (2): 0x%x\" (TWSR & 0xF8)
+        	return 2
+    	}
+    
+    	return 0
+	}
+
+	# send a stop condition on the bus
+	public stop() {
+	    +{TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO) | (1 << TWEA)}+
+	}
+	
+}

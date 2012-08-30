@@ -1,0 +1,102 @@
+gunit pol;
+
+//test rule: parse simple module defn
+unit:
+"package em.mcu.avr.atmega328p
+module stuff implements moreStuff { }
+" -> "(UNIT package em mcu avr atmega328p DELIM (module stuff (implements moreStuff) { } DELIM) null)"
+
+// 2
+unit:
+"package em.bios
+
+from em.bios import EventDispatcherI
+from em.bios import EventDispatcherProviderI
+
+module EventDispatcher implements EventDispatcherI {
+
+}" -> "(UNIT package em bios DELIM (import from em bios EventDispatcherI) DELIM (import from em bios EventDispatcherProviderI) DELIM (module EventDispatcher (implements EventDispatcherI) { }) null)"
+
+// 3
+unit: 
+"package em.bios 
+ 
+ from em.bios import EventDispatcherI  
+ from em.bios import EventDispatcherProviderI  
+ 
+ module EventDispatcher implements EventDispatcherI { 
+ 
+}"-> "(UNIT package em bios DELIM (import from em bios EventDispatcherI) DELIM (import from em bios EventDispatcherProviderI) DELIM (module EventDispatcher (implements EventDispatcherI) { }) null)"
+
+
+// 4
+unit: 
+"package pollen.tst 
+from pollen.interfaces import Gpio  
+ 
+from mcu.atmel.atmega328p import PD5  
+ 
+module FancyPD5 implements Gpio { 
+}"-> "(UNIT package pollen tst DELIM (import from pollen interfaces Gpio) DELIM (import from mcu atmel atmega328p PD5) DELIM (module FancyPD5 (implements Gpio) { }) null)"
+
+
+// 5
+unit: 
+"package mcu.atmel.atmega328p 
+ 
+from pollen.interfaces import GlobalInterrupts  as GI 
+ 
+module GlobalInterrupts implements GI { 
+}"  -> "(UNIT package mcu atmel atmega328p DELIM (import from pollen interfaces GlobalInterrupts as GI) DELIM (module GlobalInterrupts (implements GI) { }) null)"
+
+
+// 6
+unit: 
+"package mcu.atmel.atmega328p 
+ 
+from pollen.interfaces import Uart  as UartI 
+
+import Atmega328p  as Mcu 
+ 
+module Uart implements UartI { 
+}"  -> "(UNIT package mcu atmel atmega328p DELIM (import from pollen interfaces Uart as UartI) DELIM (import Atmega328p as Mcu) DELIM (module Uart (implements UartI) { }) null)"
+
+
+// 7
+unit:
+"from pollen.interfaces import Mcu
+
+protocol Msp430 extends Mcu { # test comment
+
+}" -> "(UNIT (import from pollen interfaces Mcu) DELIM (protocol Msp430 (extends Mcu) { }) null)"
+
+
+// 8
+unit:
+"package em.distro.arduino.diecimila
+
+import BoardC
+
+from em.bios import KernelC
+from em.utils import AssertC
+from McuC import TimerMilli8BitTimer0 as TimerMilliDriver
+
+composition DistroC extends BoardC {
+}" -> "(UNIT package em distro arduino diecimila DELIM (import BoardC) DELIM (import from em bios KernelC) DELIM (import from em utils AssertC) DELIM (import from McuC TimerMilli8BitTimer0 as TimerMilliDriver) DELIM (composition DistroC (extends BoardC) { }) null)"
+
+// 9
+unit:
+"package em.distro.arduino.diecimila
+
+import BoardC
+composition DistroC extends BoardC {
+enum ClockSource {SCLK, ACLK, SMCLK, USISWCLK, TACCR0, TACCR1}
+}" ->"(UNIT (package em distro arduino diecimila DELIM) (import BoardC DELIM) (composition (DistroC (extends BoardC) { (enum (ClockSource { SCLK ACLK SMCLK USISWCLK TACCR0 TACCR1 } DELIM)) })) null)"
+
+// 10
+unit:
+"package em.distro.arduino.diecimila
+
+import BoardC
+enum ClockSource {SCLK=2, ACLK=7}" 
+->"(UNIT (package em distro arduino diecimila DELIM) (import BoardC DELIM) (enum (ClockSource { (SCLK 2) (ACLK true) })) null)"

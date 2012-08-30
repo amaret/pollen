@@ -1,0 +1,32 @@
+---
+
+Meta module for AVR Gpio
+
+---
+
+package mcu.atmel.atmega328p
+
+from pollen.interfaces import Gpio
+
+module GpioMeta implements Gpio {
+
+		public bool get() { return (+{port}+ & (1 << pin)) ? true : false }
+
+		public bool isInput() { 
+                       bool x = (+{ddr}+ & (1 << pin)) ? false : true 
+                       return ((+{ddr}+ & (1 << pin)) ? false : true) 
+ 		}
+		public (bool, bool) chkInput() { 
+                       return ((+{ddr}+ & (1 << pin)) ? false : true, (+{ddr}+ & (1 << pin)) ? false : true )
+ 		}
+
+		public bool isOutput() { 
+			return (+{ddr}+ & (1 << pin)) ? true : false 
+		}
+		public bool t() { return (false) }
+		# test multiple return
+		        (uint8, bool) myfcn() {
+            		return (8, true)
+        	}
+
+	}

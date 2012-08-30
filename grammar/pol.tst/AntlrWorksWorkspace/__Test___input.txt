@@ -1,0 +1,22 @@
+package cc.arduino
+
+import Duemilanove as Board
+from Board import Led
+from Board import Mcu
+from Mcu import GlobalInterrupts
+from Mcu import TimerMilli8BitTimer0 as TD
+
+from pollen.time import Time
+from pollen.events import Events
+
+module M {
+
+        Pin p
+        public host uint32 getSystemFrequency() {
+			   int x = 3
+                        
+		       M.p := z
+            
+        }
+}
+

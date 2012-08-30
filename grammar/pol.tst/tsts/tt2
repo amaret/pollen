@@ -1,0 +1,23 @@
+package mcu.ti.msp430
+
+from pollen.interfaces import Interrupt
+from pollen.interfaces import Handler
+
+module TimerA0Interrupt implements Interrupt {
+
+	Queue() {
+                #@head = @tail = @num = 0
+                @head = 0
+                @tail = 0
+                @num = 0
+        }
+	
+#	isr() {
+#          h()
+#          h().fld
+#          h().fld[3]
+#	  h()[3].fld
+#	  h().fld1.fld2
+#		//if (h != null) { h(x) }
+#	}
+}

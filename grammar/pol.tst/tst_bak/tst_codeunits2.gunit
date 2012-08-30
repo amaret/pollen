@@ -1,0 +1,1231 @@
+gunit pol;
+// test TWO pollen code functions etc
+unit:
+"package mcu.ti.msp430
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.ti.msp430/TimerA0Interrupt.p
+
+from pollen.interfaces import Interrupt
+from pollen.interfaces import Handler
+
+module TimerA0Interrupt implements Interrupt {
+
+	Handler.handle h
+	
+	# This is all msp430 gcc specific!
+	+{ #include <msp430g2231.h> }+
+	+{ #include <legacymsp430.h> }+
+
+	+{ interrupt (TIMERA0_VECTOR) TimerA0Interrupt_ISR() { }+
+    	+{isr()}+
+    +{;} }+ 
+
+	public host setHandler(Handler.handle h) { @h = h }
+	
+	public setHandler(Handler.handle h) { @h = h }
+	
+	public enable() {
+		+{TACCTL0}+ |= (1 << 4)
+	}
+
+	public bool enabled() {
+		return +{TACCTL0}+ & (1 << 4) ? true : false
+	}
+
+	public disable() {
+		+{TACCTL0}+ &= ~(1 << 4)	
+	}
+
+	public clear() {
+		+{TACCTL0}+ &= ~(1 << 0)
+	}
+	
+	isr() {
+		if (h != null) { h() }
+	}
+}" -> ""
+unit:
+"package mcu.ti.msp430
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.ti.msp430/TimerMilliA0.p
+
+---
+
+This module implements a millisecond timer using hardware timer A0.
+
+---
+
+from pollen.interfaces import TimerDriver
+from pollen.interfaces import Handler
+import TimerA0Interrupt as Interrupt
+
+module TimerMilliA0 implements TimerDriver {
+
+	+{ #include <msp430g2231.h> }+
+
+	host uint16 ticksPerMs = 1000	# compute ticksPerMs in host initializer
+
+	TimerMilliA0() {
+		+{TACTL = TASSEL_2 + MC_0}+  # Timer using SMCLK, set to off      
+	    +{TACCR0}+ = ticksPerMs      # Count to 10K, @1MHZ thats 1ms.
+	}
+
+	#public host setHandler(Handler.handle h = null) {
+	#	Interrupt.setHandler(h)
+	#}
+
+	public setHandler(Handler.handle h = null) {
+		Interrupt.setHandler(h)
+	}
+
+	public start() {
+		+{TAR}+ = 0
+		Interrupt.clear()
+		Interrupt.enable()
+		+{TACTL |= MC_1}+         	 # Timer on in Up Mode
+	}
+
+	public stop() {
+	    Interrupt.disable()
+    	Interrupt.clear()
+		uint16 mask = ~(3 << 4) //+{;}+
+	    +{TACTL}+ &= mask    
+	}
+
+	public bool running() {
+	    return (+{TACTL & MC_1}+ && Interrupt.enabled()) ? true : false
+	}
+}" -> ""
+unit:
+"package mcu.ti.msp430
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.ti.msp430/TimerMilli.p
+
+from pollen.interfaces import Timer as TimerI
+from pollen.events import Events
+from pollen.events import Event{uint8} as Event
+import TimerMilliA0 as TA0
+
+module TimerMilli implements TimerI {
+
+	Event event
+	uint16 duration
+	uint16 current
+	bool repeat
+	
+	# host TimerMilli() {} 	# can't call host functions from there yet
+
+	TimerMilli() {
+		TA0.setHandler(timerInterrupt)
+	}
+	
+    public start(Event onTick, uint16 duration, bool repeat = true) {
+    	@event = onTick; 
+    	@duration = duration; 
+    	@repeat = repeat; 
+    	@current = 0    	
+    	TA0.start()
+    }
+    
+    public stop() {
+		TA0.stop()    
+    }
+
+	public bool periodic() { return repeat }
+
+    public bool running() { return TA0.running() }
+
+    public uint16 ticksPerSecond() { return 1000 }
+    
+    timerInterrupt() {
+		if (++current == duration) {			
+	    	if (repeat == true) {
+	    		current = 0
+	    	} else {
+	    		TA0.stop()
+	    	}
+	    	
+	    	if (event != 0) {
+	    		Events.postFromInterrupt(event)
+    		}    	
+		}
+
+    }
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.ti.msp430/Wait.p
+---
+
+A microsecond busywait delay module
+
+---
+package mcu.ti.msp430
+
+from pollen.interfaces import Wait as WaitI
+
+module Wait implements WaitI {
+
+    # host initializer for this module should compute a string with the set of
+    # nop operations necessary to delay for 1us given the MCU's frequency
+    # host Wait() {}
+
+	public us(uint32 microseconds) {
+		volatile uint32 t
+
+	    # once upon a time it was measured that for more than one 
+    	# iteration of the loop it takes about 7 cycles per iteration.  		
+		for (uint32 i = 0; i < (microseconds / 10) + 1; i++) {
+			t = 0
+		}
+	}
+}" -> ""
+unit:
+"package mcu.ti.msp430g2231
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.ti.msp430g2231/Interrupts.p
+
+from mcu.ti.msp430 import InterruptMeta{} as GpioP1
+from mcu.ti.msp430 import InterruptMeta{} as GpioP2
+
+composition Interrupts {
+
+	export GpioP1
+	export GpioP2
+	
+}" -> ""
+unit:
+"package mcu.ti.msp430g2231
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.ti.msp430g2231/Mcu.p
+
+import Msp430g2231
+from mcu.ti.msp430 import GlobalInterrupts
+from mcu.ti.msp430 import TimerMilliA0
+
+from mcu.ti.msp430 import GpioMeta{\"msp430g2231.h\", \"P1DIR\", \"P1IN\", \"P1OUT\", 0} as P1_0
+from mcu.ti.msp430 import GpioMeta{\"msp430g2231.h\", \"P1DIR\", \"P1IN\", \"P1OUT\", 6} as P1_6
+
+
+composition Mcu { 	# implements pollen.interfaces.Mcu
+
+	#=========================
+	# Mcu Methods
+	#=========================
+
+	export Msp430g2231.reset
+	export Msp430g2231.shutdown
+	export Msp430g2231.wait
+	export Msp430g2231.nop
+
+	#=========================	
+	# Mcu Modules
+	#=========================
+		
+	export GlobalInterrupts
+	export TimerMilliA0
+
+	# Gpio Port P1
+	export P1_0
+	#export P1_1
+	#export P1_2
+	#export P1_3
+	#export P1_4
+	#export P1_5
+	export P1_6
+	#export P1_7
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.ti.msp430g2231/Msp430g2231.p
+---
+This module provides an msp430g2231 specific implementation of the Mcu interface.
+
+The MCLK and SMCLK are configured here. Possible combinations are:
+MCLK: 1MHz,    SMCLK: 1MHz,    500KHz,     250KHz,     125KHz
+MCLK: 500KHz,  SMCLK: 500KHz,  250KHz,     125KHz,     62.5KHz
+MCLK: 250KHz,  SMCLK: 250KHz,  125KHz,     62.5KHz,    31.25KHz
+MCLK: 125KHz,  SMCLK: 125KHz,  62.5KHz,    31.25KHz,   15.625KHz
+
+---
+
+package mcu.ti.msp430g2231
+
+from pollen.interfaces import Mcu as McuI
+#from mcu.ti.msp430 import Msp430
+from mcu.ti.msp430 import Wait
+
+module Msp430g2231 implements McuI {	# implements Msp430 (when interface inheritance works)
+
+	host uint32 mclkFrequency = 1000000
+	host uint32 smclkFrequency = 1000000
+	host uint32 aclkFrequency = 0
+
+	+{ #include <msp430g2231.h> }+
+
+	---
+	This function needs a revamp! Leverage the host to figure shit out.
+	---
+	public reset() {
+
+	    +{WDTCTL = WDTPW | WDTHOLD}+         		# Stop watchdog timer
+	    +{BCSCTL1 = CALBC1_1MHZ}+					# Set MCLK to calibrated 1MHZ
+	    +{DCOCTL = CALDCO_1MHZ}+
+	    
+    	if (mclkFrequency == 1000000) {      		
+		    #+{DCOCTL}+ = 0
+        
+	        if(smclkFrequency == 500000) {	 		# Set SMCLK to 1/2 MCLK
+	            +{BCSCTL2 = DIVS_1}+
+	        } elif (smclkFrequency == 250000) { 	# Set SMCLK to 1/4 MCLK
+	            +{BCSCTL2 = DIVS_2}+
+	        } elif (smclkFrequency == 125000) { 	# Set SMCLK to 1/8 MCLK
+	            +{BCSCTL2 = DIVS_3}+
+	        }
+	    } elif (mclkFrequency == 500000) {
+	        +{BCSCTL2 = DIVM_1}+			 	  # Set divider for 1/2 MCLK
+        
+        	if(smclkFrequency == 250000) {	 	  # Set SMCLK to 1/2 MCLK
+	            +{BCSCTL2 = DIVS_1}+
+    	    } elif (smclkFrequency == 125000) {   # Set SMCLK to 1/4 MCLK
+	            +{BCSCTL2 = DIVS_2}+
+	        } elif (smclkFrequency == 62500) {    # Set SMCLK to 1/8 MCLK
+	            +{BCSCTL2 = DIVS_3}+
+	        }
+    	} elif (mclkFrequency == 250000) { 
+        	+{BCSCTL2 = DIVM_2}+			 	  # Set divider for 1/4 MCLK
+        
+        	if (smclkFrequency == 125000) { 	  # Set SMCLK to 1/2 MCLK
+            	+{BCSCTL2 = DIVS_1}+
+        	} elif (smclkFrequency == 62500) {    # Set SMCLK to 1/4 MCLK
+            	+{BCSCTL2 = DIVS_2}+
+        	} elif (smclkFrequency == 31250) {    # Set SMCLK to 1/8 MCLK
+            	+{BCSCTL2 = DIVS_3}+
+        	}
+    	} elif (mclkFrequency == 125000) {
+            +{BCSCTL2 = DIVM_3}+			  # Set divider for 1/8 MCLK
+                	        
+	    	if (smclkFrequency == 62500) {        # Set SMCLK to 1/2 MCLK
+            	+{BCSCTL2 = DIVS_1}+
+        	} elif(smclkFrequency == 31250) {     # Set SMCLK to 1/4 MCLK
+ 	           	+{BCSCTL2 = DIVS_2}+
+        	} elif(smclkFrequency == 15625) {     # Set SMCLK to 1/8 MCLK
+            	+{BCSCTL2 = DIVS_3}+
+        	}
+    	} else {
+    		# Notify of wrong configuration settings
+    	}
+    	
+    	# +{BCSCTL1 &= ~(XTS)}+         # set XTS bit to low frequency mode
+	    # +{BCSCTL2}+ |= 0x5            # divide the SM clock by 8
+    	# +{BCSCTL3 |= LFXT1S_0}+       # set ACLK to 32768Hz crystal
+	}
+
+	public shutdown() {
+	}
+	
+	public wait(uint32 us) {
+		Wait.us(us)
+	}
+	
+	public nop() {
+        +{ asm(\"nop\") }+		
+	}
+}" -> ""
+unit:
+"from pollen.interfaces import TimerDriver
+from pollen.interfaces import Uart
+from pollen.interfaces import Gpio
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.ti.msp430g2231/SoftwareUart.p
+
+module SoftwareUart implements Uart {
+
+	host TimerDriver Timer = 0
+	host Gpio RxPin = 0
+	host Gpio TxPin = 0
+
+   	uint32 baudRate = 9600
+	host uint8 dataBits = 8
+	host uint8 stopBits = 1
+	host uint8 parity = 0	
+	host uint8 baudh
+	host uint8 baudl
+    
+    SoftwareUart() {
+    
+    }
+    
+    host bindInterfaces (TimerDriver TD, Gpio Rx, Gpio Tx) {
+    	Timer = TD
+    	RxPin = Rx
+    	TxPin = Tx
+    }
+    
+    public put( uint8 data ) {
+    
+    }
+    
+    public uint8 get() {
+    
+    }
+    
+    public flush() {
+    }
+
+    public setBaud( uint32 baud ) {
+    
+    }
+}" -> ""
+unit:
+"package board.ti
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/ti.launchpad/LaunchPad.p
+
+from mcu.ti.msp430g2231 import Mcu
+from Mcu import P1_0
+
+from pollen.parts import Led{false} as Led
+
+composition LaunchPad {
+
+	export Mcu
+    export Led
+    
+    export P1_0
+    
+    host LaunchPad() {
+        Led.bindPin(P1_0)
+	}
+
+}" -> ""
+unit:
+"package pollen.data 
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.data/Queue.p
+
+---
+
+FIFO queue data type implemented as an array of fixed length.
+
+---
+#from mcu.localhost import Write
+
+meta {type T, uint8 cap} class Queue {
+	
+	host uint8 capacity = cap
+	T elements[capacity]
+	uint8 head = 0, tail = 0, num = 0
+		
+	Queue() {
+		# don't support that syntax for first release
+		#@head = @tail = @num = 0
+		@head = 0
+		@tail = 0
+		@num = 0
+	}
+	
+	public host setCapacity(uint8 cap) { @capacity = cap }
+
+	public bool enqueue(T t) {
+		if (num < capacity) {
+			elements[tail] = t
+			num++
+			tail++
+			if (tail == capacity) {	
+				tail = 0		# wrap around
+			}
+			
+			return true
+		} else {
+			return false
+		}
+	}
+	
+	public T dequeue() {
+		T t = 0
+				
+		if (num > 0) {
+			t = elements[head]
+			head++ 
+			if (head == capacity) { head = 0 } 
+			num-- 
+		}
+		
+		return t
+	}
+	
+	public uint8 length() {
+		return num
+	}
+	
+	public uint8 getCapacity() {
+		return capacity
+	}
+	
+	public host uint8 getCapacity() {
+		return capacity
+	}
+}" -> ""
+unit:
+"package pollen.events
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.events/Dispatcher.p
+
+---
+
+Event Dispatcher 
+
+---
+
+import Event{any} as AE
+
+from pollen.interfaces import GlobalInterrupts
+from pollen.data import Queue{AE, 10} as AEQueue
+
+module Dispatcher {
+
+    public host bindGlobalInterrupts(GlobalInterrupts gi) {
+        GI = gi
+    }
+
+	public post(AE e) { 
+		bool on = GI.disable()
+		events.enqueue(e)
+		GI.restore(on) 
+	}
+	
+	public postFromInterrupt(AE e) { events.enqueue(e) }
+
+  	public run() {
+        GI.enable() 		# start loop with interrupts enabled
+				
+		while(true) {
+
+			# Interm dispatcher loop until the one below is installed.
+			bool on = GI.disable() 		# disable interrupts
+	        AE e = events.dequeue()	
+			GI.restore(on) 				# re-enable interrupts
+	
+			if (e != null) {				
+				e.handle()				# handle event
+			}			
+			--- Should Add This Part Soon!
+             else {
+			  	pollen.hibernate()		# sleep processor
+			}
+			---
+		}
+	}
+	
+	
+	#==================================
+	# Private Members
+	#==================================
+    host GlobalInterrupts GI               # interface representative
+	value{AEQueue} events                  # should be: AEQueue events()
+
+}" -> ""
+unit:
+"package pollen.events
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.events/EventHandler.p
+
+---
+
+EventHandler meta protocol
+
+---
+
+meta{type T} protocol EventHandler {
+	public handle(T e)
+}" -> ""
+unit:
+"package pollen.events
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.events/Event.p
+
+---
+
+Event
+
+---
+
+import EventHandler{any} as EH
+
+meta{type T = uint8} class Event {
+
+  uint8 priority = 0
+  EH.handle handler = 0
+  T data = 0
+
+  public Event(EH.handle handler = 0, T data = 0, uint8 priority = 0) {
+     @handler = handler; @data = data; @priority = priority
+  }
+
+  public uint8 getPriority() { return priority }
+  public setPriority(uint8 priority) { @priority = priority }
+
+  public EH.handle getHandler() { return @handler }
+  public setHandler(EH.handle handler) { @handler = handler }
+
+  public T getData() { return data }
+  public setData(T data) { @data = data }
+
+  public handle() {
+  	if (handler != null) {	  	
+     	handler(@)
+     }
+  }
+
+}" -> ""
+unit:
+"package pollen.events
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.events/Events.p
+
+from pollen.interfaces import GlobalInterrupts
+import Dispatcher
+
+composition Events {
+
+    public host bindGlobalInterrupts(GlobalInterrupts gi) {
+        Dispatcher.bindGlobalInterrupts(gi)
+    }
+
+    export Dispatcher.post                  # Post event
+    export Dispatcher.postFromInterrupt     # Post event from interrupt context
+    export Dispatcher.run                   # Run event system
+
+}" -> ""
+unit:
+"package pollen.interfaces
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.interfaces/GlobalInterrupts.p
+
+---
+Global Interrupts interface
+---
+
+protocol GlobalInterrupts {
+
+    
+    # Disable global interrupts returning their present state,
+    # 	true = enabled, false = disabled
+    
+    bool disable()
+    
+    
+    # Enable global interrupts.
+
+    enable()
+    
+
+	# Restore global interrupts to the given state (true = on, false = off)
+	
+    restore( bool state )
+    
+}
+" -> ""
+unit:
+"package pollen.interfaces
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.interfaces/Gpio.p
+
+---
+
+---
+
+protocol Gpio {
+
+	set()				# Set the pin high
+
+	clear()				# Set the pin low
+	
+	toggle()			# Toggle the state of the pin
+	
+	bool get()			# Get the pin state
+	
+	makeInput()			# Make pin an input
+	
+	bool isInput()		# Check if pin is configured as an input
+	
+	makeOutput()		# Make pin an output
+	
+	bool isOutput()		# Check if pin is configured as an output
+	
+}" -> ""
+unit:
+"package pollen.interfaces
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.interfaces/Handler.p
+
+---
+
+Definition of a simple void handler interface for use with method references
+
+---
+
+protocol Handler {
+
+	handle()
+	
+}
+
+" -> ""
+unit:
+"package pollen.interfaces
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.interfaces/I2C.p
+
+---
+Standard Inter-Integrated Circuit (I2C) Serial Bus Driver Interface
+---
+
+protocol I2C {
+
+	enableAsMaster()
+	
+	enableAsSlave()
+	
+	# read a single byte from the bus. If ack is true, an ack will be sent. 
+	# returns byte read.
+	uint8 get( bool ack )
+	
+	# write a single byte to the bus. Returns error codes: 0, no error. 
+	# 1, error while transmitting 
+	uint8 put( uint8 data )
+	
+	# sends a start condition, an address of a client and true if writing to or 
+	# false if reading from a client on the bus.
+	uint8 start( uint8 address, bool write )
+
+	# send a stop condition on the bus
+	stop()
+	
+}" -> ""
+unit:
+"package pollen.interfaces
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.interfaces/Interrupt.p
+
+---
+
+Standard interrupt interface.
+
+---
+
+
+import Handler
+
+protocol Interrupt {
+	
+	#host setHandler(Handler.handle h)	
+	
+	public setHandler(Handler.handle h)
+
+	public enable()
+
+	public bool enabled()
+
+	public disable()
+
+	public clear()
+
+}" -> ""
+unit:
+"package pollen.interfaces
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.interfaces/Led.p
+
+protocol Led {
+
+	on()			# Turn Led On
+	
+	off()			# Turn Led Off
+	
+	toggle()		# Toggle Led State
+	
+	bool isOn()		# Check if Led is On
+}
+
+" -> ""
+unit:
+"package pollen.interfaces
+
+---
+
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.interfaces/Mcu.p
+---
+
+protocol Mcu {
+
+    reset()			# Called on power up and reset 
+    
+    shutdown()		# Called on shutdown
+    
+    wait(uint32 us)	# Microsecond delay
+    
+    nop()			# Single cycle delay
+    
+	#host uint32 getSystemFrequency()
+	
+	uint32 getSystemFrequency()
+	
+	#host setSystemFrequency(uint32 hz)
+	
+	setSystemFrequency(uint32 hz)
+	
+}
+" -> ""
+unit:
+"package pollen.interfaces
+
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.interfaces/TimerDriver.p
+import Handler
+
+protocol TimerDriver {
+
+	setHandler(Handler.handle h = null)
+
+	# host setHandler(Handler.handle h = null)
+		
+	start()
+
+    stop()
+	    
+    bool running()
+    
+}" -> ""
+unit:
+"package pollen.interfaces
+
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.interfaces/Timer.p
+---
+
+---
+
+from pollen.events import Event{any} as Event
+
+protocol Timer {
+
+	bool repeats()
+    bool running()
+    uint16 ticksPerSecond()
+
+    start(Event onTick, uint16 duration, bool repeat = true)
+    stop() 
+}" -> ""
+unit:
+"package pollen.interfaces
+
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.interfaces/Uart.p
+
+protocol Uart {
+
+	#host config(uint32 baudRate, uint8 dataBits, uint8 stopBits, uint8 parity)
+    
+    put( uint8 data )
+    
+    uint8 get()
+    
+    flush()
+
+    setBaud( uint32 baud )
+
+}
+" -> ""
+unit:
+"package pollen.interfaces
+
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.interfaces/Wait.p
+---
+Microsecond busy wait interface
+---
+
+protocol Wait {
+
+	us(uint32 dt)
+
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.parts/Led.p
+from pollen.interfaces import Gpio
+
+meta {bool isActiveLow = true}
+
+module Led {
+
+    host Gpio LedPin
+    
+    Led() {
+        LedPin.clear()
+        LedPin.makeOutput()
+    }
+    
+    public host bindPin(Gpio p) {
+        LedPin = p
+    }
+    
+    public toggle() { LedPin.toggle() }
+    
+    public on() { 
+        provided (isActiveLow == false) {
+            LedPin.set() 
+        } else {
+            LedPin.clear()
+        }
+    }
+
+    public off() { 
+        provided (isActiveLow == false) {
+            LedPin.clear()
+        } else {
+            LedPin.set()
+        }
+    }
+    
+    public bool isOn() { 
+        provided (isActiveLow == false) {
+            return LedPin.get() == false
+        } else {
+            return LedPin.get() == true
+        }
+    }
+
+}" -> ""
+unit:
+"package pollen.time
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.time/Time.p
+
+from pollen.interfaces import GlobalInterrupts
+from pollen.interfaces import TimerDriver
+
+import TimerMilli
+
+composition Time {
+
+	export TimerMilli
+
+	public host bindGlobalInterrupts(GlobalInterrupts gi) {
+	}
+	
+	public host bindTimerDriver(TimerDriver t) {
+		TimerMilli.bindTimerDriver(t)
+	}
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.time/TimerManager_.p
+
+from pollen.interfaces import Timer as TimerI
+from pollen.interfaces import TimerDriver
+from pollen.interfaces import GlobalInterrupts
+from pollen.events import Events
+from pollen.events import Event{uint8} as Event
+
+module TimerManager {
+
+	class Timer implements TimerI {
+
+		public host init() { 
+			id = numTimers
+			numTimers++
+			repeat = false
+			print \"TIMER INIT\"
+		}
+		
+		public bool repeats() { return repeat }
+
+	    public bool running() { return timers[id] != 0 }
+
+    	public uint16 ticksPerSecond() { return 1000 }
+
+    	public start(Event e, uint16 d, bool r = true) {
+			bool state = gint.disable()
+			if (!running()) {
+				expired = e
+	    		duration = d
+	    		elapsed = 0
+	    		repeat = r
+	    		timers[id] = @
+	    	}
+	   		gint.restore(state)
+    
+    		if (!hw_timer.running()) {
+    			hw_timer.start()
+    		}
+    	}
+    	
+    	public stop() {
+			bool state = gint.disable()
+			timers[id] = null
+    		gint.restore(state)
+    	}
+
+		#======================
+		# Private members
+		#======================
+		host uint8 id
+		Event expired
+		uint32 duration
+		uint32 elapsed
+		bool repeat	
+	}
+	
+	public host bindGlobalInterrupts(GlobalInterrupts gi) { 
+		gint = gi 
+	}
+	
+	public host bindTimerDriver(TimerDriver t) { 
+		hw_timer = t 
+	}
+
+	#======================
+	# Private members
+	#======================	
+	host GlobalInterrupts gint
+	host TimerDriver hw_timer
+	host uint8 numTimers = 0
+	Timer timers[numTimers]
+
+	timerISR() {		
+		bool off = true
+
+		for (uint8 i = 0; i < numTimers; i++) {
+			if (timers[i] != 0) {
+				timers[i].elapsed++
+				
+				if (timers[i].elapsed == timers[i].duration) {
+					if (timers[i].expired != 0) {
+						Events.postFromInterrupt(timers[i].expired)
+						if (timers[i].repeat) {
+							timers[i].elapsed = 0
+						} else {
+							timers[i].stop()
+						}					
+					} else {
+						timers[i].stop()
+					}					
+				}
+				off = false
+			}
+		}
+		
+		# all timers are off, turn hardware timer off
+		if (off) {
+			hw_timer.stop()
+		}
+	}
+}" -> ""
+unit:
+"from pollen.interfaces import Timer as TimerI
+from pollen.interfaces import TimerDriver
+from pollen.interfaces import GlobalInterrupts
+from pollen.events import Events
+from pollen.events import Event{uint8} as Event
+
+
+module TimerManager {
+	
+	public host bindTimerDriver(TimerDriver t) { 
+		hw_timer = t 
+	}
+
+	#public host registerTimer mcadams what is this?
+
+	#======================
+	# Private members
+	#======================	
+	host GlobalInterrupts gint
+	host TimerDriver hw_timer
+	host uint8 numTimers = 0
+	Timer timers[numTimers]
+
+	timerISR() {		
+		bool off = true
+
+		for (uint8 i = 0; i < numTimers; i++) {
+			if (timers[i] != 0) {
+				timers[i].elapsed++
+				
+				if (timers[i].elapsed == timers[i].duration) {
+					if (timers[i].expired != 0) {
+						Events.postFromInterrupt(timers[i].expired)
+						if (timers[i].repeat) {
+							timers[i].elapsed = 0
+						} else {
+							timers[i].stop()
+						}					
+					} else {
+						timers[i].stop()
+					}					
+				}
+				off = false
+			}
+		}
+		
+		# all timers are off, turn hardware timer off
+		if (off) {
+			hw_timer.stop()
+		}
+	}
+}" -> ""
+unit:
+"package pollen.time
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.time/TimerMilliInterface.p
+
+from pollen.interfaces import Handler
+
+protocol TimerMilli {
+
+    start()
+    stop()
+    bool running()
+    
+    #host setHandlerH(Handler.handle h)
+    setHandlerH(Handler.handle h)
+}
+" -> ""
+unit:
+"package pollen.time
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.time/TimerMilli.p
+
+from pollen.interfaces import Handler
+from pollen.interfaces import TimerDriver
+
+module TimerMilli {
+
+	host TimerDriver timer
+	uint16 count = 0
+	uint16 duration = 0
+	bool repeat = true
+	Handler.handle clientTick
+
+	TimerMilli() {
+		timer.setHandler(timerTick)		
+	}
+
+	public host bindTimerDriver(TimerDriver td) {
+		@timer = td	
+	}
+
+    public start(Handler.handle h, uint16 duration, bool repeat = true) {
+		@clientTick = h
+		@count = 0
+		@duration = duration
+		@repeat = repeat
+		timer.start()		
+    }
+
+	public stop() {
+		timer.stop()
+		@duration = 0
+	}
+	
+    public bool running() { 
+    	return duration != 0 && timer.running()
+    }
+    
+
+	public timerTick() {
+		++count
+		
+		if (count == duration) {
+			if (clientTick != 0) { clientTick() }
+			count = 0
+			if (!repeat) { stop() }
+		}
+	}
+}
+" -> ""
+unit:
+"package pollen.time
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/base/pollen.time/Timer.p
+
+from pollen.events import Events
+from pollen.events import Event{uint8} as Event
+
+import TimerManager
+
+class Timer {
+
+	Timer() {
+		active = 0; repeat = 0
+	}
+	
+	public start(Event e, uint32 duration, bool repeat = true) {
+		@e = e
+		@duration = duration
+		@repeat = repeat
+		@active = true
+		
+		
+	}
+	
+	public stop() {
+		@active = false
+	}
+	
+	public tick() {
+		if (active == true) {
+			# assert (elapsed < duration)
+			elapsed++
+			
+			if (elapsed == duration) {
+				if (e != 0) {
+					Events.post(e)
+				}
+				
+				if (repeat == true) {
+					elapsed = 0
+				} else {
+					stop()
+				}
+			}
+		}
+	}
+
+	public bool running() { return @active }
+
+	#======================
+	# Private members
+	#======================
+	Event e
+	uint32 duration
+	uint32 elapsed
+	bool repeat
+	bool active
+}" -> ""
+unit:
+"from cc.arduino import Environment as Env
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/examples/blink/BlinkMilliEvents.p
+
+from Env import Led
+
+from pollen.events import Event{uint8} as Event		# TODO: will eventually be just Event
+from pollen.time import TimerMilli
+
+module BlinkMilliEvents {
+
+	value{Event} e
+
+	toggle(Event e) { Led.toggle() }
+
+	tick() { Env.postFromInterrupt(e) }
+
+	pollen.run() {
+		e.setHandler(toggle)
+		TimerMilli.start(tick, 1000)
+		Env.run()
+	}
+	
+	pollen.reset() { Env.reset() }	
+	
+}" -> ""
+unit:
+"from cc.arduino import Environment as Env
+
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/examples/blink/BlinkMilli.p
+from Env import Led
+from pollen.time import TimerMilli
+
+module BlinkMilli {
+      
+        madams_chkArray() {
+          uint8 arr[8]
+          uint8 arr2d[8][2]
+        }
+
+	toggle() { Led.toggle() }
+
+	pollen.run() {
+
+		TimerMilli.start(toggle, 50)
+		Env.GlobalInterrupts.enable()		
+		while (true) { } 
+	}
+	
+	pollen.reset() { Env.reset() }	
+	
+}
+" -> ""

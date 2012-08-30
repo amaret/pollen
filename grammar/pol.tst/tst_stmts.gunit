@@ -1,0 +1,74 @@
+gunit pol;
+
+////////////////////////////////////////////////////
+//test rule: parse statements
+unit:
+"package cc.arduino
+
+import Duemilanove as Board
+from Board import Led
+from Board import Mcu
+from Mcu import GlobalInterrupts
+from Mcu import TimerMilli8BitTimer0 as TD
+
+from pollen.time import Time
+from pollen.events import Events
+
+module Environment {       
+
+      host bool fcn1(uint8 x, bool y) {
+           
+        ## test ##
+           while (1) {
+              uint z = 2
+           }
+
+        ## test ##
+           if (1) {
+             uint32 y=2
+             uint1i6 t1,t2=3, t3
+             bool t
+           }		
+
+        ## test ##
+           if (2) {
+           }	
+           else {
+             bool t2
+           }	
+
+        ## test ##
+           if(3) {                  
+                    +{BCSCTL2 = DIVS_1}+
+                } elif (7) {     # Set 
+                    +{BCSCTL2 = DIVS_2}+
+                } elif (7) {     
+                    +{BCSCTL2 = DIVS_3}+
+                } else {
+		        uint x3=7
+	        }		
+        ## test ##
+          do {
+               bool t
+           } while (true)
+        ## test ##
+        switch (7) {
+           case 2:
+           case 3:
+           default:
+        }
+        ## test ##
+        switch (7) {
+           case 2:
+             y = false; break;
+           case 3:
+             y = true
+           default:
+            break;
+        }   
+        ## test ##
+        foreach (x in 7) {
+                        
+        }
+      }
+}" -> ""

@@ -1,0 +1,7 @@
+I had to strip all rewrite rules and member code and labels to 
+get AntlrWorks to run the grammar (in debug).
+
+I am using that grammar - pol.g - as the grammar being tested. 
+
+In addtion gunit did not like the package specification in the ::header specs so I took that out.
+

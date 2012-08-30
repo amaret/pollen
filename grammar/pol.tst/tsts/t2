@@ -1,0 +1,70 @@
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.atmel.atmega328p/Atmega328p.p
+---
+
+This module provides an ATMega328p specific implementation of the Mcu interface.
+
+---
+
+package mcu.atmel.atmega328p
+
+from pollen.interfaces import Mcu as McuI
+
+module Atmega328p implements McuI {
+
+	public reset() {
+
+	}
+
+	public shutdown() {
+	}
+	
+	public wait(uint32 us) {
+		# one loop takes 4-5 cpu cycles
+	    # THIS LOOP SHOULD BE GENERATED, GIVEN MCU FREQ,
+	    # GENERATE ENOUGH nops SUCH THAT N*NOPS + 4 = (mcuFreq / 1000000)
+
+		for (; us > 0; us--) {
+		// mcadams for unit test had to delete quote marks
+		// e.g.  +{ asm(nop) }+  nop was surrouned by quotes
+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+		}
+	}
+	
+	public nop() {
+        +{ asm(nop) }+	
+	}
+
+	public host uint32 getSystemFrequency() { 
+		return @sysFreq 
+	}
+	
+	public uint32 getSystemFrequency() { 
+		return @sysFreq 
+	}
+	
+	public host setSystemFrequency(uint32 hz) {
+		@sysFreq = hz
+	}
+	
+	public setSystemFrequency(uint32 hz) {
+		@sysFreq = hz
+	}
+
+
+	#==================================
+	# Private data members 
+	#==================================
+	uint32 sysFreq
+
+}

@@ -1,0 +1,1209 @@
+gunit pol;
+// test pollen code functions etc
+unit:
+"package cc.arduino
+#/home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/cc.arduino/Duemilanove.p
+
+from mcu.atmel.atmega328p import Mcu
+
+# Rename mcu pins to names on board
+from Mcu import PB4     as D12
+from Mcu import PB5 as D13
+
+from pollen.parts import Led{false} as Led
+
+composition Duemilanove {
+
+        export Mcu
+        export Led
+
+        # Available Digital IO Lines
+        export D12
+        export D13
+
+        host Duemilanove() {
+           Mcu.setSystemFrequency(16000000)
+           Led.bindPin(D13)
+        }
+}" -> ""
+
+unit:
+"package cc.arduino
+# /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/cc.arduino/Environment.p
+
+import Duemilanove as Board
+from Board import Led
+from Board import Mcu
+from Mcu import GlobalInterrupts
+from Mcu import TimerMilli8BitTimer0 as TD
+
+from pollen.time import Time
+from pollen.events import Events
+
+composition Environment {	# This should extend Board when composition inheritance exits!
+
+	export GlobalInterrupts
+	export Led
+	export Mcu
+	export Mcu.reset
+	export Mcu.wait
+	export Events.run
+	export Events.post
+	export Events.postFromInterrupt	
+	
+	host Environment() {
+		Events.bindGlobalInterrupts(GlobalInterrupts)
+		Time.bindGlobalInterrupts(GlobalInterrupts)
+		Time.bindTimerDriver(TD)
+	}
+}" -> ""
+unit:
+"package distro.arduino
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/distro.arduino/Board.p
+
+from mcu.atmel.atmega328p import Mcu
+
+
+from Mcu import PB4	as D12
+from Mcu import PB5 as D13
+
+from Mcu import TimerMilli8BitTimer0 as Timer0
+from Mcu import Uart 
+
+from pollen.parts import Led{false} as Led
+
+composition Board {
+
+	export Mcu
+	export Timer0
+	export Uart
+	
+    	export Led
+    
+    	export D12
+    	export D13		# Led pin is exposed on arduino
+    
+	host Board() {
+		Mcu.setSystemFrequency(16000000)
+        	Led.bindPin(D13) #(D12)
+	}
+}" -> ""
+unit:
+"package distro.arduino
+
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/distro.arduino/Distro.p
+import Board
+from Board import Mcu
+from Board import Led
+from Board import Pin0
+from Board import Timer0
+from Board import Uart
+from Mcu import GlobalInterrupts
+
+from pollen.events import Events
+from pollen.time import Time
+
+composition Distro {
+
+    export Led
+    export Mcu
+    export Pin0
+    export Uart
+                    
+    host Distro() {
+        Events.bindGlobalInterrupts(GlobalInterrupts)
+        Time.bindGlobalInterrupts(GlobalInterrupts)
+        Time.bindTimerDriver(Timer0)
+        Uart.setBaud(57600)
+    }
+}
+" -> ""
+unit:
+"package distro.arduino
+
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/distro.arduino/Lifecycle.p
+---
+
+This module defines all the pollen lifecycle intrinsics
+
+---
+
+module Lifecycle {
+
+	#
+	# Invoked immediately after initialization of C runtime
+	#
+	pollen.reset() {
+	
+	}
+	
+	#
+	# Invoked after every application module's target initializer has been invoked
+	# and immediately before pollen.run is called.
+	#
+	pollen.ready() {
+	
+	}
+	
+	#
+	# 
+	#
+	#pollen.shutdown(uint8 code) {
+	#
+	#}
+	
+	#
+	# 
+	#
+	#pollen.hibernate(uint8 code) {
+	#
+	#}
+}" -> ""
+
+
+unit:
+"package distro.ti.launchpad
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/distro.ti.launchpad/Board.p
+
+from mcu.ti.msp430g2231 import Mcu
+from Mcu import P1_0 as Pin0
+
+from pollen.parts import Led{false} as Led
+
+composition Board {
+
+	export Mcu
+	export Pin0
+        export Led
+    
+        host Board() {
+            Led.bindPin(Pin0)
+	}
+
+}" -> ""
+unit:
+"package distro.ti.launchpad
+
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/distro.ti.launchpad/Distro.p
+from Board import Mcu
+from Board import Pin0
+from Mcu import GlobalInterrupts
+
+from pollen.events import Events
+from pollen.time import Time
+
+composition Distro {
+
+    export Mcu
+    export Pin0
+                    
+    host Distro() {
+        Events.bindGlobalInterrupts(GlobalInterrupts)
+    }
+}
+" -> ""
+unit:
+"from pollen.interfaces import I2C
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/freescale.mma845x/MMA845x.p
+
+module MMA845x {
+
+	const byte REG_STATUS = 0x00; //(R) Real time status
+	const byte REG_OUT_X_MSB = 0x01; //(R) [7:0] are 8 MSBs of 10-bit sample
+	const byte REG_OUT_X_LSB = 0x02; //(R) [7:6] are 2 LSBs of 10-bit sample
+	const byte REG_OUT_Y_MSB = 0x03; //(R) [7:0] are 8 MSBs of 10-bit sample
+	const byte REG_OUT_Y_LSB = 0x04; //(R) [7:6] are 2 LSBs of 10-bit sample
+	const byte REG_OUT_Z_MSB = 0x05; //(R) [7:0] are 8 MSBs of 10-bit sample
+	const byte REG_OUT_Z_LSB = 0x06; //(R) [7:6] are 2 LSBs of 10-bit sample
+	const byte REG_SYSMOD = 0x0b; //(R) Current system mode
+	const byte REG_INT_SOURCE = 0x0c; //(R) Interrupt status
+	const byte REG_WHO_AM_I = 0x0d; //(R) Device ID (0x3A)
+	const byte REG_XYZ_DATA_CFG = 0xe; //(R/W) Dynamic range settings
+	const byte REG_HP_FILTER_CUTOFF = 0x0f; //(R/W) cut-off frequency is set to 16Hz @ 800Hz
+	const byte REG_PL_STATUS = 0x10; //(R) Landscape/Portrait orientation status
+	const byte REG_PL_CFG = 0x11; //(R/W) Landscape/Portrait configuration
+	const byte REG_PL_COUNT = 0x12; //(R) Landscape/Portrait debounce counter
+	const byte REG_PL_BF_ZCOMP = 0x13; //(R) Back-Front, Z-Lock trip threshold
+	const byte REG_P_L_THS_REG = 0x14; //(R/W) Portrait to Landscape trip angle is 29 degree
+	const byte REG_FF_MT_CFG = 0x15; //(R/W) Freefall/motion functional block configuration
+	const byte REG_FF_MT_SRC = 0x16; //(R) Freefall/motion event source register
+	const byte REG_FF_MT_THS = 0x17; //(R/W) Freefall/motion threshold register
+	const byte REG_FF_MT_COUNT = 0x18; //(R/W) Freefall/motion debounce counter
+	const byte REG_TRANSIENT_CFG = 0x1d; //(R/W) Transient functional block configuration
+	const byte REG_TRANSIENT_SRC = 0x1e; //(R) Transient event status register
+	const byte REG_TRANSIENT_THS = 0x1f; //(R/W) Transient event threshold
+	const byte REG_TRANSIENT_COUNT = 0x20; //(R/W) Transient debounce counter
+	const byte REG_PULSE_CFG = 0x21; //(R/W) ELE, Double_XYZ or Single_XYZ
+	const byte REG_PULSE_SRC = 0x22; //(R) EA, Double_XYZ or Single_XYZ
+	const byte REG_PULSE_THSX = 0x23; //(R/W) X pulse threshold
+	const byte REG_PULSE_THSY = 0x24; //(R/W) Y pulse threshold
+	const byte REG_PULSE_THSZ = 0x25; //(R/W) Z pulse threshold
+	const byte REG_PULSE_TMLT = 0x26; //(R/W) Time limit for pulse
+	const byte REG_PULSE_LTCY = 0x27; //(R/W) Latency time for 2nd pulse
+	const byte REG_PULSE_WIND = 0x28; //(R/W) Window time for 2nd pulse
+	const byte REG_ASLP_COUNT = 0x29; //(R/W) Counter setting for auto-sleep
+	const byte REG_CTRL_REG1 = 0x2a; //(R/W) ODR = 800 Hz, STANDBY mode
+	const byte REG_CTRL_REG2 = 0x2b; //(R/W) Sleep enable, OS Modes, RST, ST
+	const byte REG_CTRL_REG3 = 0x2c; //(R/W) Wake from sleep, IPOL, PP_OD
+	const byte REG_CTRL_REG4 = 0x2d; //(R/W) Interrupt enable register
+	const byte REG_CTRL_REG5 = 0x2e; //(R/W) Interrupt pin (INT1/INT2) map
+	const byte REG_OFF_X = 0x2f; //(R/W) X-axis offset adjust
+	const byte REG_OFF_Y = 0x30; //(R/W) Y-axis offset adjust
+	const byte REG_OFF_Z = 0x31; //(R/W) Z-axis offset adjust
+	
+	const byte FULL_SCALE_RANGE_2g = 0x0;
+	const byte FULL_SCALE_RANGE_4g = 0x1;
+	const byte FULL_SCALE_RANGE_8g = 0x2;
+	
+	uint8 i2c_addr = 0x1C # Address of the MMA8453 part. 0x1D is another common value
+	int16 x, y, z
+	bool dataMode = false
+	host bool highResolutionData = true
+
+	public setI2CAddr(uint8 address) {
+		@i2c_addr = address
+	}
+
+	public dataMode(bool highRes, uint8 gScaleRange) {}
+
+	public int16 x() { return @x }
+
+	public int16 y() { return @y }
+
+	public int16 z() { return @z }
+
+	public update() {}
+
+	regRead(byte reg, byte buf, byte count = 1) {
+
+        # mcadams how to replace pointers in tests?
+	#regRead(byte reg, byte *buf, byte count = 1) {
+	
+	}
+	
+	regWrite(byte reg, byte val) {
+	
+	}
+}" -> ""
+unit:
+"---
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.atmel.atmega/InterruptMeta.p
+	Interrupt meta module for AVR microcontrollers*
+	
+	*This module is GCC specific
+---
+
+from pollen.interfaces import Handler
+from pollen.interfaces import Interrupt
+
+meta {string name, string enableRegister, string enableBit, string clearRegister, string clearBit}
+
+module InterruptMeta implements Interrupt {
+
+	+{ #include <avr/io.h> }+
+	+{ #include <avr/interrupt.h> }+
+	
+	+{ ISR( }+
+	+{name}+
+	+{ ) { }+
+    	+{isr()}+
+    +{;} }+ 
+
+	public host setHandler(Handler.handle h) { @h = h }
+	
+	public setHandler(Handler.handle h) { @h = h }
+
+	public enable() {
+		+{enableRegister}+ |= (1 << +{enableBit}+)
+	}
+
+	public bool enabled() {
+		return +{enableRegister}+ & (1 << +{enableBit}+)
+	}
+
+	public disable() {
+		+{enableRegister}+ &= ~(1 << +{enableBit}+)
+	}
+
+	public clear() {
+		+{clearRegister}+ &= ~(1 << +{clearBit}+)
+	}
+	
+	#====================
+	# Private members
+	#====================
+	Handler.handle h = 0
+	
+	isr() {
+		if (h != null) { h() }
+	}
+}
+" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.atmel.atmega328p/Atmega328p.p
+---
+
+This module provides an ATMega328p specific implementation of the Mcu interface.
+
+---
+
+package mcu.atmel.atmega328p
+
+from pollen.interfaces import Mcu as McuI
+
+module Atmega328p implements McuI {
+
+	public reset() {
+
+	}
+
+	public shutdown() {
+	}
+	
+	public wait(uint32 us) {
+		# one loop takes 4-5 cpu cycles
+	    # THIS LOOP SHOULD BE GENERATED, GIVEN MCU FREQ,
+	    # GENERATE ENOUGH nops SUCH THAT N*NOPS + 4 = (mcuFreq / 1000000)
+
+		for (; us > 0; us--) {
+		// mcadams for unit test had to delete quote marks
+		// e.g.  +{ asm(nop) }+  nop was surrouned by quotes
+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+		}
+	}
+	
+	public nop() {
+        +{ asm(nop) }+	
+	}
+
+	public host uint32 getSystemFrequency() { 
+		return @sysFreq 
+	}
+	
+	public uint32 getSystemFrequency() { 
+		return @sysFreq 
+	}
+	
+	public host setSystemFrequency(uint32 hz) {
+		@sysFreq = hz
+	}
+	
+	public setSystemFrequency(uint32 hz) {
+		@sysFreq = hz
+	}
+
+
+	#==================================
+	# Private data members 
+	#==================================
+	uint32 sysFreq
+
+}
+" -> ""
+unit:
+"package mcu.atmel.atmega328p
+
+from pollen.interfaces import GlobalInterrupts as GI
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.atmel.atmega328p/GlobalInterrupts.p
+
+module GlobalInterrupts implements GI {
+
+    +{ #include <avr/io.h>
+       #include <avr/interrupt.h> }+
+
+	public uint16 disable() {
+    	uint16 key = +{SREG}+ & (1 << 7)
+	    +{cli()}+
+	    return key
+	}
+
+	public enable() {
+    	+{sei()}+
+	}
+    
+	public restore(uint16 key) {
+    	if (key != 0) {
+        	+{sei()}+
+	    }
+	    else {
+    	    +{cli()}+
+	    }
+	}    
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.atmel.atmega328p/GpioMeta.p
+---
+
+Meta module for AVR Gpio
+
+---
+
+package mcu.atmel.atmega328p
+
+from pollen.interfaces import Gpio
+
+meta { string port = \"\", string ddr = \"\", uint8 pin = 0 } module GpioMeta implements Gpio {
+
+		+{ #include <avr/io.h> }+
+
+		public set() { +{port}+ |= (1 << pin) }
+
+		public clear() { +{port}+ &= ~(1 << pin) }
+		
+		# THIS FUNCTION IS WRONG! SHOULD BE PIN inside +{}+ not PORT	
+		public bool get() { return (+{port}+ & (1 << pin)) ? true : false }
+
+		public toggle()	{ +{port}+ ^= (1 << pin) }
+
+		public makeInput()	{ +{ddr}+ &= ~(1 << pin) }
+
+		public bool isInput() { return (+{ddr}+ & (1 << pin)) ? false : true }
+
+		public makeOutput()	{ +{ddr}+ |= (1 << pin) }
+
+		public bool isOutput() { return (+{ddr}+ & (1 << pin)) ? true : false }
+	}
+" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.atmel.atmega328p/I2C.p
+from pollen.interfaces import I2C as I2CI
+
+#import McuLayout.PC4 as sdaPin
+#import McuLayout.PC5 as sclPin
+
+module I2C implements I2CI {
+
+	# host Gpio sclPin
+	# host Gpio sdaPin
+	#host 
+	uint32 slowestSlaveFrequency = 100000
+	#host 
+	uint32 mcuFrequency = 16000000 		# THIS MUST BE CHANGED!!
+
+	#host setSlowestSlaveFrequency(uint32 freq) { }
+	
+	#const
+	uint8 MT_SLA_ACK = 0x18
+        uint8 MR_SLA_ACK = 0x40
+        uint8 MT_DATA_ACK = 0x28
+        uint8 START = 0x08
+        uint8 RESTART = 0x10	
+
+	+{ #include <avr/io.h> }+
+    
+    bool ready() {
+	    return (+{TWCR}+ & (1 << +{TWINT}+)) ? true : false    	
+    }
+    
+    I2C() {
+		#sclPin.set()
+    	#sclPin.makeOutput()
+    	
+		#sdaPin.set()
+    	#sdaPin.makeOutput()
+    }
+    
+    public enableAsMaster() { 
+   	uint32 sclFrequency = 0
+    	uint8 prescaler = 0
+    
+    	# Ensure that TWI is not in power reduction
+    	+{PRR &= ~(1<<PRTWI)}+
+    
+    	sclFrequency = ((mcuFrequency / slowestSlaveFrequency) - 16) / 2
+    	while(sclFrequency > 255) {
+        	sclFrequency >>= 2
+        	prescaler++
+    	}
+    
+    	+{TWSR}+ = (prescaler << +{TWPS0}+)
+    	+{TWBR}+ = sclFrequency    
+	    +{TWSR}+ = 0
+    	+{TWBR}+ = 72
+    	+{TWCR}+ = (1 << +{TWEN}+) | (1 << +{TWEA}+)
+    }
+	
+	public enableAsSlave() {
+	}
+	
+	---
+	Read a single byte from the bus. If ack is true, an ack will be sent.
+	---
+	public uint8 get(bool ack) {
+	    +{TWCR}+ = (1 << +{TWINT}+) | (1 << +{TWEN}+) | (ack ? (1 << +{TWEA}+) : 0)    
+	    while(!ready()) {}
+
+    	return +{TWDR}+		
+	}
+	
+	---
+	Write a single byte to the bus. Returns 0 if no error. 
+	--- 
+	public uint8 put(uint8 data) {
+	    +{TWDR}+ = data    
+    	+{TWCR}+ = (1 << +{TWINT}+) | (1 << +{TWEN}+) | (1 << +{TWEA}+)    
+    	while(!ready()) {}
+    
+    	if((+{TWSR}+ & 0xF8) != MT_DATA_ACK) {
+    		return 1
+    	}
+    
+    	return 0
+	}
+	
+	---
+	Sends a start condition to the addressed client and true if writing to the bus.
+	---
+	public uint8 start(uint8 address, bool write) {
+	    +{TWCR = (1 << TWINT) | (1 << TWSTA) | (1 << TWEN) | (1 << TWEA)}+    
+    	while(!ready()) {}
+    
+    	if(((+{TWSR}+ & 0xF8) != START) && ((+{TWSR}+ & 0xF8) != RESTART)) {
+        	#printf \"TWSR (1): 0x%x\" (TWSR & 0xF8)
+        	return 1
+    	}
+    
+    	+{TWDR}+ = (address << 1) | (write ? 0 : 1)
+    
+    	# changed from |= to =
+    	+{TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWEA)}+    
+    	while(!ready()) {}
+    
+    	if(((+{TWSR}+ & 0xF8) != MT_SLA_ACK) && ((+{TWSR}+ & 0xF8) != MR_SLA_ACK)) {
+        	#printf \"TWSR (2): 0x%x\" (TWSR & 0xF8)
+        	return 2
+    	}
+    
+    	return 0
+	}
+
+	# send a stop condition on the bus
+	public stop() {
+	    +{TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO) | (1 << TWEA)}+
+	}
+	
+}" -> ""
+unit:
+"package mcu.atmel.atmega328p
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.atmel.atmega328p/Interrupts.p
+
+from mcu.atmel.atmega import InterruptMeta{\"TIMER0_COMPA_vect\", \"TIMSK0\", \"OCIE0A\", \"TIFR0\", \"OCF0A\"} as Timer0MatchA
+
+composition Interrupts {
+
+	export Timer0MatchA
+	
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.atmel.atmega328p/Mcu.p
+---
+
+Composition representing the configuration / layout of what's available from an ATMega328p
+
+---
+
+package mcu.atmel.atmega328p
+
+import Atmega328p
+import GlobalInterrupts
+import Interrupts
+#import I2C
+import TimerMilli8BitTimer0
+import Uart
+
+import GpioMeta {\"PORTB\", \"DDRB\", 3} as PB3
+import GpioMeta {\"PORTB\", \"DDRB\", 4} as PB4
+import GpioMeta {\"PORTB\", \"DDRB\", 5} as PB5
+
+composition Mcu {
+
+	#=========================
+	# Mcu Methods
+	#=========================
+
+	export Atmega328p.reset
+	export Atmega328p.shutdown
+	export Atmega328p.wait
+	export Atmega328p.nop
+	#export Atmega328p.getSystemFrequency	# These lines give an error: 
+
+	public host uint32 getSystemFrequency() { return Atmega328p.getSystemFrequency() }
+	public host setSystemFrequency(uint32 hz) { Atmega328p.setSystemFrequency(hz) }
+	
+	#=========================	
+	# Mcu Modules
+	#=========================
+	export GlobalInterrupts
+	#export I2C
+	export Interrupts
+	export TimerMilli8BitTimer0
+	export Uart
+	
+	# Gpio Pins
+    export PB3
+    export PB4
+    export PB5
+	
+}
+
+" -> ""
+unit:
+"package mcu.atmel.atmega328p
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.atmel.atmega328p/TimerMilli8BitTimer0.p
+
+import Atmega328p
+
+import Interrupts
+from Interrupts import Timer0MatchA as Interrupt
+from pollen.interfaces import Handler
+from pollen.interfaces import TimerDriver
+
+module TimerMilli8BitTimer0 implements TimerDriver {
+
+	+{ #include <avr/io.h> }+
+
+	host TimerMilli8BitTimer0() {
+	    ticksPerMs = Atmega328p.getSystemFrequency() / (64 * 1000) 		# We need to round this! (math.round?)
+	}
+
+	TimerMilli8BitTimer0() {
+	   +{TCCR0A}+ = TIMER0_MODE_CTC	# Clear Timer on Compare Match Mode
+	   +{TCCR0B}+ = TIMER0_STOP       	# Timer off
+    	   +{OCR0A}+ = ticksPerMs         	# Set to appropriate value to trigger every ms given prescale val    
+	}
+
+	#public host setHandler(Handler.handle h = null) {
+	#	Interrupt.setHandler(h)
+	#}
+
+	public setHandler(Handler.handle h = null) {
+		Interrupt.setHandler(h)
+	}
+
+	public start() {
+	    +{TCNT0}+ = 0;                	# Set timer counter = 0
+	    Interrupt.clear()
+	    Interrupt.enable()
+	    +{TCCR0B}+ = TIMER0_DIV64  # setup pre-scale value & start the timer     
+	}
+
+	public stop() {
+	    Interrupt.disable()    # disable compare on match interrupt 
+    	    Interrupt.clear()      # clear any pending interrupts
+	    +{TCCR0B}+ = TIMER0_STOP      # stop the timer    
+	}
+
+	public bool running() {
+	    return +{TCCR0B}+ != 0 && Interrupt.enabled()
+	}	
+	
+	#======================
+	# Private members
+	#======================
+	host uint16 ticksPerMs = 0		# compute ticksPerMs in host initializer
+
+        host uint8 TIMER0_MODE_CTC 	= 0x02  		# these should be const!
+        host uint8 TIMER0_STOP 		= 0x00    
+        host uint8 TIMER0_DIV1 		= 0x01    
+        host uint8 TIMER0_DIV8 		= 0x02
+        host uint8 TIMER0_DIV64 	= 0x03
+        host uint8 TIMER0_DIV256 	= 0x04    
+	
+}" -> ""
+unit:
+"package mcu.atmel.atmega328p
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.atmel.atmega328p/Uart.p
+
+from pollen.interfaces import Uart as UartI
+
+import Atmega328p as Mcu
+
+module Uart implements UartI {
+
+    +{ #include <avr/io.h> }+
+    
+    host Uart() {
+		# Calculate initial values for default baud rate 
+	    baudh = (((Mcu.getSystemFrequency() / (baudRate * 16)) - 1) >> 8)
+	    baudl = (((Mcu.getSystemFrequency() / (baudRate * 16)) - 1))   
+    }
+    
+    Uart() {
+
+	    +{UBRR0H}+ = baudh
+	    +{UBRR0L}+ = baudl
+    	+{UCSR0B |= (1 << RXEN0) | (1 << TXEN0)}+    # Enable receiver and transmitter
+
+    	# TODO: Set data, stop, parity bits from config params for now, 
+    	# set 8 data bits, 1 stop bit, no parity
+    	+{UCSR0C |= (1 << UCSZ00) | (1 << UCSZ01)}+  
+    }
+    
+    public put(uint8 data) {
+    	while (!(+{UCSR0A}+ & (1 << +{UDRE0}+))) { }
+    	+{UDR0}+ = data
+    }
+    
+    public uint8 get() {
+	    while (!(+{UCSR0A}+ & (1 << +{RXC0}+))) { }  # Wait for data to be received
+	    return +{UDR0}+                              # Get & return rcvd data from buffer    
+    }
+    
+    public flush() {
+	    volatile uint8 dummy = 0
+	    while (+{UCSR0A}+ & (1 << +{RXC0}+)) { dummy = +{UDR0}+ }    
+    }
+
+    public setBaud(uint32 baud) {
+		baudRate = baud
+	    +{UBRR0H}+ = (((Mcu.getSystemFrequency() / (baudRate * 16)) - 1) >> 8)
+	    +{UBRR0L}+ = (((Mcu.getSystemFrequency() / (baudRate * 16)) - 1))    
+    }
+    
+    public host setBaud(uint32 baud) {
+		baudRate = baud
+	    baudh = (((Mcu.getSystemFrequency() / (baudRate * 16)) - 1) >> 8)
+	    baudl = (((Mcu.getSystemFrequency() / (baudRate * 16)) - 1)) 
+    }
+    
+   	uint32 baudRate = 9600
+	host uint8 dataBits = 8
+	host uint8 stopBits = 1
+	host uint8 parity = 0
+	
+	host uint8 baudh
+	host uint8 baudl
+}
+" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.atmel.atmega328p/Wait.p
+---
+
+A microsecond busywait delay module
+
+---
+package mcu.atmel.atmega328p
+
+from pollen.interfaces import Wait as WaitI
+
+module Wait implements WaitI {
+
+    # host initializer for this module computes a string with the set of
+    # nop operations necessary to delay for 1us given the MCU's frequency
+    host Wait() {
+
+    }
+
+	public us(uint32 microseconds) {
+
+	    # one loop takes 4-5 cpu cycles
+	    # THIS LOOP SHOULD BE GENERATED, GIVEN MCU FREQ,
+	    # GENERATE ENOUGH nops SUCH THAT N*NOPS + 4 = (mcuFreq / 1000000)
+
+		for (uint32 i = 0; i < microseconds; i++) {
+                // mcadams deleted quotes
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+	        +{ asm(nop) }+
+		}
+	}
+}" -> ""
+unit:
+"package mcu.localhost
+
+---
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.localhost/GlobalInterrupts.p
+
+Global Interrupts module for your desktop host.
+
+---
+
+from pollen.interfaces import GlobalInterrupts as GI
+
+module GlobalInterrupts implements GI {
+
+	public bool disable() {
+		return false
+	}
+    
+    public enable() {
+
+    }
+    
+    public restore( bool state ) {
+
+    }
+}" -> ""
+unit:
+"package mcu.localhost
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.localhost/Mcu.p
+
+from pollen.interfaces import Mcu as McuI
+
+module Mcu implements McuI {
+	
+	public reset() {
+	}
+	
+	public shutdown() {
+	
+	}
+}" -> ""
+unit:
+"package mcu.localhost
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.localhost/Wait.p
+
+from pollen.interfaces import Wait as WaitI
+
+module Wait implements WaitI {
+
+	+{ #include <unistd.h> }+
+
+	public us( uint32 microseconds ) {
+		+{ usleep(microseconds) }+
+	}
+}" -> ""
+unit:
+"package mcu.localhost
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.localhost/Write.p
+
+---
+This module simply encapsulates a way to print output on the localhost
+---
+
+module Write {
+
+	+{ #include <stdio.h> }+
+
+	public outs(string s) {
+		+{printf(\"s\" s)}+
+	}
+
+	public outi(uint32 i) {
+		+{printf(\"i\" i)}+
+	}
+}" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.ti.msp430/GlobalInterrupts.p
+---
+Global Interrupts module for msp430
+
+---
+package mcu.ti.msp430
+
+from pollen.interfaces import GlobalInterrupts as GI
+
+module GlobalInterrupts implements GI {
+
+	# This will be replaced with a more intelligent approach
+ 	+{ #include <msp430g2231.h> }+
+ 	+{ #include <legacymsp430.h> }+
+
+	public bool disable() {
+		uint16 x = 0
+		# This is specific to msp430-gcc		
+		+{x}+ = +{ __read_status_register() }+
+		+{dint()}+
+		return (x & +{GIE}+) != 0 ? true : false
+	}
+    
+    public enable() {
+		+{eint()}+
+    }
+    
+    public restore( bool state ) {
+		if (state == true) {		# GIE was enabled
+			enable()
+		}
+    }
+
+}" -> ""
+unit:
+"package mcu.ti.msp430
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.ti.msp430/GpioMeta.p
+ 
+from pollen.interfaces import Gpio
+meta {string part, string dirr, string inr, string outr, uint8 pin}
+module GpioMeta implements Gpio {
+
+	# when host members are available do this:
+	# +{ #include <inc>}+
+
+	+{ #include <msp430g2231.h> }+
+
+	public set() {
+		+{outr}+ |= (1 << pin)
+	}
+
+	public clear() {
+		+{outr}+ &= ~(1 << pin)
+	}
+	
+	public toggle()	{
+		+{outr}+ ^= (1 << pin)
+	}
+	
+	public bool get() {
+		return +{inr}+ & (1 << pin) ? true : false
+	}
+	
+	public makeInput() {
+		+{dirr}+ &= ~(1 << pin)
+	}
+	
+	public bool isInput() {
+		return +{dirr}+ & (1 << pin) ? false : true
+	}
+	
+	public makeOutput()	{
+		+{dirr}+ |= (1 << pin)
+	}
+	
+	public bool isOutput() {
+		return +{dirr}+ & (1 << pin) ? true : false
+	}
+
+}
+ " -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.ti.msp430/I2CUsi.p
+from pollen.interfaces import I2C
+
+module I2CUsi implements I2C {
+
+	#enum ClockSource {SCLK, ACLK, SMCLK, USISWCLK, TACCR0, TACCR1}
+	
+	# some of these should be host variables
+	uint32 slowestSlaveFrequency = 100000
+	uint32 mcuFreq = 1000000
+
+	#uint8 clockSource = ClockSource.SMCLK
+	uint8 divisor
+	uint8 source
+
+	I2CUsi() {
+		uint32 SCLFreq
+		SCLFreq = 0
+		
+	    +{P1OUT}+ = 0xC0		# Use P1.6 & P1.7 Pullups, others to 0
+	    +{P1REN}+ |= 0xC0		# Enable P1.6 & P1.7 Pullups
+	    +{P1DIR}+ = 0xFF
+	    # +{P1SEL}+ = 0xC0
+	
+	    # Configure the clock source
+        source = +{USISSEL_2}+	# SMCLK	    
+        
+	    ---
+	    if(clockSource == SCLK) {
+	        source = ^USISSEL_0
+	    }
+	    if(clockSource == ACLK) {
+	        source = ^USISSEL_1
+	    }
+	    if(clockSource == SMCLK) {
+	        source = ^USISSEL_2
+	    }
+	    if(clockSource == USISWCLK) {
+	        source = ^USISSEL_4
+	    }
+	    if(clockSource == TACCR0) {
+	        source = ^USISSEL_5
+	    }
+	    if(clockSource == TACCR1) {
+	        source = ^USISSEL_6
+	    }
+   	    ---
+	    # Find necessary SCL frequency for stable communication
+	    # with all attached slaves
+	    SCLFreq = mcuFreq # >> 4
+	    divisor = 0
+	    while(SCLFreq > slowestSlaveFrequency) {
+	        SCLFreq >>= 1
+	        divisor++
+	    }
+	    divisor <<= 5
+	}
+
+	public enableAsMaster() {
+		+{ADC10AE0}+ = 0
+    	#ADC10AE1 = 0
+
+    	+{USICTL0    = USIPE7 | USIPE6 | USIMST | USISWRST}+  # ~USILSB
+ 	    +{USICTL1    = USII2C}+     # ~USICKPH
+    	+{USICKCTL}+ = divisor | source | +{USICKPL}+
+	    +{USICNT}+   = 0 	#USISCLREL  # ~USI16B
+	    +{USICTL0   &= ~USISWRST}+
+	    +{USICTL1   &= ~USIIFG}+
+	}
+	
+	public enableAsSlave() {
+	
+	}
+	
+	---	
+	Read a single byte from the bus. If ack is true, an ack will be sent. 
+	Returns byte read.
+	---
+	public uint8 get(bool ack) {
+		uint8 data
+
+	    +{USICTL0 &= ~USIOE}+ 					# Disable output
+            
+    	+{USICNT = (USICNT & 0xE0) | 0x08}+ 	# Set the bit count
+    
+    	while(!ready()) {}	    				# Wait for all bits to be read        
+    	data = +{USISRL}+						# Read the data
+    	# Load the shift register with 0 for ACK or 1 for NACK (active LOW) 
+    	+{USISRL}+ = ack ? 0x00 : 0x80    
+	    +{USICTL0 |= USIOE}+					# Enable output
+    	+{USICNT = (USICNT & 0xE0) | 0x01}+		# Set the bit count
+    
+    	while(!ready()) {}						# Wait for the bit to be transmitted
+        
+    	return data								# Return the read data	
+	}
+	
+	---
+	Write a single byte to the bus. Returns true if acked. 
+	---
+	public bool put(uint8 data) {	
+	    +{USISRL}+ = data		    			# Write data into the shift register    
+    	+{USICTL0 |= USIOE}+					# Enable output
+    	+{USICNT = (USICNT & 0xE0) | 0x08}+     # Set the bit count
+    	while(!ready()) {}		    		# Wait for all bits to be written    
+    	+{USICTL0 &= ~USIOE}+					# Disable output
+    	+{USICNT = (USICNT & 0xE0) | 0x01}+		# Load the counter with 1 to read the ack
+    	while(!ready()){}
+    
+    	# Return the ACK if there is one
+	    #return USISRL == 0x80 ? true : false
+    	return (+{USISRL}+ & 0x01) ? true : false
+	}
+	
+	---
+	Sends a start condition to the addressed client and specify if writing or reading.
+	---
+	public bool start(uint8 address, bool write) {
+	    +{USISRL}+ = 0					# Set the MSB of the shift register to 0    
+    	+{USICTL0 |= USIOE | USIGE}+	# Latch/SDA output enabled
+    	+{USICTL0 &= ~USIGE}+       	# Latch disabled	# added a ~
+    
+    	# Write address and read/write bit
+    	# Return whether start was ACK'd or not
+    	return put((address << 1) | (write ? 0 : 1))
+	}
+
+	---
+	Send a stop condition on the bus
+	---
+	public stop() {
+	    +{USICTL0 |= USIOE}+		   			# Enable output
+    	+{USISRL}+ = 0	    					# Set the MSB of the shift register to 0    
+    	+{USICNT = (USICNT & 0xE0) | 0x01}+     # Read one bit
+    	while(!ready()) {}		    		# Wait until we have read the bit
+    	+{USISRL}+ = 0xFF						# Set the register all high
+       	+{USICTL0 |= USIGE}+					# Set low-to-high transition
+    
+    	# Resume normal latching, disable output
+    	+{USICTL0 &= ~USIOE & ~USIGE}+
+	}
+	
+	bool ready() {
+		# Check the USIIFG interrupt flag. This is automatically set whenever
+    	# the USICNTx is 0, and automatically cleared whenever USICNTx != 0
+   	    return +{(USICTL1 & USIIFG)}+ ? true : false
+	}
+}" -> ""
+unit:
+"---
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.ti.msp430/InterruptMeta.p
+
+Interrupt meta module for MSP microcontrollers using GCC compiler
+
+---
+
+from pollen.interfaces import Handler
+from pollen.interfaces import Interrupt
+
+meta {string part, string vector, string enableRegister, string enableBit, string clearRegister, string clearBit}
+
+module InterruptMeta implements Interrupt {
+
+	# This is all msp430 gcc specific!
+	+{ #include <msp430g2231.h> }+
+	+{ #include <legacymsp430.h> }+
+	
+	host string v2 = vector + \"_ISR() {\"
+	
+	+{ interrupt (}+
+	+{vector}+
+	+{) }+
+	+{vector + \"_ISR() {\"	
+   	+{ isr() }+
+    +{;} }+ 
+
+	public host setHandler(Handler.handle h) { @h = h }
+	
+	public setHandler(Handler.handle h) { @h = h }
+
+	public enable() {
+		+{enableRegister}+ |= (1 << +{enableBit}+)
+	}
+
+	public bool enabled() {
+		return +{enableRegister}+ & (1 << +{enableBit}+)
+	}
+
+	public disable() {
+		+{enableRegister}+ &= ~(1 << +{enableBit}+)
+	}
+
+	public clear() {
+		+{clearRegister}+ &= ~(1 << +{clearBit}+)
+	}
+	
+	#====================
+	# Private members
+	#====================
+	Handler.handle h = 0
+	
+	isr() {
+		if (h != null) { h() }
+	}
+}
+" -> ""
+unit:
+"# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.ti.msp430/Msp430.p
+from pollen.interfaces import Mcu
+
+protocol Msp430 extends Mcu {
+
+    host uint32 getMasterClock()
+    host uint32 getSubMasterClock()    
+    host uint32 getAuxiliaryClock()
+    
+    host setMasterClock(uint32 freq)    
+    host setSubMasterClock(uint32 freq)
+    host setAuxiliaryClock(uint32 freq)
+
+}" -> ""
+

@@ -1,0 +1,17 @@
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/amaret/mcu.atmel.atmega328p/GpioMeta.p
+---
+
+Meta module for AVR Gpio
+
+---
+
+package mcu.atmel.atmega328p
+
+from pollen.interfaces import Gpio
+
+meta { string port = "", string ddr = "", uint8 pin = 0 } module GpioMeta implements Gpio {
+
+
+
+		public bool isOutput() { return (+{ddr}+ & (1 << pin)) ? true : false }
+	}

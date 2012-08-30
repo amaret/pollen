@@ -1,0 +1,89 @@
+################
+## TO DO, grammar
+################
+*. multiple dimensional arrays  DONE
+*. break, continue  DONE
+*. multiple fcn return  DONE
+
+################
+## pollen Errors
+################
+*. There should be an exception thrown that has a clear message that 'host' is required 
+for composition function definitions. Not a syntax error that ends the parse.
+*. There should be an exception thrown that has a clear message that 'export' stmt is 
+not allowed in any unit type except composition definitions. Not a syntax error that ends the parse.
+The syntax error is okay for now, it is reasonably clear.
+*. Binding operator can only occur in a host function or module body.
+
+
+################
+## Ambiguities
+################
+*. host typename() {    // constructort
+   host typename ident  // variable
+Use semantic predicate for this.
+
+*. The lexer token recognition is order dependent:
+EQ     :	'==';
+ASSIGN :	'=';  // will never be matched. 
+There will be a error message:
+  "The following token definitions can never be matched because prior tokens match the same input: ASSIGN"
+Note the error can be cryptic if there are lots of antlr named tokens. for this reason I moved all ops 
+with an 'eq' into the lexer where the ordering is explicit and controlle by moi. 
+NOTE re: cryptic. this sometimes fails mysteriously with an <INVALID> inserted into the java code in a illegal manner.
+*. injection code
+This can be a part of a statement and the whole statement (line):
+ +{ <something> }+
+ +{ <something> }+ = +{ <something else> }+
+In the first case you want it to gobble up the delimiter (\n).
+In the second case, you don't. 
+*. This gave an error:
+  x = y +{;}+
+The problem with this could be that the ';' is hidden.
+I just commented it out.
+*. For return of multiple values I needed to surround return-expr-list with parens or it was not able 
+parse question mark expression as return. See stmtReturn.
+
+################
+## Test Issues
+################
+*. The pollen tests use pointers, which are not supported. 
+*. One of the tests had this:
+  meta {string part, string dirr, string inr, string outr, uint8 pin} 
+  from pollen.interfaces import Gpio
+  module GpioMeta implements Gpio {
+..which  applies the 'meta' to the from. My grammar supports applying the 
+meta to the module, so I consider the test in error and changed it:
+  from pollen.interfaces import Gpio
+  meta {string part, string dirr, string inr, string outr, uint8 pin} 
+  module GpioMeta implements Gpio {
+*. The assignment 
+   @x = @y = @z = 0
+  was in one of the tests and my grammar does not support this. I changed the
+  test because I don't want to handle xlating this to c, for first release.
+.* module TimerManager had this wierd dcln, with no type or fcn '()':
+     public host registerTimer
+   I commented it out.
+
+
+################
+## Statements
+################
+*. grammar.h has something called leaf_statement:
+leaf_statement = longest_d[B(print_statement) | B(delete_statement) | B(assert_statement) |
+                               B(return_statement) | B(break_keyword) | B(continue_keyword) |
+                               B(variable_declaration) | B(assignment_statement) | B(expression)];
+This can appear in the for stmt:
+for_loop_statement = B(for_keyword) >> E(left_bracket) >> 
+                       !leaf_statement_list >> E(semicolon) >> 
+                       !expression >> E(semicolon) >> !leaf_statement_list >> E(right_bracket) >> E(statement_block);
+I'm going to ignore this for now. 
+   
+################
+## 2nd release
+################
+*. postpone switch statements with string 'case' labels until 2nd release 
+(as that is not supported in c and is a pain to implement).
+*. postpone enums with non-integer constants  until 2nd release (as that is not
+supported in c and is a pain to implement).
+*. postpone default values for parameters

@@ -1,0 +1,26 @@
+from cc.arduino import Environment as Env
+
+# test name /home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/pollen-base/pollen-base/examples/blink/BlinkMilli.p
+from Env import Led
+from pollen.time import TimerMilli
+
+module BlinkMilli {
+     
+        madams_chkArray() {
+          uint8 arr[8]
+          uint8 arr2d[8][2]
+        }    
+
+        toggle() { Led.toggle() }
+
+        pollen.run() {
+
+                TimerMilli.start(toggle, 50)
+                Env.GlobalInterrupts.enable()     
+                while (true) { }  
+        }    
+     
+        pollen.reset() { Env.reset() }  
+     
+}
+
