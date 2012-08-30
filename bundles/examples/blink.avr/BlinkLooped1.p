@@ -11,7 +11,7 @@ This module is specific to avr microcontrollers (i.e. arduino).
 
 from pollen.environment import Led
 
-module BlinkLooped2 {
+module BlinkLooped1 {
 
 	pollen.reset() { 
 		pollen.environment.reset() 
