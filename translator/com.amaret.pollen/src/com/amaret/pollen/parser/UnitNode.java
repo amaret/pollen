@@ -194,6 +194,11 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
         return false;
 
     }
+   public boolean isEnum() {
+   	if (flags.contains(Flags.ENUM))
+   		return true;
+   	return false;
+   }       
     public boolean isModule() {
     	if (flags.contains(Flags.MODULE))
     		return true;

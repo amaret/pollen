@@ -30,13 +30,12 @@ tokens {
     D_META;
     D_MODULE;
     D_PROTOCOL;
-    D_PROTOCOL_MEM;
     D_VAR;
+    
     DELIM;
     E_ADDR; 		// E_ expression
     E_BINARY;
     E_CALL;
-    E_COND;
     E_CONST;
     E_EXPR;
     E_DEREF;
@@ -98,7 +97,7 @@ tokens {
     
     EnumSet<Flags> atFlags = EnumSet.noneOf(Flags.class);
     
-    class TypeInfo {
+   private class TypeInfo {
     	public EnumSet<Flags> getUnitFlags() {
 			return uf;
 		}
@@ -330,6 +329,7 @@ importFrom
         		int k = path.lastIndexOf('.');
         		int j = path.lastIndexOf(".", k-1);
         		j = j == -1 ? 0 : j+1;
+        		// the default package is the containing directory
         		defaultPkg = path.substring(j, k);
     		}
     		-> ^(E_IDENT <ExprNode.Ident>["E_IDENT"]  IDENT[defaultPkg])
@@ -359,7 +359,7 @@ metaFormalParameter
 
 metaFormalParameterType
 	 :	'type' // includes module etc
-	 |	builtinType
+	 |	builtinType -> ^(T_STD<TypeNode.Std>["T_STD", atFlags] builtinType)
 	;
 metaArguments
    :  '{' metaArgument  (',' metaArgument)* '}' -> ^(LIST<ListNode>["LIST"] metaArgument+)
@@ -377,7 +377,7 @@ typeName
 	:	typeNameScalar
 	;
 typeNameScalar			// scalar as in 'not array'
-	:	builtinType
+	:	builtinType	-> ^(T_STD<TypeNode.Std>["T_STD", atFlags] builtinType)
 	|	userTypeName
 	;
 userTypeName
@@ -667,7 +667,7 @@ stmts
 	|	(NL*) -> LIST<ListNode>["LIST"]
 	;
 stmt
-	:  varDeclaration 
+	:  stmtDecl
 	|  stmtAssign
 	|	stmtAssert
 	|	stmtBind
@@ -741,7 +741,7 @@ stmtForInit
     :   SEMI
             -> NIL
     |   typeName IDENT '=' expr SEMI
-            -> ^(S_DECL ^(typeName IDENT  expr))
+            -> ^(S_DECL<StmtNode.Decl>["S_DECL"] ^(D_VAR<DeclNode.Var>["D_VAR", EnumSet.noneOf(Flags.class)] typeName ^(IDENT  expr)))
     |   stmtAssign
     ;
 stmtForNext
@@ -792,6 +792,15 @@ stmtProvided
 stmtWhile
 	:	'while' '('	expr')' stmtBlock -> ^(S_WHILE<StmtNode.While>["S_WHILE"] expr stmtBlock)
 	;
+stmtDecl
+@init {
+	atFlags.clear();			
+}
+@after{
+  atFlags.clear();
+}
+   :	 varAttr varDecl delim	-> ^(S_DECL<StmtNode.Decl>["S_DECL"] varDecl)
+   ;
 varDeclaration    
 @init {
 	atFlags.clear();			
@@ -859,14 +868,20 @@ initializer_list
 varDeclList  // int x, y=3, z=3, a
 @init {
 	assert $varDecl::typ != null;
-}
-	:	typeName! {$varDecl::typ = $typeName.tree; } varDeclList
-	|	varInit (','! varInit)*    
+}  
+	:	builtinType! {$varDecl::typ = $builtinType.tree; } varInit2 (','! varInit2)*
+	|	userTypeName! {$varDecl::typ = $userTypeName.tree; } varInit (','! varInit)*
+	;	
+varInit2
+	:	IDENT (ASSIGN expr)?
+		-> ^(D_VAR<DeclNode.Var>["D_VAR", atFlags] {$varDecl::typ} ^(IDENT expr?))
 	;
 varInit	
 // child is inital value
-	: IDENT (ASSIGN expr)?
-	-> ^(D_VAR<DeclNode.Var>["D_VAR", atFlags] {$varDecl::typ} ^(IDENT expr?))
+	: 	IDENT BIND expr { atFlags.add(Flags.PROTOCOL_MEMBER); }	
+		-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", atFlags] {$varDecl::typ} ^(IDENT expr?))
+	|	IDENT (ASSIGN expr)?
+	-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", atFlags] {$varDecl::typ} ^(IDENT expr?))
 	;
 
 builtinType

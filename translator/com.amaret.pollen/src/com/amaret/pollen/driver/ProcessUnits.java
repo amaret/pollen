@@ -3,17 +3,22 @@ package com.amaret.pollen.driver;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.SymbolTable;
 import com.amaret.pollen.parser.UnitNode;
+import com.amaret.pollen.translator.Generator;
 
 public class ProcessUnits {
 	private SymbolTable symbolTable;
 
-	String inputPath = "";
+	private String inputPath = "";
+	private static String workingDir = new File(".").getAbsolutePath();
+	
+	public static String getWorkingDir() {
+		return workingDir;
+	}
 
 	@SuppressWarnings("serial")
 	static public class Termination extends RuntimeException {
@@ -140,11 +145,12 @@ public class ProcessUnits {
 
 		return ParseUnit.current().parseUnits();
 	}
-	protected void translateUnit(HashMap<String, UnitNode> unitMap) {
+	protected void translateUnit(HashMap<String, UnitNode> unitMap) throws Exception {
 		
 		if (ParseUnit.current().getErrorCount() == 0) {
 			UnitNode curUnit = ParseUnit.current().getCurrUnitNode();
-			com.amaret.pollen.translator.Generator.genUnits(curUnit, unitMap);
+			Generator g = new Generator();
+			g.genUnits(curUnit, unitMap);
 		}
 		
 	}

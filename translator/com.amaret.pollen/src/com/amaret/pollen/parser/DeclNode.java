@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 
 import org.antlr.runtime.CommonToken;
 
-import com.amaret.pollen.parser.pollenParser.TypeInfo;
+import com.amaret.pollen.translator.ITarget.TypeInfo;
 
 public class DeclNode extends BaseNode implements ISymbolNode {
 	
@@ -38,7 +38,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
 
         @Override
-        public BaseNode getTypeSpec() {
+        public TypeNode getTypeSpec() {
             return (TypeNode) getChild(TYPE);
         }
     }
@@ -327,41 +327,109 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public ExprNode getInit();
     }
     
-    // DeclNode.ProtocolMember
-    static public class ProtocolMember extends DeclNode implements ITypeSpecInit {
+    // DeclNode.TypedMember
+    // For proxy (protocol member) or a member with class type
+    static public class TypedMember extends DeclNode implements ITypeSpecInit, IScope, IUnitWrapper {
         
         
-        ProtocolMember(int ttype, String ttext, EnumSet<Flags> f) {
+        TypedMember(int ttype, String ttext, EnumSet<Flags> f) {
             super(ttype, ttext, f);
+        }
+        static final private int NAME = 1;
+        static final private int USER_TYPE = 0;
+        static final private int INIT = 0; // subtree
+              
+        private UnitNode unit;
+        private NestedScope scopeDeleg = new NestedScope(this);
+        
+        
+        public Atom getTypeNode() {
+            return ((BaseNode) getChild(USER_TYPE)).getAtom();
+        }
+        
+        public UnitNode getTypeUnit() {
+            return unit;
+        }
+        
+        @Override
+        public String getQualName() {
+            return ((UnitNode) getDefiningScope()).getQualName() + '.' + getName();
+        }
+        
+        @Override
+        public UnitNode getUnit() {
+            return unit;
         }
         
         @Override
         protected boolean pass1Begin() {
             super.pass1Begin();
-            ParseUnit currUnit = ParseUnit.current();
-            // TODO
-            // check that the type of this protocol member is a protocol
-            
+            UnitNode curr = ParseUnit.current().getCurrUnitNode();
+            SymbolEntry sym = curr.resolveSymbol(getTypeNode());
+            ISymbolNode snode = sym != null ? sym.node() : null;
+            if (snode instanceof ImportNode) {
+                unit = ((ImportNode) snode).getUnit();
+            }
+            else if (snode instanceof UnitNode) {
+                unit = (UnitNode) snode;
+            }
+            if (unit == null || unit.isModule() || unit.isComposition()) {
+                ParseUnit.current().reportError(getTypeNode(), "must be an protocol or class");
+            }
+            else {
+                scopeDeleg.addSymbols(unit.getEntrySet());
+            }
             return false;
         }
 
-		/* (non-Javadoc)
-		 * @see com.amaret.pollen.parser.DeclNode.ITypeSpecInit#getInit()
-		 */
-		@Override
-		public ExprNode getInit() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+        @Override
+        public boolean defineSymbol(Atom name, ISymbolNode node) {
+            return scopeDeleg.defineSymbol(name, node);
+        }
 
-		/* (non-Javadoc)
-		 * @see com.amaret.pollen.parser.DeclNode.ITypeSpec#getTypeSpec()
-		 */
-		@Override
-		public BaseNode getTypeSpec() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+        @Override
+        public IScope getEnclosingScope() {
+            return scopeDeleg.getEnclosingScope();
+        }
+
+        @Override
+        public Set<Entry<String, SymbolEntry>> getEntrySet() {
+            return scopeDeleg.getEntrySet();
+        }
+
+        @Override
+        public SymbolEntry lookupName(String name) {
+            return scopeDeleg.lookupName(name);
+        }
+
+        @Override
+        public void replaceSymbol(Atom name, ISymbolNode node) {
+            scopeDeleg.replaceSymbol(name, node);
+        }
+
+        @Override
+        public SymbolEntry resolveSymbol(Atom name) {
+            return scopeDeleg.resolveSymbol(name);
+        }
+
+        @Override
+        public void setEnclosingScope(IScope scope) {
+            scopeDeleg.setEnclosingScope(scope);
+        }
+
+        @Override
+        public ExprNode getInit() {
+        	if (getChild(NAME).getChildCount() > 0) {
+        		BaseNode b = ((BaseNode) getChild(NAME));
+            	return ((ExprNode) getChild(INIT));        		
+        	}        
+            return null;
+        }
+        @Override
+        public BaseNode getTypeSpec() {
+            return (TypeNode) getChild(USER_TYPE);
+        }
+
     }
 
     // DeclNode.UserTypeDef
@@ -483,12 +551,13 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     }
     
     // DeclNode.Var
+    // A data member or a protocol member.
     static public class Var extends DeclNode implements ITypeSpecInit {
     	
     	static final private int NAME = 1;
         static final private int TYPE = 0;
         // subtree
-        static final private int INIT = 2;
+        static final private int INIT = 0;
         
         Var(int ttype, String ttext, EnumSet<Flags>  flags) {
             super(ttype, ttext, flags);
@@ -523,12 +592,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         protected boolean pass1Begin() {
             super.pass1Begin();
             ParseUnit currUnit = ParseUnit.current();
-            // TODO
-            // if flags.contains(Flags.PROTOCOL_MEMBER)
-            // check that this is module or module fcn
-            // being bound to a protocol
-            // TODO
-            // if static instance check that type is a class
            
             if (isPublic()) {
                 currUnit.reportError(getName(), "variables can't be \'public\'");
@@ -564,11 +627,12 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     
     @Override
     public Cat getTypeCat() {
-    	// TODO
-    	Cat rtn = null;
-    	assert rtn != null;
-        return rtn;
+        if (typeCat == null) {
+            typeCat = Cat.fromSymbolNode(this, this.getDefiningScope());
+        }
+        return typeCat;
     }
+
     public boolean isPublic() {
     	return flags.contains(Flags.PUBLIC);
     }

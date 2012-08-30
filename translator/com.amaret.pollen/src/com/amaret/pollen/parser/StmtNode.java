@@ -129,6 +129,34 @@ public class StmtNode extends BaseNode {
         }
         
     }
+    // StmtNode.Decl
+    static public class Decl extends StmtNode {
+
+        static final private int VAR = 0;
+        
+        Decl(int ttype, String ttext) {
+            super(ttype, ttext);
+        }
+      
+        public DeclNode.Var getVar() {
+            return (DeclNode.Var) getChild(VAR);
+        }
+        public ExprNode getInit() {
+        	return ((DeclNode.Var) getChild(VAR)).getInit();
+        }
+        
+        @Override
+        protected void pass2End() {
+            DeclNode.Var decl = getVar();
+            FcnBodyNode body = FcnBodyNode.current();
+            ExprNode init = decl.getInit();
+            if (init != null) {
+                init.setCat(decl.getTypeCat());
+            }
+            body.addLocalVar(getVar());
+        }
+    }
+
     
     // StmtNode.Elif
     static public class Elif extends StmtNode {

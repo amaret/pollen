@@ -17,10 +17,6 @@ public class ParseUnit {
 	
 	private String path;
 	private int errorCount;
-	public int getErrorCount() {
-		return errorCount;
-	}
-
 	private ANTLRFileStream in;
 	private PrintStream out;
 	private PrintStream err;
@@ -39,6 +35,14 @@ public class ParseUnit {
 		return symbolTable;
 	}
 	
+	public void setCurrUnitNode(UnitNode currUnitNode) {
+		this.currUnitNode = currUnitNode;
+	}
+
+	public int getErrorCount() {
+		return errorCount;
+	}
+
 
 	public String getPackageName() {
 		return packageName;
