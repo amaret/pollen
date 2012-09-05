@@ -10,6 +10,7 @@ import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.TreeAdaptor;
 
+import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.driver.ProcessUnits.Termination;
 
 
@@ -22,6 +23,7 @@ public class ParseUnit {
 	private PrintStream err;
 	private PrintStream info;
 	private static ParseUnit currParse;
+	private static File currFile;
 	private UnitNode currUnitNode = null;
 	private SymbolTable symbolTable;
 	private String uname = "";
@@ -222,6 +224,20 @@ public class ParseUnit {
         return unit;
 
 	}
+	public static File createFile(String qualName, String suffix) {
+        
+		int k = qualName.lastIndexOf('.');
+        String pn = qualName.substring(0, k);
+        String un = qualName.substring(k + 1);
+        File dir = new File (ProcessUnits.getWorkingDir() + '/' + pn + '/' + un);
+        dir.mkdirs();
+        currFile = new File(dir, un + suffix);
+        return currFile;
+	}
+	public static File currFile() {
+		return currFile;
+	}
+
 
 	/**
 	 * Parse the pollen file and all required imports.

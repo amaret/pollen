@@ -54,7 +54,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
         
         @Override
-        public BaseNode getTypeSpec() {
+        public TypeNode getTypeSpec() {
             return (TypeNode) getChild(BASE);
         }
 
@@ -88,32 +88,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		 * 
 		 * @return a List of initializers
 		 */
-		public ListNode getInitList() {
-			return getChildCount() > INIT ? (ListNode) getChild(INIT) : null;
+		@SuppressWarnings("unchecked")
+		public ListNode<ExprNode> getInitList() {
+			return getChildCount() > INIT ? (ListNode<ExprNode>) getChild(INIT) : null;
 			
 		}
-    }
-    
-    // DeclNode.Enum
-    static public class Enum extends DeclNode implements ITypeInfo {
-        
-        Enum(int ttype, String ttext, EnumSet<Flags> f) {
-            super(ttype, ttext, f);
-        }
-        
-        @SuppressWarnings("unchecked")
-        public List<DeclNode.EnumVal> getVals() {
-            return ((ListNode<DeclNode.EnumVal>) getChild(NAME)).getElems();
-        }
-
-        @Override
-        public TypeInfo getTypeInfo() {
-        	// TODO
-        	TypeInfo rtn = null;
-        	assert rtn != null;
-        	return rtn;
-           // return ParseUnit.current().getTarget().getTypeInfo(TypeId.INT8);
-        }
     }
     
     // DeclNode.EnumVal
@@ -128,6 +107,19 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         	return ((BaseNode) this.getChild(0)).getAtom();
         }
     }
+    // DeclNode.Inject
+    // for type features  consisting of injected code.
+    static public class Inject extends DeclNode {
+    	static final int INJECT = 0;
+    	
+    	Inject(int ttype, String ttext) {
+    		super(ttype, ttext, EnumSet.noneOf(Flags.class));
+    	}
+    	
+    	ExprNode getInjectExpr() {
+    		return ((ExprNode) getChild(INJECT));
+    	}
+    }
        
     // DeclNode.Fcn
     static public class Fcn extends DeclNode implements ITypeSpec, IScope {
@@ -139,6 +131,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         // subtree
         static final private int TYPE = 0;
         static final private int NAME = 1;
+        static final private int TYPE_LST = 0;
 
         private NestedScope scopeDeleg = new NestedScope(this);
 		private boolean isVoid = false;
@@ -172,6 +165,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public List<DeclNode.Formal> getFormals() {
             return ((ListNode<DeclNode.Formal>) getChild(FORMALS)).getElems();
         }
+        
+        public BodyNode getBody() {
+        	return ((BodyNode) getChild(BODY));
+        }
 
         @Override
         public IScope getEnclosingScope() {
@@ -183,14 +180,32 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             return scopeDeleg.getEntrySet();
         }
         
-        @Override
-        public ListNode<TypeNode> getTypeSpec() {    
+        @SuppressWarnings("unchecked")
+		@Override
+        public TypeNode getTypeSpec() {  
+        	// TODO 
+        	// this returns the first child in a list
+        	// implement the list of types as the return type       	
+        	return this.getReturnList().get(0);
+        } 
+        /**
+         * 
+         * @return a List of the return types
+         */
+        @SuppressWarnings("unchecked")
+		public List<TypeNode> getReturnList() {
         	BaseNode b = (BaseNode) getChild(TYPE_NAME);
-        	ListNode<TypeNode> rtnTypes = (ListNode<TypeNode>) b.getChild(TYPE);       
-            return  rtnTypes;
-        }        
+        	TypeNode.Lst t = (TypeNode.Lst) b.getChild(TYPE);        	
+        	ListNode<TypeNode> child = (ListNode<TypeNode>) t.getChild(TYPE_LST);
+        	return child.getElems();
+        }
+        
         public boolean isVoid() {
         	return isVoid;
+        }
+        
+        public String cname() {
+        	return getName().toString();
         }
         
         @Override
@@ -203,7 +218,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             super.pass1Begin();
             ParseUnit currUnit = ParseUnit.current();
             currUnit.getSymbolTable().enterScope(this);
-            IScope scope = getEnclosingScope();
             if (currUnit.getCurrUnitNode().isProtocol()) {
                 currUnit.reportError(getName(), "protocols can't have function definitions");
                 return false;
@@ -219,9 +233,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             //ISymbolNode snode = symbol == null ? null : symbol.node();
             // TODO: create signature set
             
-        	BaseNode b = (BaseNode) getChild(TYPE_NAME);
-        	ListNode<TypeNode> rtnTypes = (ListNode<TypeNode>) b.getChild(TYPE);       
-			if (rtnTypes.getElems().isEmpty())
+			if (getReturnList().isEmpty())
         		isVoid = true;
 			
 			currUnit.getCurrUnitNode().addFcn(getName().getText(), this);
@@ -271,8 +283,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public List<BaseNode> getFormals() {
             return ((ListNode<BaseNode>) getChild(FORMALS)).getElems();
         }
-        public BaseNode getTypeSpec() {
-            return (BaseNode) getChild(FCN);
+        public TypeNode getTypeSpec() {
+            return (TypeNode) getChild(FCN);
         }
     
         public boolean isVoid() {
@@ -319,7 +331,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
          * It may be a TypeNode or a List<TypeNode>.
          * The latter is a function with a set of return values.
          */
-        public BaseNode getTypeSpec();
+        public TypeNode getTypeSpec();
     }
     
     // DeclNode.ITypeSpecInit
@@ -336,7 +348,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             super(ttype, ttext, f);
         }
         static final private int NAME = 1;
-        static final private int USER_TYPE = 0;
+        static final private int TYPE = 0;
         static final private int INIT = 0; // subtree
               
         private UnitNode unit;
@@ -344,7 +356,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         
         
         public Atom getTypeNode() {
-            return ((BaseNode) getChild(USER_TYPE)).getAtom();
+            return ((BaseNode) getChild(TYPE)).getAtom();
         }
         
         public UnitNode getTypeUnit() {
@@ -421,32 +433,57 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public ExprNode getInit() {
         	if (getChild(NAME).getChildCount() > 0) {
         		BaseNode b = ((BaseNode) getChild(NAME));
-            	return ((ExprNode) getChild(INIT));        		
+            	return ((ExprNode) b.getChild(INIT));        		
         	}        
             return null;
         }
         @Override
-        public BaseNode getTypeSpec() {
-            return (TypeNode) getChild(USER_TYPE);
+        public TypeNode getTypeSpec() {
+            return (TypeNode) getChild(TYPE);
         }
 
     }
 
-    // DeclNode.UserTypeDef
-    static public class UserTypeDef extends DeclNode implements IScope, ITypeInfo {
+    // DeclNode.User  a user defined type
+    static public class Usr extends DeclNode implements IScope, ITypeInfo {
 
      	static final private int FEATURES = 1;
+     	static final private int EXTENDS = 2;
+     	static final private int IMPLEMENTS = 2;
+     	static final private int VALS = 1;
         
        
-        private DeclNode.UserTypeDef classParent = null;
+        private DeclNode.Usr classParent = null;
         private NestedScope scopeDeleg = new NestedScope(this);
         
-        UserTypeDef(int ttype, String ttext,  EnumSet<Flags>  flags) {
+        Usr(int ttype, String ttext,  EnumSet<Flags>  flags) {
             super(ttype, ttext, flags);
         }
         public EnumSet<Flags> getFlags() {
         	return flags;	// Except for nested class, these apply to unit.
         }
+        
+        @SuppressWarnings("unchecked")
+    	public List<DeclNode> getFeatures() {
+        	return ((ListNode<DeclNode>)getChild(FEATURES)).getElems();
+        }
+        
+        public ExprNode getExtends() {
+        	if (!this.isProtocol())
+        		return null;
+        	if (this.getChildCount() > FEATURES) 
+        		return (ExprNode) this.getChild(EXTENDS);
+        	return null;
+        }
+
+        public ExprNode getImplements() {
+        	if (!this.isComposition() || this.isClass())
+        		return null;
+        	if (this.getChildCount() > FEATURES) 
+        		return (ExprNode) this.getChild(IMPLEMENTS);
+        	return null;
+        }
+
         
         public boolean isModule() {
         	if (flags.contains(Flags.MODULE))
@@ -473,6 +510,17 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         		return true;
         	return false;
         }
+        public boolean isEnum() {
+        	if (flags.contains(Flags.ENUM))
+        		return true;
+        	return false;
+        }
+        @SuppressWarnings("unchecked")
+		public List<DeclNode.EnumVal> getVals() {
+        	if (this.isEnum())
+        		return ((ListNode<DeclNode.EnumVal>) getChild(VALS)).getElems();
+        	return null;
+        }
 
 
         @Override
@@ -480,7 +528,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             return scopeDeleg.defineSymbol(name, symbol);
         }
 
-        public DeclNode.UserTypeDef getClassParent() {
+        public DeclNode.Usr getClassParent() {
             return classParent;
         }
         
@@ -567,7 +615,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public ExprNode getInit() {
         	if (getChild(NAME).getChildCount() > 0) {
         		BaseNode b = ((BaseNode) getChild(NAME));
-            	return ((ExprNode) getChild(INIT));        		
+            	return ((ExprNode) b.getChild(INIT));        		
         	}        
             return null;
         }
@@ -584,7 +632,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
 
         @Override
-        public BaseNode getTypeSpec() {
+        public TypeNode getTypeSpec() {
             return (TypeNode) getChild(TYPE);
         }
 

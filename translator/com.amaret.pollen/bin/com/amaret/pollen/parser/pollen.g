@@ -26,6 +26,7 @@ tokens {
     D_FCN_TYP_NM;
     D_FORMAL;
     D_FIELD;  
+    D_INJ;
     D_INSTANCE; 
     D_META;
     D_MODULE;
@@ -42,7 +43,7 @@ tokens {
     E_HASH;
     E_IDENT;
     E_INDEX;
-    E_INJECT;
+    E_INJ;
     E_NUMLIT;
     E_NEW;
     E_PAREN;
@@ -66,10 +67,12 @@ tokens {
     S_CONTINUE;
     S_DECL;
     S_ELIF;
+    S_EXPR;
     S_FOR;
     S_FOREACH;
     S_IF;
     S_IMPORT;
+    S_INJ;
     S_PACKAGE;
     S_PRINT;
     S_PROVIDED;
@@ -78,7 +81,8 @@ tokens {
     S_WHILE;
     T_ARR;
     T_FCN;
-    T_USER_TYPE;
+    T_LST;
+    T_USR;
     T_STD;
     UNIT;
 }
@@ -191,15 +195,18 @@ tokens {
     }
 }
 unit
-    :   (NL)* unitPackage   -> ^(UNIT unitPackage)  
+    :   (NL)* unitPackage   -> ^(UNIT<UnitNode>["UNIT"] unitPackage)  
     ;
 unitPackage
 	:  stmtPackage
 	   importList
-      (stmtInjection)?
-      (unitTypeDefinition)?
-      (stmtInjection)?
+      stmtInjectionList
+      unitTypeDefinition
+      stmtInjectionList
       EOF
+	;
+stmtInjectionList 
+	:(stmtInjection)* -> ^(LIST<ListNode>["LIST"] stmtInjection*)
 	;
 stmtPackage
 	: 'package' qualName delim	-> ^(S_PACKAGE qualName)
@@ -225,35 +232,41 @@ classDefinition
    	ti = tl.get(tl.size()-1);
    }
 }
-	: 	'class' classDef	-> ^(D_CLASS classDef)
+	: 	'class' classDef	-> ^(D_CLASS<DeclNode.Usr>["D_CLASS", ti.getUnitFlags()] classDef)
 	;
 classDef 
-	:	IDENT^ 
+	:	IDENT
 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.CLASS));}
 		(implementsClause)? 
-		braceOpen (classFeature)* braceClose
+		braceOpen classFeatureList braceClose
+		-> IDENT classFeatureList implementsClause?
 		;
-
+classFeatureList
+	:	classFeature*	-> ^(LIST<ListNode>["LIST"] classFeature*)
+	;
 classFeature
     :   fcnDefinition 
     |   enumDefinition
     |   varDeclaration
     |	  classDefinition
-    |	  stmtInjection
+    |	  injectionDecl
     ;
 moduleDefinition 
 	:	   'module' IDENT
 	      { ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.MODULE));}
 			(implementsClause)?  
-			braceOpen (moduleFeature)* braceClose 
-			-> ^(D_MODULE ^(IDENT implementsClause? moduleFeature*))
+			braceOpen moduleFeatureList braceClose 
+			-> ^(D_MODULE<DeclNode.Usr>["D_MODULE", ti.getUnitFlags()] IDENT moduleFeatureList implementsClause?)
+	;
+moduleFeatureList
+	:	moduleFeature*	-> ^(LIST<ListNode>["LIST"] moduleFeature*)
 	;
 moduleFeature
 	:   fcnDefinition
    |   varDeclaration
 	|   enumDefinition
 	|   classDefinition
-	|	 stmtInjection
+	|	 injectionDecl
     ;
 enumDefinition
 	:	'enum' enumDef -> enumDef
@@ -274,7 +287,7 @@ enumDef
 	:  (IDENT 
 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.ENUM));}
 		braceOpen enumList braceClose)
-		-> ^(D_ENUM<DeclNode.Enum>["D_ENUM", ti.getUnitFlags()] ^(IDENT enumList))
+		-> ^(D_ENUM<DeclNode.Usr>["D_ENUM", ti.getUnitFlags()] IDENT enumList)
 	;
 enumList
 	:	enumElement (',' enumElement)* -> ^(LIST<ListNode>["LIST"] enumElement+)
@@ -287,13 +300,16 @@ protocolDefinition
 	:	'protocol' IDENT
 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.PROTOCOL));}
 		extendsClause? 
-		braceOpen (protocolFeature)* braceClose 
-		-> ^(D_PROTOCOL ^(IDENT extendsClause? protocolFeature*))
+		braceOpen protocolFeatureList braceClose 
+		-> ^(D_PROTOCOL<DeclNode.Usr>["D_PROTOCOL", ti.getUnitFlags()] IDENT protocolFeatureList extendsClause? )
+	;
+protocolFeatureList
+	:	protocolFeature*	-> ^(LIST<ListNode>["LIST"] protocolFeature*)
 	;
 protocolFeature
     :   enumDefinition
     |   fcnDeclaration 
-    |	  stmtInjection
+    |	  injectionDecl
     ;
 compositionDefinition
 	:	'composition' IDENT
@@ -303,15 +319,19 @@ compositionDefinition
 		  //DBG(ti.getTypeName() + ", " + ti.getUnitFlags().toString());
 		}
 		extendsClause?  
-		braceOpen (compositionFeature)* braceClose 
-			-> ^(D_COMPOSITION<DeclNode.UserTypeDef>["D_COMPOSITION", ti.getUnitFlags()] IDENT extendsClause? compositionFeature*)
+		braceOpen compositionFeatureList braceClose 
+			-> ^(D_COMPOSITION<DeclNode.Usr>["D_COMPOSITION", ti.getUnitFlags()] 
+			     IDENT compositionFeatureList extendsClause?)
+	;
+compositionFeatureList
+	:	compositionFeature*	-> ^(LIST<ListNode>["LIST"] compositionFeature*)
 	;
 compositionFeature
  	:  exportList
    |  fcnDefinitionHost
    |  enumDefinition
    |  varDeclaration
-   |	stmtInjection
+   |	injectionDecl
  	;
 stmtImport
     :   (importFrom
@@ -381,8 +401,8 @@ typeNameScalar			// scalar as in 'not array'
 	|	userTypeName
 	;
 userTypeName
-	:	qualName metaArguments	-> ^(T_USER_TYPE<TypeNode.UserDef>["T_USER_TYPE", atFlags] qualName metaArguments)
-	|	qualName		-> ^(T_USER_TYPE<TypeNode.UserDef>["T_USER_TYPE", atFlags] qualName)
+	:	qualName metaArguments	-> ^(T_USR<TypeNode.Usr>["T_USR", atFlags] qualName metaArguments)
+	|	qualName		-> ^(T_USR<TypeNode.Usr>["T_USR", atFlags] qualName)
 	;
 
 unitTypeDefinition
@@ -400,15 +420,14 @@ unitTypeDefinition
    |     ('protocol') => protocolDefinition 
    |     ('composition') => compositionDefinition 
    |     ('enum') => enumDefinition 
-   	)
+   	) 
    ;
-
 extendsClause
-    :   'extends'^ IDENT
+    :   'extends' qualName -> qualName
     ;
 
 implementsClause
-    :   'implements'^ IDENT
+    :   'implements' qualName -> qualName
     ;
 braceClose
     :    (NL!)* '}'! (NL!)*
@@ -582,7 +601,7 @@ fcnAttr
 		('host' { atFlags.add(Flags.HOST); } )?
 	;
 fcnBody[CommonTree formals]
-  :	braceOpen (stmts)  braceClose  -> ^(FCNBODY<FcnBodyNode>["FCNBODY"] {$formals} stmts) 
+  :	braceOpen (stmts)  braceClose  -> ^(FCNBODY<BodyNode>["FCNBODY"] {$formals} stmts) 
   ;
 fcnDeclaration
 @init {
@@ -600,18 +619,18 @@ fcnType_fcnName
 // function names in a dcln can be qualified, e.g. pollen.reset()
 // function return is always a list, empty for void fcn.
 	:	typeName qualName  
-		-> ^(D_FCN_TYP_NM  ^(LIST<ListNode>["LIST"] typeName) qualName)      // int myfcn()
+		-> ^(D_FCN_TYP_NM  ^(T_LST<TypeNode.Lst>["T_LST", atFlags] LIST<ListNode>["LIST"] typeName) qualName)      // int myfcn()
 	|	{input.LT(1).getText().equals(ti.getTypeName()) }? typeName	    
-		-> ^(D_FCN_CTOR ^(LIST<ListNode>["LIST"] typeName) typeName) 					// constructor
+		-> ^(D_FCN_CTOR ^(T_LST<TypeNode.Lst>["T_LST", atFlags] LIST<ListNode>["LIST"] typeName) typeName) 					// constructor
 	|	qualName 	
-		-> ^(D_FCN_TYP_NM ^(LIST<ListNode>["LIST"]) qualName)               // myfcn() returns void
+		-> ^(D_FCN_TYP_NM ^(T_LST<TypeNode.Lst>["T_LST", atFlags] LIST<ListNode>["LIST"]) qualName)               // myfcn() returns void
 	|	('(' typeName (',' typeName)* ')' qualName) => fcnTypes_fcnName	// multiple returns
 	;
 fcnTypes_fcnName
 	:	'(' fcnTypes ')' qualName -> ^(D_FCN_TYP_NM  fcnTypes qualName)
 	;
 fcnTypes
-	:	typeName (',' typeName)* -> ^(LIST<ListNode>["LIST"] typeName+)
+	:	typeName (',' typeName)* -> ^(T_LST<TypeNode.Lst>["T_LST", atFlags] LIST<ListNode>["LIST"] typeName+)
 	;
 fcnFormalParameterList
 	:	'(' fcnFormalParameters ')' -> fcnFormalParameters
@@ -683,7 +702,7 @@ stmt
 	|	stmtProvided
 	|	stmtWhile 
 	|	stmtInjection
-	|	expr delim
+	|	expr delim -> ^(S_EXPR<StmtNode.Expr>["S_EXPR"] expr)
 	;
 stmtAssign
 	:	varOrFcnOrArray ASSIGN expr	delim
@@ -954,14 +973,20 @@ stmtInjection
             $c.setText(getInject($c.getText()));
         }
 	NL+	
-	-> ^(E_INJECT<ExprNode.Inject>["E_INJECT"] INJECT)
+	-> ^(S_INJ<StmtNode.Inject> ["S_INJ"] ^(E_INJ<ExprNode.Inject>["E_INJ"] INJECT))
 	;
 injectionCode
 	:	c=INJECT  {           
             $c.setText(getInject($c.getText()));
         } 
-	-> ^(E_INJECT<ExprNode.Inject>["E_INJECT"] INJECT) // don't consume delimiter
+	-> ^(E_INJ<ExprNode.Inject>["E_INJ"] INJECT) // don't consume delimiter
 	;
+injectionDecl
+	:	c=INJECT  {           
+            $c.setText(getInject($c.getText()));
+        }
+         -> ^(D_INJ<DeclNode.Inject>["D_INJ"] INJECT)
+	;	
 delim
 	:	(SEMI) (NL)*	-> 
 	|	(NL)+	-> 

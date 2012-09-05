@@ -24,6 +24,34 @@ public class StmtNode extends BaseNode {
             return (ExprNode) getChild(EXPR);
         }
     }
+    // StmtNode.Inject
+    static public class Inject extends StmtNode {
+
+        static final private int EXPR = 0;
+        
+        Inject(int ttype, String ttext) {
+            super(ttype, ttext);
+        }
+        
+        public ExprNode.Inject getExpr() {
+            return (ExprNode.Inject) getChild(EXPR);
+        }
+    }
+    // StmtNode.Expr
+    // a Stmt wrapper for expr
+    static public class Expr extends StmtNode {
+
+        static final private int EXPR = 0;
+        
+        Expr(int ttype, String ttext) {
+            super(ttype, ttext);
+        }
+        
+        public ExprNode getExpr() {
+            return (ExprNode) getChild(EXPR);
+        }
+    }
+
     
     // StmtNode.Block
     static public class Block extends StmtNode implements IScope {
@@ -148,7 +176,7 @@ public class StmtNode extends BaseNode {
         @Override
         protected void pass2End() {
             DeclNode.Var decl = getVar();
-            FcnBodyNode body = FcnBodyNode.current();
+            BodyNode body = BodyNode.current();
             ExprNode init = decl.getInit();
             if (init != null) {
                 init.setCat(decl.getTypeCat());
@@ -386,18 +414,18 @@ public class StmtNode extends BaseNode {
         @Override
         protected void pass2End() {
 
-        	ListNode<TypeNode> l = FcnBodyNode.current().getFcn().getTypeSpec();
+        	List<TypeNode> l = BodyNode.current().getFcn().getReturnList();
         	
-        	if (getVec() != null && FcnBodyNode.current().getFcn().isVoid()) {
+        	if (getVec() != null && BodyNode.current().getFcn().isVoid()) {
         		ParseUnit.current().reportError(this, "Void functions cannot return values");
         	}
-        	if (getVec() == null && !FcnBodyNode.current().getFcn().isVoid()) {
+        	if (getVec() == null && !BodyNode.current().getFcn().isVoid()) {
         		ParseUnit.current().reportError(this, "Missing return value");
         	}
            
 			ExprNode.Vec v = getVec();
 			for (ExprNode expr : v.getVals()) {
-				for (TypeNode t : l.getElems()) {
+				for (TypeNode t : l) {
 					Cat retcat = Cat.fromType(t);
 					Cat valcat = expr.getCat();
 					if (TypeRules.preCheck(valcat) == null) {

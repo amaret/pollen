@@ -115,7 +115,7 @@ public class Cat implements Cloneable {
 
         	// TODO 
         	// handle multiple returns
-        	retCat = Cat.fromType(fcnD.getTypeSpec().getElems().get(0));
+        	retCat = Cat.fromType(fcnD.getTypeSpec());
 
         	for (DeclNode.Formal arg : fcnD.getFormals()) {
         		argCats.add(Cat.fromType(arg.getTypeSpec()));
@@ -313,8 +313,8 @@ public class Cat implements Cloneable {
         if (snode instanceof UnitNode) {
             return new Cat.Agg((UnitNode) snode, defScope, false);
         }
-        else if (snode instanceof DeclNode.UserTypeDef) {
-            return new Cat.Agg((DeclNode.UserTypeDef) snode, defScope, isRef);
+        else if (snode instanceof DeclNode.Usr) {
+            return new Cat.Agg((DeclNode.Usr) snode, defScope, isRef);
         }
         else if (snode instanceof DeclNode.Fcn) {
             return new Cat.Fcn((DeclNode.Fcn) snode);
@@ -330,7 +330,7 @@ public class Cat implements Cloneable {
         	else // TODO a list of TypeNodes
         		return UNKNOWN;
         }
-        else if (snode instanceof DeclNode.Enum || snode instanceof DeclNode.EnumVal) {
+        else if (snode instanceof DeclNode.EnumVal) {
             return Cat.fromScalarCode("u1");
         }
         else {
@@ -345,8 +345,8 @@ public class Cat implements Cloneable {
         switch (typeNode.getType()) {
         case pollenParser.T_ARR:
             return new Cat.Arr((TypeNode.Arr) typeNode);
-        case pollenParser.T_USER_TYPE:
-            SymbolEntry sym = ((TypeNode.UserDef) typeNode).getSymbol();
+        case pollenParser.T_USR:
+            SymbolEntry sym = ((TypeNode.Usr) typeNode).getSymbol();
             return Cat.fromSymbolNode(sym.node(), sym.scope(), isRef);
         case pollenParser.T_FCN:
             Cat cat = new Cat.Fcn((TypeNode.Fcn) typeNode);

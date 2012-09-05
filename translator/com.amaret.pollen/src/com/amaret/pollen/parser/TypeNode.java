@@ -41,14 +41,35 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
         }
     }
     
-    // TypeNode.UserDef
-    static public class UserDef extends TypeNode {
+    // TypeNode.Lst
+    // Functions with multiple returns specify that with a list of types. 
+    static public class Lst extends TypeNode {
+
+        static final private int ITEMS = 0;
+         
+        Lst(int ttype, String ttext, EnumSet<Flags> flags) {
+            super(ttype, ttext, flags);
+        }
+        
+        @SuppressWarnings("unchecked")
+        public List<TypeNode> getTypes() {
+            return ((ListNode<TypeNode>) getChild(ITEMS)).getElems();
+        }
+      
+        @SuppressWarnings("unchecked")
+		public TypeNode getFirst() {
+            return (TypeNode) ((ListNode<TypeNode>) getChild(ITEMS)).getElems().get(0);
+        }
+    }
+    
+    // TypeNode.Usr a user defined type
+    static public class Usr extends TypeNode {
 
         static final private int NAME = 0;
         
         private HashMap<String,SymbolEntry> symbolMap = new HashMap<String,SymbolEntry>();
         
-        UserDef(int ttype, String ttext, EnumSet<Flags> flags) {
+        Usr(int ttype, String ttext, EnumSet<Flags> flags) {
             super(ttype, ttext, flags);
         }
         
