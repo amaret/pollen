@@ -202,9 +202,9 @@ public class Cat implements Cloneable {
             //codeMap.put("Ref",      "r");
             codeMap.put("string",   "s");
             //codeMap.put("UArg",     "ua");
-            codeMap.put("uInt8",    "u1");
-            codeMap.put("uInt16",   "u2");
-            codeMap.put("uInt32",   "u4");
+            codeMap.put("uint8",    "u1");
+            codeMap.put("uint16",   "u2");
+            codeMap.put("uint32",   "u4");
             codeMap.put("void",     "v");
         }
         
@@ -415,9 +415,7 @@ public class Cat implements Cloneable {
 	 */
 	public boolean isArrayDesc() throws RuntimeException {
 		// TODO Do I need this?
-		throw new RuntimeException("Unimplemented method");
-		// TODO Auto-generated method stub
-		//return false;
+		return false;
 	}
     
 }

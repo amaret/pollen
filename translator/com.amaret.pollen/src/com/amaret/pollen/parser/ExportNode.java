@@ -7,7 +7,7 @@ public class ExportNode extends BaseNode {
     static private final int NAME = 0;
     
     ExportNode(int ttype, String ttext) {
-        this.token = new CommonToken(ttype, ttext);
+        this.token = new Atom(ttype, ttext);
     }
     
     public Atom getName() {
@@ -22,6 +22,9 @@ public class ExportNode extends BaseNode {
         ISymbolNode snode = sym == null ? null : sym.node();
         if (!(snode instanceof ImportNode)) {
             currUnit.reportError(name, "not an imported unit");
+        }
+        else {
+        	((ImportNode) snode).setExport(true);
         }
         currUnit.getCurrUnitNode().getExportList().add(this);
         return false;

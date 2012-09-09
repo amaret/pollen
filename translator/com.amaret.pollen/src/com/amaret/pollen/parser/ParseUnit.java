@@ -2,6 +2,7 @@ package com.amaret.pollen.parser;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -17,6 +18,7 @@ import com.amaret.pollen.driver.ProcessUnits.Termination;
 public class ParseUnit {
 	
 	private String path;
+	private ArrayList<String> paths = new ArrayList<String>();
 	private int errorCount;
 	private ANTLRFileStream in;
 	private PrintStream out;
@@ -44,10 +46,21 @@ public class ParseUnit {
 	public int getErrorCount() {
 		return errorCount;
 	}
+	
+	public String getCurrPath() {
+		if (paths.size() == 0)
+			return path; // default is the input pollen file.
+		return paths.get(paths.size()-1);
+	}
 
 
 	public String getPackageName() {
-		return packageName;
+		String p = getCurrPath();
+		return ParseUnit.mkPackageName(p);
+	}
+	public String getUnitName() {
+		String p = getCurrPath();
+		return ParseUnit.mkUnitName(p);
 	}
 
 
@@ -84,6 +97,14 @@ public class ParseUnit {
 
 		currParse = new ParseUnit(inputPath, pkgs, outputStream,
 				errorStream, infoStream, symtab);
+		// Put the output somewhere convenient.
+        // TODO make a command line option for location of output directory.
+		String wdir = inputPath.substring(0, inputPath.lastIndexOf(File.separator));
+        wdir = wdir.substring(0, wdir.lastIndexOf(File.separator));
+        wdir += '/' + ParseUnit.mkPackageName(inputPath) + "_out"; 
+        File dir = new File (wdir);
+        dir.mkdirs();
+        ProcessUnits.setWorkingDir(wdir);
 		
 
 	}
@@ -111,7 +132,7 @@ public class ParseUnit {
             
             if (!(impSnode instanceof ImportNode)) {
                 try {
-                    impUnit = parseUnit(pkgPath + File.separator + fromPkg + File.separator + imp.getUnitName());
+                    impUnit = parseUnit(pkgPath + File.separator + imp.getUnitName() + ".p");
                 }
                 catch (Termination te) {
                     reportError(imp, te.getMessage());
@@ -181,13 +202,7 @@ public class ParseUnit {
 
 	private UnitNode parseUnit(String inputPath) throws Exception {
 		
-		
-        int k = inputPath.lastIndexOf('.');
-        int j = inputPath.lastIndexOf(".", k-1);
-        j = j == -1 ? 0 : j+1;
-        packageName = inputPath.substring(j, k);
-        uname = inputPath.substring(k + 1);     
-
+		paths.add(inputPath);
 		in = new ANTLRFileStream(inputPath);
 		
         pollenLexer lexer = new pollenLexer(in, getFileName());
@@ -209,27 +224,53 @@ public class ParseUnit {
         }       
         unit.init();
         
-        if (!(unit.getPkgName().getText().equals(packageName))) {
+        if (!(unit.getPkgName().getText().equals(getPackageName()))) {
             reportError(unit.getPkgName(), "package name does not match the current directory");
         }
 
-        if (!(unit.getName().getText().equals(uname))) {
+        if (!(unit.getName().getText().equals(getUnitName()))) {
             reportError(unit.getName(), "unit name does not match the current file");
         }
         
         unitMap.put(unit.getQualName(), unit);
         parseImports(unit);
         checkUnit(unit);
+        paths.remove(paths.size()-1);
 
         return unit;
 
 	}
+
+	/**
+	 * @param  inputPath for a pollen file
+	 * @return the package name
+	 */
+	public static String mkPackageName(String inputPath) {
+		int k = inputPath.lastIndexOf(File.separator);
+        int j = inputPath.lastIndexOf(File.separator, k-1);
+        j = j == -1 ? 0 : j+1;
+        return inputPath.substring(j, k);
+	}
+	/**
+	 * @param  inputPath for a pollen file
+	 * @return the unit name
+	 */
+	public static String mkUnitName(String inputPath) {
+		int k = inputPath.lastIndexOf(".");
+        int j = inputPath.lastIndexOf(File.separator, k-1);
+        j = j == -1 ? 0 : j+1;
+        return inputPath.substring(j, k);
+       
+	}
+
+	
 	public static File createFile(String qualName, String suffix) {
         
 		int k = qualName.lastIndexOf('.');
         String pn = qualName.substring(0, k);
         String un = qualName.substring(k + 1);
-        File dir = new File (ProcessUnits.getWorkingDir() + '/' + pn + '/' + un);
+        // TODO make a command line option for location of output directory
+        File dir = new File ( ProcessUnits.getWorkingDir() + '/' + pn + '/' + un);
         dir.mkdirs();
         currFile = new File(dir, un + suffix);
         return currFile;
@@ -256,7 +297,7 @@ public class ParseUnit {
 	 */
     private void checkUnit(UnitNode unit) {
 
-        unit.defineSymbol(unit.getName(), unit);
+        //unit.defineSymbol(unit.getName(), unit);
         currUnitNode = unit;
 
         if (getErrorCount() == 0) {
@@ -276,13 +317,11 @@ public class ParseUnit {
 	}
 
 	public String getFileName() {
-		if (path.indexOf(File.separator) != -1) {
-			return path.substring(path.lastIndexOf(File.separator)+1);			
+		String p = this.getCurrPath();
+		if (p.indexOf(File.separator) != -1) {
+			return p.substring(p.lastIndexOf(File.separator)+1);			
 		}
-		return path;
-	}
-	public String getPath() {
-		return path;
+		return p;
 	}
 
 	/**
@@ -311,6 +350,7 @@ public class ParseUnit {
         String quote = "'";
         msg = quote + token.getText() + quote + ": " + msg;
         String fname = token instanceof Atom ? ((Atom) token).getFileName() : getFileName();
+        if (fname == null) fname = getFileName();
         reportErrorConsole(fname, token.getLine(), token.getCharPositionInLine() + 1, msg);
     }
     

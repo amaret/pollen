@@ -5,8 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.tree.Tree;
+
+import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
 
 public class StmtNode extends BaseNode {
 
@@ -175,11 +176,10 @@ public class StmtNode extends BaseNode {
         
         @Override
         protected void pass2End() {
-            DeclNode.Var decl = getVar();
             BodyNode body = BodyNode.current();
-            ExprNode init = decl.getInit();
+            ExprNode init = getVar().getInit();
             if (init != null) {
-                init.setCat(decl.getTypeCat());
+                init.setCat(getVar().getTypeCat());
             }
             body.addLocalVar(getVar());
         }
@@ -583,7 +583,7 @@ public class StmtNode extends BaseNode {
     }
     
     StmtNode(int ttype, String ttext) {
-        this.token = new CommonToken(ttype, ttext);
+        this.token = new Atom(ttype, ttext);
     }
     
     @Override

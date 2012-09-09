@@ -312,7 +312,7 @@ public class ExprNode extends BaseNode {
 
         static final private int NAME = 0;
         
-        private SymbolEntry symbol;
+        private SymbolEntry symbol = null;
         private boolean isLength;
         
         Ident(int ttype, String ttext) {
@@ -333,56 +333,76 @@ public class ExprNode extends BaseNode {
             return symbol;
         }
         
-        public boolean isLength() {
+        public void setSymbol(SymbolEntry symbol) {
+			this.symbol = symbol;
+		}
+
+		public boolean isLength() {
             return isLength;
         }
         
         @Override
         protected boolean pass1Begin() {
-        	// TODO
-        	// set scopeDeref to scope of type
-            if (getName().getText().equals("length")) {
-                isLength = true;
-            }
-            else {
-            	// TODO if useScopeDeref, use scopeDeref for symbol resolution
-                ParseUnit currUnit = ParseUnit.current();
-                symbol = currUnit.getSymbolTable().resolveSymbol(getName());
-                if (symbol == null) {
-                    currUnit.reportError(getName(), "identifer is not declared in the current scope");
-                }
-            }
-            return super.pass1Begin();
+
+        	ParseUnit currUnit = ParseUnit.current();
+        	if (symbol == null)
+        		symbol = currUnit.getSymbolTable().resolveSymbol(getName());
+        	if (symbol == null) {
+        		currUnit.reportError(getName(), "identifer is not declared in the current scope");
+
+        	}
+        	return super.pass1Begin();
         }
         
         @Override
         protected void pass2End() {
-        	// TODO
-        	// set isConst, exprCat
-
+        	if (symbol.node() instanceof DeclNode.Var
+        			&& ((DeclNode.Var)symbol.node()).isConst())
+        		isConst = true;
+        	exprCat = symbol.node().getTypeCat();
         }
     }
     // ExprNode.Self
     static public class Self extends ExprNode {
 
-        static final private int NAME = 0;
-               
+        static final private int MEMBER = 0;
+        private SymbolEntry symbol = null;
+        
         Self(int ttype, String ttext) {
             super(ttype, ttext);
         }
         
-        public Atom getName() {
-            return (Atom) ((BaseNode) getChild(NAME)).getToken();
+        public ExprNode getMember() {
+        	return (ExprNode) getChild(MEMBER);
         }
         
         @Override
         protected boolean pass1Begin() {
-            return super.pass1Begin();
+        	
+        	ParseUnit currUnit = ParseUnit.current();
+        	// do the lookup of the deref'd member here, where the self context
+        	// is known, in case there is a name collision between a local var name
+        	// and a member name. 
+        	if (getMember() != null && getMember() instanceof ExprNode.Ident) {
+        		ExprNode.Ident ei = (ExprNode.Ident) getMember();
+            	symbol = currUnit.getSymbolTable().resolveSymbol(ei.getName(), currUnit.getCurrUnitNode().getUnitType());
+            	if (symbol == null) {
+            		currUnit.reportError(ei.getName(), "identifer is not declared in the current scope");
+            	}
+            	else {
+            		ei.setSymbol(symbol);
+            	}
+        	}
+        	
+        	return super.pass1Begin();
         }
         
         @Override
         protected void pass2End() {
-
+        	if (symbol != null && symbol.node() instanceof DeclNode.Var
+        			&& ((DeclNode.Var)symbol.node()).isConst())
+        		isConst = true;
+        	exprCat = symbol.node().getTypeCat();
         }
     }
 
@@ -599,7 +619,7 @@ public class ExprNode extends BaseNode {
     protected boolean useScopeDeref = false;
     
     ExprNode(int ttype, String ttext) {
-      	this.token = new CommonToken(ttype, ttext);
+      	this.token = new Atom(ttype, ttext);
     }
 
     public final Cat getCat() {

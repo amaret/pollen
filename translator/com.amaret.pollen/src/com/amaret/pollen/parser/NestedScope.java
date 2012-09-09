@@ -58,7 +58,34 @@ public class NestedScope implements IScope {
             return result;
         }
         if (enclosingScope != null) {
-            return enclosingScope.lookupName(name);
+            result = enclosingScope.lookupName(name);
+            if (result != null)
+            	return result;
+        }
+        if (name.indexOf(".") != -1) {
+        	// qualified names ('x.y.z') need chained lookups, one qualifier at a time.
+        	IScope sc = this.definingScope;
+        	String qualifier = name.substring(0, name.indexOf("."));
+        	name = name.substring(name.indexOf(".")+1, name.length());
+        	while (true) {
+        		if (result != null && result.node() instanceof IScope)
+        			result = ((IScope) result.node()).lookupName(qualifier);
+        		else 
+        			result = sc.lookupName(qualifier);
+        		if (result == null)
+        			break;
+        		if (name.isEmpty())
+        			return result;
+        		sc = result.scope();
+        		if (name.indexOf(".") == -1) {
+        			qualifier = name;
+        			name = "";
+        		}
+        		else {
+        			qualifier = name.substring(0, name.indexOf("."));
+                	name = name.substring(name.indexOf(".")+1, name.length()-1);
+        		}      		      		
+        	}
         }
         return null;
     }

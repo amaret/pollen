@@ -10,7 +10,7 @@ public class ListNode<T> extends BaseNode {
     List<T> elems;
     
     ListNode(int ttype, String ttext) {
-      	this.token = new CommonToken(ttype, ttext);
+      	this.token = new Atom(ttype, ttext);
     }
     
 	@SuppressWarnings("unchecked")

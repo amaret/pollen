@@ -20,7 +20,7 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     private UnitNode unit;
     
     ImportNode(int ttype, String ttext) {
-        this.token = new CommonToken(ttype, ttext);
+        this.token = new Atom(ttype, ttext);
     }
    
     public boolean isExport() {
@@ -53,7 +53,7 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
      */
     @SuppressWarnings("unchecked")
     public List<BaseNode> getMeta() {
-    	return this.getChildCount() > AS ?  ((ListNode<BaseNode>)getChild(META)).getElems() : null;   	
+    	return this.getChildCount() > META ?  ((ListNode<BaseNode>)getChild(META)).getElems() : null;   	
     }
        
     @Override
@@ -110,7 +110,10 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 
     @Override
     public SymbolEntry lookupName(String name) {
-        return unit.lookupName(name); 
+    	SymbolEntry result = unit.lookupName(name); 
+    	if (result != null)
+    		return result;
+    	return unit.getUnitType().lookupName(name);
     }
 
     @Override

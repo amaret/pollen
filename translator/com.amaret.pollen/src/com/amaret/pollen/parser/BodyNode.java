@@ -19,7 +19,7 @@ public class BodyNode extends BaseNode implements IScope {
     private NestedScope scopeDeleg = new NestedScope(this);
             
     BodyNode(int ttype, String ttext) {
-      	this.token = new CommonToken(ttype, ttext);
+      	this.token = new Atom(ttype, ttext);
     }
   
     static BodyNode current() {

@@ -54,6 +54,7 @@ tokens {
     EXPORT;
     FCNBODY;
     HOST;
+    IMPORT;
     LIST;
     MODULE;
     NIL;
@@ -71,7 +72,6 @@ tokens {
     S_FOR;
     S_FOREACH;
     S_IF;
-    S_IMPORT;
     S_INJ;
     S_PACKAGE;
     S_PRINT;
@@ -85,6 +85,7 @@ tokens {
     T_USR;
     T_STD;
     UNIT;
+    VOID;
 }
 
 @parser::header {
@@ -127,6 +128,7 @@ tokens {
     void DBG(String dbg) {
     	System.out.println(dbg);
     }
+    String pkgName;
     void DBG_LT() {
       System.out.print("LT: "); 
     	if (input.LT(0) != null) System.out.print(input.LT(0).getText() + ", "); 
@@ -189,9 +191,7 @@ tokens {
     @Override
     public void reportError( RecognitionException e )
     {
-    	  // TODO
-        //Session ses = Session.current();
-        //ses.reportError(e, getErrorMessage(e, getTokenNames()));
+    	ParseUnit.current().reportError(e, getErrorMessage(e, getTokenNames()));
     }
 }
 unit
@@ -203,17 +203,26 @@ unitPackage
       stmtInjectionList
       unitTypeDefinition
       stmtInjectionList
-      EOF
+      pollenEOF
 	;
+pollenEOF
+	:	EOF!
+	;
+catch [java.lang.ClassCastException e] {
+    //ignore: antlr bug
+}
 stmtInjectionList 
 	:(stmtInjection)* -> ^(LIST<ListNode>["LIST"] stmtInjection*)
 	;
 stmtPackage
-	: 'package' qualName delim	-> ^(S_PACKAGE qualName)
-	|	-> ^(S_PACKAGE)
+@init {
+   String pkg = ParseUnit.mkPackageName(ParseUnit.current().getCurrPath());
+}
+	: 'package' qualName delim	-> ^(S_PACKAGE[pkg] qualName)
+	|	-> ^(S_PACKAGE[pkg]) 
 	;
 stmtExport
-    :   'export'^ qualName delim
+    :   'export' qualName delim -> ^(EXPORT<ExportNode>["EXPORT"] qualName)
     ;
 exportList
     :   stmtExport+  
@@ -336,23 +345,20 @@ compositionFeature
 stmtImport
     :   (importFrom
         'import' qualName (metaArguments)?
-         importAs? delim) -> ^(S_IMPORT importFrom? qualName importAs? metaArguments?)
+         importAs delim) -> ^(IMPORT<ImportNode>["IMPORT"] importFrom qualName importAs metaArguments?)
     ;
 importFrom
 @init{
 	String defaultPkg = "";
-
+	String path = this.getTokenStream().getSourceName();
+   int k = path.lastIndexOf(File.separator);
+   int j = path.lastIndexOf(File.separator, k-1);
+    j = j == -1 ? 0 : j+1;
+    // the default package is the containing directory
+    defaultPkg = path.substring(j, k);
 }
     :   'from' qualName -> qualName
-    |		{
-    			String path = this.getTokenStream().getSourceName();
-        		int k = path.lastIndexOf('.');
-        		int j = path.lastIndexOf(".", k-1);
-        		j = j == -1 ? 0 : j+1;
-        		// the default package is the containing directory
-        		defaultPkg = path.substring(j, k);
-    		}
-    		-> ^(E_IDENT <ExprNode.Ident>["E_IDENT"]  IDENT[defaultPkg])
+    |		-> IDENT[defaultPkg]
     ;
 importAs
 	:	'as' qualName -> qualName
@@ -619,18 +625,19 @@ fcnType_fcnName
 // function names in a dcln can be qualified, e.g. pollen.reset()
 // function return is always a list, empty for void fcn.
 	:	typeName qualName  
-		-> ^(D_FCN_TYP_NM  ^(T_LST<TypeNode.Lst>["T_LST", atFlags] LIST<ListNode>["LIST"] typeName) qualName)      // int myfcn()
+		-> ^(D_FCN_TYP_NM  ^(T_LST<TypeNode.Lst>["T_LST", atFlags] ^(LIST<ListNode>["LIST"] typeName)) qualName)      // int myfcn()
 	|	{input.LT(1).getText().equals(ti.getTypeName()) }? typeName	    
-		-> ^(D_FCN_CTOR ^(T_LST<TypeNode.Lst>["T_LST", atFlags] LIST<ListNode>["LIST"] typeName) typeName) 					// constructor
+		-> ^(D_FCN_CTOR ^(T_LST<TypeNode.Lst>["T_LST", atFlags] ^(LIST<ListNode>["LIST"] typeName)) typeName) 		  // constructor
 	|	qualName 	
-		-> ^(D_FCN_TYP_NM ^(T_LST<TypeNode.Lst>["T_LST", atFlags] LIST<ListNode>["LIST"]) qualName)               // myfcn() returns void
+		-> ^(D_FCN_TYP_NM ^(T_LST<TypeNode.Lst>["T_LST", atFlags] 
+				^(LIST<ListNode>["LIST"] ^(T_STD<TypeNode.Std>["T_STD", atFlags] VOID["void"]))) qualName)               // myfcn() returns void
 	|	('(' typeName (',' typeName)* ')' qualName) => fcnTypes_fcnName	// multiple returns
 	;
 fcnTypes_fcnName
 	:	'(' fcnTypes ')' qualName -> ^(D_FCN_TYP_NM  fcnTypes qualName)
 	;
 fcnTypes
-	:	typeName (',' typeName)* -> ^(T_LST<TypeNode.Lst>["T_LST", atFlags] LIST<ListNode>["LIST"] typeName+)
+	:	typeName (',' typeName)* -> ^(T_LST<TypeNode.Lst>["T_LST", atFlags] ^(LIST<ListNode>["LIST"] typeName+))
 	;
 fcnFormalParameterList
 	:	'(' fcnFormalParameters ')' -> fcnFormalParameters
@@ -655,14 +662,14 @@ varOrFcnOrArray
 		-> ^(E_NEW<ExprNode.New>["E_NEW"] typeName fcnArgumentList fieldOrArrayAccess?)
 	|	'@' IDENT fcnArgumentList fieldOrArrayAccess? 
 		-> ^(E_SELF<ExprNode.Self>["E_SELF"] 
-			^(E_CALL<ExprNode.Call>["E_CALL"] IDENT fcnArgumentList fieldOrArrayAccess?))
+			^(E_CALL<ExprNode.Call>["E_CALL"] ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT) fcnArgumentList fieldOrArrayAccess?))
 	|	'@'	IDENT fieldOrArrayAccess? 	  // note grammar.h also has meta_arguments - but how?
 		-> ^(E_SELF<ExprNode.Self>["E_SELF"] ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT fieldOrArrayAccess?))
 	|	'@'	
 		-> ^(E_SELF<ExprNode.Self>["E_SELF"])
 	|	qualName fcnArgumentList fieldOrArrayAccess? 
-		-> ^(E_CALL<ExprNode.Call>["E_CALL"] qualName fcnArgumentList fieldOrArrayAccess?)
-	|	qualName fieldOrArrayAccess? 
+		-> ^(E_CALL<ExprNode.Call>["E_CALL"] ^(E_IDENT<ExprNode.Ident>["E_IDENT"] qualName) fcnArgumentList fieldOrArrayAccess?)
+	|	qualName fieldOrArrayAccess? -> ^(E_IDENT<ExprNode.Ident>["E_IDENT"] qualName fieldOrArrayAccess?)
 	;
 fieldOrArrayAccess
 	:	 (fieldAccess | arrayAccess)+
@@ -888,9 +895,12 @@ varDeclList  // int x, y=3, z=3, a
 @init {
 	assert $varDecl::typ != null;
 }  
-	:	builtinType! {$varDecl::typ = $builtinType.tree; } varInit2 (','! varInit2)*
+	:	varBuiltInType! {$varDecl::typ = $varBuiltInType.tree; } varInit2 (','! varInit2)*
 	|	userTypeName! {$varDecl::typ = $userTypeName.tree; } varInit (','! varInit)*
 	;	
+varBuiltInType
+	:	builtinType -> ^(T_STD<TypeNode.Std>["T_STD", atFlags] builtinType)
+	;
 varInit2
 	:	IDENT (ASSIGN expr)?
 		-> ^(D_VAR<DeclNode.Var>["D_VAR", atFlags] {$varDecl::typ} ^(IDENT expr?))
@@ -914,16 +924,43 @@ builtinType
     |   'uint16'
     |   'uint32'
     ;
+    
 qualName
-    :   IDENT (qualNameList)? -> ^(E_IDENT <ExprNode.Ident>["E_IDENT"]  IDENT qualNameList?)
+scope {
+  String s; 
+}
+@init {
+	$qualName::s = "";
+}
+@after {
+	//System.out.println("Qual : "  + $qualName::s);
+}      
+    :	   IDENT (qualNameList?)  -> IDENT[$IDENT.text + $qualName::s]
     ;
 // Names in qualNameList will use scopeDeref for lookup.
-qualNameList
+qualNameList 
 	:
-	(   '.'     
-        IDENT
-    )+	 -> ^(E_IDENT <ExprNode.Ident>["E_IDENT", true] IDENT)+
-	;    
+	(   '.'!     
+        IDENT! {$qualName::s += "." + $IDENT.text;}
+    )+	 
+	; 
+	
+/*
+qualName returns [String s]
+@init {
+	$s = "";
+}    
+@after {
+	System.out.println("Qual: " + $s);
+}
+    :	   i1=IDENT {$s = $i1.text}
+//    		( '.' {$s += ".";}
+//    			i2=IDENT {$s += $i2.text;}
+//    		)*
+    		-> IDENT[$s]
+    ;
+   */
+    		
 arrayLit		// anonymous arrays
 	:	'['	arrayLitList	']'	-> ^(LIST<ListNode>["LIST"] arrayLitList)
 	;

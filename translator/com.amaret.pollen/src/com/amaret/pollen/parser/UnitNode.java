@@ -30,7 +30,6 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
 	private int errorCount;
     private String filePath;
 	private EnumSet<Flags> flags = EnumSet.noneOf(Flags.class);
-	private Atom name;
 	private Map<String,Integer> exprConstStringTable = new HashMap<String,Integer>();
     private Map<String,SymbolEntry> symbolTable = new HashMap<String,SymbolEntry>();
     private Cat typeCat = null;
@@ -70,7 +69,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
 
     
     UnitNode(int ttype, String ttext) {
-      	this.token = new CommonToken(ttype, ttext);
+      	this.token = new Atom(ttype, ttext);
     }
 	/**
 	 * This unit is imported by another unit 'u'
@@ -157,7 +156,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     
     @Override
     public Atom getName() {
-        return name;
+    	return this.getUnitType().getName();
     }
     
     public Atom getPkgName() {
@@ -190,7 +189,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     }
 
     void init() {
-    	filePath = ParseUnit.current().getPath();
+    	filePath = ParseUnit.current().getCurrPath();
     }
     
    public boolean isHost() {

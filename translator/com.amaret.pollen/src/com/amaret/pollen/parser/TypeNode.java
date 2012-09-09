@@ -169,7 +169,7 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 
         
     TypeNode(int ttype, String ttext, EnumSet<Flags> f) {
-        this.token = new CommonToken(ttype, ttext);
+        this.token = new Atom(ttype, ttext);
         flags = f;
     }
         

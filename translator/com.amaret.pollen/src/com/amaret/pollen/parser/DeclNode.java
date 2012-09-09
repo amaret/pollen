@@ -42,7 +42,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             return (TypeNode) getChild(TYPE);
         }
     }
-    static public class Arr extends DeclNode implements ITypeSpecInit {
+    static public class Arr extends DeclNode.Var implements ITypeSpecInit {
 
         static final private int BASE = 0;
         static final private int NAME = 1;
@@ -185,8 +185,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public TypeNode getTypeSpec() {  
         	// TODO 
         	// this returns the first child in a list
-        	// implement the list of types as the return type       	
-        	return this.getReturnList().get(0);
+        	// implement the list of types as the return type 
+         	return (!this.getReturnList().isEmpty()) ? this.getReturnList().get(0) : null;
         } 
         /**
          * 
@@ -211,14 +211,14 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         @Override
         public Atom getName() {
         	BaseNode b = ((BaseNode) getChild(TYPE_NAME));
-        	return ((BaseNode) b.getChild(NAME)).getAtom();
+        	return ((BaseNode) b.getChild(NAME)).getAtom();       	
         }        
         @Override
         protected boolean pass1Begin() {
             super.pass1Begin();
             ParseUnit currUnit = ParseUnit.current();
             currUnit.getSymbolTable().enterScope(this);
-            if (currUnit.getCurrUnitNode().isProtocol()) {
+            if (currUnit.getCurrUnitNode().isProtocol() && this.getBody() != null) {
                 currUnit.reportError(getName(), "protocols can't have function definitions");
                 return false;
             }
@@ -341,7 +341,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     
     // DeclNode.TypedMember
     // For proxy (protocol member) or a member with class type
-    static public class TypedMember extends DeclNode implements ITypeSpecInit, IScope, IUnitWrapper {
+    static public class TypedMember extends DeclNode.Var implements ITypeSpecInit, IScope, IUnitWrapper {
         
         
         TypedMember(int ttype, String ttext, EnumSet<Flags> f) {
@@ -355,8 +355,14 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         private NestedScope scopeDeleg = new NestedScope(this);
         
         
-        public Atom getTypeNode() {
-            return ((BaseNode) getChild(TYPE)).getAtom();
+        public Atom getTypeName() {
+        	TypeNode.Usr t = ((TypeNode.Usr) getChild(TYPE));
+        	return t.getName();
+        }
+        
+        @Override
+        public Atom getName() {
+        	return ((BaseNode) getChild(NAME)).getAtom();
         }
         
         public UnitNode getTypeUnit() {
@@ -377,7 +383,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         protected boolean pass1Begin() {
             super.pass1Begin();
             UnitNode curr = ParseUnit.current().getCurrUnitNode();
-            SymbolEntry sym = curr.resolveSymbol(getTypeNode());
+            SymbolEntry sym = curr.resolveSymbol(getTypeName());
             ISymbolNode snode = sym != null ? sym.node() : null;
             if (snode instanceof ImportNode) {
                 unit = ((ImportNode) snode).getUnit();
@@ -386,7 +392,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
                 unit = (UnitNode) snode;
             }
             if (unit == null || unit.isModule() || unit.isComposition()) {
-                ParseUnit.current().reportError(getTypeNode(), "must be an protocol or class");
+                ParseUnit.current().reportError(getTypeName(), "must be an protocol or class");
             }
             else {
                 scopeDeleg.addSymbols(unit.getEntrySet());
@@ -431,7 +437,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
         @Override
         public ExprNode getInit() {
-        	if (getChild(NAME).getChildCount() > 0) {
+        	if (getChild(NAME).getChildCount() > INIT) {
         		BaseNode b = ((BaseNode) getChild(NAME));
             	return ((ExprNode) b.getChild(INIT));        		
         	}        
@@ -471,7 +477,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public ExprNode getExtends() {
         	if (!this.isProtocol())
         		return null;
-        	if (this.getChildCount() > FEATURES) 
+        	if (this.getChildCount() > EXTENDS) 
         		return (ExprNode) this.getChild(EXTENDS);
         	return null;
         }
@@ -479,7 +485,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public ExprNode getImplements() {
         	if (!this.isComposition() || this.isClass())
         		return null;
-        	if (this.getChildCount() > FEATURES) 
+        	if (this.getChildCount() > IMPLEMENTS) 
         		return (ExprNode) this.getChild(IMPLEMENTS);
         	return null;
         }
@@ -613,7 +619,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
         @Override
         public ExprNode getInit() {
-        	if (getChild(NAME).getChildCount() > 0) {
+        	if (getChild(NAME).getChildCount() > INIT) {
         		BaseNode b = ((BaseNode) getChild(NAME));
             	return ((ExprNode) b.getChild(INIT));        		
         	}        
@@ -659,7 +665,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
     
     DeclNode(int ttype, String ttext, EnumSet<Flags> f) {
-      	this.token = new CommonToken(ttype, ttext);
+      	this.token = new Atom(ttype, ttext);
     	this.flags = f;
     }
     
