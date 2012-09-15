@@ -32,6 +32,10 @@ public class BodyNode extends BaseNode implements IScope {
     		fcn = (DeclNode.Fcn) this.getParent();
     	return fcn;   	
     }
+    @Override
+    public String getScopeName() {
+    	return (getFcn() != null ? getFcn().getDefiningScope().getScopeName() + "." + getFcn().getName().getText() : "");
+    }
     void addLocalVar(DeclNode.Var var) {
         if (var != null) {
             localVars.add(var);
@@ -44,10 +48,7 @@ public class BodyNode extends BaseNode implements IScope {
     
     @Override
     protected boolean pass1Begin() {
-
-        ParseUnit currUnit = ParseUnit.current();
-        currUnit.getSymbolTable().enterScope(this);
-
+        ParseUnit.current().getSymbolTable().enterScope(this);
         current = this;
         return true;
     }
@@ -61,6 +62,7 @@ public class BodyNode extends BaseNode implements IScope {
     @Override
     protected boolean pass2Begin() {
         current = this;
+        ParseUnit.current().getSymbolTable().enterScope(this);
         // TODO any host checks?
         // ParseUnit.current().setHostFlag(getFcn().isHost());
         return true;
@@ -68,7 +70,8 @@ public class BodyNode extends BaseNode implements IScope {
     
     @Override
     protected void pass2End() {
-        current = null;
+    	ParseUnit.current().getSymbolTable().leaveScope();
+    	current = null;
     }
     
     @Override
@@ -89,6 +92,11 @@ public class BodyNode extends BaseNode implements IScope {
     @Override
     public SymbolEntry lookupName(String name) {
         return scopeDeleg.lookupName(name);
+    }    
+    
+    @Override
+    public SymbolEntry lookupName(String name, boolean chkHostScope) {
+    	return scopeDeleg.lookupName(name, chkHostScope);
     }
 
 

@@ -20,6 +20,10 @@ public class NestedScope implements IScope {
             symbolTable.put(ent.getKey(), new SymbolEntry(definingScope, ent.getValue().node()));
         }
     }
+    @Override
+    public String getScopeName() {
+    	return this.definingScope.getScopeName();
+    }
 
     @Override
 	public boolean defineSymbol(Atom name, ISymbolNode node) {
@@ -50,15 +54,22 @@ public class NestedScope implements IScope {
     public void setEnclosingScope(IScope scope) {
         enclosingScope = scope;
     }
-
-    @Override
+    @Override 
     public SymbolEntry lookupName(String name) {
+    	return lookupName(name, false);
+    }
+    /**
+     * For calls. In host context, use host scope.
+     */
+    public SymbolEntry lookupName(String name, boolean checkHostScope) {
+    	
+    	
         SymbolEntry result = symbolTable.get(name);
         if (result != null) {
             return result;
         }
         if (enclosingScope != null) {
-            result = enclosingScope.lookupName(name);
+            result = enclosingScope.lookupName(name, checkHostScope);
             if (result != null)
             	return result;
         }
@@ -69,9 +80,9 @@ public class NestedScope implements IScope {
         	name = name.substring(name.indexOf(".")+1, name.length());
         	while (true) {
         		if (result != null && result.node() instanceof IScope)
-        			result = ((IScope) result.node()).lookupName(qualifier);
+        			result = ((IScope) result.node()).lookupName(qualifier, checkHostScope);
         		else 
-        			result = sc.lookupName(qualifier);
+        			result = sc.lookupName(qualifier, checkHostScope);
         		if (result == null)
         			break;
         		if (name.isEmpty())

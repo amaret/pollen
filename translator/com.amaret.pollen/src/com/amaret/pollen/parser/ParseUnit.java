@@ -130,9 +130,17 @@ public class ParseUnit {
             ISymbolNode impSnode = impSym == null ? null : impSym.node();
             UnitNode impUnit = null;
             
+            // Non-null if parser instantiates meta type
+            UnitNode client = null;
+            ImportNode clientImport = null;
+            if (imp.getMeta() != null) {
+            	client = unit;
+            	clientImport = imp;
+            }
+               
             if (!(impSnode instanceof ImportNode)) {
                 try {
-                    impUnit = parseUnit(pkgPath + File.separator + imp.getUnitName() + ".p");
+                    impUnit = parseUnit(pkgPath + File.separator + imp.getUnitName() + ".p", client, clientImport);
                 }
                 catch (Termination te) {
                     reportError(imp, te.getMessage());
@@ -179,7 +187,7 @@ public class ParseUnit {
                     if (errorCount > 0) {
                         continue;
                     }
-                    importGeneric(unit, imp, impUnit);
+                    imp.bindUnit(impUnit);
                 }
                 impUnit.addClient(unit);
                 unitMap.put(impUnit.getQualName(), impUnit);
@@ -190,17 +198,15 @@ public class ParseUnit {
     }
 	
 	/**
-	 * @param unit
-	 * @param imp
-	 * @param impUnit
+	 * 
+	 * @param inputPath pollen file
+	 * @param client 	client unit (for meta type instantiation)
+	 * @param clientImport client unit import (for meta type instantiation, has meta parameters)
+	 * Client parameters are null for non-meta instantiation parse.
+	 * @return AST (UnitNode)
+	 * @throws Exception
 	 */
-	private void importGeneric(UnitNode unit, ImportNode imp, UnitNode impUnit) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	private UnitNode parseUnit(String inputPath) throws Exception {
+	private UnitNode parseUnit(String inputPath, UnitNode client, ImportNode clientImport) throws Exception {
 		
 		paths.add(inputPath);
 		in = new ANTLRFileStream(inputPath);
@@ -209,7 +215,7 @@ public class ParseUnit {
 
         AtomStream tokens = new AtomStream(lexer);
         tokens.discardOffChannelTokens(true);
-        pollenParser parser = new pollenParser(tokens);
+        pollenParser parser = new pollenParser(tokens, client, clientImport);
 
         parser.setTreeAdaptor((TreeAdaptor)new BaseNodeAdaptor());
         pollenParser.unit_return result = parser.unit();
@@ -219,6 +225,9 @@ public class ParseUnit {
         }
         
         UnitNode unit = (UnitNode)result.getTree();
+       
+        System.out.println( unit.toStringTree());
+       
         if (getErrorCount() > 0) {
             return null;
         }       
@@ -239,6 +248,10 @@ public class ParseUnit {
 
         return unit;
 
+	}
+
+	private UnitNode parseUnit(String inputPath) throws Exception {
+		return parseUnit(inputPath, null, null);		
 	}
 
 	/**

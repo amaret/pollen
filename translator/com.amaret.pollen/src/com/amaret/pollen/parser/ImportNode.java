@@ -41,7 +41,9 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 
     /**
      * 
-     * @return 'From' node. Might be NIL node.
+     * @return 'From' node. 
+	 * If 'from' clause not present, the default is returned
+	 * (which is the package of the file which contains this import stmt). 
      */
     public Atom getFrom() {
         return ((BaseNode) getChild(FROM)).getAtom();
@@ -61,6 +63,10 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     	if (!getAs().getText().equals("NIL"))
     		return getAs();
     	return getUnitName();
+    }
+    @Override
+    public String getScopeName() {
+    	return getName().getText();
     }
     
  
@@ -110,11 +116,24 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 
     @Override
     public SymbolEntry lookupName(String name) {
+    	if (unit == null)
+    		return null; // bindunit() not yet called
     	SymbolEntry result = unit.lookupName(name); 
     	if (result != null)
     		return result;
     	return unit.getUnitType().lookupName(name);
     }
+    
+    @Override
+    public SymbolEntry lookupName(String name, boolean chkHostScope) {
+    	if (unit == null)
+    		return null; // bindunit() not yet called
+    	SymbolEntry result = unit.lookupName(name, chkHostScope); 
+    	if (result != null)
+    		return result;
+    	return unit.getUnitType().lookupName(name, chkHostScope);
+    }
+
 
     @Override
     public void replaceSymbol(Atom name, ISymbolNode symbol) {

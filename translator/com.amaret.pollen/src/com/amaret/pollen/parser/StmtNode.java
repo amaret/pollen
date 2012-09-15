@@ -74,6 +74,15 @@ public class StmtNode extends BaseNode {
         public IScope getEnclosingScope() {
             return scopeDeleg.getEnclosingScope();
         }
+        
+        @Override 
+        public String getScopeName() {
+        	IScope enc = null;
+        	do {
+        		enc = this.getEnclosingScope();
+        	} while (enc instanceof StmtNode.Block);
+        	return enc.getScopeName();       	
+        }
 
         @Override
         public Set<Map.Entry<String,SymbolEntry>> getEntrySet() {
@@ -95,7 +104,17 @@ public class StmtNode extends BaseNode {
         protected void pass1End() {
             ParseUnit.current().getSymbolTable().leaveScope();
         }
+        @Override
+        protected boolean pass2Begin() {
+            ParseUnit.current().getSymbolTable().enterScope(this);
+            return super.pass1Begin();
+        }
         
+        @Override
+        protected void pass2End() {
+            ParseUnit.current().getSymbolTable().leaveScope();
+        }
+       
         @Override
         public void replaceSymbol(Atom name, ISymbolNode symbol) {
             scopeDeleg.replaceSymbol(name, symbol);
@@ -115,6 +134,11 @@ public class StmtNode extends BaseNode {
         public SymbolEntry lookupName(String name) {
             return scopeDeleg.lookupName(name);
         }
+        @Override
+        public SymbolEntry lookupName(String name, boolean chkHostScope) {
+        	return scopeDeleg.lookupName(name, chkHostScope);
+        }
+
     }
     
     // StmtNode.Case
@@ -294,7 +318,35 @@ public class StmtNode extends BaseNode {
             checkCond(getCond());
         }
     }
-    
+    // StmtNode.Provided
+    static public class Provided extends StmtNode {
+
+        static final private int COND = 0;
+        static final private int ELSE = 2;
+        static final private int IF = 1;
+        
+        Provided(int ttype, String ttext) {
+            super(ttype, ttext);
+        }
+        
+        public ExprNode getCond() {
+            return (ExprNode) getChild(COND);
+        }
+        
+        public StmtNode getElseBody() {
+            return getChildCount() > ELSE ? (StmtNode) getChild(ELSE) : null;
+        }
+
+        public StmtNode getIfBody() {
+            return (StmtNode) getChild(IF);
+        }
+
+        @Override
+        protected void pass2End() {
+            checkCond(getCond());
+        }
+    }
+   
     // StmtNode.Print
     static public class Print extends StmtNode {
 

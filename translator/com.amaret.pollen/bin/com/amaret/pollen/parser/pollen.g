@@ -98,8 +98,17 @@ tokens {
 }
 @parser::members {
 
-    EnumSet<LitFlags> litFlags = EnumSet.noneOf(LitFlags.class);
-    
+	private boolean isMetaInstance = false;
+	private UnitNode client = null;
+	private ImportNode clientImport = null;
+	// Trigger meta instantiation via this constructor
+	public pollenParser(TokenStream tokens, UnitNode cl, ImportNode cli) {
+	    this(tokens, new RecognizerSharedState());
+	    isMetaInstance = (cl != null && cli != null); 
+	    client = cl;
+	    clientImport = cli;
+	}
+	    
     EnumSet<Flags> atFlags = EnumSet.noneOf(Flags.class);
     
    private class TypeInfo {
@@ -122,12 +131,24 @@ tokens {
     TypeInfo ti;
     
     String getInject(String text) {
-        	return text.substring(text.indexOf("{"+1),text.lastIndexOf("}"));
+        	return text.substring(text.indexOf("{")+1,text.lastIndexOf("}"));
     }
     
     void DBG(String dbg) {
     	System.out.println(dbg);
     }
+    // Override to extract PollenException message when present
+    public void displayRecognitionError(String[] tokenNames,
+                                        RecognitionException e) {
+        String hdr = getErrorHeader(e);
+        String msg = getErrorMessage(e, tokenNames);
+        if ( e instanceof PollenException) {
+        			msg = e.toString();
+        }
+        hdr = pollenLexer.getFileName()+ ": " + hdr;
+        emitErrorMessage(hdr+" "+msg);       
+    }
+
     String pkgName;
     void DBG_LT() {
       System.out.print("LT: "); 
@@ -156,10 +177,18 @@ tokens {
     import com.amaret.pollen.parser.Atom;
     }
 @lexer::members {
-    private String fileName;
+    private static String fileName = "";
     private int implicitLineJoiningLevel = 0;
-    private int lineNum = 0;
+    private static int lineNum = 0;
     private int startPos = -1;
+    
+    public static String getFileName() {
+    	return fileName;
+    }
+    public static int getLineNum() {
+      return lineNum;
+    }
+    
      
     pollenLexer( CharStream input, String fileName ) {
         this(input);
@@ -178,6 +207,9 @@ tokens {
         a.setText(state.text);
         a.setCharPositionInLine(state.tokenStartCharPositionInLine);
         a.setFileName(fileName);
+        // Synthesized tokens don't have these set:
+        pollenLexer.fileName = fileName;
+        pollenLexer.lineNum = state.tokenStartLine;
         emit(a);
         return a;
     }
@@ -198,8 +230,11 @@ unit
     :   (NL)* unitPackage   -> ^(UNIT<UnitNode>["UNIT"] unitPackage)  
     ;
 unitPackage
+scope {
+	Object unitImports;
+}
 	:  stmtPackage
-	   importList
+	   importList {$unitPackage::unitImports = $importList.tree;}
       stmtInjectionList
       unitTypeDefinition
       stmtInjectionList
@@ -241,14 +276,12 @@ classDefinition
    	ti = tl.get(tl.size()-1);
    }
 }
-	: 	'class' classDef	-> ^(D_CLASS<DeclNode.Usr>["D_CLASS", ti.getUnitFlags()] classDef)
-	;
-classDef 
-	:	IDENT
+	:	'class' IDENT
 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.CLASS));}
-		(implementsClause)? 
+		(implementsClause)
 		braceOpen classFeatureList braceClose
-		-> IDENT classFeatureList implementsClause?
+		-> ^(D_CLASS<DeclNode.Usr>["D_CLASS", ti.getUnitFlags()] 
+		IDENT classFeatureList implementsClause {$unitTypeDefinition::meta} {$unitTypeDefinition::metaImports})
 		;
 classFeatureList
 	:	classFeature*	-> ^(LIST<ListNode>["LIST"] classFeature*)
@@ -259,13 +292,14 @@ classFeature
     |   varDeclaration
     |	  classDefinition
     |	  injectionDecl
-    ;
+    ; 
 moduleDefinition 
 	:	   'module' IDENT
 	      { ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.MODULE));}
-			(implementsClause)?  
+			(implementsClause) 
 			braceOpen moduleFeatureList braceClose 
-			-> ^(D_MODULE<DeclNode.Usr>["D_MODULE", ti.getUnitFlags()] IDENT moduleFeatureList implementsClause?)
+			-> ^(D_MODULE<DeclNode.Usr>["D_MODULE", ti.getUnitFlags()] 
+			IDENT moduleFeatureList implementsClause {$unitTypeDefinition::meta} {$unitTypeDefinition::metaImports})
 	;
 moduleFeatureList
 	:	moduleFeature*	-> ^(LIST<ListNode>["LIST"] moduleFeature*)
@@ -277,10 +311,7 @@ moduleFeature
 	|   classDefinition
 	|	 injectionDecl
     ;
-enumDefinition
-	:	'enum' enumDef -> enumDef
-	;
-enumDef 
+enumDefinition 
 @init {
 	if (tl.size() > 1) { // nested 
 	  ti = new TypeInfo();
@@ -293,10 +324,11 @@ enumDef
    	ti = tl.get(tl.size()-1);
    }
 }
-	:  (IDENT 
+	:  'enum'(IDENT 
 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.ENUM));}
 		braceOpen enumList braceClose)
-		-> ^(D_ENUM<DeclNode.Usr>["D_ENUM", ti.getUnitFlags()] IDENT enumList)
+		-> ^(D_ENUM<DeclNode.Usr>["D_ENUM", ti.getUnitFlags()] 
+		IDENT enumList {$unitTypeDefinition::meta} {$unitTypeDefinition::metaImports})
 	;
 enumList
 	:	enumElement (',' enumElement)* -> ^(LIST<ListNode>["LIST"] enumElement+)
@@ -308,9 +340,10 @@ enumElement
 protocolDefinition
 	:	'protocol' IDENT
 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.PROTOCOL));}
-		extendsClause? 
+		extendsClause
 		braceOpen protocolFeatureList braceClose 
-		-> ^(D_PROTOCOL<DeclNode.Usr>["D_PROTOCOL", ti.getUnitFlags()] IDENT protocolFeatureList extendsClause? )
+		-> ^(D_PROTOCOL<DeclNode.Usr>["D_PROTOCOL", ti.getUnitFlags()] 
+		IDENT protocolFeatureList extendsClause {$unitTypeDefinition::meta} {$unitTypeDefinition::metaImports})
 	;
 protocolFeatureList
 	:	protocolFeature*	-> ^(LIST<ListNode>["LIST"] protocolFeature*)
@@ -322,15 +355,14 @@ protocolFeature
     ;
 compositionDefinition
 	:	'composition' IDENT
-		{ ti.setTypeName($IDENT.text); 
-		  //DBG("$IDENT " + $IDENT.text); 
+		{ 
+		  ti.setTypeName($IDENT.text); 
 		  ti.setUnitFlags(EnumSet.of(Flags.COMPOSITION));
-		  //DBG(ti.getTypeName() + ", " + ti.getUnitFlags().toString());
 		}
-		extendsClause?  
+		extendsClause  
 		braceOpen compositionFeatureList braceClose 
 			-> ^(D_COMPOSITION<DeclNode.Usr>["D_COMPOSITION", ti.getUnitFlags()] 
-			     IDENT compositionFeatureList extendsClause?)
+			     IDENT compositionFeatureList extendsClause {$unitTypeDefinition::meta} {$unitTypeDefinition::metaImports})
 	;
 compositionFeatureList
 	:	compositionFeature*	-> ^(LIST<ListNode>["LIST"] compositionFeature*)
@@ -368,24 +400,124 @@ importList
     :   stmtImport*  
     	-> ^(LIST<ListNode>["LIST"] stmtImport*)
     ;
-meta
-	:	'meta'
-		{ ti.setUnitFlags(EnumSet.of(Flags.META));}
-		(braceOpen metaFormalParameters braceClose)
-		-> ^(D_META metaFormalParameters)
-	;
-metaFormalParameters
-   :   metaFormalParameter  (',' metaFormalParameter)* -> metaFormalParameter+
-   ;
-   
-metaFormalParameter
-:  metaFormalParameterType IDENT (ASSIGN metaArgument)?
-	-> ^(metaFormalParameterType ^(IDENT (metaArgument)?))
-;
+meta 
+@init {
+}
+// Imports after 'meta' are in the instantiation context. Collect here.
+	:	{isMetaInstance}? 'meta'	
+	      { ti.setUnitFlags(EnumSet.of(Flags.META));}
+			importList { $unitTypeDefinition::metaImports = $importList.tree; }
+			(braceOpen 
+				metaParmsInstantiate
+			 braceClose) 
+	|	'meta'
+			{ ti.setUnitFlags(EnumSet.of(Flags.META));}
+			importList { $unitTypeDefinition::metaImports = $importList.tree; }
+			(braceOpen formalParameters braceClose)
+	 	 		-> formalParameters
 
-metaFormalParameterType
-	 :	'type' // includes module etc
-	 |	builtinType -> ^(T_STD<TypeNode.Std>["T_STD", atFlags] builtinType)
+	| -> LIST<ListNode>["LIST"] { $unitTypeDefinition::metaImports = (BaseNode)adaptor.create(NIL, "NIL") }
+	;
+	
+metaParmsInstantiate
+scope {
+	int idx;
+	List<Object> l;
+}
+@init {
+	$metaParmsInstantiate::idx = 0;
+	$metaParmsInstantiate::l = new ArrayList<Object>();	
+}
+@after {
+ 	for (Object o : $metaParmsInstantiate::l) {
+ 		if (o instanceof ImportNode) {
+ 			// add the instantiated import to unit imports
+ 			((CommonTree) $unitPackage::unitImports).addChild((ImportNode) o);			
+ 		}
+ 	}
+}
+	:	m1=metaInstantiate { $metaParmsInstantiate::l.add($m1.tree); }
+		(','! 
+			m2=metaInstantiate { $metaParmsInstantiate::l.add($m2.tree); }
+		)*
+	;
+  /**************
+    To instantiate with type parameters.
+    Given:
+      package pkgy
+      meta {type T} module y 
+    if imported as: 
+      package pkyz
+      from pkgm import modulem
+      from pkgy import y{ modulem } as x
+    then instantiate as: 
+      package pkyz
+      from pkgm import modulem as T
+      module y
+    The 'meta' declaration generates an import 
+    when instantiated.
+  **************/
+metaInstantiate 
+@init {
+	// for import stmt 
+	String name = "";
+	String as = "";
+	String from = ""; 
+	ExprNode.Const arg = null;
+	if (clientImport.getMeta().size() < $metaParmsInstantiate::idx+1) {
+		  throw new PollenException("Not enough parameters to instantiate meta type", input);
+	}
+}
+@after {
+	$metaParmsInstantiate::idx++;
+}
+	:	'type' IDENT ( '=' expr)?
+			{ 
+			   // get 'as' name
+				as = $IDENT.text;
+		    	// get 'from' pkg
+		    	for (ImportNode imp: client.getImports()) {
+		    		if (clientImport.getName().getText().equals(imp.getName().getText())) {
+		    			from = imp.getFrom().getText();
+		    			break;
+		    		}
+		    	}	
+		    	// get import name
+		    	if (clientImport.getMeta() == null) {
+		    		// instantiate to defaults
+		    	}
+		    	else if (clientImport.getMeta().isEmpty()) {
+		    		// {} defer instantiation - fail? Or?
+		    	}
+		    	else {
+		    		// get instantiation value
+		    		BaseNode b = clientImport.getMeta().get($metaParmsInstantiate::idx);
+		    		if (b instanceof TypeNode.Usr) {
+		    			name = ((TypeNode.Usr) b).getName().getText();		    			
+		    		}
+		    		else if (b instanceof TypeNode.Std) {
+		    			name = ((TypeNode.Std) b).getText();		    			
+		    		}
+		    		else {
+		    			throw new PollenException("Meta type parameter requires type to instantiate", input);
+		    		}		    		
+		    	}
+
+	    	}
+	  -> ^(IMPORT<ImportNode>["IMPORT"] IDENT[from] IDENT[name] IDENT[as])
+	 |   builtinType id=IDENT ('=' primitiveLit)? 
+	 		{
+		 		BaseNode b = clientImport.getMeta().get($metaParmsInstantiate::idx);
+		 		if (!(b instanceof ExprNode.Const)) 
+		 			throw new PollenException("Invalid meta value parameter specification (must be a constant)", input);
+		 		arg = (ExprNode.Const) b;
+		 		EnumSet<LitFlags> formalType = $builtinType.f;
+		 		if (!(arg.getLitFlags().contains(LitFlags.NUM) && formalType.contains(LitFlags.NUM))) {
+		 			if (!(arg.getLitFlags().equals(formalType)))
+		 				throw new PollenException("Fomal and actual meta value parameters have inconsistent types", input);	 		
+		 		}
+	 		}
+		-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL"]  ^(T_STD<TypeNode.Std>["T_STD", EnumSet.noneOf(Flags.class)] builtinType) IDENT ^(E_CONST<ExprNode.Const>["E_CONST", arg.getLitFlags()] IDENT[arg.getValue().getText()]))
 	;
 metaArguments
    :  '{' metaArgument  (',' metaArgument)* '}' -> ^(LIST<ListNode>["LIST"] metaArgument+)
@@ -407,11 +539,16 @@ typeNameScalar			// scalar as in 'not array'
 	|	userTypeName
 	;
 userTypeName
-	:	qualName metaArguments	-> ^(T_USR<TypeNode.Usr>["T_USR", atFlags] qualName metaArguments)
-	|	qualName		-> ^(T_USR<TypeNode.Usr>["T_USR", atFlags] qualName)
+	// Note the commented out syntax is obsolete (a hack to support value{Event} e)
+	//:	qualName metaArguments	-> ^(T_USR<TypeNode.Usr>["T_USR", atFlags] qualName metaArguments)
+	:	qualName		-> ^(T_USR<TypeNode.Usr>["T_USR", atFlags] qualName)
 	;
 
 unitTypeDefinition
+scope {
+  Object meta; 			// specification of meta type/value parameters
+  Object metaImports;	// imports that apply to the meta type instantiation context
+}
 @init{
 		ti = new TypeInfo();
 		tl.add(ti);		
@@ -420,20 +557,23 @@ unitTypeDefinition
    // debug
 	System.out.println(ti.getTypeName() + ", " + ti.getUnitFlags().toString());
 }
-   :   (meta)?  (
+   :   (meta! { $unitTypeDefinition::meta = $meta.tree; })  
+     (
          ('module') => moduleDefinition   		
 	|     ('class') =>  classDefinition
    |     ('protocol') => protocolDefinition 
    |     ('composition') => compositionDefinition 
    |     ('enum') => enumDefinition 
-   	) 
+     )
    ;
 extendsClause
     :   'extends' qualName -> qualName
+    | 	-> NIL
     ;
 
 implementsClause
     :   'implements' qualName -> qualName
+    | -> NIL
     ;
 braceClose
     :    (NL!)* '}'! (NL!)*
@@ -451,7 +591,7 @@ equalityOp
 	:	EQ | NOT_EQ
 	;
 relationalOp
-	:	'<' | '>' |  LT_EQ  | GT_EQ
+	:	LT | GT |  LT_EQ  | GT_EQ
 	;
 shiftOp
 	:	'<<'	|	'>>'
@@ -571,31 +711,25 @@ exprUnary
 	;
 fcnDefinition
 @init {
-	atFlags.clear();			
-}
-@after{
-  atFlags.clear();
+	EnumSet<Flags> atFlags = EnumSet.noneOf(Flags.class);		
 }
 	: ('public' { atFlags.add(Flags.PUBLIC); } )? 
 		('host' { atFlags.add(Flags.HOST); } )? 
-		fcnType_fcnName fcnFormalParameterList fcnBody[$fcnFormalParameterList.tree]
-		-> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", atFlags] fcnType_fcnName fcnFormalParameterList fcnBody)
+		fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree]
+		-> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", atFlags] fcnType_fcnName formalParameterList fcnBody)
 	;
 fcnDefinitionHost
 // composition
 @init {
-	atFlags.clear();			
-}
-@after{
-  atFlags.clear();
+	EnumSet<Flags> atFlags = EnumSet.noneOf(Flags.class);		
 }
 	:	('public')? ('host' { atFlags.add(Flags.HOST); })?
-	   	fcnType_fcnName  fcnFormalParameterList fcnBody[$fcnFormalParameterList.tree]
+	   	fcnType_fcnName  formalParameterList fcnBody[$formalParameterList.tree]
 		{ 	atFlags.add(Flags.PUBLIC); /* enforce */ 	
 			if (!atFlags.contains(Flags.HOST))
        		throw new PollenException("Composition features must be one of host functions, export statements, or enum definitions.", input);
 		}
-		-> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", atFlags] fcnType_fcnName fcnFormalParameterList fcnBody)		
+		-> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", atFlags] fcnType_fcnName formalParameterList fcnBody)		
 	;
 catch [PollenException re] {
     String hdr = getErrorHeader(re);
@@ -611,15 +745,12 @@ fcnBody[CommonTree formals]
   ;
 fcnDeclaration
 @init {
-	atFlags.clear();			
-}
-@after{
-  atFlags.clear();
+	atFlags = EnumSet.noneOf(Flags.class);	
 }
    :	('public' { atFlags.add(Flags.PUBLIC); } )? 
 		('host' { atFlags.add(Flags.HOST); } )? 
-		fcnType_fcnName (fcnFormalParameterList) delim
-   -> ^(D_FCN_DCL<DeclNode.Fcn>["D_FCN_DCL", atFlags] fcnType_fcnName fcnFormalParameterList)
+		fcnType_fcnName (formalParameterList) delim
+   -> ^(D_FCN_DCL<DeclNode.Fcn>["D_FCN_DCL", atFlags] fcnType_fcnName formalParameterList)
    ;
 fcnType_fcnName
 // function names in a dcln can be qualified, e.g. pollen.reset()
@@ -639,17 +770,24 @@ fcnTypes_fcnName
 fcnTypes
 	:	typeName (',' typeName)* -> ^(T_LST<TypeNode.Lst>["T_LST", atFlags] ^(LIST<ListNode>["LIST"] typeName+))
 	;
-fcnFormalParameterList
-	:	'(' fcnFormalParameters ')' -> fcnFormalParameters
+formalParameterList
+	:	'(' formalParameters ')' -> formalParameters
 	;
-fcnFormalParameters
-	:	fcnFormalParameter (',' fcnFormalParameter)* 
-		-> ^(LIST<ListNode>["LIST"] fcnFormalParameter+)
+formalParameters
+	:	formalParameter (',' formalParameter)* 
+		-> ^(LIST<ListNode>["LIST"] formalParameter+)
 	|	-> ^(LIST<ListNode>["LIST"])
 	;
-fcnFormalParameter
-	:   typeName IDENT ( '=' expr)?
-		-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL"] typeName ^(IDENT (expr)?))
+formalParameter
+@init {
+	EnumSet<Flags> atFlags = EnumSet.noneOf(Flags.class);		
+}
+	: 	 'type' IDENT ( '=' expr)?
+			{ atFlags.add(Flags.TYPE_META_FP); } // meta formal arguments only
+		-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", atFlags] ^(T_USR<TypeNode.Usr>["T_USR", atFlags] IDENT) IDENT (expr)?)
+	|   typeName IDENT ( '=' expr)?
+		-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL"] typeName IDENT (expr)?)
+
 	;
 fcnArgumentList
 	:	'(' fcnArguments ')'	->  fcnArguments
@@ -744,8 +882,11 @@ stmtPrintTarget[EnumSet<Flags> f]
 stmtReturn
 // Note rules below require that returns of multiple values be surrounded by parens.
 // This is required to disambiguate with question mark expression.
-	:	'return' ('(') (expr (',' expr)+) (')') delim	-> ^(S_RETURN<ExprNode.Vec>["S_RETURN"] ^(LIST<ListNode>["LIST"] expr+))
-	|	'return'  (expr)  delim	-> ^(S_RETURN<ExprNode.Vec>["S_RETURN"] ^(LIST<ListNode>["LIST"] expr))
+// ^(E_VEC<ExprNode.Vec>["E_VEC"]
+	:	'return' ('(') (expr (',' expr)+) (')') delim	
+		-> ^(S_RETURN<StmtNode.Return>["S_RETURN"] ^(E_VEC<ExprNode.Vec>["E_VEC"] ^(LIST<ListNode>["LIST"] expr+)))
+	|	'return'  (expr)  delim	
+		-> ^(S_RETURN<StmtNode.Return>["S_RETURN"] ^(E_VEC<ExprNode.Vec>["E_VEC"] ^(LIST<ListNode>["LIST"] expr)))
 	;
 stmtBreak
 	:	'break' delim -> ^(S_BREAK<StmtNode.Break>["S_BREAK"])
@@ -767,7 +908,8 @@ stmtForInit
     :   SEMI
             -> NIL
     |   typeName IDENT '=' expr SEMI
-            -> ^(S_DECL<StmtNode.Decl>["S_DECL"] ^(D_VAR<DeclNode.Var>["D_VAR", EnumSet.noneOf(Flags.class)] typeName ^(IDENT  expr)))
+            -> ^(S_DECL<StmtNode.Decl>["S_DECL"] 
+      		   ^(D_VAR<DeclNode.Var>["D_VAR", EnumSet.noneOf(Flags.class)] typeName IDENT expr))
     |   stmtAssign
     ;
 stmtForNext
@@ -813,26 +955,20 @@ stmtElse
 	;
 stmtProvided
 	:	'provided' '(' expr ')' stmtBlock (stmtElse)?
-		-> ^(S_PROVIDED expr stmtBlock stmtElse?)
+		-> ^(S_PROVIDED<StmtNode.Provided>["S_PROVIDED"] expr stmtBlock stmtElse?)
 	;
 stmtWhile
 	:	'while' '('	expr')' stmtBlock -> ^(S_WHILE<StmtNode.While>["S_WHILE"] expr stmtBlock)
 	;
 stmtDecl
 @init {
-	atFlags.clear();			
-}
-@after{
-  atFlags.clear();
+	atFlags = EnumSet.noneOf(Flags.class);			
 }
    :	 varAttr varDecl delim	-> ^(S_DECL<StmtNode.Decl>["S_DECL"] varDecl)
    ;
 varDeclaration    
 @init {
-	atFlags.clear();			
-}
-@after{
-  atFlags.clear();
+	atFlags = EnumSet.noneOf(Flags.class);		
 }
    :	 varAttr varDecl delim	-> varDecl
    ;
@@ -859,7 +995,7 @@ scope {
 	|	 'new' typeName IDENT fcnArgumentList  // declaration of an instance ('new')
 		 { atFlags.add(Flags.NEW); } 
 		-> ^(D_VAR<DeclNode.Var>["D_VAR", atFlags] typeName 
-		   ^(IDENT ^(E_EXPR ^(E_NEW<ExprNode.New>["E_NEW"] typeName fcnArgumentList))))
+		     IDENT ^(E_NEW<ExprNode.New>["E_NEW"] typeName fcnArgumentList))
 	;
 varFcnRef
 	: typeName fcnRefTypeList IDENT 
@@ -901,28 +1037,34 @@ varDeclList  // int x, y=3, z=3, a
 varBuiltInType
 	:	builtinType -> ^(T_STD<TypeNode.Std>["T_STD", atFlags] builtinType)
 	;
-varInit2
-	:	IDENT (ASSIGN expr)?
-		-> ^(D_VAR<DeclNode.Var>["D_VAR", atFlags] {$varDecl::typ} ^(IDENT expr?))
+varInit2		// built in type
+	:	IDENT ASSIGN expr
+		-> ^(D_VAR<DeclNode.Var>["D_VAR", atFlags] {$varDecl::typ} 
+			IDENT expr)
+	| IDENT
+		-> ^(D_VAR<DeclNode.Var>["D_VAR", atFlags] {$varDecl::typ} IDENT)
 	;
-varInit	
-// child is inital value
+varInit	// user defined type
+// child is inital value assign expr
 	: 	IDENT BIND expr { atFlags.add(Flags.PROTOCOL_MEMBER); }	
-		-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", atFlags] {$varDecl::typ} ^(IDENT expr?))
-	|	IDENT (ASSIGN expr)?
-	-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", atFlags] {$varDecl::typ} ^(IDENT expr?))
+		-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", atFlags] {$varDecl::typ} IDENT expr?)
+	|	IDENT ASSIGN expr
+	-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", atFlags] {$varDecl::typ} 
+		IDENT expr)
+	|	IDENT 
+	-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", atFlags] {$varDecl::typ} IDENT)
 	;
 
-builtinType
-    :   'bool'
-    |   'byte'
-    |   'int8'
-    |   'int16'
-    |   'int32'
-    |   'string'
-    |   'uint8'
-    |   'uint16'
-    |   'uint32'
+builtinType  returns [EnumSet<LitFlags> f]
+    :   'bool'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.BOOL);}
+    |   'byte'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.CHR);}
+    |   'int8'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'int16'	{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'int32'   {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'string'  {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.STR);}
+    |   'uint8'	{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'uint16'	{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'uint32'	{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
     ;
     
 qualName
@@ -937,29 +1079,13 @@ scope {
 }      
     :	   IDENT (qualNameList?)  -> IDENT[$IDENT.text + $qualName::s]
     ;
-// Names in qualNameList will use scopeDeref for lookup.
+
 qualNameList 
 	:
 	(   '.'!     
         IDENT! {$qualName::s += "." + $IDENT.text;}
     )+	 
 	; 
-	
-/*
-qualName returns [String s]
-@init {
-	$s = "";
-}    
-@after {
-	System.out.println("Qual: " + $s);
-}
-    :	   i1=IDENT {$s = $i1.text}
-//    		( '.' {$s += ".";}
-//    			i2=IDENT {$s += $i2.text;}
-//    		)*
-    		-> IDENT[$s]
-    ;
-   */
     		
 arrayLit		// anonymous arrays
 	:	'['	arrayLitList	']'	-> ^(LIST<ListNode>["LIST"] arrayLitList)
@@ -975,35 +1101,35 @@ namedConstant
 	:	qualName		// enforce to be const or enum member
 	;
 boolLit
-	: ('true' | 'false') { litFlags.add(LitFlags.BOOL);}
+	: ('true' | 'false') { $primitiveLit::litFlags.add(LitFlags.BOOL);}
 	;
 nullLit
-	:	'null' {litFlags.add(LitFlags.NULL);}
+	:	'null' {$primitiveLit::litFlags.add(LitFlags.NULL);}
 	;
 numLit
 @after {
-	litFlags.add(LitFlags.NUM);
+	$primitiveLit::litFlags.add(LitFlags.NUM);
 }
-	:	INT_LIT {litFlags.add(LitFlags.INT);}	
-	| 	OCT_LIT {litFlags.add(LitFlags.OCT);}	
-	| 	REAL_LIT {litFlags.add(LitFlags.REAL);}	
-	| 	HEX_LIT  {litFlags.add(LitFlags.HEX);}	
+	:	INT_LIT {$primitiveLit::litFlags.add(LitFlags.INT);}	
+	| 	OCT_LIT {$primitiveLit::litFlags.add(LitFlags.OCT);}	
+	| 	REAL_LIT {$primitiveLit::litFlags.add(LitFlags.REAL);}	
+	| 	HEX_LIT  {$primitiveLit::litFlags.add(LitFlags.HEX);}	
 	;
 // All literals should go through primitiveLit to clear / set LitFlags
-primitiveLit
+primitiveLit 
+scope {
+	EnumSet<LitFlags> litFlags;
+}
 @init {
-	litFlags.clear();	
+	$primitiveLit::litFlags = EnumSet.noneOf(LitFlags.class);
 }
-@after {
-	litFlags.clear();	
-}
-	:	boolLit -> ^(E_CONST<ExprNode.Const>["E_CONST", litFlags] boolLit)
-	|	numLit  -> ^(E_CONST<ExprNode.Const>["E_CONST", litFlags] numLit)
-	|	nullLit -> ^(E_CONST<ExprNode.Const>["E_CONST", litFlags] nullLit)
-	|	STRING  {litFlags.add(LitFlags.STR);}  
-	   -> ^(E_CONST<ExprNode.Const>["E_CONST", litFlags] STRING)
-	|	CHAR {litFlags.add(LitFlags.CHR);}  
-	    -> ^(E_CONST<ExprNode.Const>["E_CONST", litFlags] CHAR)
+	:	boolLit -> ^(E_CONST<ExprNode.Const>["E_CONST", $primitiveLit::litFlags] boolLit)
+	|	numLit  -> ^(E_CONST<ExprNode.Const>["E_CONST", $primitiveLit::litFlags] numLit)
+	|	nullLit -> ^(E_CONST<ExprNode.Const>["E_CONST", $primitiveLit::litFlags] nullLit)
+	|	STRING  {$primitiveLit::litFlags.add(LitFlags.STR);}  
+	   -> ^(E_CONST<ExprNode.Const>["E_CONST", $primitiveLit::litFlags] STRING)
+	|	CHAR {$primitiveLit::litFlags.add(LitFlags.CHR);}  
+	    -> ^(E_CONST<ExprNode.Const>["E_CONST", $primitiveLit::litFlags] CHAR)
 	;
 stmtInjection
 	:	c=INJECT  {           
@@ -1109,3 +1235,5 @@ LT_EQ		:	'<=';
 GT_EQ		:	'>=';
 LOG_NOT	:	'!';
 BIT_NOT	:	'~';
+GT			:  '>';
+LT			:	'<';

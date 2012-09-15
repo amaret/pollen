@@ -101,8 +101,11 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
                 symbol = ((IScope) snode).lookupName(path[1]);
                 snode = symbol != null ? symbol.node() : null;
             }
-
-            if (symbol == null || !(snode instanceof DeclNode.ITypeInfo)) {
+            
+			boolean isTypeMetaFormalParameter = (snode instanceof DeclNode.Formal && ((DeclNode.Formal) snode)
+					.isTypeMetaFormalParameter()) ? true : false;
+            
+            if (symbol == null || (!(snode instanceof DeclNode.ITypeInfo) && !isTypeMetaFormalParameter)) {
                 currUnit.reportError(getName(), "not a type");
             }
 

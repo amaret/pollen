@@ -43,4 +43,29 @@ public class SymbolTable {
     public SymbolEntry resolveSymbol(Atom name) {
         return lookupName(name.getText());
     }
+    /**
+     * For calls. In host context, look in host scope.
+     * @return true if current scope is a host scope.
+     */
+    public boolean currScopeIsHost() {
+    	ParseUnit currUnit = ParseUnit.current();
+    	SymbolTable symtab = currUnit.getSymbolTable();
+    	IScope sc = symtab.curScope();
+    	// If this is a host function, the called function must be host.
+    	// This indicates use of host scope for lookup.
+    	boolean isHost = false; 
+    	if (sc instanceof BodyNode
+    			|| sc instanceof DeclNode.Fcn) {
+    		do {
+    			isHost |= (sc instanceof DeclNode.Fcn 
+    	    			&& ((DeclNode.Fcn) sc).isHost());
+    			sc = sc.getEnclosingScope();
+    		}
+    		while ((sc instanceof BodyNode 
+    				|| sc instanceof DeclNode.Fcn));
+    	}
+    	return isHost;
+    }
+
+
 }

@@ -66,7 +66,7 @@ public class ExprNode extends BaseNode {
     // ExprNode.Call
     static public class Call extends ExprNode {
 
-        static final private int BASE = 0;
+        static final private int NAME = 0;
         static final private int ARGS = 1;
         static final private int DEREF = 2;
         
@@ -83,8 +83,8 @@ public class ExprNode extends BaseNode {
             return ((ListNode<ExprNode>) getChild(ARGS)).getElems();
         }
 
-        public ExprNode getBase() {
-            return (ExprNode) getChild(BASE);
+        public ExprNode getName() {
+            return (ExprNode) getChild(NAME);
         }
         /**
          * 
@@ -102,19 +102,45 @@ public class ExprNode extends BaseNode {
         	 
         	return super.pass1Begin();
         }
+        protected boolean pass2Begin() {
+        	SymbolEntry symbol = null;
+        	ParseUnit currUnit = ParseUnit.current();
+        	
+        	SymbolTable symtab = currUnit.getSymbolTable();
+        	
+        	// look up the call identifier here rather than in Expr.Ident because here we know
+        	// to check host scope. 
+        	boolean chkHostScope = symtab.currScopeIsHost();
+
+        	if (getName() != null && getName() instanceof ExprNode.Ident) {
+        		ExprNode.Ident ei = (ExprNode.Ident) getName();
+            	symbol = symtab.curScope().lookupName(ei.getName().getText(), chkHostScope);
+            	
+            	if (symbol == null) { 
+            		currUnit.reportError(ei.getName(), "identifer is not declared in the current scope "
+            				+  symtab.curScope().getScopeName());
+            	}
+            	else {
+            		ei.setSymbol(symbol);
+            	}
+        	}
+
+        	 
+        	return super.pass2Begin();
+        }
         
         @Override
         protected void pass2End() {
             
             ParseUnit currUnit = ParseUnit.current();
-            Cat cat = getBase().getCat();
+            Cat cat = getName().getCat();
 
             if ((exprCat = TypeRules.preCheck(cat)) != null) {
                 return;
             }
             
             if (!(cat instanceof Cat.Fcn)) {
-                currUnit.reportError(getBase(), "value is not a function");
+                currUnit.reportError(getName(), "value is not a function");
                 return;
             }
             // TODO 
@@ -125,7 +151,7 @@ public class ExprNode extends BaseNode {
             int minArgc = fcncat.minArgc();
             int maxArgc = fcncat.maxArgc();
             if (argc < minArgc || argc > maxArgc) {
-                currUnit.reportError(getBase(), "wrong number of arguments");
+                currUnit.reportError(getName(), "wrong number of arguments");
                 return;
             }
      
@@ -221,13 +247,15 @@ public class ExprNode extends BaseNode {
 		    return ((BaseNode) getChild(VAL)).getAtom();
 		}
 		
+		public EnumSet<LitFlags> getLitFlags() {
+			return litFlags;
+		}
+		
         @Override
         protected void pass2End() {
             isConst = true;
             String vs = getValue().getText();
             ParseUnit currUnit = ParseUnit.current();
-            // TODO
-            // all the constant info is in LitFlags
             if (vs.startsWith("\"")) {
                 currUnit.getCurrUnitNode().addString(vs);
                 exprCat = Cat.fromScalarCode("s");
@@ -342,24 +370,36 @@ public class ExprNode extends BaseNode {
         }
         
         @Override
-        protected boolean pass1Begin() {
+        protected boolean pass2Begin() {
+        	// this used to be pass1Begin() but that creates a requirement that a 
+        	// variable be declared before it is referenced.
+
 
         	ParseUnit currUnit = ParseUnit.current();
         	if (symbol == null)
         		symbol = currUnit.getSymbolTable().resolveSymbol(getName());
         	if (symbol == null) {
-        		currUnit.reportError(getName(), "identifer is not declared in the current scope");
+        		currUnit.reportError(getName(), "identifer is not declared in the current scope " + currUnit.getSymbolTable().curScope().getScopeName());
 
         	}
-        	return super.pass1Begin();
+        	return super.pass2Begin();
         }
         
         @Override
         protected void pass2End() {
-        	if (symbol.node() instanceof DeclNode.Var
-        			&& ((DeclNode.Var)symbol.node()).isConst())
-        		isConst = true;
-        	exprCat = symbol.node().getTypeCat();
+        	if (symbol != null) {
+        		if (symbol.node() instanceof DeclNode.Var
+        				&& ((DeclNode.Var)symbol.node()).isConst())
+        			isConst = true;
+        		if (symbol.node() instanceof DeclNode.Formal) {
+        			DeclNode.Formal f = (DeclNode.Formal) symbol.node();
+        			if (f.isTypeMetaFormalParameter() && f.getInit() == null) {
+        				ParseUnit.current().reportError(f, f.getName().getText() + " meta parameter is uninitialized");  
+        				return;
+        			}       			
+        		}
+        		exprCat = symbol.node().getTypeCat();
+        	}
         }
     }
     // ExprNode.Self
@@ -377,7 +417,9 @@ public class ExprNode extends BaseNode {
         }
         
         @Override
-        protected boolean pass1Begin() {
+        protected boolean pass2Begin() {
+        	// this used to be pass1Begin() but that creates a requirement that a 
+        	// variable be declared before it is referenced.
         	
         	ParseUnit currUnit = ParseUnit.current();
         	// do the lookup of the deref'd member here, where the self context
@@ -394,7 +436,7 @@ public class ExprNode extends BaseNode {
             	}
         	}
         	
-        	return super.pass1Begin();
+        	return super.pass2Begin();
         }
         
         @Override
@@ -534,8 +576,8 @@ public class ExprNode extends BaseNode {
     // ExprNode.Unary
     static public class Unary extends ExprNode {
 
-        static final private int OPERATOR = 0;
-        static final private int OPERAND = 1;
+        static final private int OPERATOR = 1;
+        static final private int OPERAND = 0;
 
         private boolean isPostfix;
         
