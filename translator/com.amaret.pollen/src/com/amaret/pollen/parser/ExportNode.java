@@ -20,12 +20,18 @@ public class ExportNode extends BaseNode {
         Atom name = getName();
         SymbolEntry sym = currUnit.getSymbolTable().resolveSymbol(name);
         ISymbolNode snode = sym == null ? null : sym.node();
+        String[] path = name.getText().split("\\.");
         if (!(snode instanceof ImportNode)) {
-            currUnit.reportError(name, "not an imported unit");
+        	sym = currUnit.getSymbolTable().lookupName(path[0]);
+        	snode = sym == null ? null : sym.node();
+        	if (!(snode instanceof ImportNode)) {
+        		currUnit.reportError(name, "not an imported unit");
+        	}
         }
         else {
         	((ImportNode) snode).setExport(true);
         }
+
         currUnit.getCurrUnitNode().getExportList().add(this);
         return false;
     }

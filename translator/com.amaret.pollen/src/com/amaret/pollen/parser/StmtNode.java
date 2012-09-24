@@ -8,6 +8,7 @@ import java.util.Set;
 import org.antlr.runtime.tree.Tree;
 
 import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
+import com.amaret.pollen.parser.DeclNode.Usr;
 
 public class StmtNode extends BaseNode {
 
@@ -504,7 +505,7 @@ public class StmtNode extends BaseNode {
             super(ttype, ttext);
         }
         
-        public ExprNode getConfig() {
+        public ExprNode getPro() {
             return (ExprNode) getChild(PRO);
         }
 
@@ -514,21 +515,47 @@ public class StmtNode extends BaseNode {
         
         @Override
         protected void pass2End() {
-        	// TODO
-        	// check that a protocol is being bound to a module
-        	// in either a host fcn or a module body
-            SymbolEntry sym = getConfig().getSymbol();
-            ISymbolNode snode = sym != null ? sym.node() : null;
-            if (getValue() != null) {
-                Cat left = getConfig().getCat();
-                Cat right = getValue().getCat();
-                if (!(left instanceof Cat.Error) && !(right instanceof Cat.Error)) {
-                    Cat res = TypeRules.checkBinary("=", left, right);
-                    if (res instanceof Cat.Error) {
-                        ParseUnit.current().reportError(getConfig(), ((Cat.Error) res).getMsg());
-                    }
-                }
-            }
+        	SymbolEntry sym = getPro().getSymbol();
+        	ISymbolNode snode = sym != null ? sym.node() : null;
+        	Cat left = null;
+        	Cat right = null;
+        	if (getValue() != null && getPro() != null) {
+        		left = getPro().getCat();
+        		right = getValue().getCat();
+
+        		if (snode == null || !(snode instanceof DeclNode.TypedMember) || !(((DeclNode.TypedMember)snode).isProtocolMember())) {
+        			ParseUnit.current().reportError(getPro(), "LHS of binding operator assignment must be a protocol member");   
+        			return;
+        		}
+        		if (right == null || !right.isModule()) {
+        			ParseUnit.current().reportError(getPro(), "RHS of binding operator assignment must be a module");     
+        			return;
+        		}
+        		DeclNode.Usr m = (Usr) ((Cat.Agg) right).aggScope();
+        		((DeclNode.TypedMember)snode).bindModule(m.getUnit()); // bind it
+        		
+            	// check that a protocol is being bound to a module
+            	// in either a host fcn or a module body
+               	SymbolTable symtab = ParseUnit.current().getSymbolTable();
+               	boolean ok = false;
+               	ok = (symtab.curScope() instanceof DeclNode.Usr && ((DeclNode.Usr) symtab.curScope()).isModule());
+               	ok |= symtab.currScopeIsHost();
+               	if (!ok) {
+        			ParseUnit.current().reportError(getPro(), "Protocol member binding can only occur in the body of a module or in a host function");     
+        			return;
+               	}             	
+
+        		left = getPro().getCat();
+        		right = getValue().getCat();
+        		// TODO move the above checks into TypeRules
+        		if (!(left instanceof Cat.Error) && !(right instanceof Cat.Error)) {
+        			Cat res = TypeRules.checkBinary("=", left, right);
+        			if (res instanceof Cat.Error) {
+        				ParseUnit.current().reportError(getPro(), ((Cat.Error) res).getMsg());
+        			}
+        		}
+        	}  
+
         }
     }
     

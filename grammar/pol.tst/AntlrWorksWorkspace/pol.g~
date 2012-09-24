@@ -389,11 +389,11 @@ unitTypeDefinition
    ;
 
 extendsClause
-    :   'extends'^ IDENT
+    :   'extends'^ qualName
     ;
 
 implementsClause
-    :   'implements'^ IDENT
+    :   'implements'^ qualName
     ;
 braceClose
     :    (NL!)* '}'! (NL!)*

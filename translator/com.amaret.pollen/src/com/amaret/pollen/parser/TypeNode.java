@@ -60,6 +60,20 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 		public TypeNode getFirst() {
             return (TypeNode) ((ListNode<TypeNode>) getChild(ITEMS)).getElems().get(0);
         }
+        
+        @SuppressWarnings("unchecked")
+        protected boolean pass1Begin() {
+
+        	boolean flag = false;
+        	if (((ListNode<TypeNode>) getChild(ITEMS)).getElems() != null && ((ListNode<TypeNode>) getChild(ITEMS)).getElems().size() > 0) {
+        		for (TypeNode t : ((ListNode<TypeNode>) getChild(ITEMS)).getElems()) {
+        			flag = t.pass1Begin();
+        			if (flag == false) return false;
+        		}
+        	}
+        	return flag;
+        }
+  
     }
     
     // TypeNode.Usr a user defined type
@@ -77,14 +91,60 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
             return ((BaseNode) getChild(NAME)).getAtom();
         }
         
-        
         public SymbolEntry getSymbol() {
-            SymbolEntry sym = symbolMap.get(ParseUnit.current().getCurrUnitNode().getQualName());
-            return sym; 
+        	SymbolEntry symbol;
+        	symbol = symbolMap.get(this.getName().getText());
+        	
+            if (symbol == null) {
+            	symbol = ParseUnit.current().getCurrUnitNode().lookupName(ParseUnit.current().getCurrUnitNode().getQualName());           	
+            }
+            return symbol;
+        	
+        }
+        
+        
+        public SymbolEntry getSymbol(IScope scopeOfRef) {
+        	
+        	
+        	SymbolEntry symbol;
+        	symbol = scopeOfRef.lookupName(this.getName().getText());
+
+        	
+            if (symbol == null) {
+            	symbol = ParseUnit.current().getCurrUnitNode().lookupName(ParseUnit.current().getCurrUnitNode().getQualName());           	
+            }
+            return symbol; 
+        }
+        
+        private ISymbolNode enterName(String toEnter) {
+        	
+            SymbolEntry symbol = ParseUnit.current().getSymbolTable().lookupName(toEnter);
+            ISymbolNode snode = symbol != null ? symbol.node() : null;
+            if (symbol != null)
+            	symbolMap.put(toEnter, symbol);   
+            
+            boolean okFlag = false;  // ok to be used as a type
+            if (snode != null) {
+            	okFlag = (snode instanceof DeclNode.Formal && ((DeclNode.Formal) snode)
+            			.isTypeMetaArg()) ? true : snode instanceof ImportNode ? true : false; 
+            	okFlag = okFlag || snode instanceof DeclNode.ITypeInfo || snode instanceof DeclNode.Fcn ;
+            }
+					
+            // type members ok?
+            if (symbol == null || !okFlag)  {
+            	ParseUnit.current().reportError(getName(), "not a type");
+            }
+            return snode;
         }
         
         @Override
         protected boolean pass1Begin() {
+        	
+        	// In the TypeNode.Usr symbolMap we need these entries:
+        	//   the current unit type
+        	//   an entry for each qualifier
+        	// This supports name lookup / xlation in the output phase. 
+        	
 
             ParseUnit currUnit = ParseUnit.current();
             String path[] = getName().getText().split("\\.");
@@ -93,25 +153,31 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
                 currUnit.reportError(getName(), "too many levels of qualification");
                 return false;
             }
+            String dbgStr = currUnit.getCurrUnitNode().getUnit().getName().getText();
+            enterName(dbgStr);
             
-            SymbolEntry symbol = currUnit.getSymbolTable().lookupName(path[0]);
-            ISymbolNode snode = symbol != null ? symbol.node() : null;
+            ISymbolNode snode = null;
+            if (!currUnit.getCurrUnitNode().getName().equals(path[0])) {
+            	snode = enterName(path[0]);
+            	dbgStr += ", " + path[0];
+            }
 
             if (path.length == 2 && snode instanceof IScope) {
-                symbol = ((IScope) snode).lookupName(path[1]);
-                snode = symbol != null ? symbol.node() : null;
+            	snode = enterName(getName().getText()); //(path[1]);
+            	dbgStr += ", " + path[1];
             }
             
-			boolean isTypeMetaFormalParameter = (snode instanceof DeclNode.Formal && ((DeclNode.Formal) snode)
-					.isTypeMetaFormalParameter()) ? true : false;
-            
-            if (symbol == null || (!(snode instanceof DeclNode.ITypeInfo) && !isTypeMetaFormalParameter)) {
-                currUnit.reportError(getName(), "not a type");
+            String u = "In " + ParseUnit.current().getCurrUnitNode().getName().getText();          
+            String dbgStr2 = u + ", entering type " + dbgStr + " in DeclNode.Usr.pass1Begin() : ";
+            if (snode != null) {
+            	String enc = snode.getDefiningScope().getEnclosingScope() != null ? snode.getDefiningScope().getEnclosingScope().getScopeName() + "." : "null.";
+            	dbgStr2 +=  " scope " + enc + snode.getDefiningScope().getScopeName();
             }
-
-            symbolMap.put(currUnit.getCurrUnitNode().getQualName(), symbol);
-
-            return false;
+            //System.out.println(dbgStr2);
+            
+            if (snode == null)
+            	return false;
+            return true;
         }
     }
     

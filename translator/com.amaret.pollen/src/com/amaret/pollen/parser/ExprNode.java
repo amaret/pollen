@@ -95,8 +95,6 @@ public class ExprNode extends BaseNode {
         }
         @Override
         protected boolean pass1Begin() {
-        	// TODO
-        	// set scopeDeref to return type scope
         	// TODO resolve symbol
         	// TODO if useScopeDeref, use scopeDeref for symbol resolution
         	 
@@ -114,6 +112,9 @@ public class ExprNode extends BaseNode {
 
         	if (getName() != null && getName() instanceof ExprNode.Ident) {
         		ExprNode.Ident ei = (ExprNode.Ident) getName();
+        		boolean flag = false;
+        		if (ei.getName().getText().equals("Interrupt.setHandler"))
+        			flag = true;
             	symbol = symtab.curScope().lookupName(ei.getName().getText(), chkHostScope);
             	
             	if (symbol == null) { 
@@ -138,14 +139,18 @@ public class ExprNode extends BaseNode {
             if ((exprCat = TypeRules.preCheck(cat)) != null) {
                 return;
             }
-            
-            if (!(cat instanceof Cat.Fcn)) {
+            boolean fcnOrFcnRef = cat instanceof Cat.Fcn || cat instanceof Cat.Agg;
+            if (!fcnOrFcnRef) {
                 currUnit.reportError(getName(), "value is not a function");
                 return;
             }
             // TODO 
             // signature matching, default parameter value insertion
             // overload resolution
+            if (cat instanceof Cat.Agg && ((Cat.Agg) cat).aggScope() instanceof DeclNode.TypedMember) {
+            	DeclNode.TypedMember tm = (DeclNode.TypedMember) ((Cat.Agg) cat).aggScope();
+             	cat = tm.getFcnTypeCat();
+            }
             Cat.Fcn fcncat = (Cat.Fcn) cat;
             int argc = getArgs().size();
             int minArgc = fcncat.minArgc();
@@ -341,7 +346,6 @@ public class ExprNode extends BaseNode {
         static final private int NAME = 0;
         
         private SymbolEntry symbol = null;
-        private boolean isLength;
         
         Ident(int ttype, String ttext) {
             super(ttype, ttext);
@@ -364,11 +368,7 @@ public class ExprNode extends BaseNode {
         public void setSymbol(SymbolEntry symbol) {
 			this.symbol = symbol;
 		}
-
-		public boolean isLength() {
-            return isLength;
-        }
-        
+      
         @Override
         protected boolean pass2Begin() {
         	// this used to be pass1Begin() but that creates a requirement that a 
@@ -393,11 +393,66 @@ public class ExprNode extends BaseNode {
         			isConst = true;
         		if (symbol.node() instanceof DeclNode.Formal) {
         			DeclNode.Formal f = (DeclNode.Formal) symbol.node();
-        			if (f.isTypeMetaFormalParameter() && f.getInit() == null) {
+        			if (f.isTypeMetaArg() && f.getInit() == null) {
         				ParseUnit.current().reportError(f, f.getName().getText() + " meta parameter is uninitialized");  
         				return;
         			}       			
         		}
+        		exprCat = symbol.node().getTypeCat();
+        	}
+        }
+    }
+    // ExprNode.Typ (used for init expressions for meta parameters)
+    static public class Typ extends ExprNode {
+
+        static final private int TYPE = 0;
+        
+        private SymbolEntry symbol = null;
+        
+        Typ(int ttype, String ttext) {
+            super(ttype, ttext);
+        }
+   
+        public TypeNode getTyp() {
+            return  ((TypeNode) getChild(TYPE));
+        }
+        
+        @Override
+        public SymbolEntry getSymbol() {
+            return symbol;
+        }
+        
+        public void setSymbol(SymbolEntry symbol) {
+			this.symbol = symbol;
+		}
+      
+        @Override
+        protected boolean pass2Begin() {
+
+        	ParseUnit currUnit = ParseUnit.current();
+        	Atom name = this.getTyp().getAtom();
+        	if (symbol == null) {
+        		TypeNode t = this.getTyp();
+				name = (t instanceof TypeNode.Usr ? ((TypeNode.Usr) t)
+						.getName()
+						: t instanceof TypeNode.Std ? ((TypeNode.Std) t)
+								.getIdent() : t.getAtom());
+				
+				if (Cat.fromScalarString(name.getText()) != null) // a primitive type
+					return super.pass2Begin();
+				
+        		symbol = currUnit.getSymbolTable().resolveSymbol(name);
+        	}
+        	if (symbol == null) {
+        		currUnit.reportError(name, "type is not declared in the current scope " + currUnit.getSymbolTable().curScope().getScopeName());
+
+        	}
+        	return super.pass2Begin();
+        }
+        
+        @Override
+        protected void pass2End() {
+        	if (symbol != null && symbol.node() != null) {
         		exprCat = symbol.node().getTypeCat();
         	}
         }
@@ -435,7 +490,10 @@ public class ExprNode extends BaseNode {
             		ei.setSymbol(symbol);
             	}
         	}
-        	
+        	else {    
+                symbol = currUnit.getSymbolTable().lookupName(ParseUnit.current().getUnitName());
+        	}
+       	
         	return super.pass2Begin();
         }
         
@@ -503,6 +561,9 @@ public class ExprNode extends BaseNode {
         }
                 
         public TypeNode getTypeSpec() {
+        	if (this.getParent() instanceof DeclNode.Var){
+        		return ((DeclNode.Var) this.getParent()).getTypeSpec();
+        	}
             return ((TypeNode) getChild(TYPE));
         }
         @SuppressWarnings("unchecked")

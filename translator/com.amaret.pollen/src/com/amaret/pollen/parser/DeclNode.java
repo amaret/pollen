@@ -6,9 +6,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.antlr.runtime.CommonToken;
-import org.antlr.runtime.tree.Tree;
-
 import com.amaret.pollen.translator.ITarget.TypeInfo;
 
 public class DeclNode extends BaseNode implements ISymbolNode {
@@ -27,10 +24,21 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         Formal(int ttype, String ttext, EnumSet<Flags> f) {
             super(ttype, ttext, f);
         }
-        public boolean isTypeMetaFormalParameter() {
-        	if (flags.contains(Flags.TYPE_META_FP))
+        public boolean isTypeMetaArg() {
+        	if (flags.contains(Flags.TYPE_META_ARG))
         		return true;
         	return false;
+        }
+        protected boolean pass1Begin() {
+            super.pass1Begin();
+           
+            if (getTypeSpec() != null)
+            	getTypeSpec().pass1Begin();
+            
+            if (getInit() != null) {
+            	getInit().pass1Begin();
+            }
+            return true;
         }
 
         @Override
@@ -64,6 +72,17 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         @Override
         public TypeNode getTypeSpec() {
             return (TypeNode) getChild(BASE);
+        }
+        @Override
+        public Cat getTypeCat() {
+        	if (typeCat == null && this.getTypeSpec() instanceof TypeNode.Usr) {
+        		String code = Cat.Scalar.codeFromString(((TypeNode.Usr) this.getTypeSpec()).getName().getText());
+        		if (code != null) {
+        			typeCat = Cat.fromScalarCode(code);
+        			return typeCat;
+        		}
+        	}
+        	return super.getTypeCat();
         }
 
         public ExprNode getDim() {
@@ -127,6 +146,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     	ExprNode getInjectExpr() {
     		return ((ExprNode) getChild(INJECT));
     	}
+        protected boolean pass1Begin() {
+            return true;
+        }
     }
        
     // DeclNode.Fcn
@@ -142,14 +164,12 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         static final private int TYPE_LST = 0;
 
         private NestedScope scopeDeleg = new NestedScope(this);
-		private boolean isVoid = false;
-        
-        Fcn(int ttype, String ttext, EnumSet<Flags>  flags) {
+		Fcn(int ttype, String ttext, EnumSet<Flags>  flags) {
             super(ttype, ttext, flags);
-            if (flags.contains(Flags.HOST)) {
-            	System.out.println("HOST");
-            }
         }
+		
+		private DeclNode.Class cls = null;
+		private String cname = "";
         
         private int checkArgs() {
             int res = 0;
@@ -205,28 +225,41 @@ public class DeclNode extends BaseNode implements ISymbolNode {
          */
         @SuppressWarnings("unchecked")
 		public List<TypeNode> getReturnList() {
-        	BaseNode b = (BaseNode) getChild(TYPE_NAME);
+        	DeclNode.FcnTyp b = (DeclNode.FcnTyp) getChild(TYPE_NAME);
         	TypeNode.Lst t = (TypeNode.Lst) b.getChild(TYPE);        	
         	ListNode<TypeNode> child = (ListNode<TypeNode>) t.getChild(TYPE_LST);
         	return child.getElems();
         }
         
-        public boolean isVoid() {
-        	return isVoid;
+        public boolean isVoid() {            
+        	if (flags.contains(Flags.VOID_FCN))
+        		return true;
+        	return false;       	
         }
+        
         public boolean isHost() {
         	if (flags.contains(Flags.HOST))
         		return true;
         	return false;
         }
         
+        public boolean isConstructor() {
+        	if (flags.contains(Flags.CONSTRUCTOR))
+        		return true;
+        	return false;
+        }
+     
         public String cname() {
-        	return getName().toString();
+        	return cname;
         }
         
-        @Override
+        public DeclNode.Class getFcnClass() {
+			return cls;
+		}
+
+		@Override
         public Atom getName() {
-        	BaseNode b = ((BaseNode) getChild(TYPE_NAME));
+        	DeclNode.FcnTyp b = ((DeclNode.FcnTyp) getChild(TYPE_NAME));
         	return ((BaseNode) b.getChild(NAME)).getAtom();       	
         }     
         @Override
@@ -238,6 +271,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             
             ParseUnit currUnit = ParseUnit.current();
             Atom name = getName();
+            unit = currUnit.getCurrUnitNode();
             
            	IScope scopeToUse = currUnit.getSymbolTable().curScope();
            	// Host functions go in a host scope 
@@ -249,6 +283,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             }   
             
             currUnit.getSymbolTable().enterScope(this);
+            IScope scope = getEnclosingScope();
+            cls = scope instanceof DeclNode.Class ? (DeclNode.Class) scope : null;
+            cname = (cls == null) ? ("" + getName()) : ("" + cls.getName() + "__" + getName());
+
            
             if (currUnit.getCurrUnitNode().isProtocol() && this.getBody() != null) {
                 currUnit.reportError(getName(), "protocols can't have function definitions");
@@ -262,10 +300,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             }
 
             // TODO: create signature set
-            
-			if (getReturnList().isEmpty())
-        		isVoid = true;
-			
+            			
 			currUnit.getCurrUnitNode().addFcn(getName().getText(), this);
  
             return true;
@@ -310,6 +345,40 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
 
      }
+    // DeclNode.FcnTyp the subtree that contains the function type and name
+    static public class FcnTyp extends DeclNode implements ITypeSpec {
+        // subtree
+        static final private int TYPE = 0;
+        static final private int NAME = 1;
+        static final private int TYPE_LST = 0;
+        
+        FcnTyp(int ttype, String ttext) {
+            super(ttype, ttext);
+        }
+
+        
+       @Override
+        public Atom getName() {       	
+        	return ((BaseNode) getChild(NAME)).getAtom();       	
+        } 
+        @SuppressWarnings("unchecked")
+		@Override
+        public TypeNode getTypeSpec() {  
+        	// TODO 
+        	// this returns the first child in a list
+        	// implement the list of types as the return type 
+        	ListNode<TypeNode> child = (ListNode<TypeNode>) getChild(TYPE_LST);
+         	return (!child.getElems().isEmpty()) ? child.getElems().get(0) : null;        	
+        } 
+        protected boolean pass1Begin() {
+        	boolean flag =  super.pass1Begin();
+        	if (!flag) return false;
+        	flag = ((BaseNode) getChild(TYPE_LST)).pass1Begin();
+        	return flag;        	
+        }
+    	
+    }
+
     static public class FcnRef extends DeclNode implements ITypeSpecInit {
 
         static final private int FCN = 0;
@@ -385,7 +454,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     }
     
     // DeclNode.TypedMember
-    // For proxy (protocol member) or a member with class type
+    // For proxy (protocol member), a member with class type, or a member with function type (function ref)
     static public class TypedMember extends DeclNode.Var implements ITypeSpecInit, IScope, IUnitWrapper {
         
         
@@ -394,10 +463,12 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
         static final private int NAME = 1;
         static final private int TYPE = 0;
-        static final private int INIT = 0; // subtree
+        static final private int INIT = 2; 
               
-        private UnitNode unit;
+        private UnitNode unitType;
+        private UnitNode modUnit = null; // for protocol members
         private NestedScope scopeDeleg = new NestedScope(this);
+        private Cat.Fcn fcnCat = null;
         
         
         public Atom getTypeName() {
@@ -409,11 +480,39 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public Atom getName() {
         	return ((BaseNode) getChild(NAME)).getAtom();
         }
-        
+        /**
+         * Could be null - if this is a meta type instantiated to a primitive, e.g. uint8.
+         * @return the unitType type of this member.
+         */
         public UnitNode getTypeUnit() {
-            return unit;
+            return unitType;
         }
-        
+        public Cat getTypeCat() {
+            if (typeCat == null) {
+                 typeCat = Cat.fromSymbolNode(this, this.getDefiningScope());
+            }
+            return typeCat;
+        }
+        public Cat getFcnTypeCat() {
+        	// for function references
+        	if (fcnCat == null) {
+        		if (this.getTypeSpec() instanceof TypeNode.Usr) {
+        			SymbolEntry s = ((TypeNode.Usr) this.getTypeSpec()).getSymbol();
+        			if (s.node() instanceof DeclNode.Fcn) {
+        				fcnCat = (Cat.Fcn) s.node().getTypeCat();
+        			}          			 			
+        		}   
+        	}
+        	return fcnCat;
+        }
+        public boolean isFcnRef() {
+        	return getFcnTypeCat() != null;
+        }
+        public boolean isProtocolMember() {
+        	if (flags.contains(Flags.PROTOCOL_MEMBER))
+        		return true;
+        	return false;
+        }
         @Override
         public String getQualName() {
             return ((UnitNode) getDefiningScope()).getQualName() + '.' + getName();
@@ -422,10 +521,12 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public String getScopeName() {
         	return getQualName();
         }
-        
+        /**
+         * Can be null.
+         */
         @Override
         public UnitNode getUnit() {
-            return unit;
+            return unitType;
         }
         
         @Override
@@ -435,19 +536,41 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             SymbolEntry sym = curr.resolveSymbol(getTypeName());
             ISymbolNode snode = sym != null ? sym.node() : null;
             if (snode instanceof ImportNode) {
-                unit = ((ImportNode) snode).getUnit();
+                unitType = ((ImportNode) snode).getUnit();
             }
             else if (snode instanceof UnitNode) {
-                unit = (UnitNode) snode;
+                unitType = (UnitNode) snode;
             }
-            if (unit == null || unit.isModule() || unit.isComposition()) {
-                ParseUnit.current().reportError(getTypeName(), "must be an protocol or class");
+            else if (snode instanceof DeclNode.Fcn) {
+            	unitType = (UnitNode) snode.getDefiningScope().getEnclosingScope();
             }
+
+            if (unitType == null ) { 
+            	// this can happen when meta type is a instantiation to a primitive e.g. uint8
+             }
             else {
-                scopeDeleg.addSymbols(unit.getEntrySet());
+            	if (unitType.isProtocol())
+            		flags.add(Flags.PROTOCOL_MEMBER);
+            	else {
+            		if (!unitType.isClass() && !this.isFcnRef()) {
+            			ParseUnit.current().reportError(getTypeName(), "a typed member can have protocol, class, or function type");
+            		}
+            	}
+                scopeDeleg.addSymbols(unitType.getEntrySet());
             }
             return false;
         }
+    	/**
+    	 * Connect the protocol member to its implementing module unit (unitNode). 
+    	 * @param impUnit
+    	 */
+    	public void bindModule(UnitNode mUnit) {
+    		if (this.isProtocolMember()) {
+    			modUnit = mUnit;
+    			typeCat = Cat.fromSymbolNode(modUnit, unit.getDefiningScope());
+    			
+    		}
+    	}
 
         @Override
         public boolean defineSymbol(Atom name, ISymbolNode node) {
@@ -491,9 +614,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
         @Override
         public ExprNode getInit() {
-        	if (getChild(NAME).getChildCount() > INIT) {
-        		BaseNode b = ((BaseNode) getChild(NAME));
-            	return ((ExprNode) b.getChild(INIT));        		
+        	if (getChildCount() > INIT) {
+        		return ((ExprNode) getChild(INIT));  		
         	}        
             return null;
         }
@@ -503,30 +625,41 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
 
     }
+    
+    static public class Class extends DeclNode.Usr {
+    		
+		Class(int ttype, String ttext,  EnumSet<Flags>  flags, String qn) {
+            super(ttype, ttext, flags, qn);
+        }
+    	
+    }
 
     // DeclNode.User  a user defined type
     static public class Usr extends DeclNode implements IScope, ITypeInfo {
 
-     	static final private int FEATURES = 1;
-     	static final private int EXTENDS = 2;
-     	static final private int IMPLEMENTS = 2;
-     	static final private int VALS = 1;
-     	static final private int META = 3; 
-     	static final private int META_IMPORTS = 4;
+     	static final protected int FEATURES = 1;
+     	static final protected int EXTENDS = 2;
+     	static final protected int IMPLEMENTS = 2;
+     	static final protected int VALS = 1;
+     	static final protected int META = 3; 
+     	static final protected int META_IMPORTS = 4;
+     	protected String qname = "";
         
        
-        private DeclNode.Usr classParent = null;
-        private NestedScope scopeDeleg = new NestedScope(this);
-        private NestedScope scopeHost = new NestedScope(this);
+        protected DeclNode.Usr baseType = null;
+        protected DeclNode.Usr implementedType = null;
+        protected NestedScope scopeDeleg = new NestedScope(this);
+        protected NestedScope scopeHost = new NestedScope(this);
         
         public NestedScope getScopeHost() {
 			return scopeHost;
 		}
-		Usr(int ttype, String ttext,  EnumSet<Flags>  flags) {
+		Usr(int ttype, String ttext,  EnumSet<Flags>  flags, String qn) {
             super(ttype, ttext, flags);
+            qname = (qn.equals("NIL")) ? "" : qn;
         }
         public EnumSet<Flags> getFlags() {
-        	return flags;	// Except for nested class, these apply to unit.
+        	return flags;	// Except for nested class, these apply to unitType.
         }
         
         @SuppressWarnings("unchecked")
@@ -543,7 +676,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
         @SuppressWarnings("unchecked")
 		public ListNode<DeclNode.Formal> getMetaFormals() {
-        	if (getChildCount() > META && this.isMeta()) {
+        	if (getChildCount() > META && this.isMeta() && getChild(META).getChildCount() > 0) {
         		ListNode<DeclNode.Formal> l = ((ListNode<DeclNode.Formal>) getChild(META));
         		if (l.getElems().isEmpty()) {
                     ParseUnit.current().reportError(getName(), "Meta types cannot have empty formal parameter list");
@@ -559,14 +692,27 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         		return null;
         	return ((ListNode<ImportNode>)getChild(META_IMPORTS)).getElems();
         }
+        
+        /** 
+         * Qualify the Unit name by its name in the instantiating unitType.
+         * This enforces uniqueness in the scope of reference despite 
+         * multiple instantiations in the scope of reference. 
+         * ONLY call just before translation phase.
+         */
+        public void setMetaQualName() {
+        	if (!qname.isEmpty()) {       		
+        		getName().setText(getName().getText() + "_" + qname);  
+        		qname = "";
+        	}
+        }
 
 
-        public ExprNode getImplements() {
-        	if (!this.isComposition() || this.isClass())
+        public BaseNode getImplements() {
+        	if (this.isEnum() || this.isProtocol())
         		return null;
-        	if (this.getChildCount() > IMPLEMENTS) 
-        		return (ExprNode) this.getChild(IMPLEMENTS);
-        	return null;
+        	if (this.getChild(IMPLEMENTS).getType() == pollenParser.NIL)
+        		return null;
+        	return (BaseNode) this.getChild(IMPLEMENTS);
         }
 
         
@@ -580,11 +726,25 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         		return true;
         	return false;
         }
+        public boolean isTarget() {
+        	return !isHost();
+        }
+        public boolean isHost() {
+        	if (flags.contains(Flags.COMPOSITION))
+        		return true;
+        	return false;
+        }
         public boolean isComposition() {
         	if (flags.contains(Flags.COMPOSITION))
         		return true;
         	return false;
         }
+        public boolean isVoid() { // deferred instantiation for a meta type
+        	if (flags.contains(Flags.VOID_INSTANCE))
+        		return true;
+        	return false;
+        }
+
         public boolean isClass() {
         	if (flags.contains(Flags.CLASS))
         		return true;
@@ -613,8 +773,17 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             return scopeDeleg.defineSymbol(name, symbol);
         }
 
-        public DeclNode.Usr getClassParent() {
-            return classParent;
+        public DeclNode.Usr getBaseType() {
+            return baseType;
+        }
+        public DeclNode.Usr getImplementedType() {
+        	if (implementedType == null && this.getImplements() != null) {
+        		SymbolEntry p = lookupName(getImplements().getText());
+        		if (p != null) {
+        			implementedType = (Usr) p.node();       				
+        		}
+        	}
+        	return implementedType;
         }
         
         @Override
@@ -648,7 +817,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         private void enterScopes() {
         	SymbolTable symtab = ParseUnit.current().getSymbolTable();
         	scopeHost.setEnclosingScope(symtab.curScope());
-        	symtab.enterScope(this);
+        	symtab.enterScope(this); 
+
         }
         
         @Override
@@ -658,15 +828,30 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             super.pass1Begin();
             
             if (currUnit.getCurrUnitNode().getUnitType() != this && this.isClass()) {
-            	classParent = currUnit.getCurrUnitNode().getUnitType();
+            	baseType = currUnit.getCurrUnitNode().getUnitType();
             }
          
             SymbolTable symtab = currUnit.getSymbolTable();
-            if (classParent != null) {
-                scopeDeleg.addSymbols(classParent.scopeDeleg.getEntrySet());
+            if (baseType != null) {
+                scopeDeleg.addSymbols(baseType.scopeDeleg.getEntrySet());
                 symtab.curScope().replaceSymbol(getName(), this);
             }
+            else {
+            	symtab.curScope().defineSymbol(getName(), this);
+            }
+            if (this.getMetaFormals() != null) {
+            	for (DeclNode.Formal f : this.getMetaFormals().getElems()) {
+            		f.pass1Begin();
+            		// If the meta argument is a void instance, this unitType is also
+            		SymbolEntry symbol = ParseUnit.current().getSymbolTable().lookupName(f.getName().getText());
+            		ISymbolNode snode = symbol != null ? symbol.node() : null;
+            		if (snode instanceof DeclNode.Usr && ((DeclNode.Usr) snode).isVoid()) {
+            			flags.add(Flags.VOID_INSTANCE);
+            		}
+            	}            	
+            }
             enterScopes();
+
             return true;
         }
         protected boolean pass2Begin() {
@@ -681,12 +866,20 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
         @Override
         public void pass2End() {
-            ParseUnit.current().getSymbolTable().leaveScope();
-            super.pass2End();
+        	
+        	if (this.getImplements() != null) {
+        		SymbolEntry p = lookupName(getImplements().getText());
+        		if (p != null && implementedType == null) {
+        			implementedType = (Usr) p.node();       		
+        			TypeRules.checkImplements(this,p);       		
+        		}
+        	}
+        	ParseUnit.current().getSymbolTable().leaveScope();
+        	super.pass2End();
         }
         @Override
         public void replaceSymbol(Atom name, ISymbolNode symbol) {
-            scopeDeleg.replaceSymbol(name, symbol);
+        	scopeDeleg.replaceSymbol(name, symbol);
         }
 
         @Override
@@ -747,6 +940,18 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public TypeNode getTypeSpec() {
             return (TypeNode) getChild(TYPE);
         }
+        
+        @Override
+        public Cat getTypeCat() {
+        	if (typeCat == null && this.getTypeSpec() instanceof TypeNode.Usr) {
+        		String code = Cat.Scalar.codeFromString(((TypeNode.Usr) this.getTypeSpec()).getName().getText());
+        		if (code != null) {
+        			typeCat = Cat.fromScalarCode(code);
+        			return typeCat;
+        		}
+        	}
+        	return super.getTypeCat();
+        }
 
         @Override
         protected boolean pass1Begin() {
@@ -756,6 +961,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             if (isPublic()) {
                 currUnit.reportError(getName(), "variables can't be \'public\'");
             }
+            if (getTypeSpec() != null)
+            	getTypeSpec().pass1Begin();
+            
             if (getInit() != null) {
             	getInit().pass1Begin();
             }
@@ -781,7 +989,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     static final private int NAME = 0;
     
     private IScope definingScope;
-    private Cat typeCat;
+    protected Cat typeCat;
+    protected UnitNode unit;
     
     EnumSet<Flags> flags = EnumSet.noneOf(Flags.class);
 
@@ -790,8 +999,14 @@ public class DeclNode extends BaseNode implements ISymbolNode {
       	this.token = new Atom(ttype, ttext);
     	this.flags = f;
     }
+    DeclNode(int ttype, String ttext) {
+      	this.token = new Atom(ttype, ttext);
+    }
     
-    @Override
+    public UnitNode getUnit() {
+		return unit;
+	}
+	@Override
     public IScope getDefiningScope() {
         return definingScope;
     }
@@ -804,7 +1019,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     @Override
     public Cat getTypeCat() {
         if (typeCat == null) {
-            typeCat = Cat.fromSymbolNode(this, this.getDefiningScope());
+             typeCat = Cat.fromSymbolNode(this, this.getDefiningScope());
         }
         return typeCat;
     }
@@ -824,6 +1039,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     @Override
     protected boolean pass1Begin() {
         ParseUnit currUnit = ParseUnit.current();
+        unit = currUnit.getCurrUnitNode();
         Atom name = getName();
 
         if (currUnit.getSymbolTable().defineSymbol(name, this) == false) {
@@ -851,6 +1067,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             ParseUnit.current().reportError(init, "initializer must be a constant expression");
             return;
         }
+       
         TypeRules.checkInit(tsi.getTypeCat(), init);
     }
 

@@ -50,8 +50,8 @@ public class BaseNode extends CommonTree {
     public String getFileName() {
         return fileName;
     }
-    
-    int getStartIndex() {
+
+	int getStartIndex() {
         return startIndex;
     }
     

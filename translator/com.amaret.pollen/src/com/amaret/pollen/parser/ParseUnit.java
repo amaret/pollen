@@ -125,21 +125,24 @@ public class ParseUnit {
 
             String fromPkg = imp.getFrom().getText();
             String pkgPath = packages.get(fromPkg);
-            
+
             SymbolEntry impSym = unit.resolveSymbol(imp.getFrom());
             ISymbolNode impSnode = impSym == null ? null : impSym.node();
             UnitNode impUnit = null;
+
             
-            // Non-null if parser instantiates meta type
-            UnitNode client = null;
-            ImportNode clientImport = null;
-            if (imp.getMeta() != null) {
-            	client = unit;
-            	clientImport = imp;
+            UnitNode client = unit;
+            ImportNode clientImport = imp;
+            if (Cat.Scalar.codeFromString(imp.getUnitName().getText()) != null) {
+            	// primitive type: don't import (instantiation side effect)
+            	Atom name = imp.getName();
+            	unit.defineSymbol(name, imp);
+            	continue;        	
             }
-               
+
+
             if (!(impSnode instanceof ImportNode)) {
-                try {
+            	try {
                     impUnit = parseUnit(pkgPath + File.separator + imp.getUnitName() + ".p", client, clientImport);
                 }
                 catch (Termination te) {
@@ -148,18 +151,22 @@ public class ParseUnit {
             }
 
             else {
-                UnitNode sourceUnit = ((ImportNode) impSnode).getUnit();
+                impUnit = ((ImportNode) impSnode).getUnit();
+                if (impUnit == null) {
+                    reportError(imp.getUnitName(), "import not bound to unit");
+                    continue;
+                } 
                 // look for the name in the sourceUnit
                 // A visible name must have 'isExport' true
-                SymbolEntry expSym = sourceUnit.resolveSymbol(imp.getUnitName());
-                ISymbolNode expSnode = expSym != null ? expSym.node() : null;
-                if (expSnode instanceof ImportNode && ((ImportNode) expSnode).isExport()) {
-                    impUnit = ((ImportNode) expSnode).getUnit();
-                }
-                else {
-                    reportError(imp.getUnitName(), "not an exported unit");
-                    continue;
-                }
+//                SymbolEntry expSym = sourceUnit.resolveSymbol(imp.getUnitName());
+//                ISymbolNode expSnode = expSym != null ? expSym.node() : null;
+//                if (expSnode instanceof ImportNode) { // && ((ImportNode) expSnode).isExport()) {
+//                    impUnit = ((ImportNode) expSnode).getUnit();
+//                }
+//                else {
+//                    reportError(imp.getUnitName(), "not an exported unit");
+//                    continue;
+//                }
             }
 
             if (impUnit != null) {
@@ -170,8 +177,7 @@ public class ParseUnit {
                 }
                 if (imp.getMeta() == null) {
                     if (impUnit.isMeta()) {
-                        reportError(imp.getUnitName(), "no meta arguments provided");
-                        continue;
+                    	// is Meta and no arguments: instantiate to defaults
                     }
                     imp.bindUnit(impUnit);
                 }
@@ -180,10 +186,6 @@ public class ParseUnit {
                         reportError(imp.getUnitName(), "meta arguments provided but not a meta type");
                         continue;
                     }
-                    if (errorCount > 0) {
-                        continue;
-                    }
-                    TypeRules.checkMetaArgs(impUnit, imp.getMeta());
                     if (errorCount > 0) {
                         continue;
                     }
@@ -208,6 +210,20 @@ public class ParseUnit {
 	 */
 	private UnitNode parseUnit(String inputPath, UnitNode client, ImportNode clientImport) throws Exception {
 		
+		String cname = client != null ? client.getQualName() : "null";
+		String ciname = clientImport != null ? clientImport.getQualName() : "null";
+		
+		String dbgStr = "  START parseUnit() : ";
+		dbgStr += "input " + ParseUnit.mkPackageName(inputPath) + "." + ParseUnit.mkUnitName(inputPath) + ", client " + cname + ", clientImport " + ciname;
+		if (clientImport != null && clientImport.getMeta() != null) {
+			dbgStr += ", meta args ";
+			for (BaseNode b : clientImport.getMeta()) {
+				dbgStr += b.getText() + "." + b.getChild(0).getText() + "  ";
+			}
+		}
+		System.out.println(dbgStr);
+		
+		
 		paths.add(inputPath);
 		in = new ANTLRFileStream(inputPath);
 		
@@ -226,7 +242,7 @@ public class ParseUnit {
         
         UnitNode unit = (UnitNode)result.getTree();
        
-        System.out.println( unit.toStringTree());
+        System.out.println( "       AST: " + unit.toStringTree());
        
         if (getErrorCount() > 0) {
             return null;
@@ -277,7 +293,7 @@ public class ParseUnit {
 	}
 
 	
-	public static File createFile(String qualName, String suffix) {
+	public static File cacheFile(String qualName, String suffix) {
         
 		int k = qualName.lastIndexOf('.');
         String pn = qualName.substring(0, k);
@@ -312,6 +328,7 @@ public class ParseUnit {
 
         //unit.defineSymbol(unit.getName(), unit);
         currUnitNode = unit;
+        System.out.println("  START checkUnit() for " + unit.getName());
 
         if (getErrorCount() == 0) {
             unit.doPass1();
@@ -377,6 +394,14 @@ public class ParseUnit {
     private void reportErrorConsole(String fileName, int line, int col, String msg) {
         err.printf("%s, line %d:%d, %s\n", fileName, line, col, msg);
         errorCount += 1;
+    }
+    public void reportFailure(Exception e) {
+        e.printStackTrace(err);
+        throw new Termination(e.getMessage());
+    }
+    
+    public void reportFailure(String msg) {
+        throw new Termination(msg);
     }
 
 }

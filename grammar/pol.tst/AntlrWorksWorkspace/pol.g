@@ -366,8 +366,8 @@ typeNameScalar			// scalar as in 'not array'
 	|	userTypeName
 	;
 userTypeName
-	:	qualName metaArguments	-> ^(T_USER_TYPE qualName metaArguments)
-	|	qualName		-> ^(T_USER_TYPE qualName)
+	//	qualName metaArguments	-> ^(T_USER_TYPE qualName metaArguments)
+	:	qualName		-> ^(T_USER_TYPE qualName)
 	;
 
 unitTypeDefinition

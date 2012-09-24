@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.antlr.runtime.CommonToken;
-
 public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrapper {
 	
     static private final int IMPORTS = 1;
@@ -112,6 +110,14 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
         return id != null ? id : -1;
     }
     
+    public DeclNode.Usr getBaseType() {
+    	return this.getUnitType().getBaseType();
+    }
+    
+    public DeclNode.Usr getImplementedType() {
+    	return this.getUnitType().getImplementedType();
+    }
+    
     public Collection<UnitNode> getClients() {
         return clientMap.values();
     }
@@ -197,11 +203,13 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     	filePath = ParseUnit.current().getCurrPath();
     }
     
-   public boolean isHost() {
-    	if (flags.contains(Flags.HOST))
+    public boolean isTarget() {
+    	return !isHost();
+    }
+    public boolean isHost() {
+    	if (flags.contains(Flags.COMPOSITION))
     		return true;
-        return false;
-
+    	return false;
     }
    public boolean isEnum() {
    	if (flags.contains(Flags.ENUM))
@@ -230,6 +238,11 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     }
     public boolean isMeta() {
     	if (flags.contains(Flags.META))
+    		return true;
+    	return false;
+    }
+    public boolean isVoid() { // deferred instantiation for a meta type
+    	if (flags.contains(Flags.VOID_INSTANCE))
     		return true;
     	return false;
     }
@@ -313,10 +326,44 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     	flags = unitType.getFlags();
     	ParseUnit currUnit = ParseUnit.current();               
         currUnit.getSymbolTable().enterScope(this);
-    	// TODO The unitType is now known. 
-    	//      Check for valid features (imports, implements, extends, etc).
-       return true;
+        for (ImportNode imp : this.getImports()) {
+        	boolean flag = false;
+        	if (imp.getName().getText().equals("AEQueue"))
+        		flag = true;
+        	//currUnit.getCurrUnitNode().defineSymbol(imp.getUnitName(), imp);
+        	//currUnit.getSymbolTable().defineSymbol(imp.getUnitName(), imp);
+        	if (imp.getUnit() != null && !imp.getUnitName().getText().equals(imp.getAs())) {
+        		//currUnit.getCurrUnitNode().defineSymbol(imp.getAs(), imp.getUnit().getUnitType());
+        	}
+        }
+        this.importSymbols();
+        return true;
     }
+    
+    private void importSymbols() {
+    	
+    	for (ImportNode imp : this.getImports()) {
+    		UnitNode iu = imp.getUnit();
+    		if (iu != null) {
+    			SymbolEntry s = iu.lookupName(imp.getUnitName().getText());
+    			if (s != null && s.node() instanceof ImportNode && ((ImportNode)s.node()).isExport())
+    				for (Map.Entry<String, SymbolEntry> ent : iu.symbolTable.entrySet()) {
+    					ISymbolNode snode = ent.getValue().node();
+    					if (snode instanceof DeclNode && !((DeclNode) snode).isPublic()) {
+    						continue;
+    					}
+    					if (snode instanceof ImportNode && !((ImportNode) snode).isExport()) {
+    						continue;
+    					}
+    					SymbolEntry se = new SymbolEntry(this, snode);
+    					symbolTable.put(ent.getKey(), se);  	
+    					if (!ent.getKey().equals(imp.getName().getText()))
+    						symbolTable.put(imp.getName().getText(), se);	// 	the 'as' name
+    				}
+    		}
+    	}
+    }
+
     
     @Override
     protected void pass1End() {

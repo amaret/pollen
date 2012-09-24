@@ -1,5 +1,6 @@
 package com.amaret.pollen.parser;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,9 +19,20 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     private IScope definingScope;
     private boolean isExport;
     private UnitNode unit;
+    private EnumSet<Flags> flags = EnumSet.noneOf(Flags.class);
     
     ImportNode(int ttype, String ttext) {
         this.token = new Atom(ttype, ttext);
+    }
+    ImportNode(int ttype, String ttext, EnumSet<Flags> f) {
+        this(ttype, ttext);
+        flags = f;
+    }
+    
+    public boolean isTypeMetaArg() {
+    	if (flags.contains(Flags.TYPE_META_ARG))
+    		return true;
+    	return false;
     }
    
     public boolean isExport() {
@@ -71,7 +83,9 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     
  
     public String getQualName() {
-        return getUnit().getQualName();
+    	if (unit != null)
+    		return getUnit().getQualName();
+    	return getUnitName().getText();
     }
     
     public Atom getUnitName() {
@@ -123,6 +137,7 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     		return result;
     	return unit.getUnitType().lookupName(name);
     }
+
     
     @Override
     public SymbolEntry lookupName(String name, boolean chkHostScope) {
@@ -133,8 +148,7 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     		return result;
     	return unit.getUnitType().lookupName(name, chkHostScope);
     }
-
-
+   
     @Override
     public void replaceSymbol(Atom name, ISymbolNode symbol) {
     }
@@ -154,8 +168,6 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 	 */
 	public void bindUnit(UnitNode impUnit) {
 		unit = impUnit;
-        cat = Cat.fromSymbolNode(unit, unit.getDefiningScope());
-
-		
+        cat = Cat.fromSymbolNode(unit, unit.getDefiningScope());		
 	}
 }
