@@ -1,11 +1,6 @@
 package cc.arduino
 
 import Duemilanove 
-
-from Duemilanove.Board import Led
-from Duemilanove.Board.Mcu import GlobalInterrupts
-from Duemilanove.Board.Mcu import TimerMilli8BitTimer0 as TD
-
 from pollen.time import Time
 from pollen.events import Events
 

@@ -1,4 +1,4 @@
-package mcu.avr.atmega328p
+package atmel.avr.atmega328p
 
 -------------------------------------------------------------------------------
 Device driver for general purpose input/output pin PD0 on the atmega328p micro.

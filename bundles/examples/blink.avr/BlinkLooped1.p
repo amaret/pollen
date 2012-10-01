@@ -7,6 +7,8 @@ The pin driver is abstracted out into its own module coming from the
 mcu.avr.atmega328p package. 
 
 This module is specific to avr microcontrollers (i.e. arduino).
+
+pollen -i /some_bundle -e cc.arduino.Environment blink.avr.BlinkLooped1
 -------------------------------------------------------------------------------
 
 from pollen.environment import Led
