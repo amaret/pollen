@@ -9,8 +9,10 @@ public interface IScope {
     public IScope getEnclosingScope();
     public Set<Map.Entry<String,SymbolEntry>> getEntrySet();
     public SymbolEntry lookupName(String name);
+    public SymbolEntry lookupName(String name, boolean chkHostScope);
     public void replaceSymbol(Atom name, ISymbolNode node);
     public SymbolEntry resolveSymbol(Atom name);
     public void setEnclosingScope(IScope scope);
+    public String getScopeName();
 
 }

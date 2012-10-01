@@ -50,6 +50,12 @@ public class Cat implements Cloneable {
             }
             return super.mkType();
         }
+        @Override protected String mkTypeStr() {
+        	if (aggScope instanceof DeclNode.Usr)
+        		return ((DeclNode.Usr) aggScope).getUnitQualName();
+        	return mkType("");
+        	
+        }
     }
     
     // Cat.Arr
@@ -86,6 +92,10 @@ public class Cat implements Cloneable {
             sb.append(getBase().mkType(quals + "[" + dim + "]"));
             return sb.toString();
         }
+        @Override protected String mkTypeStr() {
+        	return getBase().code() + "$arr";
+        }
+        	
     }
     
     // Cat.Error
@@ -110,18 +120,39 @@ public class Cat implements Cloneable {
         private int minArgc = 0;
         private DeclNode.Fcn fcnD = null;
         private TypeNode.Fcn fcnT = null;
+        private String sigString = "";
 
         public Fcn(DeclNode.Fcn fcnD) {
 
         	// TODO 
         	// handle multiple returns
-        	retCat = Cat.fromType(fcnD.getTypeSpec().getElems().get(0));
+        	retCat = Cat.fromType(fcnD.getTypeSpec());
 
         	for (DeclNode.Formal arg : fcnD.getFormals()) {
         		argCats.add(Cat.fromType(arg.getTypeSpec()));
         	}
         	minArgc = fcnD.getFormals().size();
         	this.fcnD = fcnD;
+        }
+        public Fcn(DeclNode.Fcn fcnD, IScope sc) {
+        	
+        	bindAggScope(sc);  
+        	retCat = Cat.fromType(fcnD.getTypeSpec());
+
+        	for (DeclNode.Formal arg : fcnD.getFormals()) {
+        		argCats.add(Cat.fromType(arg.getTypeSpec(), false, aggScope));
+        	}
+        	minArgc = fcnD.getFormals().size();
+        	this.fcnD = fcnD;
+        }
+        public Fcn(TypeNode.Fcn fcnT, IScope sc) {
+        	bindAggScope(sc);      
+            retCat = Cat.fromType(fcnT.getBase(), false, aggScope);
+            for (TypeNode argT : fcnT.getArgs()) {
+                argCats.add(Cat.fromType(argT));
+            }
+            minArgc = fcnT.getArgs().size();
+            this.fcnT = fcnT;
         }
 
         public Fcn(TypeNode.Fcn fcnT) {
@@ -175,6 +206,38 @@ public class Cat implements Cloneable {
             sb.append(")");
             return sb.toString();
         }
+        /**
+         * Create the sigString, a representation of the function argument types as a string.
+         */
+         @Override protected String mkTypeStr() {
+        	
+        	if (!sigString.isEmpty() || fcnD == null) // needed for fcnT?
+        		return sigString;
+        	
+        	for (DeclNode.Formal arg : fcnD.getFormals()) {
+        		
+        		TypeNode t = arg.getTypeSpec();
+        		switch (t.getType()) {
+        		
+                case pollenParser.T_ARR:
+                    sigString += new Cat.Arr((TypeNode.Arr) t).mkTypeStr();
+                    break;
+                case pollenParser.T_USR:
+                    SymbolEntry sym = ((TypeNode.Usr) t).getSymbol(this.aggScope());
+                    sigString +=  Cat.fromSymbolNode(sym.node(), sym.scope(), false).mkTypeStr();
+                    break;
+                case pollenParser.T_FCN:
+                    // not legal here
+                    break;
+                case pollenParser.T_STD:
+                	sigString +=  new Cat.Scalar(((TypeNode.Std) t).getIdent().getText()).mkTypeStr();
+                	break;
+                default:
+                    break;
+                }       		
+        	}
+        	return sigString;
+        }
         
         public int minArgc() {
             return minArgc;
@@ -202,9 +265,9 @@ public class Cat implements Cloneable {
             //codeMap.put("Ref",      "r");
             codeMap.put("string",   "s");
             //codeMap.put("UArg",     "ua");
-            codeMap.put("uInt8",    "u1");
-            codeMap.put("uInt16",   "u2");
-            codeMap.put("uInt32",   "u4");
+            codeMap.put("uint8",    "u1");
+            codeMap.put("uint16",   "u2");
+            codeMap.put("uint32",   "u4");
             codeMap.put("void",     "v");
         }
         
@@ -216,8 +279,9 @@ public class Cat implements Cloneable {
         }
         
         private Scalar(String code, int dummy) {
+
             kind = code.charAt(0);
-            rank = (code.length() == 1 || code.charAt(1) == 'a') ? -1 : code.charAt(1) - '0';
+            rank = (code.length() == 1) ? -1 : code.charAt(1) - '0';
         }
         
         public char kind() {
@@ -252,12 +316,18 @@ public class Cat implements Cloneable {
             }
             return sb.toString();
         }
+        public static String codeFromString(String type) {
+        	return codeMap.get(type);        	
+        }
         
         @Override protected String mkType(String quals) {
             StringBuilder sb = new StringBuilder();
             sb.append(mkStdType());
             sb.append(quals);
             return sb.toString();
+        }
+        @Override protected String mkTypeStr() {
+        	return mkCode();
         }
     }
     // Cat
@@ -285,7 +355,12 @@ public class Cat implements Cloneable {
     	Cat cat = Cat.fromType(typeNode);
     	UnitNode unit = null;
     	UnitNode curr = ParseUnit.current().getCurrUnitNode();
-    	SymbolEntry sym = curr.resolveSymbol(typeNode.getAtom());
+    	SymbolEntry sym;
+    	if (typeNode instanceof TypeNode.Usr) {
+    		sym = curr.resolveSymbol(((TypeNode.Usr) typeNode).getName());   		
+    	}
+    	else sym = curr.resolveSymbol(typeNode.getAtom());
+    	
     	ISymbolNode snode = sym != null ? sym.node() : null;
     	if (snode instanceof ImportNode) {
     		unit = ((ImportNode) snode).getUnit();
@@ -297,27 +372,40 @@ public class Cat implements Cloneable {
     	if (unit != null && unit.isClass())
     		return cat;
 
-    	return Cat.fromError("class type required", cat, null);       
+    	return Cat.fromError("class type required for \'new\'", cat, null);       
     }
     
     static Cat fromScalarCode(String code) {
         return new Cat.Scalar(code, 0);
     }
     
-    
+    static Cat fromScalarString(String typ) {
+        return new Cat.Scalar(typ);
+    }
+ 
     static Cat fromSymbolNode(ISymbolNode snode, IScope defScope) {
         return fromSymbolNode(snode, defScope, false);
     }
 
     static Cat fromSymbolNode(ISymbolNode snode, IScope defScope, boolean isRef) {
+    	
         if (snode instanceof UnitNode) {
             return new Cat.Agg((UnitNode) snode, defScope, false);
         }
-        else if (snode instanceof DeclNode.UserTypeDef) {
-            return new Cat.Agg((DeclNode.UserTypeDef) snode, defScope, isRef);
+        else if (snode instanceof DeclNode.Usr) {
+            return new Cat.Agg((DeclNode.Usr) snode, defScope, isRef);
         }
         else if (snode instanceof DeclNode.Fcn) {
             return new Cat.Fcn((DeclNode.Fcn) snode);
+        }
+        else if (snode instanceof ImportNode) {
+        	if (((ImportNode) snode).getUnit() == null) {
+        		String code = Cat.Scalar.codeFromString(((ImportNode) snode).getUnitName().getText());
+        		 if (code != null) {
+        			 return Cat.fromScalarCode(code);       			 
+        		 }
+        	}
+        	return fromSymbolNode(((ImportNode) snode).getUnit(), defScope);
         }
         else if (snode instanceof DeclNode.TypedMember) {
             return new Cat.Agg((DeclNode.TypedMember) snode, defScope, false);
@@ -330,7 +418,7 @@ public class Cat implements Cloneable {
         	else // TODO a list of TypeNodes
         		return UNKNOWN;
         }
-        else if (snode instanceof DeclNode.Enum || snode instanceof DeclNode.EnumVal) {
+        else if (snode instanceof DeclNode.EnumVal) {
             return Cat.fromScalarCode("u1");
         }
         else {
@@ -338,15 +426,25 @@ public class Cat implements Cloneable {
         }
     }    
     static Cat fromType(TypeNode typeNode) {
-        return fromType(typeNode, false);
+        return fromType(typeNode, false, ParseUnit.current().getSymbolTable().curScope());
     }
     
-    static Cat fromType(TypeNode typeNode, boolean isRef) {
+    static Cat fromType(TypeNode typeNode, boolean isRef, IScope sc) {
         switch (typeNode.getType()) {
         case pollenParser.T_ARR:
             return new Cat.Arr((TypeNode.Arr) typeNode);
-        case pollenParser.T_USER_TYPE:
-            SymbolEntry sym = ((TypeNode.UserDef) typeNode).getSymbol();
+        case pollenParser.T_USR:
+        	if (typeNode.getParent() != null && typeNode.getParent() instanceof DeclNode.Formal) {
+        		DeclNode.Formal f = (DeclNode.Formal)typeNode.getParent();
+        		if (f.isTypeMetaArg()) {
+        			if (f.getInit() instanceof ExprNode.Typ){
+        				return Cat.fromType((((ExprNode.Typ)f.getInit()).getTyp()));
+        			}
+        			else return Cat.fromType(f.getTypeSpec());
+        		}
+        	}
+            SymbolEntry sym = ((TypeNode.Usr) typeNode).getSymbol();
+
             return Cat.fromSymbolNode(sym.node(), sym.scope(), isRef);
         case pollenParser.T_FCN:
             Cat cat = new Cat.Fcn((TypeNode.Fcn) typeNode);
@@ -381,6 +479,17 @@ public class Cat implements Cloneable {
         return this instanceof Cat.Agg && ((Cat.Agg) this).aggScope instanceof DeclNode.TypedMember;
     }
     
+    public boolean isModule() {
+    	boolean rtn = false;
+    	rtn = this instanceof Cat.Agg && ((Cat.Agg) this).aggScope instanceof DeclNode.Usr;
+    	if (rtn) {
+    		DeclNode.Usr m = (DeclNode.Usr) ((Cat.Agg) this).aggScope;
+    		rtn |= m.isModule();
+    	}
+    	return rtn;
+    }
+
+    
     public boolean isString() {
         return this instanceof Cat.Scalar && ((Cat.Scalar) this).kind == 's';
     }
@@ -397,6 +506,12 @@ public class Cat implements Cloneable {
         return this instanceof Cat.Scalar && ((Cat.Scalar) this).kind == 'v';
     }
     
+    public String sigString() {
+    	if (this instanceof Cat.Fcn)
+    		return mkTypeStr();
+    	return "";
+    }
+    
     
     protected String mkCode() {
         return "?";
@@ -409,15 +524,17 @@ public class Cat implements Cloneable {
     protected String mkType(String quals) {
         return "?";
     }
+    
+    protected String mkTypeStr() {
+    	return "?";
+    }
 
 	/**
 	 * @return
 	 */
 	public boolean isArrayDesc() throws RuntimeException {
 		// TODO Do I need this?
-		throw new RuntimeException("Unimplemented method");
-		// TODO Auto-generated method stub
-		//return false;
+		return false;
 	}
     
 }

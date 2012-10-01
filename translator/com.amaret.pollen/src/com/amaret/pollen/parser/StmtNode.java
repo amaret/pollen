@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.tree.Tree;
+
+import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
+import com.amaret.pollen.parser.DeclNode.Usr;
 
 public class StmtNode extends BaseNode {
 
@@ -24,6 +26,34 @@ public class StmtNode extends BaseNode {
             return (ExprNode) getChild(EXPR);
         }
     }
+    // StmtNode.Inject
+    static public class Inject extends StmtNode {
+
+        static final private int EXPR = 0;
+        
+        Inject(int ttype, String ttext) {
+            super(ttype, ttext);
+        }
+        
+        public ExprNode.Inject getExpr() {
+            return (ExprNode.Inject) getChild(EXPR);
+        }
+    }
+    // StmtNode.Expr
+    // a Stmt wrapper for expr
+    static public class Expr extends StmtNode {
+
+        static final private int EXPR = 0;
+        
+        Expr(int ttype, String ttext) {
+            super(ttype, ttext);
+        }
+        
+        public ExprNode getExpr() {
+            return (ExprNode) getChild(EXPR);
+        }
+    }
+
     
     // StmtNode.Block
     static public class Block extends StmtNode implements IScope {
@@ -44,6 +74,15 @@ public class StmtNode extends BaseNode {
         @Override
         public IScope getEnclosingScope() {
             return scopeDeleg.getEnclosingScope();
+        }
+        
+        @Override 
+        public String getScopeName() {
+        	IScope enc = null;
+        	do {
+        		enc = this.getEnclosingScope();
+        	} while (enc instanceof StmtNode.Block);
+        	return enc.getScopeName();       	
         }
 
         @Override
@@ -66,7 +105,17 @@ public class StmtNode extends BaseNode {
         protected void pass1End() {
             ParseUnit.current().getSymbolTable().leaveScope();
         }
+        @Override
+        protected boolean pass2Begin() {
+            ParseUnit.current().getSymbolTable().enterScope(this);
+            return super.pass1Begin();
+        }
         
+        @Override
+        protected void pass2End() {
+            ParseUnit.current().getSymbolTable().leaveScope();
+        }
+       
         @Override
         public void replaceSymbol(Atom name, ISymbolNode symbol) {
             scopeDeleg.replaceSymbol(name, symbol);
@@ -86,6 +135,11 @@ public class StmtNode extends BaseNode {
         public SymbolEntry lookupName(String name) {
             return scopeDeleg.lookupName(name);
         }
+        @Override
+        public SymbolEntry lookupName(String name, boolean chkHostScope) {
+        	return scopeDeleg.lookupName(name, chkHostScope);
+        }
+
     }
     
     // StmtNode.Case
@@ -147,11 +201,10 @@ public class StmtNode extends BaseNode {
         
         @Override
         protected void pass2End() {
-            DeclNode.Var decl = getVar();
-            FcnBodyNode body = FcnBodyNode.current();
-            ExprNode init = decl.getInit();
+            BodyNode body = BodyNode.current();
+            ExprNode init = getVar().getInit();
             if (init != null) {
-                init.setCat(decl.getTypeCat());
+                init.setCat(getVar().getTypeCat());
             }
             body.addLocalVar(getVar());
         }
@@ -266,7 +319,35 @@ public class StmtNode extends BaseNode {
             checkCond(getCond());
         }
     }
-    
+    // StmtNode.Provided
+    static public class Provided extends StmtNode {
+
+        static final private int COND = 0;
+        static final private int ELSE = 2;
+        static final private int IF = 1;
+        
+        Provided(int ttype, String ttext) {
+            super(ttype, ttext);
+        }
+        
+        public ExprNode getCond() {
+            return (ExprNode) getChild(COND);
+        }
+        
+        public StmtNode getElseBody() {
+            return getChildCount() > ELSE ? (StmtNode) getChild(ELSE) : null;
+        }
+
+        public StmtNode getIfBody() {
+            return (StmtNode) getChild(IF);
+        }
+
+        @Override
+        protected void pass2End() {
+            checkCond(getCond());
+        }
+    }
+   
     // StmtNode.Print
     static public class Print extends StmtNode {
 
@@ -386,18 +467,18 @@ public class StmtNode extends BaseNode {
         @Override
         protected void pass2End() {
 
-        	ListNode<TypeNode> l = FcnBodyNode.current().getFcn().getTypeSpec();
+        	List<TypeNode> l = BodyNode.current().getFcn().getReturnList();
         	
-        	if (getVec() != null && FcnBodyNode.current().getFcn().isVoid()) {
+        	if (getVec() != null && BodyNode.current().getFcn().isVoid()) {
         		ParseUnit.current().reportError(this, "Void functions cannot return values");
         	}
-        	if (getVec() == null && !FcnBodyNode.current().getFcn().isVoid()) {
+        	if (getVec() == null && !BodyNode.current().getFcn().isVoid()) {
         		ParseUnit.current().reportError(this, "Missing return value");
         	}
            
 			ExprNode.Vec v = getVec();
 			for (ExprNode expr : v.getVals()) {
-				for (TypeNode t : l.getElems()) {
+				for (TypeNode t : l) {
 					Cat retcat = Cat.fromType(t);
 					Cat valcat = expr.getCat();
 					if (TypeRules.preCheck(valcat) == null) {
@@ -424,7 +505,7 @@ public class StmtNode extends BaseNode {
             super(ttype, ttext);
         }
         
-        public ExprNode getConfig() {
+        public ExprNode getPro() {
             return (ExprNode) getChild(PRO);
         }
 
@@ -434,21 +515,47 @@ public class StmtNode extends BaseNode {
         
         @Override
         protected void pass2End() {
-        	// TODO
-        	// check that a protocol is being bound to a module
-        	// in either a host fcn or a module body
-            SymbolEntry sym = getConfig().getSymbol();
-            ISymbolNode snode = sym != null ? sym.node() : null;
-            if (getValue() != null) {
-                Cat left = getConfig().getCat();
-                Cat right = getValue().getCat();
-                if (!(left instanceof Cat.Error) && !(right instanceof Cat.Error)) {
-                    Cat res = TypeRules.checkBinary("=", left, right);
-                    if (res instanceof Cat.Error) {
-                        ParseUnit.current().reportError(getConfig(), ((Cat.Error) res).getMsg());
-                    }
-                }
-            }
+        	SymbolEntry sym = getPro().getSymbol();
+        	ISymbolNode snode = sym != null ? sym.node() : null;
+        	Cat left = null;
+        	Cat right = null;
+        	if (getValue() != null && getPro() != null) {
+        		left = getPro().getCat();
+        		right = getValue().getCat();
+
+        		if (snode == null || !(snode instanceof DeclNode.TypedMember) || !(((DeclNode.TypedMember)snode).isProtocolMember())) {
+        			ParseUnit.current().reportError(getPro(), "LHS of binding operator assignment must be a protocol member");   
+        			return;
+        		}
+        		if (right == null || !right.isModule()) {
+        			ParseUnit.current().reportError(getPro(), "RHS of binding operator assignment must be a module");     
+        			return;
+        		}
+        		DeclNode.Usr m = (Usr) ((Cat.Agg) right).aggScope();
+        		((DeclNode.TypedMember)snode).bindModule(m.getUnit()); // bind it
+        		
+            	// check that a protocol is being bound to a module
+            	// in either a host fcn or a module body
+               	SymbolTable symtab = ParseUnit.current().getSymbolTable();
+               	boolean ok = false;
+               	ok = (symtab.curScope() instanceof DeclNode.Usr && ((DeclNode.Usr) symtab.curScope()).isModule());
+               	ok |= symtab.currScopeIsHost();
+               	if (!ok) {
+        			ParseUnit.current().reportError(getPro(), "Protocol member binding can only occur in the body of a module or in a host function");     
+        			return;
+               	}             	
+
+        		left = getPro().getCat();
+        		right = getValue().getCat();
+        		// TODO move the above checks into TypeRules
+        		if (!(left instanceof Cat.Error) && !(right instanceof Cat.Error)) {
+        			Cat res = TypeRules.checkBinary("=", left, right);
+        			if (res instanceof Cat.Error) {
+        				ParseUnit.current().reportError(getPro(), ((Cat.Error) res).getMsg());
+        			}
+        		}
+        	}  
+
         }
     }
     
@@ -555,7 +662,7 @@ public class StmtNode extends BaseNode {
     }
     
     StmtNode(int ttype, String ttext) {
-        this.token = new CommonToken(ttype, ttext);
+        this.token = new Atom(ttype, ttext);
     }
     
     @Override

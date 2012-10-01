@@ -187,10 +187,13 @@ unit
 unitPackage
 	:  stmtPackage
 	   importList
-      (stmtInjection)?
-      (unitTypeDefinition)?
-      (stmtInjection)?
+      stmtInjectionList
+      unitTypeDefinition
+      stmtInjectionList
       EOF
+	;
+stmtInjectionList 
+	:(stmtInjection)* -> ^(LIST stmtInjection*)
 	;
 stmtPackage
 	: 'package' qualName delim	-> ^(S_PACKAGE qualName)
@@ -386,11 +389,11 @@ unitTypeDefinition
    ;
 
 extendsClause
-    :   'extends'^ IDENT
+    :   'extends'^ qualName
     ;
 
 implementsClause
-    :   'implements'^ IDENT
+    :   'implements'^ qualName
     ;
 braceClose
     :    (NL!)* '}'! (NL!)*
@@ -434,7 +437,7 @@ bitwiseNotOp
 exprList 
 	:	expr (',' expr)*
 		-> ^(LIST expr+ )
-	|	-> NIL
+	|	-> LIST
 	;
 expr
 	:	exprLogicalOr '?' expr ':' expr -> ^(E_QUEST exprLogicalOr expr expr)
@@ -826,8 +829,14 @@ varDeclList  // int x, y=3, z=3, a
 @init {
 	assert $varDecl::typ != null;
 }
-	:	typeName! {$varDecl::typ = $typeName.tree; } varDeclList
-	|	varInit (','! varInit)*    
+	:	builtinType! {$varDecl::typ = $builtinType.tree; } varInit2 (','! varInit2)*
+	|	userTypeName! {$varDecl::typ = $userTypeName.tree; } varInit (','! varInit)*
+	;	
+varInit2
+	:	IDENT BIND expr { atFlags.add(AttrFlags.PROTOCOL_MEMBER); }	
+		-> ^(D_VAR {$varDecl::typ} ^(IDENT expr?))
+	| IDENT (ASSIGN expr)?
+		-> ^(D_VAR {$varDecl::typ} ^(IDENT expr?))
 	;
 varInit	
 // child is inital value

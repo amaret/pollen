@@ -8,30 +8,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.antlr.runtime.CommonToken;
-
 public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrapper {
 	
     static private final int IMPORTS = 1;
     static private final int PKGNAME = 0;
-    // features are injections and the unit type definition, child index >= 2
-    static private final int FEATURES = 2; 
+    static private final int INJECT1 = 2;
+    static private final int UNIT = 3;
+    static private final int INJECT2 = 4;
+     
     
     // Each name can map to multiple DeclNode.Fcn nodes, for overloads.
     private Map<String,List<DeclNode.Fcn>> fcnMap = new HashMap<String,List<DeclNode.Fcn>>();
     // A client is a unit that imports this unit.
     private Map<String,UnitNode> clientMap = new HashMap<String,UnitNode>();
     private List<ExportNode> exportList = new ArrayList<ExportNode>();
-    private DeclNode.UserTypeDef unitType;
+    private DeclNode.Usr unitType;
     private IScope definingScope;
 	private IScope enclosingScope;
 	private int errorCount;
     private String filePath;
-	private EnumSet<Flags> flags;
-	private Atom name;
+	private EnumSet<Flags> flags = EnumSet.noneOf(Flags.class);
 	private Map<String,Integer> exprConstStringTable = new HashMap<String,Integer>();
     private Map<String,SymbolEntry> symbolTable = new HashMap<String,SymbolEntry>();
-    private Cat typeCat;
+    private Cat typeCat = null;
 
 	public List<ExportNode> getExportList() {
 		return exportList;
@@ -56,19 +55,19 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
 		fcnMap.get(name).add(fcn);		
 	}
 		
-	public DeclNode.UserTypeDef getUnitType() {
+	public DeclNode.Usr getUnitType() {
+		if (unitType == null)
+			unitType =  ((DeclNode.Usr) getChild(UNIT));
 		return unitType;
 	}
-
-	public void setUnitType(DeclNode.UserTypeDef unitType) {
-		this.unitType = unitType;
-	}
-
 	
+	public List<DeclNode> getFeatures() {		
+		return this.getUnitType().getFeatures();
+    }
+
     
-    UnitNode(int ttype, String ttext, EnumSet<Flags> f) {
-      	this.token = new CommonToken(ttype, ttext);
-      	this.flags = f;
+    UnitNode(int ttype, String ttext) {
+      	this.token = new Atom(ttype, ttext);
     }
 	/**
 	 * This unit is imported by another unit 'u'
@@ -111,13 +110,26 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
         return id != null ? id : -1;
     }
     
+    public DeclNode.Usr getBaseType() {
+    	return this.getUnitType().getBaseType();
+    }
+    
+    public DeclNode.Usr getImplementedType() {
+    	return this.getUnitType().getImplementedType();
+    }
+    
     public Collection<UnitNode> getClients() {
         return clientMap.values();
     }
+
+    @SuppressWarnings("unchecked")
+    public List<ExprNode.Inject> getInject1() {
+    	return ((ListNode<ExprNode.Inject>) getChild(INJECT1)).getElems();
+    }
     
     @SuppressWarnings("unchecked")
-	public List<BaseNode> getFeatures() {
-    	return ((ListNode<BaseNode>)getChild(FEATURES)).getElems();
+    public List<ExprNode.Inject> getInject2() {
+    	return ((ListNode<ExprNode.Inject>) getChild(INJECT2)).getElems();
     }
     
     @Override
@@ -150,7 +162,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     
     @Override
     public Atom getName() {
-        return name;
+    	return this.getUnitType().getName();
     }
     
     public Atom getPkgName() {
@@ -159,6 +171,11 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     
     public String getQualName() {
         return "" + getPkgName() + '.' + getName();
+    }
+    
+    @Override
+    public String getScopeName() {
+    	return getQualName();
     }
 
     public Set<Map.Entry<String,Integer>> getStrings() {
@@ -170,29 +187,29 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     }
     
     @Override
-    public com.amaret.pollen.parser.Cat getTypeCat() {
-    	Cat rtn = null;
-    	assert rtn != null;
-    	return rtn;
-//        if (typeCat == null) {
-//            typeCat = Cat.fromSymbolNode(this, this.getDefiningScope());
-//        }
-//        return typeCat;
+    public Cat getTypeCat() {
+        if (typeCat == null) {
+            typeCat = Cat.fromSymbolNode(this, this.getDefiningScope());
+        }
+        return typeCat;
     }
+
     
     void incErrorCount() {
         this.errorCount += 1;
     }
 
     void init() {
-    	filePath = ParseUnit.current().getPath();
+    	filePath = ParseUnit.current().getCurrPath();
     }
     
-   public boolean isHost() {
-    	if (flags.contains(Flags.HOST))
+    public boolean isTarget() {
+    	return !isHost();
+    }
+    public boolean isHost() {
+    	if (flags.contains(Flags.COMPOSITION))
     		return true;
-        return false;
-
+    	return false;
     }
    public boolean isEnum() {
    	if (flags.contains(Flags.ENUM))
@@ -224,6 +241,11 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     		return true;
     	return false;
     }
+    public boolean isVoid() { // deferred instantiation for a meta type
+    	if (flags.contains(Flags.VOID_INSTANCE))
+    		return true;
+    	return false;
+    }
 
     public List<DeclNode.Fcn> lookupFcn(String name) {
         return fcnMap.get(name);
@@ -231,7 +253,72 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     
     @Override
     public SymbolEntry lookupName(String name) {
-        return symbolTable.get(name);
+    	SymbolEntry result = symbolTable.get(name);
+        if (result != null) {
+            return result;
+        }
+        
+        if (name.indexOf(".") != -1) {
+        	// qualified names ('x.y.z') need chained lookups, one qualifier at a time.
+        	IScope sc = this;
+        	String qualifier = name.substring(0, name.indexOf("."));
+        	name = name.substring(name.indexOf(".")+1, name.length());
+        	while (true) {
+        		if (result != null && result.node() instanceof IScope)
+        			result = ((IScope) result.node()).lookupName(qualifier);
+        		else 
+        			result = sc.lookupName(qualifier);
+        		if (result == null)
+        			break;
+        		if (name.isEmpty())
+        			return result;
+        		sc = result.scope();
+        		if (name.indexOf(".") == -1) {
+        			qualifier = name;
+        			name = "";
+        		}
+        		else {
+        			qualifier = name.substring(0, name.indexOf("."));
+                	name = name.substring(name.indexOf(".")+1, name.length()-1);
+        		}      		      		
+        	}
+        }
+        return null;
+    }
+    @Override
+    public SymbolEntry lookupName(String name, boolean chkHostScope) {
+    	SymbolEntry result = symbolTable.get(name);
+        if (result != null) {
+            return result;
+        }
+        
+        if (name.indexOf(".") != -1) {
+        	// qualified names ('x.y.z') need chained lookups, one qualifier at a time.
+        	IScope sc = this;
+        	String qualifier = name.substring(0, name.indexOf("."));
+        	name = name.substring(name.indexOf(".")+1, name.length());
+        	while (true) {
+        		if (result != null && result.node() instanceof IScope)
+        			result = ((IScope) result.node()).lookupName(qualifier, chkHostScope);
+        		else 
+        			result = sc.lookupName(qualifier, chkHostScope);
+        		if (result == null)
+        			break;
+        		if (name.isEmpty())
+        			return result;
+        		sc = result.scope();
+        		if (name.indexOf(".") == -1) {
+        			qualifier = name;
+        			name = "";
+        		}
+        		else {
+        			qualifier = name.substring(0, name.indexOf("."));
+                	name = name.substring(name.indexOf(".")+1, name.length()-1);
+        		}      		      		
+        	}
+        }
+        return null;
+
     }
     
     @Override
@@ -239,20 +326,59 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     	flags = unitType.getFlags();
     	ParseUnit currUnit = ParseUnit.current();               
         currUnit.getSymbolTable().enterScope(this);
-    	// TODO The unitType is now known. 
-    	//      Check for valid features (imports, implements, extends, etc).
-       return true;
+        for (ImportNode imp : this.getImports()) {
+        	boolean flag = false;
+        	if (imp.getName().getText().equals("AEQueue"))
+        		flag = true;
+        	//currUnit.getCurrUnitNode().defineSymbol(imp.getUnitName(), imp);
+        	//currUnit.getSymbolTable().defineSymbol(imp.getUnitName(), imp);
+        	if (imp.getUnit() != null && !imp.getUnitName().getText().equals(imp.getAs())) {
+        		//currUnit.getCurrUnitNode().defineSymbol(imp.getAs(), imp.getUnit().getUnitType());
+        	}
+        }
+        this.importSymbols();
+        return true;
     }
+    
+    private void importSymbols() {
+    	
+    	for (ImportNode imp : this.getImports()) {
+    		UnitNode iu = imp.getUnit();
+    		if (iu != null) {
+    			SymbolEntry s = iu.lookupName(imp.getUnitName().getText());
+    			if (s != null && s.node() instanceof ImportNode && ((ImportNode)s.node()).isExport())
+    				for (Map.Entry<String, SymbolEntry> ent : iu.symbolTable.entrySet()) {
+    					ISymbolNode snode = ent.getValue().node();
+    					if (snode instanceof DeclNode && !((DeclNode) snode).isPublic()) {
+    						continue;
+    					}
+    					if (snode instanceof ImportNode && !((ImportNode) snode).isExport()) {
+    						continue;
+    					}
+    					SymbolEntry se = new SymbolEntry(this, snode);
+    					symbolTable.put(ent.getKey(), se);  	
+    					if (!ent.getKey().equals(imp.getName().getText()))
+    						symbolTable.put(imp.getName().getText(), se);	// 	the 'as' name
+    				}
+    		}
+    	}
+    }
+
     
     @Override
     protected void pass1End() {
 
         ParseUnit.current().getSymbolTable().leaveScope();
     }
-    
     @Override
     protected boolean pass2Begin() {
+        ParseUnit.current().getSymbolTable().enterScope(this);
         return true;
+    }
+    
+    @Override
+    protected void pass2End() {
+        ParseUnit.current().getSymbolTable().leaveScope();
     }
 
     @Override
@@ -288,4 +414,5 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     public String toString() {
     	return token.getText() + flags;
     }
+
 }

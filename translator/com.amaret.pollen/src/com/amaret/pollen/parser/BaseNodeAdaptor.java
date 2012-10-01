@@ -12,8 +12,24 @@ public class BaseNodeAdaptor extends CommonTreeAdaptor implements TreeAdaptor {
     @Override
     public Object create( Token token )
 	{
+    	if (!(token instanceof Atom) && token != null)
+    		token = new Atom(token);
 		return new BaseNode(token);
     }
+    
+    public Object create(int tokenType, String text) {
+    	Token fromToken = new Atom(tokenType, text);
+    	return new BaseNode(fromToken);
+    }
+    
+	public Object create(int tokenType, Token fromToken, String text) {
+        if (fromToken == null) return create(tokenType, text);
+		//fromToken = createToken(fromToken);
+		fromToken = new Atom(fromToken);
+		fromToken.setType(tokenType);
+		fromToken.setText(text);
+		return new BaseNode(fromToken);
+	}
 	
     @Override
     public Object dupNode( Object t )
@@ -27,8 +43,7 @@ public class BaseNodeAdaptor extends CommonTreeAdaptor implements TreeAdaptor {
     @Override
     public Object errorNode(TokenStream input, Token start, Token stop, RecognitionException e)
     {
-    	// TODO ErrorNode
-        return new Object(); // ErrorNode(input,start,stop,e);
+    	return new ErrorNode(input,start,stop,e);
     }
     
     @Override

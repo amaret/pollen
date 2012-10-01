@@ -2,6 +2,7 @@ package com.amaret.pollen.parser;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -10,18 +11,21 @@ import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.TreeAdaptor;
 
+import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.driver.ProcessUnits.Termination;
 
 
 public class ParseUnit {
 	
 	private String path;
+	private ArrayList<String> paths = new ArrayList<String>();
 	private int errorCount;
 	private ANTLRFileStream in;
 	private PrintStream out;
 	private PrintStream err;
 	private PrintStream info;
 	private static ParseUnit currParse;
+	private static File currFile;
 	private UnitNode currUnitNode = null;
 	private SymbolTable symbolTable;
 	private String uname = "";
@@ -42,10 +46,21 @@ public class ParseUnit {
 	public int getErrorCount() {
 		return errorCount;
 	}
+	
+	public String getCurrPath() {
+		if (paths.size() == 0)
+			return path; // default is the input pollen file.
+		return paths.get(paths.size()-1);
+	}
 
 
 	public String getPackageName() {
-		return packageName;
+		String p = getCurrPath();
+		return ParseUnit.mkPackageName(p);
+	}
+	public String getUnitName() {
+		String p = getCurrPath();
+		return ParseUnit.mkUnitName(p);
 	}
 
 
@@ -82,6 +97,14 @@ public class ParseUnit {
 
 		currParse = new ParseUnit(inputPath, pkgs, outputStream,
 				errorStream, infoStream, symtab);
+		// Put the output somewhere convenient.
+        // TODO make a command line option for location of output directory.
+		String wdir = inputPath.substring(0, inputPath.lastIndexOf(File.separator));
+        wdir = wdir.substring(0, wdir.lastIndexOf(File.separator));
+        wdir += '/' + ParseUnit.mkPackageName(inputPath) + "_out"; 
+        File dir = new File (wdir);
+        dir.mkdirs();
+        ProcessUnits.setWorkingDir(wdir);
 		
 
 	}
@@ -102,14 +125,25 @@ public class ParseUnit {
 
             String fromPkg = imp.getFrom().getText();
             String pkgPath = packages.get(fromPkg);
-            
+
             SymbolEntry impSym = unit.resolveSymbol(imp.getFrom());
             ISymbolNode impSnode = impSym == null ? null : impSym.node();
             UnitNode impUnit = null;
+
             
+            UnitNode client = unit;
+            ImportNode clientImport = imp;
+            if (Cat.Scalar.codeFromString(imp.getUnitName().getText()) != null) {
+            	// primitive type: don't import (instantiation side effect)
+            	Atom name = imp.getName();
+            	unit.defineSymbol(name, imp);
+            	continue;        	
+            }
+
+
             if (!(impSnode instanceof ImportNode)) {
-                try {
-                    impUnit = parseUnit(pkgPath + File.separator + fromPkg + File.separator + imp.getUnitName());
+            	try {
+                    impUnit = parseUnit(pkgPath + File.separator + imp.getUnitName() + ".p", client, clientImport);
                 }
                 catch (Termination te) {
                     reportError(imp, te.getMessage());
@@ -117,18 +151,22 @@ public class ParseUnit {
             }
 
             else {
-                UnitNode sourceUnit = ((ImportNode) impSnode).getUnit();
+                impUnit = ((ImportNode) impSnode).getUnit();
+                if (impUnit == null) {
+                    reportError(imp.getUnitName(), "import not bound to unit");
+                    continue;
+                } 
                 // look for the name in the sourceUnit
                 // A visible name must have 'isExport' true
-                SymbolEntry expSym = sourceUnit.resolveSymbol(imp.getUnitName());
-                ISymbolNode expSnode = expSym != null ? expSym.node() : null;
-                if (expSnode instanceof ImportNode && ((ImportNode) expSnode).isExport()) {
-                    impUnit = ((ImportNode) expSnode).getUnit();
-                }
-                else {
-                    reportError(imp.getUnitName(), "not an exported unit");
-                    continue;
-                }
+//                SymbolEntry expSym = sourceUnit.resolveSymbol(imp.getUnitName());
+//                ISymbolNode expSnode = expSym != null ? expSym.node() : null;
+//                if (expSnode instanceof ImportNode) { // && ((ImportNode) expSnode).isExport()) {
+//                    impUnit = ((ImportNode) expSnode).getUnit();
+//                }
+//                else {
+//                    reportError(imp.getUnitName(), "not an exported unit");
+//                    continue;
+//                }
             }
 
             if (impUnit != null) {
@@ -139,8 +177,7 @@ public class ParseUnit {
                 }
                 if (imp.getMeta() == null) {
                     if (impUnit.isMeta()) {
-                        reportError(imp.getUnitName(), "no meta arguments provided");
-                        continue;
+                    	// is Meta and no arguments: instantiate to defaults
                     }
                     imp.bindUnit(impUnit);
                 }
@@ -152,11 +189,7 @@ public class ParseUnit {
                     if (errorCount > 0) {
                         continue;
                     }
-                    TypeRules.checkMetaArgs(impUnit, imp.getMeta());
-                    if (errorCount > 0) {
-                        continue;
-                    }
-                    importGeneric(unit, imp, impUnit);
+                    imp.bindUnit(impUnit);
                 }
                 impUnit.addClient(unit);
                 unitMap.put(impUnit.getQualName(), impUnit);
@@ -167,32 +200,38 @@ public class ParseUnit {
     }
 	
 	/**
-	 * @param unit
-	 * @param imp
-	 * @param impUnit
+	 * 
+	 * @param inputPath pollen file
+	 * @param client 	client unit (for meta type instantiation)
+	 * @param clientImport client unit import (for meta type instantiation, has meta parameters)
+	 * Client parameters are null for non-meta instantiation parse.
+	 * @return AST (UnitNode)
+	 * @throws Exception
 	 */
-	private void importGeneric(UnitNode unit, ImportNode imp, UnitNode impUnit) {
-		// TODO Auto-generated method stub
+	private UnitNode parseUnit(String inputPath, UnitNode client, ImportNode clientImport) throws Exception {
 		
-	}
-
-
-	private UnitNode parseUnit(String inputPath) throws Exception {
+		String cname = client != null ? client.getQualName() : "null";
+		String ciname = clientImport != null ? clientImport.getQualName() : "null";
+		
+		String dbgStr = "  START parseUnit() : ";
+		dbgStr += "input " + ParseUnit.mkPackageName(inputPath) + "." + ParseUnit.mkUnitName(inputPath) + ", client " + cname + ", clientImport " + ciname;
+		if (clientImport != null && clientImport.getMeta() != null) {
+			dbgStr += ", meta args ";
+			for (BaseNode b : clientImport.getMeta()) {
+				dbgStr += b.getText() + "." + b.getChild(0).getText() + "  ";
+			}
+		}
+		System.out.println(dbgStr);
 		
 		
-        int k = inputPath.lastIndexOf('.');
-        int j = inputPath.lastIndexOf(".", k-1);
-        j = j == -1 ? 0 : j+1;
-        packageName = inputPath.substring(j, k);
-        uname = inputPath.substring(k + 1);     
-
+		paths.add(inputPath);
 		in = new ANTLRFileStream(inputPath);
 		
         pollenLexer lexer = new pollenLexer(in, getFileName());
 
         AtomStream tokens = new AtomStream(lexer);
         tokens.discardOffChannelTokens(true);
-        pollenParser parser = new pollenParser(tokens);
+        pollenParser parser = new pollenParser(tokens, client, clientImport);
 
         parser.setTreeAdaptor((TreeAdaptor)new BaseNodeAdaptor());
         pollenParser.unit_return result = parser.unit();
@@ -202,26 +241,73 @@ public class ParseUnit {
         }
         
         UnitNode unit = (UnitNode)result.getTree();
+       
+        System.out.println( "       AST: " + unit.toStringTree());
+       
         if (getErrorCount() > 0) {
             return null;
         }       
         unit.init();
         
-        if (!(unit.getPkgName().getText().equals(packageName))) {
+        if (!(unit.getPkgName().getText().equals(getPackageName()))) {
             reportError(unit.getPkgName(), "package name does not match the current directory");
         }
 
-        if (!(unit.getName().getText().equals(uname))) {
+        if (!(unit.getName().getText().equals(getUnitName()))) {
             reportError(unit.getName(), "unit name does not match the current file");
         }
         
         unitMap.put(unit.getQualName(), unit);
         parseImports(unit);
         checkUnit(unit);
+        paths.remove(paths.size()-1);
 
         return unit;
 
 	}
+
+	private UnitNode parseUnit(String inputPath) throws Exception {
+		return parseUnit(inputPath, null, null);		
+	}
+
+	/**
+	 * @param  inputPath for a pollen file
+	 * @return the package name
+	 */
+	public static String mkPackageName(String inputPath) {
+		int k = inputPath.lastIndexOf(File.separator);
+        int j = inputPath.lastIndexOf(File.separator, k-1);
+        j = j == -1 ? 0 : j+1;
+        return inputPath.substring(j, k);
+	}
+	/**
+	 * @param  inputPath for a pollen file
+	 * @return the unit name
+	 */
+	public static String mkUnitName(String inputPath) {
+		int k = inputPath.lastIndexOf(".");
+        int j = inputPath.lastIndexOf(File.separator, k-1);
+        j = j == -1 ? 0 : j+1;
+        return inputPath.substring(j, k);
+       
+	}
+
+	
+	public static File cacheFile(String qualName, String suffix) {
+        
+		int k = qualName.lastIndexOf('.');
+        String pn = qualName.substring(0, k);
+        String un = qualName.substring(k + 1);
+        // TODO make a command line option for location of output directory
+        File dir = new File ( ProcessUnits.getWorkingDir() + '/' + pn + '/' + un);
+        dir.mkdirs();
+        currFile = new File(dir, un + suffix);
+        return currFile;
+	}
+	public static File currFile() {
+		return currFile;
+	}
+
 
 	/**
 	 * Parse the pollen file and all required imports.
@@ -240,8 +326,9 @@ public class ParseUnit {
 	 */
     private void checkUnit(UnitNode unit) {
 
-        unit.defineSymbol(unit.getName(), unit);
+        //unit.defineSymbol(unit.getName(), unit);
         currUnitNode = unit;
+        System.out.println("  START checkUnit() for " + unit.getName());
 
         if (getErrorCount() == 0) {
             unit.doPass1();
@@ -260,13 +347,11 @@ public class ParseUnit {
 	}
 
 	public String getFileName() {
-		if (path.indexOf(File.separator) != -1) {
-			return path.substring(path.lastIndexOf(File.separator)+1);			
+		String p = this.getCurrPath();
+		if (p.indexOf(File.separator) != -1) {
+			return p.substring(p.lastIndexOf(File.separator)+1);			
 		}
-		return path;
-	}
-	public String getPath() {
-		return path;
+		return p;
 	}
 
 	/**
@@ -295,6 +380,7 @@ public class ParseUnit {
         String quote = "'";
         msg = quote + token.getText() + quote + ": " + msg;
         String fname = token instanceof Atom ? ((Atom) token).getFileName() : getFileName();
+        if (fname == null) fname = getFileName();
         reportErrorConsole(fname, token.getLine(), token.getCharPositionInLine() + 1, msg);
     }
     
@@ -308,6 +394,14 @@ public class ParseUnit {
     private void reportErrorConsole(String fileName, int line, int col, String msg) {
         err.printf("%s, line %d:%d, %s\n", fileName, line, col, msg);
         errorCount += 1;
+    }
+    public void reportFailure(Exception e) {
+        e.printStackTrace(err);
+        throw new Termination(e.getMessage());
+    }
+    
+    public void reportFailure(String msg) {
+        throw new Termination(msg);
     }
 
 }

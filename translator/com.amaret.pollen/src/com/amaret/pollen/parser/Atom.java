@@ -12,18 +12,28 @@ public class Atom extends CommonToken {
 
 	public Atom(CharStream input, int type, int channel, int start, int stop) {
 		super(input, type, channel, start, stop);
+		line = pollenLexer.getLineNum();
+		fileName = pollenLexer.getFileName();
 	}
 
 	public Atom(int type, String text) {
 		super(type, text);
+		line = pollenLexer.getLineNum();
+		fileName = pollenLexer.getFileName();
 	}
 
 	public Atom(int type) {
 		super(type);
+		line = pollenLexer.getLineNum();
+		fileName = pollenLexer.getFileName();
 	}
 
 	public Atom(Token oldToken) {
 		super(oldToken);
+		line = oldToken.getLine();
+		if (line == 0)
+			line = pollenLexer.getLineNum();
+		fileName = pollenLexer.getFileName();
 	}
 
 	public String getFileName() {

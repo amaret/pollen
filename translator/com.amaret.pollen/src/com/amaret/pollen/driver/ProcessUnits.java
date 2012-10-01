@@ -11,13 +11,14 @@ import com.amaret.pollen.parser.UnitNode;
 import com.amaret.pollen.translator.Generator;
 
 public class ProcessUnits {
-	private SymbolTable symbolTable;
-
-	private String inputPath = "";
 	private static String workingDir = new File(".").getAbsolutePath();
 	
 	public static String getWorkingDir() {
 		return workingDir;
+	}
+
+	public static void setWorkingDir(String workingDir) {
+		ProcessUnits.workingDir = workingDir;
 	}
 
 	@SuppressWarnings("serial")
@@ -103,19 +104,20 @@ public class ProcessUnits {
 					throw new Termination ("Invalid inputs: translator accepts one pollen file and a set of bundles");					
 				}
 				inputs.pollenFile = p;
+		        int k = p.lastIndexOf(File.separatorChar);
+		        int j = p.lastIndexOf(File.separator, k-1);
+		        j = j == -1 ? 0 : j +1;
+		        String pname = p.substring(j, k);
+		        if (!inputs.packages.containsKey(pname)) {
+		        	// add the package of the pollen file 
+		        	inputs.packages.put(pname, p.substring(0,k));
+		        }
 				continue;
 			}			
 			// else 'p' is a bundle
 			inputs.packages.putAll(this.getPackages(p));
 			
-	        int k = p.lastIndexOf('.');
-	        int j = p.lastIndexOf(".", k-1);
-	        j = j == -1 ? 0 : j +1;
-	        String pname = p.substring(j, k);
-	        if (!inputs.packages.containsKey(pname)) {
-	        	// add the package of the pollen file 
-	        	inputs.packages.put(pname, p.substring(0,k));
-	        }
+
 		}
 		if (inputs.pollenFile.isEmpty() || inputs.packages.isEmpty()) {
 			throw new Termination ("Invalid inputs: translator accepts one pollen file and a set of bundles");					

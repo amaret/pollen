@@ -66,7 +66,7 @@ public class ExprNode extends BaseNode {
     // ExprNode.Call
     static public class Call extends ExprNode {
 
-        static final private int BASE = 0;
+        static final private int NAME = 0;
         static final private int ARGS = 1;
         static final private int DEREF = 2;
         
@@ -83,8 +83,8 @@ public class ExprNode extends BaseNode {
             return ((ListNode<ExprNode>) getChild(ARGS)).getElems();
         }
 
-        public ExprNode getBase() {
-            return (ExprNode) getChild(BASE);
+        public ExprNode getName() {
+            return (ExprNode) getChild(NAME);
         }
         /**
          * 
@@ -95,37 +95,68 @@ public class ExprNode extends BaseNode {
         }
         @Override
         protected boolean pass1Begin() {
-        	// TODO
-        	// set scopeDeref to return type scope
         	// TODO resolve symbol
         	// TODO if useScopeDeref, use scopeDeref for symbol resolution
         	 
         	return super.pass1Begin();
+        }
+        protected boolean pass2Begin() {
+        	SymbolEntry symbol = null;
+        	ParseUnit currUnit = ParseUnit.current();
+        	
+        	SymbolTable symtab = currUnit.getSymbolTable();
+        	
+        	// look up the call identifier here rather than in Expr.Ident because here we know
+        	// to check host scope. 
+        	boolean chkHostScope = symtab.currScopeIsHost();
+
+        	if (getName() != null && getName() instanceof ExprNode.Ident) {
+        		ExprNode.Ident ei = (ExprNode.Ident) getName();
+        		boolean flag = false;
+        		if (ei.getName().getText().equals("Interrupt.setHandler"))
+        			flag = true;
+            	symbol = symtab.curScope().lookupName(ei.getName().getText(), chkHostScope);
+            	
+            	if (symbol == null) { 
+            		currUnit.reportError(ei.getName(), "identifer is not declared in the current scope "
+            				+  symtab.curScope().getScopeName());
+            	}
+            	else {
+            		ei.setSymbol(symbol);
+            	}
+        	}
+
+        	 
+        	return super.pass2Begin();
         }
         
         @Override
         protected void pass2End() {
             
             ParseUnit currUnit = ParseUnit.current();
-            Cat cat = getBase().getCat();
+            Cat cat = getName().getCat();
 
             if ((exprCat = TypeRules.preCheck(cat)) != null) {
                 return;
             }
-            
-            if (!(cat instanceof Cat.Fcn)) {
-                currUnit.reportError(getBase(), "value is not a function");
+            boolean fcnOrFcnRef = cat instanceof Cat.Fcn || cat instanceof Cat.Agg;
+            if (!fcnOrFcnRef) {
+                currUnit.reportError(getName(), "value is not a function");
                 return;
             }
             // TODO 
             // signature matching, default parameter value insertion
             // overload resolution
+            if (cat instanceof Cat.Agg && ((Cat.Agg) cat).aggScope() instanceof DeclNode.TypedMember) {
+            	DeclNode.TypedMember tm = (DeclNode.TypedMember) ((Cat.Agg) cat).aggScope();
+             	cat = tm.getFcnTypeCat();
+            }
             Cat.Fcn fcncat = (Cat.Fcn) cat;
             int argc = getArgs().size();
             int minArgc = fcncat.minArgc();
             int maxArgc = fcncat.maxArgc();
             if (argc < minArgc || argc > maxArgc) {
-                currUnit.reportError(getBase(), "wrong number of arguments");
+                currUnit.reportError(getName(), "wrong number of arguments");
                 return;
             }
      
@@ -221,13 +252,15 @@ public class ExprNode extends BaseNode {
 		    return ((BaseNode) getChild(VAL)).getAtom();
 		}
 		
+		public EnumSet<LitFlags> getLitFlags() {
+			return litFlags;
+		}
+		
         @Override
         protected void pass2End() {
             isConst = true;
             String vs = getValue().getText();
             ParseUnit currUnit = ParseUnit.current();
-            // TODO
-            // all the constant info is in LitFlags
             if (vs.startsWith("\"")) {
                 currUnit.getCurrUnitNode().addString(vs);
                 exprCat = Cat.fromScalarCode("s");
@@ -312,8 +345,7 @@ public class ExprNode extends BaseNode {
 
         static final private int NAME = 0;
         
-        private SymbolEntry symbol;
-        private boolean isLength;
+        private SymbolEntry symbol = null;
         
         Ident(int ttype, String ttext) {
             super(ttype, ttext);
@@ -333,56 +365,144 @@ public class ExprNode extends BaseNode {
             return symbol;
         }
         
-        public boolean isLength() {
-            return isLength;
-        }
-        
+        public void setSymbol(SymbolEntry symbol) {
+			this.symbol = symbol;
+		}
+      
         @Override
-        protected boolean pass1Begin() {
-        	// TODO
-        	// set scopeDeref to scope of type
-            if (getName().getText().equals("length")) {
-                isLength = true;
-            }
-            else {
-            	// TODO if useScopeDeref, use scopeDeref for symbol resolution
-                ParseUnit currUnit = ParseUnit.current();
-                symbol = currUnit.getSymbolTable().resolveSymbol(getName());
-                if (symbol == null) {
-                    currUnit.reportError(getName(), "identifer is not declared in the current scope");
-                }
-            }
-            return super.pass1Begin();
+        protected boolean pass2Begin() {
+        	// this used to be pass1Begin() but that creates a requirement that a 
+        	// variable be declared before it is referenced.
+
+
+        	ParseUnit currUnit = ParseUnit.current();
+        	if (symbol == null)
+        		symbol = currUnit.getSymbolTable().resolveSymbol(getName());
+        	if (symbol == null) {
+        		currUnit.reportError(getName(), "identifer is not declared in the current scope " + currUnit.getSymbolTable().curScope().getScopeName());
+
+        	}
+        	return super.pass2Begin();
         }
         
         @Override
         protected void pass2End() {
-        	// TODO
-        	// set isConst, exprCat
+        	if (symbol != null) {
+        		if (symbol.node() instanceof DeclNode.Var
+        				&& ((DeclNode.Var)symbol.node()).isConst())
+        			isConst = true;
+        		if (symbol.node() instanceof DeclNode.Formal) {
+        			DeclNode.Formal f = (DeclNode.Formal) symbol.node();
+        			if (f.isTypeMetaArg() && f.getInit() == null) {
+        				ParseUnit.current().reportError(f, f.getName().getText() + " meta parameter is uninitialized");  
+        				return;
+        			}       			
+        		}
+        		exprCat = symbol.node().getTypeCat();
+        	}
+        }
+    }
+    // ExprNode.Typ (used for init expressions for meta parameters)
+    static public class Typ extends ExprNode {
 
+        static final private int TYPE = 0;
+        
+        private SymbolEntry symbol = null;
+        
+        Typ(int ttype, String ttext) {
+            super(ttype, ttext);
+        }
+   
+        public TypeNode getTyp() {
+            return  ((TypeNode) getChild(TYPE));
+        }
+        
+        @Override
+        public SymbolEntry getSymbol() {
+            return symbol;
+        }
+        
+        public void setSymbol(SymbolEntry symbol) {
+			this.symbol = symbol;
+		}
+      
+        @Override
+        protected boolean pass2Begin() {
+
+        	ParseUnit currUnit = ParseUnit.current();
+        	Atom name = this.getTyp().getAtom();
+        	if (symbol == null) {
+        		TypeNode t = this.getTyp();
+				name = (t instanceof TypeNode.Usr ? ((TypeNode.Usr) t)
+						.getName()
+						: t instanceof TypeNode.Std ? ((TypeNode.Std) t)
+								.getIdent() : t.getAtom());
+				
+				if (Cat.fromScalarString(name.getText()) != null) // a primitive type
+					return super.pass2Begin();
+				
+        		symbol = currUnit.getSymbolTable().resolveSymbol(name);
+        	}
+        	if (symbol == null) {
+        		currUnit.reportError(name, "type is not declared in the current scope " + currUnit.getSymbolTable().curScope().getScopeName());
+
+        	}
+        	return super.pass2Begin();
+        }
+        
+        @Override
+        protected void pass2End() {
+        	if (symbol != null && symbol.node() != null) {
+        		exprCat = symbol.node().getTypeCat();
+        	}
         }
     }
     // ExprNode.Self
     static public class Self extends ExprNode {
 
-        static final private int NAME = 0;
-               
+        static final private int MEMBER = 0;
+        private SymbolEntry symbol = null;
+        
         Self(int ttype, String ttext) {
             super(ttype, ttext);
         }
         
-        public Atom getName() {
-            return (Atom) ((BaseNode) getChild(NAME)).getToken();
+        public ExprNode getMember() {
+        	return (ExprNode) getChild(MEMBER);
         }
         
         @Override
-        protected boolean pass1Begin() {
-            return super.pass1Begin();
+        protected boolean pass2Begin() {
+        	// this used to be pass1Begin() but that creates a requirement that a 
+        	// variable be declared before it is referenced.
+        	
+        	ParseUnit currUnit = ParseUnit.current();
+        	// do the lookup of the deref'd member here, where the self context
+        	// is known, in case there is a name collision between a local var name
+        	// and a member name. 
+        	if (getMember() != null && getMember() instanceof ExprNode.Ident) {
+        		ExprNode.Ident ei = (ExprNode.Ident) getMember();
+            	symbol = currUnit.getSymbolTable().resolveSymbol(ei.getName(), currUnit.getCurrUnitNode().getUnitType());
+            	if (symbol == null) {
+            		currUnit.reportError(ei.getName(), "identifer is not declared in the current scope");
+            	}
+            	else {
+            		ei.setSymbol(symbol);
+            	}
+        	}
+        	else {    
+                symbol = currUnit.getSymbolTable().lookupName(ParseUnit.current().getUnitName());
+        	}
+       	
+        	return super.pass2Begin();
         }
         
         @Override
         protected void pass2End() {
-
+        	if (symbol != null && symbol.node() instanceof DeclNode.Var
+        			&& ((DeclNode.Var)symbol.node()).isConst())
+        		isConst = true;
+        	exprCat = symbol.node().getTypeCat();
         }
     }
 
@@ -441,6 +561,9 @@ public class ExprNode extends BaseNode {
         }
                 
         public TypeNode getTypeSpec() {
+        	if (this.getParent() instanceof DeclNode.Var){
+        		return ((DeclNode.Var) this.getParent()).getTypeSpec();
+        	}
             return ((TypeNode) getChild(TYPE));
         }
         @SuppressWarnings("unchecked")
@@ -514,8 +637,8 @@ public class ExprNode extends BaseNode {
     // ExprNode.Unary
     static public class Unary extends ExprNode {
 
-        static final private int OPERATOR = 0;
-        static final private int OPERAND = 1;
+        static final private int OPERATOR = 1;
+        static final private int OPERAND = 0;
 
         private boolean isPostfix;
         
@@ -599,7 +722,7 @@ public class ExprNode extends BaseNode {
     protected boolean useScopeDeref = false;
     
     ExprNode(int ttype, String ttext) {
-      	this.token = new CommonToken(ttype, ttext);
+      	this.token = new Atom(ttype, ttext);
     }
 
     public final Cat getCat() {
