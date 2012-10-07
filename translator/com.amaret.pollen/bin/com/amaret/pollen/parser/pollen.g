@@ -16,7 +16,6 @@ tokens {
     D_ARR_DIM;
     D_CLASS;
     D_COMPOSITION;
-    D_CONST;
     D_ENUM;
     D_ENUMVAL;    
     D_FCN_CTOR;
@@ -86,6 +85,8 @@ tokens {
     T_STD;
     UNIT;
     VOID;
+    // rsvd
+    THIS = 'this';
 }
 
 @parser::header {
@@ -111,7 +112,9 @@ tokens {
 	    isEmptyMetaArgs = (cli != null && cli.getMeta() != null && cli.getMeta().size() == 0);
 	}
 	    
-    EnumSet<Flags> atFlags = EnumSet.noneOf(Flags.class);
+    EnumSet<Flags> featureFlags = EnumSet.noneOf(Flags.class);
+    EnumSet<Flags> stmtFlags = EnumSet.noneOf(Flags.class);
+    EnumSet<Flags> typeMods = EnumSet.noneOf(Flags.class);
     
    private class TypeInfo {
     	public EnumSet<Flags> getUnitFlags() {
@@ -296,6 +299,9 @@ classFeatureList
 	:	classFeature*	-> ^(LIST<ListNode>["LIST"] classFeature*)
 	;
 classFeature
+@init {
+	featureFlags = EnumSet.noneOf(Flags.class);
+}
     :   fcnDefinition 
     |   enumDefinition
     |   fieldDeclaration
@@ -323,6 +329,9 @@ moduleFeatureList
 	:	moduleFeature*	-> ^(LIST<ListNode>["LIST"] moduleFeature*)
 	;
 moduleFeature
+@init {
+	featureFlags = EnumSet.noneOf(Flags.class);
+}
 	:   fcnDefinition
    |   varDeclaration
 	|   enumDefinition
@@ -381,6 +390,9 @@ protocolFeatureList
 	:	protocolFeature*	-> ^(LIST<ListNode>["LIST"] protocolFeature*)
 	;
 protocolFeature
+@init {
+	featureFlags = EnumSet.noneOf(Flags.class);
+}
     :   enumDefinition
     |   fcnDeclaration 
     |	  injectionDecl
@@ -407,6 +419,9 @@ compositionFeatureList
 	:	compositionFeature*	-> ^(LIST<ListNode>["LIST"] compositionFeature*)
 	;
 compositionFeature
+@init {
+	featureFlags = EnumSet.noneOf(Flags.class);
+}
  	:  stmtExport
    |  fcnDefinitionHost
    |  enumDefinition
@@ -610,19 +625,20 @@ metaArgument
 	;
 typeName
 @init{
-	//System.out.print("typeName: "); DBG_LT(); <DeclNode.Fcn>["D_FCN_DCL", atFlags]
+	//System.out.print("typeName: "); DBG_LT(); <DeclNode.Fcn>["D_FCN_DCL", featureFlags]
 }
 	:	typeNameScalar
 	;
 typeNameScalar			// scalar as in 'not array'
-	:	builtinType	-> ^(T_STD<TypeNode.Std>["T_STD", atFlags] builtinType)
+	:	builtinType	-> ^(T_STD<TypeNode.Std>["T_STD", typeMods] builtinType)
 	|	userTypeName
 	;
 userTypeName
 	// Note the commented out syntax is obsolete (a hack to support value{Event} e)
-	//:	qualName metaArguments	-> ^(T_USR<TypeNode.Usr>["T_USR", atFlags] qualName metaArguments)
-	:	qualName		-> ^(T_USR<TypeNode.Usr>["T_USR", atFlags] qualName)
+	//:	qualName metaArguments	-> ^(T_USR<TypeNode.Usr>["T_USR", featureFlags] qualName metaArguments)
+	:	qualName		-> ^(T_USR<TypeNode.Usr>["T_USR", typeMods] qualName)
 	;
+
 
 unitTypeDefinition
 scope {
@@ -635,6 +651,7 @@ scope {
 }
 @after{
    // debug
+   if (ParseUnit.isDebugMode())
 	System.out.println("       " + ti.getTypeName() + ", " + ti.getUnitFlags().toString());
 }
    :   (meta! { $unitTypeDefinition::meta = $meta.tree; })  
@@ -790,26 +807,20 @@ exprUnary
 	|	exprNew
 	;
 fcnDefinition
-@init {
-	EnumSet<Flags> atFlags = EnumSet.noneOf(Flags.class);		
-}
-	: ('public' { atFlags.add(Flags.PUBLIC); } )? 
-		('host' { atFlags.add(Flags.HOST); } )? 
+	: ('public' { featureFlags.add(Flags.PUBLIC); } )? 
+		('host' { featureFlags.add(Flags.HOST); } )? 
 		fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree]
-		-> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", atFlags] fcnType_fcnName formalParameterList fcnBody)
+		-> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", featureFlags] fcnType_fcnName formalParameterList fcnBody)
 	;
 fcnDefinitionHost
 // composition
-@init {
-	EnumSet<Flags> atFlags = EnumSet.noneOf(Flags.class);		
-}
-	:	('public')? ('host' { atFlags.add(Flags.HOST); })?
+	:	('public')? ('host' { featureFlags.add(Flags.HOST); })?
 	   	fcnType_fcnName  formalParameterList fcnBody[$formalParameterList.tree]
-		{ 	atFlags.add(Flags.PUBLIC); /* enforce */ 	
-			if (!atFlags.contains(Flags.HOST))
+		{ 	featureFlags.add(Flags.PUBLIC); /* enforce */ 	
+			if (!featureFlags.contains(Flags.HOST))
        		throw new PollenException("Composition features must be one of host functions, export statements, or enum definitions.", input);
 		}
-		-> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", atFlags] fcnType_fcnName formalParameterList fcnBody)		
+		-> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", featureFlags] fcnType_fcnName formalParameterList fcnBody)		
 	;
 catch [PollenException re] {
     String hdr = getErrorHeader(re);
@@ -817,57 +828,85 @@ catch [PollenException re] {
     emitErrorMessage(hdr+" "+msg);
 }
 fcnAttr
-	:	('public' { atFlags.add(Flags.PUBLIC); } )? 
-		('host' { atFlags.add(Flags.HOST); } )?
+	:	('public' { featureFlags.add(Flags.PUBLIC); } )? 
+		('host' { featureFlags.add(Flags.HOST); } )?
 	;
 fcnBody[CommonTree formals]
   :	braceOpen (stmts)  braceClose  -> ^(FCNBODY<BodyNode>["FCNBODY"] {$formals} stmts) 
   ;
 fcnDeclaration
-@init {
-	EnumSet<Flags> atFlags = EnumSet.noneOf(Flags.class);	
-}
-   :	('public' { atFlags.add(Flags.PUBLIC); } )? 
-		('host' { atFlags.add(Flags.HOST); } )? 
+   :	('public' { featureFlags.add(Flags.PUBLIC); } )? 
+		('host' { featureFlags.add(Flags.HOST); } )? 
 		fcnType_fcnName (formalParameterList) delim
-   -> ^(D_FCN_DCL<DeclNode.Fcn>["D_FCN_DCL", atFlags] fcnType_fcnName formalParameterList)
+   -> ^(D_FCN_DCL<DeclNode.Fcn>["D_FCN_DCL", featureFlags] fcnType_fcnName formalParameterList)
    ;
 fcnType_fcnName
 // function names in a dcln can be qualified, e.g. pollen.reset()
 // function return is always a list, empty for void fcn.
+// module constructors have the name "init", class constructors have the name "new"
 	:	typeName qualName  
-		-> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"]  ^(T_LST<TypeNode.Lst>["T_LST", atFlags] ^(LIST<ListNode>["LIST"] typeName)) qualName)      // int myfcn()
-	|	{input.LT(1).getText().equals(ti.getTypeName()) }? 
+		-> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"]  ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] ^(LIST<ListNode>["LIST"] typeName)) qualName)      // int myfcn()
+	|	{input.LT(1).getText().equals(ti.getTypeName()) && !(ti.getUnitFlags().contains(Flags.CLASS)) }? 
+		typeName	         // NOT a class constructor: returns void
+		{ 
+		  featureFlags.add(Flags.CONSTRUCTOR); 
+		}
+		-> ^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
+			^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
+			^(LIST<ListNode>["LIST"] ^(T_STD<TypeNode.Std>["T_STD", featureFlags] VOID["void"]))) 
+			IDENT["init"]) 		  
+	|	{input.LT(1).getText().equals(ti.getTypeName()) }? // Class constructor
 		typeName	 
-		{ atFlags.add(Flags.CONSTRUCTOR); }
-		-> ^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] ^(T_LST<TypeNode.Lst>["T_LST", atFlags] ^(LIST<ListNode>["LIST"] typeName)) typeName) 		  // constructor
+		{ 
+		  featureFlags.add(Flags.CONSTRUCTOR); 
+		}
+		-> ^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] ^(LIST<ListNode>["LIST"] typeName)) IDENT[ti.getTypeName() + "_new"]) 		  // constructor
 	|	qualName 	
-		{ atFlags.add(Flags.VOID_FCN); }
-		-> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"] ^(T_LST<TypeNode.Lst>["T_LST", atFlags] 
-				^(LIST<ListNode>["LIST"] ^(T_STD<TypeNode.Std>["T_STD", atFlags] VOID["void"]))) qualName)      //  returns void
+		{ featureFlags.add(Flags.VOID_FCN); }
+		-> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"] ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
+				^(LIST<ListNode>["LIST"] ^(T_STD<TypeNode.Std>["T_STD", featureFlags] VOID["void"]))) qualName)      //  returns void
 	|	('(' typeName (',' typeName)* ')' qualName) => fcnTypes_fcnName	// multiple returns
 	;
 fcnTypes_fcnName
 	:	'(' fcnTypes ')' qualName -> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"]  fcnTypes qualName)
 	;
 fcnTypes
-	:	typeName (',' typeName)* -> ^(T_LST<TypeNode.Lst>["T_LST", atFlags] ^(LIST<ListNode>["LIST"] typeName+))
+	:	typeName (',' typeName)* -> ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] ^(LIST<ListNode>["LIST"] typeName+))
 	;
 formalParameterList
 	:	'(' formalParameters ')' -> formalParameters
 	;
-formalParameters
+methodParameters
+@init {
+	EnumSet<Flags> mFlags = EnumSet.noneOf(Flags.class);		
+}
+// class methods (except constructors & host methods) are hacked to pass a ptr to their struct 
+// as a first parameter: implementation of 'this' ptr.
 	:	formalParameter (',' formalParameter)* 
+		-> ^(LIST<ListNode>["LIST"] 
+			^(D_FORMAL<DeclNode.Formal>["D_FORMAL", mFlags] ^(T_USR<TypeNode.Usr>["T_USR", mFlags] IDENT[ti.getTypeName()]) IDENT["this"])
+			formalParameter+)
+	|	-> ^(LIST<ListNode>["LIST"] 
+			^(D_FORMAL<DeclNode.Formal>["D_FORMAL", mFlags] ^(T_USR<TypeNode.Usr>["T_USR", mFlags] IDENT[ti.getTypeName()]) IDENT["this"]))
+	;
+	
+formalParameters
+	:	{(ti.getUnitFlags().contains(Flags.CLASS) 
+			&& !(featureFlags.contains(Flags.CONSTRUCTOR))
+			&& !(featureFlags.contains(Flags.HOST))) }? methodParameters
+	|	formalParameter (',' formalParameter)* 
 		-> ^(LIST<ListNode>["LIST"] formalParameter+)
 	|	-> ^(LIST<ListNode>["LIST"])
 	;
 formalParameter
 @init {
-	EnumSet<Flags> atFlags = EnumSet.noneOf(Flags.class);		
+	EnumSet<Flags> pFlags = EnumSet.noneOf(Flags.class);		
 }
 	: 	 'type' IDENT ( '=' t=typeName)?
-			{ atFlags.add(Flags.TYPE_META_ARG); } // meta formal arguments only
-		-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", atFlags] ^(T_USR<TypeNode.Usr>["T_USR", atFlags] IDENT) IDENT ^(E_TYP<ExprNode.Typ>["E_TYP"] typeName)?)
+			{ pFlags.add(Flags.TYPE_META_ARG); } // meta formal arguments only
+		-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", pFlags] 
+			^(T_USR<TypeNode.Usr>["T_USR", pFlags] IDENT) 
+			IDENT ^(E_TYP<ExprNode.Typ>["E_TYP"] typeName)?)
 	|   typeName IDENT ( '=' expr)?
 		-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL"] typeName IDENT (expr)?)
 
@@ -884,10 +923,10 @@ varOrFcnOrArray
 	|	'@' IDENT fcnArgumentList fieldOrArrayAccess? 
 		-> ^(E_SELF<ExprNode.Self>["E_SELF"] 
 			^(E_CALL<ExprNode.Call>["E_CALL"] ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT) fcnArgumentList fieldOrArrayAccess?))
-	|	'@'	IDENT fieldOrArrayAccess? 	  // note grammar.h also has meta_arguments - but how?
+	|	'@'	IDENT fieldOrArrayAccess? 	  
 		-> ^(E_SELF<ExprNode.Self>["E_SELF"] ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT fieldOrArrayAccess?))
 	|	'@'	
-		-> ^(E_SELF<ExprNode.Self>["E_SELF"])
+		-> ^(E_SELF<ExprNode.Self>["E_SELF"]  ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT["this"])) 
 	|	qualName fcnArgumentList fieldOrArrayAccess? 
 		-> ^(E_CALL<ExprNode.Call>["E_CALL"] ^(E_IDENT<ExprNode.Ident>["E_IDENT"] qualName) fcnArgumentList fieldOrArrayAccess?)
 	|	qualName fieldOrArrayAccess? -> ^(E_IDENT<ExprNode.Ident>["E_IDENT"] qualName fieldOrArrayAccess?)
@@ -897,7 +936,7 @@ fieldOrArrayAccess
 	;
 fieldAccess
 	:	'.'	IDENT fcnArgumentList	-> ^(E_CALL<ExprNode.Call>["E_CALL", true] IDENT  fcnArgumentList)
-	|	'.'	IDENT 	-> ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT)
+	|	'.'	IDENT 	-> ^(E_IDENT<ExprNode.Ident>["E_IDENT", true] IDENT)
 	;
 arrayAccess
 	:	'['	(exprList)?	']'	-> ^(E_INDEX exprList?)
@@ -912,6 +951,9 @@ stmts
 	|	(NL*) -> LIST<ListNode>["LIST"]
 	;
 stmt
+@init {
+	stmtFlags = EnumSet.noneOf(Flags.class);
+}
 	:  stmtDecl
 	|  stmtAssign
 	|	stmtAssert
@@ -1042,28 +1084,29 @@ stmtWhile
 	:	'while' '('	expr')' stmtBlock -> ^(S_WHILE<StmtNode.While>["S_WHILE"] expr stmtBlock)
 	;
 stmtDecl
-@init {
-	atFlags = EnumSet.noneOf(Flags.class);			
-}
    :	 varAttr varDecl delim	-> ^(S_DECL<StmtNode.Decl>["S_DECL"] varDecl)
    ;
 fieldDeclaration    
 @init {
-	atFlags = EnumSet.noneOf(Flags.class);		
-	atFlags.add(Flags.FIELD);
+	stmtFlags = EnumSet.noneOf(Flags.class);
+	stmtFlags.add(Flags.FIELD);
 }
    :	 varAttr varDecl delim	-> varDecl
    ;
-varDeclaration    
+varDeclaration   
 @init {
-	atFlags = EnumSet.noneOf(Flags.class);		
+	typeMods = EnumSet.noneOf(Flags.class);
+	stmtFlags = EnumSet.noneOf(Flags.class);
+} 
+@after{
+	typeMods = EnumSet.noneOf(Flags.class);
 }
    :	 varAttr varDecl delim	-> varDecl
    ;
 varAttr
-	:	(	 'const' { atFlags.add(Flags.CONST); }
-		|	 'volatile' { atFlags.add(Flags.VOLATILE); }
-		|   'host' { atFlags.add(Flags.HOST); } 
+	:	(	 'const' { typeMods.add(Flags.CONST); }
+		|	 'volatile' { typeMods.add(Flags.VOLATILE); }
+		|   'host' { typeMods.add(Flags.HOST); } 
 		)*
 	;
 varDecl
@@ -1074,19 +1117,20 @@ scope {
 }
 @init {
 	$varDecl::typ = null;
+	stmtFlags.addAll(typeMods);
 }
 	:	(typeName IDENT (ASSIGN expr)? ',') => varDeclList	
 	|  (typeName IDENT '[') => varArray 
 	|  (typeName '(' ) => varFcnRef 
 	|   (typeName varInit) => varDeclList
 	|	 'new' t=typeName IDENT fcnArgumentList  // declaration of an instance ('new')
-		 { atFlags.add(Flags.NEW); } 
-		-> ^(D_VAR<DeclNode.Var>["D_VAR", atFlags] $t
+		 { stmtFlags.add(Flags.NEW); } 
+		-> ^(D_VAR<DeclNode.Var>["D_VAR", stmtFlags] $t
 		     IDENT ^(E_NEW<ExprNode.New>["E_NEW"] $t fcnArgumentList))
 	;
 varFcnRef
 	: typeName fcnRefTypeList IDENT 
-		-> ^(D_FCN_REF<DeclNode.FcnRef>["D_FCN_REF", atFlags] typeName fcnRefTypeList IDENT) 
+		-> ^(D_FCN_REF<DeclNode.FcnRef>["D_FCN_REF", stmtFlags] typeName fcnRefTypeList IDENT) 
 	;
 fcnRefTypeList
 	: '(' fcnRefTypes ')' -> fcnRefTypes
@@ -1098,7 +1142,7 @@ fcnRefTypes
 	;
 varArray
 	:	typeName IDENT varArraySpec ('=' initializer)? 
-	->  ^(D_ARR<DeclNode.Arr>["D_Arr", atFlags] typeName IDENT varArraySpec initializer?)
+	->  ^(D_ARR<DeclNode.Arr>["D_Arr", stmtFlags] typeName IDENT varArraySpec initializer?)
 	;	
 varArraySpec
 	:	('[' varDim ']')+	->   ^(LIST<ListNode>["LIST"] varDim+)
@@ -1122,23 +1166,23 @@ varDeclList  // int x, y=3, z=3, a
 	|	userTypeName! {$varDecl::typ = $userTypeName.tree; } varInit (','! varInit)*
 	;	
 varBuiltInType
-	:	builtinType -> ^(T_STD<TypeNode.Std>["T_STD", atFlags] builtinType)
+	:	builtinType -> ^(T_STD<TypeNode.Std>["T_STD", stmtFlags] builtinType)
 	;
 varInit2		// built in type
 	:	IDENT ASSIGN expr
-		-> ^(D_VAR<DeclNode.Var>["D_VAR", atFlags] {$varDecl::typ} 
+		-> ^(D_VAR<DeclNode.Var>["D_VAR", stmtFlags] {$varDecl::typ} 
 			IDENT expr)
 	| IDENT
-		-> ^(D_VAR<DeclNode.Var>["D_VAR", atFlags] {$varDecl::typ} IDENT)
+		-> ^(D_VAR<DeclNode.Var>["D_VAR", stmtFlags] {$varDecl::typ} IDENT)
 	;
 varInit	// user defined type
-	: 	IDENT BIND expr { atFlags.add(Flags.PROTOCOL_MEMBER); }	
-		-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", atFlags] {$varDecl::typ} IDENT expr?)
+	: 	IDENT BIND expr { stmtFlags.add(Flags.PROTOCOL_MEMBER); }	
+		-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] {$varDecl::typ} IDENT expr?)
 	|	IDENT ASSIGN expr
-	-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", atFlags] {$varDecl::typ} 
+	-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] {$varDecl::typ} 
 		IDENT expr)
 	|	IDENT 
-	-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", atFlags] {$varDecl::typ} IDENT)
+	-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] {$varDecl::typ} IDENT)
 	;
 
 builtinType  returns [EnumSet<LitFlags> f]

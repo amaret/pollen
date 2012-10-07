@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.antlr.runtime.CommonToken;
 
+import com.amaret.pollen.parser.DeclNode.Usr;
+
 public class ExprNode extends BaseNode {
 	
     public interface AggVal {}
@@ -53,6 +55,9 @@ public class ExprNode extends BaseNode {
             }
             Cat left = getLeft().getCat();
             Cat right = getRight().getCat();
+            boolean dbg = false;
+            if (left == null || right == null)
+            	dbg = true;
             if ((exprCat = TypeRules.preCheck(left, right)) != null) {
                 return;
             }
@@ -68,14 +73,27 @@ public class ExprNode extends BaseNode {
 
         static final private int NAME = 0;
         static final private int ARGS = 1;
-        static final private int DEREF = 2;
+        private SymbolEntry caller = null;   // in e.get() caller is for 'e'.
+        private SymbolEntry called = null;   // in e.get() called is for 'get()'. 
+        
+        public SymbolEntry getCaller() {
+			return caller;
+		}
+		public SymbolEntry getCalled() {
+			return called;
+		}
+		public boolean isThisPtr() {
+			return thisPtr;
+		}
+
+		private boolean thisPtr = false; // a class method call: add a this ptr as first parameter
         
         Call(int ttype, String ttext) {
             super(ttype, ttext);
         }
-        Call(int ttype, String ttext, boolean deref) {
+        Call(int ttype, String ttext, boolean dr) {
             super(ttype, ttext);
-            useScopeDeref = deref;
+            deref = dr;
         }
        
         @SuppressWarnings("unchecked")
@@ -86,22 +104,13 @@ public class ExprNode extends BaseNode {
         public ExprNode getName() {
             return (ExprNode) getChild(NAME);
         }
-        /**
-         * 
-         * @return if this call is dereferenced, return deref expr else null.
-         */
-        public ExprNode getDeref() {
-        	return this.getChildCount() == DEREF ? ((ExprNode) getChild(DEREF)) : null;
-        }
         @Override
         protected boolean pass1Begin() {
-        	// TODO resolve symbol
-        	// TODO if useScopeDeref, use scopeDeref for symbol resolution
         	 
         	return super.pass1Begin();
         }
         protected boolean pass2Begin() {
-        	SymbolEntry symbol = null;
+        	called = null;
         	ParseUnit currUnit = ParseUnit.current();
         	
         	SymbolTable symtab = currUnit.getSymbolTable();
@@ -112,17 +121,34 @@ public class ExprNode extends BaseNode {
 
         	if (getName() != null && getName() instanceof ExprNode.Ident) {
         		ExprNode.Ident ei = (ExprNode.Ident) getName();
-        		boolean flag = false;
-        		if (ei.getName().getText().equals("Interrupt.setHandler"))
-        			flag = true;
-            	symbol = symtab.curScope().lookupName(ei.getName().getText(), chkHostScope);
+
+            	called = symtab.curScope().lookupName(ei.getName().getText(), chkHostScope);
             	
-            	if (symbol == null) { 
+            	if (ei.getName().getText().indexOf('.') != -1) {
+            		String n = ei.getName().getText();
+            		n = n.substring(0, n.lastIndexOf('.'));
+            		caller = symtab.curScope().lookupName(n,chkHostScope);
+            		ei.setQualifier(caller);            		
+            	}
+            	else if (currUnit.getCurrUnitNode().getUnitType().isClass()) {
+            		// if calling a method in current class, 'this' is the caller
+            		if (called.scope() == currUnit.getCurrUnitNode().getUnitType()) {
+            			caller = symtab.curScope().lookupName("this",false);
+            			ei.setQualifier(caller);  
+            		}
+            	}
+
+            	if (called == null) { 
             		currUnit.reportError(ei.getName(), "identifer is not declared in the current scope "
             				+  symtab.curScope().getScopeName());
             	}
             	else {
-            		ei.setSymbol(symbol);
+            		ei.setSymbol(called);
+            		IScope sc = called.scope();
+            		if (sc instanceof DeclNode.Usr && ((DeclNode.Usr) sc).isClass()
+            				&& !((DeclNode.Usr) sc).isHost()) {
+            			thisPtr = true;     
+            		}
             	}
         	}
 
@@ -153,8 +179,14 @@ public class ExprNode extends BaseNode {
             }
             Cat.Fcn fcncat = (Cat.Fcn) cat;
             int argc = getArgs().size();
+            if (thisPtr) argc++; // add one for this ptr (already added in the parser)
             int minArgc = fcncat.minArgc();
             int maxArgc = fcncat.maxArgc();
+           
+            if (thisPtr && fcncat.fcnD() != null && ((DeclNode.Usr) fcncat.fcnD().getEnclosingScope()).isProtocol()) {
+            	minArgc++;
+            	maxArgc++;  // a class is implementing a protocol: account for 'this' parameter.
+            }
             if (argc < minArgc || argc > maxArgc) {
                 currUnit.reportError(getName(), "wrong number of arguments");
                 return;
@@ -162,23 +194,54 @@ public class ExprNode extends BaseNode {
      
             exprCat = fcncat.retCat();
             
-            int k = -1;
-            for (ExprNode e : getArgs()) {
-                k += 1;
-                Cat ecat = e.getCat();
-                Cat acat = fcncat.argCats().get(k);
-                if (e instanceof ExprNode.AggVal) {
-                    TypeRules.checkInit(acat, e);
-                    continue;
-                }
-                if (TypeRules.preCheck(ecat) != null) {
-                    continue;
-                }
-                Cat res = TypeRules.checkBinary("=", acat, ecat, "argument type error");
-                if (res instanceof Cat.Error) {
-                    ParseUnit.current().reportError(e, ((Cat.Error) res).getMsg());
-                }
+            // for now, skip check for calling through function references
+            // TODO figure out how to pass 'this' ptr for function ref class method calls
+            if (!(called.node() instanceof DeclNode.TypedMember)) {
+                
+            	int k = (isThisPtr()) ? 0 : -1; // skip 'this'
+            	
+            	for (ExprNode e : getArgs()) {
+            		k += 1;
+            		Cat ecat = e.getCat();
+            		Cat acat = fcncat.argCats().get(k);
+            		if (isThisPtr())
+            			continue; // the first parameter is 'this' (skip)
+            		if (acat.isAggTyp()) {
+            			if (((Cat.Agg)acat).isComposition()) {
+            				// TODO do I need to resolve to the module, for an export?
+            			}
+            			if (((Cat.Agg) acat).isProtocol()) {
+            				ParseUnit.current().reportError(this, "actual parameter type error for \'" + ((Cat.Agg) acat).aggName() + "\' (protocol not allowed)");
+            				continue;
+            			}
+
+            		}
+
+            		if (e instanceof ExprNode.AggVal) {
+            			TypeRules.checkInit(acat, e);
+            			continue;
+            		}
+            		if (TypeRules.preCheck(ecat) != null) {
+            			continue;
+            		}
+            		Cat res = TypeRules.checkBinary("=", acat, ecat, "formal / actual parameter type conflict");
+            		if (res instanceof Cat.Error) {
+            			ParseUnit.current().reportError(e, ((Cat.Error) res).getMsg());
+            		}
+            	}
             }
+    		
+    		
+    		ExprNode.Ident ei = (ExprNode.Ident) getName();
+    		if (thisPtr) {
+    			String n = ei.getName().getText();
+    			if (n.indexOf(".") != -1) {
+    				n = n.substring(n.lastIndexOf('.')+1);
+    				n = called != null ? called.scope().getScopeName() + "_" + n : n;
+    				ei.getName().setText(n); // For method in class Event, change call from e.get() to Event.get(e)
+    			}
+        		
+    		}           		
         }
     }   
     // ExprNode.Cond
@@ -345,15 +408,30 @@ public class ExprNode extends BaseNode {
 
         static final private int NAME = 0;
         
-        private SymbolEntry symbol = null;
+        private SymbolEntry symbol = null;		// for obj.field symbol is for 'field'
+        private SymbolEntry qualifier = null;  	// for obj.field qualifier is 'obj'
+
+		private boolean thisPtr = false;		// add 'this' to accesses
         
-        Ident(int ttype, String ttext) {
+        public boolean isThisPtr() {
+			return thisPtr;
+		}
+
+		public SymbolEntry getQualifier() {
+			return qualifier;
+		}
+
+		public void setQualifier(SymbolEntry qualifier) {
+			this.qualifier = qualifier;
+		}
+
+		Ident(int ttype, String ttext) {
             super(ttype, ttext);
         }
         
-        Ident(int ttype, String ttext, boolean deref) {
+        Ident(int ttype, String ttext, boolean dr) {
             super(ttype, ttext);
-            useScopeDeref = deref;
+            deref = dr;
         }
    
         public Atom getName() {
@@ -398,7 +476,21 @@ public class ExprNode extends BaseNode {
         				return;
         			}       			
         		}
+        		if (symbol.node() instanceof DeclNode.Var && symbol.scope() instanceof DeclNode.Class) {
+        			IScope sc = ParseUnit.current().getSymbolTable().curScope();
+        			if (sc instanceof StmtNode.Block || sc instanceof BodyNode) {
+        				do
+        					sc = sc.getEnclosingScope();
+        				while  (!(sc instanceof DeclNode.Fcn));
+        			}
+        			if (sc.getEnclosingScope() == symbol.scope() 
+        					&& !((DeclNode.Fcn)sc).isConstructor() && !((DeclNode.Fcn)sc).isHost())
+        				thisPtr  = true; // a class var accessed within a  method belonging to its class
+        		}
         		exprCat = symbol.node().getTypeCat();
+        		boolean dbg = false;
+        		if (exprCat == null) 
+        			dbg = true;
         	}
         }
     }
@@ -482,7 +574,7 @@ public class ExprNode extends BaseNode {
         	// and a member name. 
         	if (getMember() != null && getMember() instanceof ExprNode.Ident) {
         		ExprNode.Ident ei = (ExprNode.Ident) getMember();
-            	symbol = currUnit.getSymbolTable().resolveSymbol(ei.getName(), currUnit.getCurrUnitNode().getUnitType());
+            	symbol = currUnit.getSymbolTable().resolveSymbol(ei.getName(), currUnit.getSymbolTable().curScope());
             	if (symbol == null) {
             		currUnit.reportError(ei.getName(), "identifer is not declared in the current scope");
             	}
@@ -503,6 +595,9 @@ public class ExprNode extends BaseNode {
         			&& ((DeclNode.Var)symbol.node()).isConst())
         		isConst = true;
         	exprCat = symbol.node().getTypeCat();
+        	boolean dbg = false;
+        	if (exprCat instanceof Cat.Scalar) 
+        		dbg = true;
         }
     }
 
@@ -716,10 +811,8 @@ public class ExprNode extends BaseNode {
     protected Cat exprCat = Cat.UNKNOWN;
     protected boolean isConst = false;
     
-    // scopeDeref set by Call, Ident, Index.
-    static protected NestedScope scopeDeref = null;
-    // Lookups use scopeDeref when true.
-    protected boolean useScopeDeref = false;
+    // True when this expr or ident is to the right of a '.'
+    protected boolean deref = false;
     
     ExprNode(int ttype, String ttext) {
       	this.token = new Atom(ttype, ttext);

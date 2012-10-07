@@ -78,10 +78,12 @@ public class StmtNode extends BaseNode {
         
         @Override 
         public String getScopeName() {
-        	IScope enc = null;
-        	do {
-        		enc = this.getEnclosingScope();
-        	} while (enc instanceof StmtNode.Block);
+        	
+        	IScope enc = this.getEnclosingScope();
+        	if (enc instanceof StmtNode.Block)
+        		do {
+        			enc = enc.getEnclosingScope();
+        		} while (enc instanceof StmtNode.Block);
         	return enc.getScopeName();       	
         }
 
@@ -483,7 +485,7 @@ public class StmtNode extends BaseNode {
 					Cat valcat = expr.getCat();
 					if (TypeRules.preCheck(valcat) == null) {
 						Cat rescat = TypeRules.checkBinary("=", retcat, valcat,
-								"return type error");
+								"return type error (unmatched or invalid return types)");
 						if (rescat instanceof Cat.Error) {
 							ParseUnit.current().reportError(expr,
 									((Cat.Error) rescat).getMsg());

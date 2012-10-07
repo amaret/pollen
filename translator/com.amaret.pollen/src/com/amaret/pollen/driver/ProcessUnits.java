@@ -4,17 +4,23 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.Properties;
 
 import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.SymbolTable;
 import com.amaret.pollen.parser.UnitNode;
+import com.amaret.pollen.parser.ParseUnit.Property;
 import com.amaret.pollen.translator.Generator;
 
 public class ProcessUnits {
 	private static String workingDir = new File(".").getAbsolutePath();
+	private static String pollenRoot = "";
 	
 	public static String getWorkingDir() {
 		return workingDir;
+	}
+	public static String getPollenRoot() {
+		return pollenRoot;
 	}
 
 	public static void setWorkingDir(String workingDir) {
@@ -53,6 +59,14 @@ public class ProcessUnits {
 	 * @return a HashMap of (package name, package path)
 	 */
 	private HashMap<String, String> getPackages(String path) {
+		
+		// TODO finalize pollenRoot when migration to 'real pollen' is complete		
+		String bundleName = path.substring(path.lastIndexOf(File.separator)+1);
+		if (pollenRoot.isEmpty()
+				&& (bundleName.equals("pollen.core")					// OLD
+					|| bundleName.equals("pollen.api")))		// NEW (I think)
+			pollenRoot = path;
+	
 
 		File bundle = new File(path);
 
@@ -127,6 +141,7 @@ public class ProcessUnits {
 	/**
 	 * Parse the pollen file and all its dependencies (imports). 
 	 * @param args
+	 * @param props TODO
 	 * @param outputStream
 	 * @param errorStream
 	 * @param infoStream
@@ -136,25 +151,38 @@ public class ProcessUnits {
 	 */
 	protected HashMap<String, UnitNode> parseUnit(
 			String[] args,
+			Properties props,
 			PrintStream outputStream,
-			PrintStream errorStream,
-			PrintStream infoStream, 
-			SymbolTable symtab) throws Exception {
+			PrintStream errorStream, 
+			PrintStream infoStream, SymbolTable symtab) throws Exception {
 		
 		Inputs files = this.getInputs(args);
 
-		ParseUnit.initParse(files.pollenFile, files.packages, outputStream, errorStream, infoStream, symtab);
+		ParseUnit.initParse(files.pollenFile, props, files.packages, outputStream, errorStream, infoStream, symtab);
 
 		return ParseUnit.current().parseUnits();
 	}
-	protected void translateUnit(HashMap<String, UnitNode> unitMap) throws Exception {
+	protected int translateUnit(HashMap<String, UnitNode> unitMap) throws Exception {
 		
-		if (ParseUnit.current().getErrorCount() == 0) {
+		
+		int rtn = ParseUnit.current().getErrorCount();
+		if (rtn == 0) {
 			UnitNode curUnit = ParseUnit.current().getCurrUnitNode();
 			Generator g = new Generator();
 			g.genUnits(curUnit, unitMap);
+			
+            if (ParseUnit.current().getErrorCount() > 0) {
+                return 1;
+            }
+            
+            g.genProg(curUnit);
+            
+            if (ParseUnit.current().getErrorCount() > 0) {
+                return 1;
+            }
+            return 0;            
 		}
-		
+		return 1;		
 	}
 	/**
 	 * Entry to translator.
@@ -163,7 +191,7 @@ public class ProcessUnits {
 	 * @param errorStream
 	 * @param infoStream
 	 */
-	public void processUnits(
+	public int processUnits(
 			String[] args,
 			PrintStream outputStream,
 			PrintStream errorStream,
@@ -172,10 +200,29 @@ public class ProcessUnits {
 		SymbolTable symbolTable = new SymbolTable();
 
 		HashMap<String, UnitNode> unitNodes;
-
-		unitNodes = this.parseUnit(args, outputStream, infoStream, errorStream, symbolTable);
 		
-		this.translateUnit(unitNodes);
+        Properties props = new Properties();
+
+        for (Property p : Property.values()) {
+            String val = System.getenv(p.name());
+            if (val == null) {
+                System.err.println("pollen.ParseUnit: undefined environment variable: " + p.name());
+                System.exit(1);
+            }
+            props.setProperty(p.name(), val);
+            if (p.name().equals("POLLEN_ROOT"))
+            	pollenRoot = val;
+        }
+
+        
+        props = new PropsLoader().apply(props, pollenRoot + File.separator + "props", System.err);
+        if (props == null) {
+            System.exit(1);
+        }
+
+		unitNodes = this.parseUnit(args, props, outputStream, infoStream, errorStream, symbolTable);
+		
+		return this.translateUnit(unitNodes);
 
 
 

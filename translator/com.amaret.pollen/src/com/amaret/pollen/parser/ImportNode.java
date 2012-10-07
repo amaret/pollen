@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.antlr.runtime.CommonToken;
-
-public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWrapper {
+public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWrapper, DeclNode.ITypeKind {
 
     
 	static private final int FROM = 0;
@@ -15,7 +13,7 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 	static private final int AS = 2;
 	static private final int META = 3; // might not be present
 	
-    private Cat cat;
+    private Cat cat = null;
     private IScope definingScope;
     private boolean isExport;
     private UnitNode unit;
@@ -91,7 +89,11 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     public Atom getUnitName() {
         return ((BaseNode) getChild(UNIT)).getAtom();
     }
-    
+    /**
+     * return the Unit imported by this import.
+     * Can be null if not yet bound. Also can be null if this is an import
+     * of a primitive type (uint8) as a result of meta type instantiation.
+     */
     public UnitNode getUnit() {
         return unit;
     }
@@ -102,9 +104,8 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     }
     
     public Cat getTypeCat() {
-    	cat = null;
-    	// TODO
-    	assert cat != null;
+    	if (unit != null)
+    		cat = Cat.fromSymbolNode(unit, unit.getDefiningScope());
     	return cat;
     }
     
@@ -170,4 +171,46 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 		unit = impUnit;
         cat = Cat.fromSymbolNode(unit, unit.getDefiningScope());		
 	}
+	@Override
+	public boolean isClass() {
+		if (unit != null)
+			return unit.isClass();		
+		return false;
+	}
+
+	@Override
+	public boolean isComposition() {
+		if (unit != null)
+			return unit.isComposition();		
+		return false;
+
+	}
+
+	@Override
+	public boolean isEnum() {
+		if (unit != null)
+			return unit.isEnum();		
+		return false;
+	}
+
+	@Override
+	public boolean isModule() {
+		if (unit != null)
+			return unit.isModule();		
+		return false;
+
+	}
+
+	@Override
+	public boolean isProtocol() {
+		if (unit != null)
+			return unit.isProtocol();		
+		return false;
+	}
+
+	@Override
+	public boolean isReady() {
+		return (unit != null);
+	}
+
 }

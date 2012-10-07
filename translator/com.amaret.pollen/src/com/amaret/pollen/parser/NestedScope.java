@@ -79,7 +79,7 @@ public class NestedScope implements IScope {
         	String qualifier = name.substring(0, name.indexOf("."));
         	name = name.substring(name.indexOf(".")+1, name.length());
         	while (true) {
-        		if (result != null && result.node() instanceof IScope)
+        		if (result != null && result.node() instanceof IScope && sc == null)
         			result = ((IScope) result.node()).lookupName(qualifier, checkHostScope);
         		else 
         			result = sc.lookupName(qualifier, checkHostScope);
@@ -87,7 +87,7 @@ public class NestedScope implements IScope {
         			break;
         		if (name.isEmpty())
         			return result;
-        		sc = result.scope();
+        		sc = result.derefScope();
         		if (name.indexOf(".") == -1) {
         			qualifier = name;
         			name = "";

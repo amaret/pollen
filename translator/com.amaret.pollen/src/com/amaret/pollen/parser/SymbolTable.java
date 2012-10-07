@@ -10,9 +10,6 @@ public class SymbolTable {
     }
     
     public boolean defineSymbol(Atom name, ISymbolNode symbol) {
-    	boolean flag = false;
-    	if (name.getText() == "Interrupt")
-    		flag = true;
         return curScope == null ? false : curScope.defineSymbol(name, symbol);
     }
 

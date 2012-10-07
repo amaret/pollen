@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.antlr.runtime.CommonToken;
 
-import com.amaret.pollen.translator.ITarget.TypeId;
-import com.amaret.pollen.translator.ITarget.TypeInfo;
+import com.amaret.pollen.target.ITarget.TypeId;
+import com.amaret.pollen.target.ITarget.TypeInfo;
 
 public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 	
@@ -64,14 +64,14 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
         @SuppressWarnings("unchecked")
         protected boolean pass1Begin() {
 
-        	boolean flag = false;
+        	boolean success = false;
         	if (((ListNode<TypeNode>) getChild(ITEMS)).getElems() != null && ((ListNode<TypeNode>) getChild(ITEMS)).getElems().size() > 0) {
         		for (TypeNode t : ((ListNode<TypeNode>) getChild(ITEMS)).getElems()) {
-        			flag = t.pass1Begin();
-        			if (flag == false) return false;
+        			success = t.pass1Begin();
+        			if (success == false) return false;
         		}
         	}
-        	return flag;
+        	return success;
         }
   
     }
@@ -127,7 +127,9 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
             if (snode != null) {
             	okFlag = (snode instanceof DeclNode.Formal && ((DeclNode.Formal) snode)
             			.isTypeMetaArg()) ? true : snode instanceof ImportNode ? true : false; 
-            	okFlag = okFlag || snode instanceof DeclNode.ITypeInfo || snode instanceof DeclNode.Fcn ;
+				okFlag = okFlag || snode instanceof DeclNode.ITypeInfo
+						|| snode instanceof DeclNode.Fcn
+						|| snode instanceof DeclNode.FcnTyp;
             }
 					
             // type members ok?
