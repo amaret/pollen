@@ -1,6 +1,7 @@
 package com.amaret.pollen.parser;
 
 import com.amaret.pollen.parser.DeclNode.Formal;
+import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.parser.DeclNode.Var;
 import com.amaret.pollen.parser.TypeNode.Usr;
 
@@ -49,11 +50,21 @@ public class SymbolEntry {
     			t = (Usr) ((Formal) this.node()).getTypeSpec();
      		}        			
     	}
+
     	if (t != null) {
    			SymbolEntry s = t.getSymbol();
 			if (s.node() instanceof ImportNode && ((ImportNode) s.node()).getUnit() != null)    
 				sc = ((ImportNode)s.node()).getUnit().getUnitType();    		
     	}
+    	
+    	if (t == null) {
+    		if (this.node() instanceof ITypeKind
+    				&& ((ITypeKind) this.node()).isEnum() || ((ITypeKind) this.node()).isClass()) {
+    			if ((this.node().getDefiningScope() instanceof DeclNode.Usr))
+    				sc = ((DeclNode.Usr) this.node()).getScopeDeleg();
+    		}
+    	}
+    	
     	return (sc == null) ? scope() : sc;	
     }
 

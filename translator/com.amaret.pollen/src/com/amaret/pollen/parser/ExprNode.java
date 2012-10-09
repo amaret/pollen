@@ -55,15 +55,18 @@ public class ExprNode extends BaseNode {
             }
             Cat left = getLeft().getCat();
             Cat right = getRight().getCat();
-            boolean dbg = false;
-            if (left == null || right == null)
-            	dbg = true;
+            
+            boolean providedTypeTest = this.getParent() instanceof StmtNode.Provided;
+            providedTypeTest &= left.isUnit() || right.isUnit();
+
             if ((exprCat = TypeRules.preCheck(left, right)) != null) {
                 return;
             }
-            exprCat = TypeRules.checkBinary(getOp().getText(), getLeft().getCat(), getRight().getCat());
-            if (exprCat instanceof Cat.Error) {
-                ParseUnit.current().reportError(getOp(), ((Cat.Error) exprCat).getMsg());
+            if (!providedTypeTest) {
+            	exprCat = TypeRules.checkBinary(getOp().getText(), getLeft().getCat(), getRight().getCat());
+            	if (exprCat instanceof Cat.Error) {
+            		ParseUnit.current().reportError(getOp(), ((Cat.Error) exprCat).getMsg());
+            	}
             }
         }
     }
@@ -124,6 +127,8 @@ public class ExprNode extends BaseNode {
 
             	called = symtab.curScope().lookupName(ei.getName().getText(), chkHostScope);
             	
+            	String c = ei.getName().getText();
+            	
             	if (ei.getName().getText().indexOf('.') != -1) {
             		String n = ei.getName().getText();
             		n = n.substring(0, n.lastIndexOf('.'));
@@ -146,7 +151,9 @@ public class ExprNode extends BaseNode {
             		ei.setSymbol(called);
             		IScope sc = called.scope();
             		if (sc instanceof DeclNode.Usr && ((DeclNode.Usr) sc).isClass()
-            				&& !((DeclNode.Usr) sc).isHost()) {
+            				&& !((DeclNode.Usr) sc).isHost()
+            				&& !(called.node() instanceof DeclNode.FcnRef)) {
+            				// for function references, the scope of the function ref is not the scope of the called fcn
             			thisPtr = true;     
             		}
             	}
@@ -454,6 +461,9 @@ public class ExprNode extends BaseNode {
 
 
         	ParseUnit currUnit = ParseUnit.current();
+        	boolean dbg = false;
+        	if (this.getName().getText().equals("ClockSource.SCLK"))
+        		dbg = true;
         	if (symbol == null)
         		symbol = currUnit.getSymbolTable().resolveSymbol(getName());
         	if (symbol == null) {

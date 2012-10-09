@@ -259,7 +259,7 @@ public class ParseUnit {
 		String cname = client != null ? client.getQualName() : "null";
 		String ciname = clientImport != null ? clientImport.getQualName() : "null";
 				
-		setDebugMode(false);
+		setDebugMode(true);
 		if (isDebugMode()) {			
 			String dbgStr = "  START parseUnit() : ";
 			dbgStr += "input " + ParseUnit.mkPackageName(inputPath) + "." + ParseUnit.mkUnitName(inputPath) + ", client " + cname + ", clientImport " + ciname;
@@ -271,7 +271,7 @@ public class ParseUnit {
 			}
 			System.out.println(dbgStr);
 		}
-		setDebugMode(false);
+		//setDebugMode(false);
 	
 		paths.add(inputPath);
 		in = new ANTLRFileStream(inputPath);
@@ -293,6 +293,7 @@ public class ParseUnit {
        
         if (isDebugMode())
         	System.out.println( "       AST: " + unit.toStringTree());
+        setDebugMode(true);
        
         if (getErrorCount() > 0) {
             return null;

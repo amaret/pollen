@@ -47,11 +47,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         	Cat c = this.getTypeCat();
         	if (c instanceof Cat.Agg){
         		if (((Cat.Agg)c).isProtocol() || ((Cat.Agg)c).isComposition())  {
-        			ParseUnit.current().reportError(this, "formal parameter type error for \'" + ((Cat.Agg) c).aggName() + "\' (protocol not allowed)");                			
+        			ParseUnit.current().reportError(getName(), "formal parameter type error for \'" + ((Cat.Agg) c).aggName() + "\' (protocol not allowed)");                			
         		}
         		if (((Cat.Agg)c).isComposition())  {
         			// TODO do I need to resolve this down to the module?
-        			ParseUnit.current().reportError(this, "formal parameter type error for \'" + ((Cat.Agg) c).aggName() + "\' (composition not allowed)");                			
+        			ParseUnit.current().reportError(getName(), "formal parameter type error for \'" + ((Cat.Agg) c).aggName() + "\' (composition not allowed)");                			
         		}
         	}
          	super.pass2End();          
@@ -159,7 +159,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     		super(ttype, ttext, EnumSet.noneOf(Flags.class));
     	}
     	
-    	ExprNode getInjectExpr() {
+    	public ExprNode getInjectExpr() {
     		return ((ExprNode) getChild(INJECT));
     	}
         protected boolean pass1Begin() {
@@ -398,7 +398,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     	
     }
 
-    static public class FcnRef extends DeclNode implements ITypeSpecInit {
+    static public class FcnRef extends DeclNode.TypedMember implements ITypeSpecInit {
 
         static final private int FCN = 0;
     	static final private int FORMALS = 1;
@@ -440,7 +440,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
         @Override
         protected void pass1End() {
-            ParseUnit.current().getSymbolTable().leaveScope();
+            
             super.pass1End();
         }
 
@@ -547,6 +547,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         			SymbolEntry s = ((TypeNode.Usr) this.getTypeSpec()).getSymbol();
         			if (s.node() instanceof DeclNode.Fcn) {
         				fcnCat = (Cat.Fcn) s.node().getTypeCat();
+        				if (!(this instanceof DeclNode.FcnRef)) {
+        					ParseUnit.current().reportError(this.getName(), "function reference declarations require a (possibly empty) parenthesized parameter type list");
+        				}
         			}          			 			
         		}   
         	}
@@ -733,7 +736,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
      	static final protected int IMPLEMENTS = 2;
      	static final protected int VALS = 1;
      	static final protected int META = 3; 
-     	static final protected int META_IMPORTS = 4;
+     	//static final protected int META_IMPORTS = 4; // unused - earlier pollen
+     	  // had imports valid only in 'meta' scope
      	      
         protected DeclNode.Usr baseType = null;
         protected DeclNode.Usr implementedType = null;
@@ -744,6 +748,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public NestedScope getScopeHost() {
 			return scopeHost;
 		}
+        public NestedScope getScopeDeleg() {
+        	return scopeDeleg;
+        }
 		Usr(int ttype, String ttext,  EnumSet<Flags>  flags, String qn) {
             super(ttype, ttext, flags);
             qname = (qn.equals("NIL")) ? "" : qn;
@@ -768,10 +775,15 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         		return (ExprNode) this.getChild(EXTENDS);
         	return null;
         }
+        /**
+         * 
+         * @return meta formals for this meta type. May be IMPORT or FORMAL
+         * (for meta type parameters or meta value parameters). 
+         */
         @SuppressWarnings("unchecked")
-		public ListNode<DeclNode.Formal> getMetaFormals() {
+		public ListNode<BaseNode> getMetaFormals() {
         	if (getChildCount() > META && this.isMeta() && getChild(META).getChildCount() > 0) {
-        		ListNode<DeclNode.Formal> l = ((ListNode<DeclNode.Formal>) getChild(META));
+        		ListNode<BaseNode> l = ((ListNode<BaseNode>) getChild(META));
         		if (l.getElems().isEmpty()) {
                     ParseUnit.current().reportError(getName(), "Meta types cannot have empty formal parameter list");
                     return null;
@@ -780,12 +792,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         	}
         	return null;
 		}
-        @SuppressWarnings("unchecked")
-        public List<ImportNode> getMetaImports() {
-        	if (getChild(META_IMPORTS).getType() == pollenParser.NIL)
-        		return null;
-        	return ((ListNode<ImportNode>)getChild(META_IMPORTS)).getElems();
-        }
         
         /** 
          * Qualify the Unit name by its name in the instantiating unitType.
@@ -873,6 +879,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public DeclNode.Usr getBaseType() {
             return baseType;
         }
+        /**
+         * 
+         * @return type for 'implements'
+         */
         public DeclNode.Usr getImplementedType() {
         	if (implementedType == null && this.getImplements() != null) {
         		SymbolEntry p = lookupName(getImplements().getText());
@@ -937,14 +947,19 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             	symtab.curScope().defineSymbol(getName(), this);
             }
             if (this.getMetaFormals() != null) {
-            	for (DeclNode.Formal f : this.getMetaFormals().getElems()) {
-            		f.pass1Begin();
-            		// If the meta argument is a void instance, this unitType is also
-            		SymbolEntry symbol = ParseUnit.current().getSymbolTable().lookupName(f.getName().getText());
-            		ISymbolNode snode = symbol != null ? symbol.node() : null;
-            		if (snode instanceof DeclNode.Usr && ((DeclNode.Usr) snode).isVoid()) {
-            			flags.add(Flags.VOID_INSTANCE);
+            	
+            	for (BaseNode b : this.getMetaFormals().getElems()) {
+            		if (b instanceof DeclNode.Formal) {
+            			DeclNode.Formal f = (Formal) b;
+            			f.pass1Begin();
+            			// If the meta argument is a void instance, this unitType is also
+            			SymbolEntry symbol = ParseUnit.current().getSymbolTable().lookupName(f.getName().getText());
+            			ISymbolNode snode = symbol != null ? symbol.node() : null;
+            			if (snode instanceof DeclNode.Usr && ((DeclNode.Usr) snode).isVoid()) {
+            				flags.add(Flags.VOID_INSTANCE);
+            			}
             		}
+
             	}            	
             }
             enterScopes();

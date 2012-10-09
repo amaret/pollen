@@ -115,7 +115,10 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     		return this.getUnitType().getBaseType().getUnit();
     	return null;
     }
-    
+    /**
+     * 
+     * @return unit for 'implements' clause
+     */
     public UnitNode getImplementedUnit() {
     	if (this.getUnitType().getImplementedType() != null)
     		return this.getUnitType().getImplementedType().getUnit();

@@ -112,7 +112,8 @@ tokens {
 	    isEmptyMetaArgs = (cli != null && cli.getMeta() != null && cli.getMeta().size() == 0);
 	}
 	    
-    EnumSet<Flags> featureFlags = EnumSet.noneOf(Flags.class);
+    EnumSet<Flags> featureFlags = EnumSet.noneOf(Flags.class); 
+    EnumSet<Flags> metaFlags = EnumSet.noneOf(Flags.class); 
     EnumSet<Flags> stmtFlags = EnumSet.noneOf(Flags.class);
     EnumSet<Flags> typeMods = EnumSet.noneOf(Flags.class);
     
@@ -269,18 +270,17 @@ exportList
     	-> ^(LIST<ListNode>["LIST"] stmtExport+)
     ;
 classDefinition  
-@init {
-	if (tl.size() > 1) { // nested class
-	  ti = new TypeInfo();
-	  tl.add(ti);		
-	}	
-	String qual = "";
+@init{
+		ti = new TypeInfo();
+		tl.add(ti);		
+		ti.setUnitFlags(metaFlags); 
+		metaFlags = EnumSet.noneOf(Flags.class);		
+		String qual = "";
 }
 @after{
-	if (tl.size() > 1) {
-   	tl.remove(tl.size()-1);
-   	ti = tl.get(tl.size()-1);
-   }
+   	ti = tl.remove(tl.size()-1);
+   	if (tl.size() > 0)
+   	  ti = tl.get(tl.size()-1);
 }
 	:	'class' IDENT
 			{ 
@@ -293,7 +293,7 @@ classDefinition
 		(implementsClause)
 		braceOpen classFeatureList braceClose
 		-> ^(D_CLASS<DeclNode.Class>["D_CLASS", ti.getUnitFlags(), qual] 
-		IDENT classFeatureList implementsClause {$unitTypeDefinition::meta} {$unitTypeDefinition::metaImports})
+		IDENT classFeatureList implementsClause {$unitTypeDefinition::meta})//{$unitTypeDefinition::metaImports})
 		;
 classFeatureList
 	:	classFeature*	-> ^(LIST<ListNode>["LIST"] classFeature*)
@@ -310,7 +310,16 @@ classFeature
     ; 
 moduleDefinition 
 @init{
-	String qual="";
+		ti = new TypeInfo();
+		ti.setUnitFlags(metaFlags); 
+		metaFlags = EnumSet.noneOf(Flags.class);		
+		tl.add(ti);		
+		String qual = "";
+}
+@after{
+   	ti = tl.remove(tl.size()-1);
+   	if (tl.size() > 0)
+   	  ti = tl.get(tl.size()-1);
 }
 	:	   'module' IDENT
 	      { 
@@ -323,7 +332,7 @@ moduleDefinition
 			(implementsClause) 
 			braceOpen moduleFeatureList braceClose 
 			-> ^(D_MODULE<DeclNode.Usr>["D_MODULE", ti.getUnitFlags(), qual] 
-			IDENT moduleFeatureList implementsClause {$unitTypeDefinition::meta} {$unitTypeDefinition::metaImports})
+			IDENT moduleFeatureList implementsClause {$unitTypeDefinition::meta}) //{$unitTypeDefinition::metaImports})
 	;
 moduleFeatureList
 	:	moduleFeature*	-> ^(LIST<ListNode>["LIST"] moduleFeature*)
@@ -339,18 +348,17 @@ moduleFeature
 	|	 injectionDecl
     ;
 enumDefinition 
-@init {
-	if (tl.size() > 1) { // nested 
-	  ti = new TypeInfo();
-	  tl.add(ti);	
-	}	
-	 String qual = "";	
+@init{
+		ti = new TypeInfo();
+		ti.setUnitFlags(metaFlags); 
+		metaFlags = EnumSet.noneOf(Flags.class);		
+		tl.add(ti);		
+		String qual = "";
 }
 @after{
-	if (tl.size() > 1) {
-   	tl.remove(tl.size()-1);
-   	ti = tl.get(tl.size()-1);
-   }
+   	ti = tl.remove(tl.size()-1);
+   	if (tl.size() > 0)
+   	  ti = tl.get(tl.size()-1);
 }
 	:  'enum'(IDENT 
 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.ENUM));
@@ -361,18 +369,27 @@ enumDefinition
 		}
 		braceOpen enumList braceClose)
 		-> ^(D_ENUM<DeclNode.Usr>["D_ENUM", ti.getUnitFlags(), qual] 
-		IDENT enumList {$unitTypeDefinition::meta} {$unitTypeDefinition::metaImports})
+			IDENT enumList {$unitTypeDefinition::meta}) //{$unitTypeDefinition::metaImports})
 	;
 enumList
-	:	enumElement (',' enumElement)* -> ^(LIST<ListNode>["LIST"] enumElement+)
+	:	enumElement (',' (delim)? enumElement)* -> ^(LIST<ListNode>["LIST"] enumElement+)
 	;
 enumElement
-	:	IDENT ASSIGN INT_LIT (delim)? -> ^(D_ENUMVAL<DeclNode.EnumVal>["D_ENUMVAL", ti.getUnitFlags()] ^(IDENT INT_LIT))
-	|	IDENT (delim)?	-> ^(D_ENUMVAL IDENT)
+	:	IDENT ASSIGN INT_LIT  -> ^(D_ENUMVAL<DeclNode.EnumVal>["D_ENUMVAL", ti.getUnitFlags()] ^(IDENT INT_LIT))
+	|	IDENT	-> ^(D_ENUMVAL IDENT)
 	;
 protocolDefinition
 @init{
-	String qual="";
+		ti = new TypeInfo();
+		ti.setUnitFlags(metaFlags); 
+		metaFlags = EnumSet.noneOf(Flags.class);		
+		tl.add(ti);		
+		String qual = "";
+}
+@after{
+   	ti = tl.remove(tl.size()-1);
+   	if (tl.size() > 0)
+   	  ti = tl.get(tl.size()-1);
 }
 	:	'protocol' IDENT
 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.PROTOCOL));
@@ -384,7 +401,7 @@ protocolDefinition
 		extendsClause
 		braceOpen protocolFeatureList braceClose 
 		-> ^(D_PROTOCOL<DeclNode.Usr>["D_PROTOCOL", ti.getUnitFlags(), qual] 
-		IDENT protocolFeatureList extendsClause {$unitTypeDefinition::meta} {$unitTypeDefinition::metaImports})
+			IDENT protocolFeatureList extendsClause {$unitTypeDefinition::meta}) //{$unitTypeDefinition::metaImports})
 	;
 protocolFeatureList
 	:	protocolFeature*	-> ^(LIST<ListNode>["LIST"] protocolFeature*)
@@ -399,7 +416,16 @@ protocolFeature
     ;
 compositionDefinition
 @init{
-	String qual="";
+		ti = new TypeInfo();
+		ti.setUnitFlags(metaFlags); 
+		metaFlags = EnumSet.noneOf(Flags.class);		
+		tl.add(ti);		
+		String qual = "";
+}
+@after{
+   	ti = tl.remove(tl.size()-1);
+   	if (tl.size() > 0)
+   	  ti = tl.get(tl.size()-1);
 }
 	:	'composition' IDENT
 		{ 
@@ -413,7 +439,7 @@ compositionDefinition
 		extendsClause  
 		braceOpen compositionFeatureList braceClose 
 			-> ^(D_COMPOSITION<DeclNode.Usr>["D_COMPOSITION", ti.getUnitFlags(), qual] 
-			     IDENT compositionFeatureList extendsClause {$unitTypeDefinition::meta} {$unitTypeDefinition::metaImports})
+			     IDENT compositionFeatureList extendsClause {$unitTypeDefinition::meta}) //{$unitTypeDefinition::metaImports})
 	;
 compositionFeatureList
 	:	compositionFeature*	-> ^(LIST<ListNode>["LIST"] compositionFeature*)
@@ -464,19 +490,21 @@ meta
 // Instantiate the meta parameters if this is an instantiation parse.
 //    If '{}' is passed, instantiate to defaults.
 //    This will be a void instance: no output.
-	:	{isMetaInstance}? 'meta'	
-	      { ti.setUnitFlags(EnumSet.of(Flags.META));}
-			importList { $unitTypeDefinition::metaImports = $importList.tree; }
+	:	{isMetaInstance}? 'meta'!	
+	      { metaFlags.add(Flags.META);}
+			//importList { $unitTypeDefinition::metaImports = $importList.tree; }
 			(braceOpen 
 				metaParmsGen
 			 braceClose) 
-	|	'meta' // UNCALLED NOW
-			{ 	ti.setUnitFlags(EnumSet.of(Flags.META));  }
-			importList { $unitTypeDefinition::metaImports = $importList.tree; }
-			(braceOpen formalParameters braceClose)
-	 	 		-> formalParameters
-
-	|  { isMetaInstance = false;} -> LIST<ListNode>["LIST"] { $unitTypeDefinition::metaImports = (BaseNode)adaptor.create(NIL, "NIL") }
+			 
+	//|	'meta' // UNCALLED NOW
+	//		{ metaFlags.add(Flags.META);}
+	//		importList { $unitTypeDefinition::metaImports = $importList.tree; }
+	//		(braceOpen formalParameters braceClose)
+	// 	 		-> formalParameters
+	//
+	
+	|  { isMetaInstance = false;} -> LIST<ListNode>["LIST"] //{ $unitTypeDefinition::metaImports = (BaseNode)adaptor.create(NIL, "NIL") }
 										
 	;
 	
@@ -498,9 +526,10 @@ scope {
  	}
 }
 	:	m1=metaParmGen { $metaParmsGen::l.add($m1.tree); }
-		(','! 
+		(','
 			m2=metaParmGen { $metaParmsGen::l.add($m2.tree); }
 		)*
+		-> ^(LIST<ListNode>["LIST"] metaParmGen+)
 	;
   /**************
     To instantiate with type parameters.
@@ -532,7 +561,7 @@ metaParmGen
 		//Atom v = new Atom(new CommonToken(pollenLexer.VOID, "void"));
 		//BaseNode bv = new BaseNode(v);
 		//clientImport.getMeta().add(bv);
-		ti.setUnitFlags(EnumSet.of(Flags.VOID_INSTANCE));
+		metaFlags.add(Flags.VOID_INSTANCE);
 	}
 	else 	if (clientImport.getMeta() != null && clientImport.getMeta().size() < $metaParmsGen::idx+1) {
 		  throw new PollenException("Not enough parameters to instantiate meta type", input);
@@ -643,11 +672,7 @@ userTypeName
 unitTypeDefinition
 scope {
   Object meta; 			// specification of meta type/value parameters
-  Object metaImports;	// imports that apply to the meta type instantiation context
-}
-@init{
-		ti = new TypeInfo();
-		tl.add(ti);		
+  //Object metaImports;	// imports that apply to the meta type instantiation context
 }
 @after{
    // debug
@@ -1279,7 +1304,7 @@ injectionDecl
             $c.setText(getInject($c.getText()));
         }
         NL+
-         -> ^(D_INJ<DeclNode.Inject>["D_INJ"] INJECT)
+         -> ^(D_INJ<DeclNode.Inject>["D_INJ"] ^(E_INJ<ExprNode.Inject>["E_INJ"] INJECT))
 	;	
 delim
 	:	(SEMI) (NL)*	-> 
