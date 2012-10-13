@@ -266,7 +266,12 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
      
         public String cname() {
-        	return cname;
+        	//return cname;
+            IScope scope = getEnclosingScope();
+            cls = scope instanceof DeclNode.Class ? (DeclNode.Class) scope : null;
+            cname = (cls == null) ? ("" + getName()) : ("" + cls.getName() + "__" + getName());
+            return cname;
+
         }
         
         public DeclNode.Class getFcnClass() {
@@ -299,9 +304,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             }   
             
             currUnit.getSymbolTable().enterScope(this);
-            IScope scope = getEnclosingScope();
-            cls = scope instanceof DeclNode.Class ? (DeclNode.Class) scope : null;
-            cname = (cls == null) ? ("" + getName()) : ("" + cls.getName() + "__" + getName());
+            currUnit.getCurrUnitNode().setHostScope(isHost());
 
            
             if (currUnit.getCurrUnitNode().isProtocol() && this.getBody() != null) {
@@ -318,24 +321,24 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             // TODO: create signature set
             			
 			currUnit.getCurrUnitNode().addFcn(getName().getText(), this);
-			boolean dbg = false;
-			if (getName().getText().equals("setCapacity"))
-				dbg = true;
- 
+
             return true;
         }
         @Override
         protected void pass1End() {
             ParseUnit.current().getSymbolTable().leaveScope();
+            ParseUnit.current().getCurrUnitNode().setHostScope(false);
             super.pass1End();
         }
         protected boolean pass2Begin() {
             ParseUnit.current().getSymbolTable().enterScope(this);
+            ParseUnit.current().getCurrUnitNode().setHostScope(isHost());
             return true;
         }
         @Override
         public void pass2End() {
             ParseUnit.current().getSymbolTable().leaveScope();
+            ParseUnit.current().getCurrUnitNode().setHostScope(false);
             super.pass2End();
         }
         @Override
@@ -548,7 +551,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         			if (s.node() instanceof DeclNode.Fcn) {
         				fcnCat = (Cat.Fcn) s.node().getTypeCat();
         				if (!(this instanceof DeclNode.FcnRef)) {
-        					ParseUnit.current().reportError(this.getName(), "function reference declarations require a (possibly empty) parenthesized parameter type list");
+        					ParseUnit.current().reportError(this.getName(), "function reference declarations require a parenthesized parameter type list");
         				}
         			}          			 			
         		}   
@@ -565,20 +568,13 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
         @Override
         public String getQualName() {
-            return ((UnitNode) getDefiningScope()).getQualName() + '.' + getName();
+            return getTypeUnit().getQualName() + '.' + getName();
         }
         @Override
         public String getScopeName() {
         	return getQualName();
         }
-        /**
-         * Can be null.
-         */
-        @Override
-        public UnitNode getUnit() {
-            return unitType;
-        }
-        
+       
         @Override
         protected boolean pass1Begin() {
             super.pass1Begin();
@@ -592,7 +588,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
                 unitType = (UnitNode) snode;
             }
             else if (snode instanceof DeclNode.Fcn) {
-            	unitType = (UnitNode) snode.getDefiningScope().getEnclosingScope();
+            	unitType = ((DeclNode.Fcn)snode).getUnit();
             }
 
             if (unitType == null ) { 
@@ -801,7 +797,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
          */
         public void setMetaQualName() {
         	if (!qname.isEmpty()) {       		
-        		getName().setText(getName().getText() + "_" + qname);  
+        		//getName().setText(getName().getText() + "_" + qname);  too complex
+        		getName().setText(qname);
         		qname = "";
         	}
         }
@@ -910,7 +907,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
         
         public String getUnitQualName() {
-            return ((UnitNode) getEnclosingScope()).getQualName();
+			return (getEnclosingScope() instanceof UnitNode) ? ((UnitNode) getEnclosingScope())
+					.getQualName()
+					: (getEnclosingScope() instanceof DeclNode.Usr ? ((DeclNode.Usr) getEnclosingScope())
+							.getUnitQualName()
+							: "??");
         }
         @Override
         public String getScopeName() {
@@ -1118,6 +1119,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     DeclNode(int ttype, String ttext) {
       	this.token = new Atom(ttype, ttext);
     }
+    boolean query(EnumSet<Flags> q) {
+    	return (flags.contains(q));
+    }
     
     public UnitNode getUnit() {
 		return unit;
@@ -1182,13 +1186,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         if (this.getDefiningScope() instanceof UnitNode && !init.isConst()) {
             ParseUnit.current().reportError(init, "initializer must be a constant expression");
             return;
-        }
-        if (this instanceof DeclNode.Formal) {
-        	DeclNode.Formal f = (Formal) this;
-        	boolean dbg = false;
-        	if (f.getName().getText().equals("handler") && f.getTypeSpec() instanceof TypeNode.Usr)
-        	dbg = true;
-        	
         }
        
         TypeRules.checkInit(tsi.getTypeCat(), init);

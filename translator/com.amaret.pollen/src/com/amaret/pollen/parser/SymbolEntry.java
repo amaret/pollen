@@ -25,20 +25,21 @@ public class SymbolEntry {
     }
     /**
      * 
+     * @param scopeHost return the host scope for next lookup
      * @return scope of lookup for the next qualifier in the qualified name
      */
-    public final IScope derefScope() {
+    public final IScope derefScope(boolean scopeHost) {
     	IScope sc = null;
     	// For an interim result, the next lookup scope can be 
     	// 1. the scope of the interim result (for a qualified unit name)
     	// 2. or the scope of the type. 
     	// For the latter case the scope of the lookup for 'myFcn()' in obj1.myFcn() is the class of obj1. 
     	
-//    	if (this.node() instanceof ImportNode && ((ImportNode) this.node()).getUnit() != null) {   		
-//			sc = ((ImportNode) this.node()).getUnit().getUnitType();   		
-//			if (sc != null)
-//				return sc;   	
-//    	}
+    	if (this.node() instanceof ImportNode && ((ImportNode) this.node()).getUnit() != null) {   		
+			sc = ((ImportNode) this.node()).getUnit().getUnitType();   		
+			if (sc != null)
+				return sc;   	
+    	}
     	TypeNode.Usr t = null;
     	if (this.node() instanceof DeclNode.ITypeSpec) {
     		if (((DeclNode.ITypeSpec) this.node()).getTypeSpec() instanceof TypeNode.Usr) {
@@ -54,7 +55,9 @@ public class SymbolEntry {
     	if (t != null) {
    			SymbolEntry s = t.getSymbol();
 			if (s.node() instanceof ImportNode && ((ImportNode) s.node()).getUnit() != null)    
-				sc = ((ImportNode)s.node()).getUnit().getUnitType();    		
+				sc = ((ImportNode)s.node()).getUnit().getUnitType();    
+			else if (s.node() instanceof DeclNode.Usr)
+				sc = ((DeclNode.Usr)s.node()).getScopeDeleg();
     	}
     	
     	if (t == null) {
@@ -65,7 +68,17 @@ public class SymbolEntry {
     		}
     	}
     	
-    	return (sc == null) ? scope() : sc;	
+    	IScope rtn = (sc == null) ? scope() : sc;
+    	
+    	if (scopeHost && rtn instanceof NestedScope) {
+    		if (((NestedScope)rtn).definingScope instanceof DeclNode.Usr) {
+    			DeclNode.Usr u = (DeclNode.Usr) ((NestedScope)rtn).definingScope;
+    			if (rtn == u.scopeDeleg)
+    				rtn = u.scopeHost;
+    		}
+    	}
+    	
+    	return rtn;
     }
 
 

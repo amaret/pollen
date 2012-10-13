@@ -13,10 +13,12 @@ import com.amaret.pollen.parser.ParseUnit.Property;
 import com.amaret.pollen.translator.Generator;
 
 public class ProcessUnits {
-	private static String workingDir = new File(".").getAbsolutePath();
+	private static String workingDir = "";
 	private static String pollenRoot = "";
 	
 	public static String getWorkingDir() {
+		if (workingDir.isEmpty())
+			 workingDir = new File(".").getAbsolutePath();
 		return workingDir;
 	}
 	public static String getPollenRoot() {
@@ -98,18 +100,44 @@ public class ProcessUnits {
 		String pollenFile = "";
 		HashMap<String, String> packages = new HashMap<String, String>();
 	}
+	private String helpMessage() {
+
+		String pollenHelp = "Usage: java -jar pollen.jar <bundles> <pollen file>\nOptions include:";
+		pollenHelp += "\n" + "-o <directory>";
+		pollenHelp += "\n" + "\tSpecifies output directory for pollen output. \n\tFor \'<path>/dir/pollenfile.p\' the default is \'<path>/dir_out\'";
+		pollenHelp += "\n" + "-h\tThis help message.";
+		return pollenHelp;    
+	}
 	/**
 	 * 
-	 * @param args - bundles and pollen file
+	 * @param args - bundles and pollen file, possible options
 	 * @return a HashMap of packages <name, path>
+	 * initialize working directory
 	 */
-	private Inputs getInputs(String[] args) throws Exception {
+	private Inputs getArgs(String[] args) throws Exception {
 		
 		Inputs inputs = new Inputs();
+		boolean setWorkingDir = false;
+		String inputPath = "";
 
 		String p = "";
 		for (int i=0; i < args.length; i++) {
 			p = args[i];
+			if (p.equals("-o")) {
+				// output directory
+				String odir = (args.length > (++i) ? args[i] : "");
+				if (odir.isEmpty())	
+					continue;
+				if (isRelativePath(odir))	
+					odir = System.getProperty("user.dir" + File.separator + p);
+				setWorkingDir = true;
+				setWorkingDir(odir);
+				continue;
+			}
+			if (p.equals("-h")) {
+				System.out.println(this.helpMessage());
+				System.exit(0); 
+			}
 			if (this.isRelativePath(p)) {
 				p = System.getProperty("user.dir") + File.separator + p;
 			}
@@ -118,6 +146,7 @@ public class ProcessUnits {
 					throw new Termination ("Invalid inputs: translator accepts one pollen file and a set of bundles");					
 				}
 				inputs.pollenFile = p;
+				inputPath = p;
 		        int k = p.lastIndexOf(File.separatorChar);
 		        int j = p.lastIndexOf(File.separator, k-1);
 		        j = j == -1 ? 0 : j +1;
@@ -133,6 +162,15 @@ public class ProcessUnits {
 			
 
 		}
+		if (!setWorkingDir && !inputPath.isEmpty()) { // initialize default working directory
+			String wdir = inputPath.substring(0, inputPath.lastIndexOf(File.separator));
+	        wdir = wdir.substring(0, wdir.lastIndexOf(File.separator));
+	        wdir += '/' + ParseUnit.mkPackageName(inputPath) + "_out"; 
+	        ProcessUnits.setWorkingDir(wdir);		
+		}
+		File dir = new File(getWorkingDir());
+		dir.mkdirs();
+
 		if (inputs.pollenFile.isEmpty() || inputs.packages.isEmpty()) {
 			throw new Termination ("Invalid inputs: translator accepts one pollen file and a set of bundles");					
 		}
@@ -156,7 +194,7 @@ public class ProcessUnits {
 			PrintStream errorStream, 
 			PrintStream infoStream, SymbolTable symtab) throws Exception {
 		
-		Inputs files = this.getInputs(args);
+		Inputs files = this.getArgs(args);
 
 		ParseUnit.initParse(files.pollenFile, props, files.packages, outputStream, errorStream, infoStream, symtab);
 

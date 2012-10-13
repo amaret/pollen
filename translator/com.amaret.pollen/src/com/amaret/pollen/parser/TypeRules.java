@@ -62,13 +62,12 @@ public class TypeRules {
 	}
 
 	static Cat checkBinary(String op, Cat left, Cat right) {
-		boolean dbg = false;
 		String l = left.mkCode();
 		String r = right.mkCode();
-		if (l.equals("xHandler.handle"))
-			dbg = true;
+		if (l.equals("Cpollen.time.TimerManager") && r.equals("v"))
+			l = "";
 		Cat rtn =  checkBinary(op, left, right, "operand type error");
-		
+		boolean dbg = false;
 		if (rtn instanceof Cat.Error)
 			dbg = true;
 		
@@ -92,14 +91,18 @@ public class TypeRules {
 		//            }
 		//        }
 
-		
 		String r = right.mkCode();
-		
-		if (left.mkCode().charAt(0) == 'C') {
-			if (!left.mkCode().equals(r)) {
-				r.replaceFirst("C", "X");
-			}					
+		boolean leftAgg = left.mkCode().charAt(0) == 'C' || left.mkCode().charAt(0) == 'X';
+		boolean rightAgg = right.mkCode().charAt(0) == 'C' || right.mkCode().charAt(0) == 'X';
+		if (leftAgg && rightAgg) {
+			if (left.mkCode().substring(1).equals(right.mkCode().substring(1)))			
+				// No difference in this context between C and X
+				r = r.replaceFirst("^.", left.mkCode().substring(0, 1));
+			else
+				return mkResult(null, left, right, err); // unit/class types must match exactly
 		}
+				
+
 		String codes = left.mkCode() + '#' + r;
 		String res = null;
 		int opKinds = bryOpTab.get(op);
@@ -117,7 +120,7 @@ public class TypeRules {
 		return rtn;
 	}
 	static private String matchRules(int opKinds, String codes, Rule[] rules) {
-		int domain = TARG_DOMAIN; //ParseUnit.current().getHostFlag() ? HOST_DOMAIN : TARG_DOMAIN;
+		int domain = ParseUnit.current().getCurrUnitNode().isHostScope() ? HOST_DOMAIN : TARG_DOMAIN;
 		//System.out.println("New match!");
 		for (Rule rule : rules) {
 			if ((rule.opKinds & opKinds) != 0 && (rule.domain & domain) != 0) {
@@ -241,8 +244,8 @@ public class TypeRules {
 			ParseUnit.current().reportError((BaseNode) protocol.node(), "implements clause requires a protocol");
 			return;
 		}
-		UnitNode iu = (UnitNode) implementor.getEnclosingScope();
-		UnitNode pu = (UnitNode) p.getEnclosingScope();
+		UnitNode iu = (UnitNode) implementor.getUnit();
+		UnitNode pu = (UnitNode) p.getUnit();
 
 		for (List<DeclNode.Fcn> pl : pu.getFcnMap().values()) {
 			boolean matchSig = false;
@@ -341,7 +344,7 @@ public class TypeRules {
 				mkBinary(OP_ASSIGN, "b|n", "b|n", "$1"),
 				mkBinary(OP_ASSIGN, "u4", "ua", "$1"),
 				mkBinary(OP_ASSIGN, "x.+", "F.+|v|x.+", "$1"),
-				mkBinary(OP_ASSIGN, "C.+", "C.+", "$1"),
+				mkBinary(OP_ASSIGN, "C.+|X.+", "C.+|X.+|v", "$1"),
 				mkBinary(OP_ASSIGN, "p|r|s|P.+|F.+|R.+", "\\1|v", "$1"),
 				mkBinary(OP_ASSIGN, "p", "p|s|v|P.+|R.+", "$1"),
 				mkBinary(OP_ASSIGN, "r", "R.+|S.+", "$1"),
@@ -395,7 +398,7 @@ public class TypeRules {
 
 				mkBinary(OP_EQ|OP_REL, "p|s|P.+|F.+", "\\1", "b", TARG_DOMAIN),
 
-				mkBinary(OP_EQ, "x.+", "F.+|v", "$1"),
+				mkBinary(OP_EQ, "x.+|C.+", "F.+|v", "b"),
 
 				mkBinary(OP_EQ, "p|s|X.+|A.+|P.+|F.+|R.+", "v", "b"),
 				mkBinary(OP_EQ, "v", "p|s|X.+|A.+|P.+|F.+|R.+", "b"),
@@ -410,7 +413,7 @@ public class TypeRules {
 				mkUnary(OP_ADD, "i.", "$1"),
 				mkUnary(OP_ADD, "n", "i0"),
 				mkUnary(OP_BOOL, "u.|n", "$1"),
-				mkUnary(OP_COND, "b|i.|n|p|s|u.|A.+|F.+|P.+|R.+|x.+", "b"),
+				mkUnary(OP_COND, "b|i.|n|p|s|u.|A.+|F.+|P.+|R.+|x.+|C.+|X.+", "b"),
 				mkUnary(OP_INC, "i.|u.|n|p|s|P.+", "$1"),
 				mkUnary(OP_SEL, "u1", "$1"),
 				mkUnary(OP_SEL, "i1|i2|i4|u1|u2|u4|s", "$1", HOST_DOMAIN),

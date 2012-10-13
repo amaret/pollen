@@ -872,7 +872,7 @@ fcnType_fcnName
 	:	typeName qualName  
 		-> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"]  ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] ^(LIST<ListNode>["LIST"] typeName)) qualName)      // int myfcn()
 	|	{input.LT(1).getText().equals(ti.getTypeName()) && !(ti.getUnitFlags().contains(Flags.CLASS)) }? 
-		typeName	         // NOT a class constructor: returns void
+		typeName	         
 		{ 
 		  featureFlags.add(Flags.CONSTRUCTOR); 
 		}
@@ -885,7 +885,7 @@ fcnType_fcnName
 		{ 
 		  featureFlags.add(Flags.CONSTRUCTOR); 
 		}
-		-> ^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] ^(LIST<ListNode>["LIST"] typeName)) IDENT[ti.getTypeName() + "_new"]) 		  // constructor
+		-> ^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] ^(LIST<ListNode>["LIST"] typeName)) IDENT["new_"]) 		  // constructor
 	|	qualName 	
 		{ featureFlags.add(Flags.VOID_FCN); }
 		-> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"] ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
@@ -960,7 +960,9 @@ fieldOrArrayAccess
 	:	 (fieldAccess | arrayAccess)+
 	;
 fieldAccess
-	:	'.'	IDENT fcnArgumentList	-> ^(E_CALL<ExprNode.Call>["E_CALL", true] IDENT  fcnArgumentList)
+	:	'.'	IDENT fcnArgumentList	
+			-> ^(E_CALL<ExprNode.Call>["E_CALL", true] 
+			 ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT)  fcnArgumentList)
 	|	'.'	IDENT 	-> ^(E_IDENT<ExprNode.Ident>["E_IDENT", true] IDENT)
 	;
 arrayAccess

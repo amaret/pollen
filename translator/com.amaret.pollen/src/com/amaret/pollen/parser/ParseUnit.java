@@ -141,16 +141,7 @@ public class ParseUnit {
 			HashMap<String, String> pkgs, PrintStream outputStream, PrintStream errorStream, PrintStream infoStream, SymbolTable symtab) {
 
 		currParse = new ParseUnit(inputPath, props, pkgs,
-				outputStream, errorStream, infoStream, symtab);
-		// Put the output somewhere convenient.
-        // TODO make a command line option for location of output directory.
-		String wdir = inputPath.substring(0, inputPath.lastIndexOf(File.separator));
-        wdir = wdir.substring(0, wdir.lastIndexOf(File.separator));
-        wdir += '/' + ParseUnit.mkPackageName(inputPath) + "_out"; 
-        File dir = new File (wdir);
-        dir.mkdirs();
-        ProcessUnits.setWorkingDir(wdir);
-		
+				outputStream, errorStream, infoStream, symtab);		
 
 	}
 	
@@ -232,9 +223,9 @@ public class ParseUnit {
                         reportError(imp.getUnitName(), "meta arguments provided but not a meta type");
                         continue;
                     }
-                    if (getErrorCount() > 0) {
-                        continue;
-                    }
+//                    if (getErrorCount() > 0) {
+//                        continue;
+//                    }
                     imp.bindUnit(impUnit);
                 }
                 impUnit.addClient(unit);
@@ -259,7 +250,7 @@ public class ParseUnit {
 		String cname = client != null ? client.getQualName() : "null";
 		String ciname = clientImport != null ? clientImport.getQualName() : "null";
 				
-		setDebugMode(true);
+		setDebugMode(false);
 		if (isDebugMode()) {			
 			String dbgStr = "  START parseUnit() : ";
 			dbgStr += "input " + ParseUnit.mkPackageName(inputPath) + "." + ParseUnit.mkUnitName(inputPath) + ", client " + cname + ", clientImport " + ciname;
@@ -293,11 +284,11 @@ public class ParseUnit {
        
         if (isDebugMode())
         	System.out.println( "       AST: " + unit.toStringTree());
-        setDebugMode(true);
+        setDebugMode(false);
        
-        if (getErrorCount() > 0) {
-            return null;
-        }       
+//        if (getErrorCount() > 0) {
+//            return null;
+//        }       
         unit.init();
         
         if (!(unit.getPkgName().getText().equals(getPackageName()))) {
@@ -383,13 +374,13 @@ public class ParseUnit {
         if (isDebugMode())
         	System.out.println("  START checkUnit() for " + unit.getName());
 
-        if (getErrorCount() == 0 || isDebugMode()) {
+        //if (getErrorCount() == 0 || isDebugMode()) {
             unit.doPass1();
-        }
+        //}
 
-        if (getErrorCount() == 0 || isDebugMode()) {
+        //if (getErrorCount() == 0 || isDebugMode()) {
             unit.doPass2();
-        }
+        //}
         
         currUnitNode = null;
     }

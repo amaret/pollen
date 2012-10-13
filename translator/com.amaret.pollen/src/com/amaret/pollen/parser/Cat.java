@@ -429,14 +429,22 @@ public class Cat implements Cloneable {
     	else sym = curr.resolveSymbol(typeNode.getAtom());
     	
     	ISymbolNode snode = sym != null ? sym.node() : null;
+    	boolean isClass = false;
     	if (snode instanceof ImportNode) {
     		unit = ((ImportNode) snode).getUnit();
+    		isClass = unit.isClass();
     	}   
     	else if (snode instanceof UnitNode) {
     		unit = (UnitNode) snode;
+    		isClass = unit.isClass();
+    	}
+    	else if (snode instanceof DeclNode.Class && sym.scope() instanceof DeclNode.Usr) {
+    		// nested
+    		unit = ((DeclNode.Usr)sym.scope()).getUnit();   	
+    		isClass = true;
     	}
 
-    	if (unit != null && unit.isClass())
+    	if (unit != null && isClass)
     		return cat;
 
     	return Cat.fromError("class type required for \'new\'", cat, null);       
