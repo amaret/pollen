@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.amaret.pollen.parser.DeclNode.ITypeKind;
+
 
 public class Cat implements Cloneable {
 
@@ -15,41 +17,98 @@ public class Cat implements Cloneable {
         private IScope aggScope;
         private IScope defScope;
         private boolean isRef;
+        private boolean isFcnRef;
         
-        private Agg(IScope aggScope, IScope defScope, boolean isRef) {
+        private Agg(IScope aggScope, IScope defScope, boolean isRef, boolean isFcnRef) {
             this.aggScope = aggScope;
             this.defScope = defScope;
             this.isRef = isRef;
+            this.isFcnRef = aggScope instanceof DeclNode.TypedMember 
+            	? ((DeclNode.TypedMember) aggScope).isFcnRef() : false;
+            this.isFcnRef |= isFcnRef;
         }
         
-        public IScope aggScope() {
+        public boolean isFcnRef() {
+			return isFcnRef;
+		}
+        
+        
+        public boolean isProtocol() {
+        	return aggScope instanceof ITypeKind ? ((ITypeKind) aggScope).isProtocol() : false;
+        }
+        public boolean isClass() {
+        	return (aggScope instanceof ITypeKind) ? ((ITypeKind) aggScope).isClass() : false; 
+        }
+        public boolean isModule() {
+        	return (aggScope instanceof ITypeKind) ? ((ITypeKind) aggScope).isModule() : false; 
+        }
+        public boolean isComposition() {
+        	return (aggScope instanceof ITypeKind) ? ((ITypeKind) aggScope).isComposition() : false; 
+        }
+        public boolean isEnum() {
+        	return (aggScope instanceof ITypeKind) ? ((ITypeKind) aggScope).isEnum() : false; 
+        }
+
+		public IScope aggScope() {
             return aggScope;
         }
+		public String aggName() {
+			return mkName();			
+		}
         
         public IScope defScope() {
             return defScope;
         }
         
-        @Override protected String mkCode() {
-             if (aggScope instanceof UnitNode) {
-                return "U" + ((UnitNode) aggScope).getQualName();
-            }
-            if (aggScope instanceof DeclNode.TypedMember) {
-                return "X" + ((DeclNode.TypedMember) aggScope).getTypeUnit().getQualName();
-            }
-            return super.mkCode();
-        }
-        
-        @Override protected String mkType(String quals) {
-
+        private String mkName() {
             if (aggScope instanceof UnitNode) {
                 return ((UnitNode) aggScope).getQualName();
             }
             if (aggScope instanceof DeclNode.TypedMember) {
                 return ((DeclNode.TypedMember) aggScope).getTypeUnit().getQualName();
             }
-            return super.mkType();
+            if (aggScope instanceof DeclNode.Usr) {
+                return ((DeclNode.Usr) aggScope).getUnitQualName();
+            }
+            if (aggScope instanceof DeclNode.Fcn) {
+                return ((DeclNode.Fcn) aggScope).getEnclosingScope().getScopeName() + "." + ((DeclNode.Fcn) aggScope).getName().getText();
+            }
+ 
+            return "??";       	
         }
+        private String mkCodeFromScope(IScope sc) {
+        	if (sc instanceof UnitNode)
+        		return mkCodeFromScope(((UnitNode) sc).getUnitType());
+        	
+        	if (sc instanceof DeclNode.Class) {
+        		return "C" + ((DeclNode.Class) sc).getUnitQualName();
+        	}
+        	if (sc instanceof DeclNode.Usr) {
+        		return "X" + ((DeclNode.Usr) sc).getUnitQualName();
+        	}
+        	if (isFcnRef && sc instanceof DeclNode.TypedMember) {
+        		return "x" + ((DeclNode.TypedMember) sc).getTypeUnit().getQualName();
+        	}
+        	if (isFcnRef && sc instanceof DeclNode.Fcn) {
+        		return "x" + ((DeclNode.Fcn) sc).getEnclosingScope().getScopeName() + "." + ((DeclNode.Fcn) sc).getName().getText();
+        	}
+        	if (sc instanceof DeclNode.TypedMember) {
+        		return "X" + ((DeclNode.TypedMember) sc).getTypeUnit().getQualName();
+            }
+            return super.mkCode();
+        	
+        }
+        
+        @Override 
+        protected String mkCode() {
+        	return mkCodeFromScope(aggScope);
+        }
+        
+        @Override protected String mkType(String quals) {
+        	
+        	return mkName(); // use quals for classes?
+
+         }
         @Override protected String mkTypeStr() {
         	if (aggScope instanceof DeclNode.Usr)
         		return ((DeclNode.Usr) aggScope).getUnitQualName();
@@ -224,7 +283,10 @@ public class Cat implements Cloneable {
                     break;
                 case pollenParser.T_USR:
                     SymbolEntry sym = ((TypeNode.Usr) t).getSymbol(this.aggScope());
-                    sigString +=  Cat.fromSymbolNode(sym.node(), sym.scope(), false).mkTypeStr();
+                    if (sym != null)
+                    	sigString +=  Cat.fromSymbolNode(sym.node(), sym.scope(), false, false).mkTypeStr();
+                    else
+                    	sigString += Cat.fromScalarString("void");
                     break;
                 case pollenParser.T_FCN:
                     // not legal here
@@ -254,6 +316,9 @@ public class Cat implements Cloneable {
     	static final private HashMap<String,String> codeMap = new HashMap<String,String>();
         
         static {
+        	// "n" is not here but is used for numeric literals
+        	// which should match any numeric type, 
+        	// e.g. 'uint8Var == 0' should pass checks.
             codeMap.put("bool",     "b");
             //codeMap.put("Char",     "u1");
             codeMap.put("byte",		"u1");
@@ -296,6 +361,8 @@ public class Cat implements Cloneable {
             switch (kind) {
             case 'b':
                 return "bool";
+            case 'n':
+                return "Num";
             case 's':
                  return "string";
             case 'v':
@@ -362,14 +429,22 @@ public class Cat implements Cloneable {
     	else sym = curr.resolveSymbol(typeNode.getAtom());
     	
     	ISymbolNode snode = sym != null ? sym.node() : null;
+    	boolean isClass = false;
     	if (snode instanceof ImportNode) {
     		unit = ((ImportNode) snode).getUnit();
+    		isClass = unit.isClass();
     	}   
     	else if (snode instanceof UnitNode) {
     		unit = (UnitNode) snode;
+    		isClass = unit.isClass();
+    	}
+    	else if (snode instanceof DeclNode.Class && sym.scope() instanceof DeclNode.Usr) {
+    		// nested
+    		unit = ((DeclNode.Usr)sym.scope()).getUnit();   	
+    		isClass = true;
     	}
 
-    	if (unit != null && unit.isClass())
+    	if (unit != null && isClass)
     		return cat;
 
     	return Cat.fromError("class type required for \'new\'", cat, null);       
@@ -384,16 +459,19 @@ public class Cat implements Cloneable {
     }
  
     static Cat fromSymbolNode(ISymbolNode snode, IScope defScope) {
-        return fromSymbolNode(snode, defScope, false);
+        return fromSymbolNode(snode, defScope, false, false);
     }
 
-    static Cat fromSymbolNode(ISymbolNode snode, IScope defScope, boolean isRef) {
+    static Cat fromSymbolNode(ISymbolNode snode, IScope defScope, boolean isRef, boolean isFcnRef) {
     	
         if (snode instanceof UnitNode) {
-            return new Cat.Agg((UnitNode) snode, defScope, false);
+            return new Cat.Agg((UnitNode) snode, defScope, false, false);
         }
         else if (snode instanceof DeclNode.Usr) {
-            return new Cat.Agg((DeclNode.Usr) snode, defScope, isRef);
+            return new Cat.Agg((DeclNode.Usr) snode, defScope, isRef, false);
+        }
+        else if (snode instanceof DeclNode.Fcn && isFcnRef) {
+            return new Cat.Agg((DeclNode.Fcn) snode, defScope, isRef, true);
         }
         else if (snode instanceof DeclNode.Fcn) {
             return new Cat.Fcn((DeclNode.Fcn) snode);
@@ -408,7 +486,7 @@ public class Cat implements Cloneable {
         	return fromSymbolNode(((ImportNode) snode).getUnit(), defScope);
         }
         else if (snode instanceof DeclNode.TypedMember) {
-            return new Cat.Agg((DeclNode.TypedMember) snode, defScope, false);
+            return new Cat.Agg((DeclNode.TypedMember) snode, defScope, false, false);
         }
         else if (snode instanceof DeclNode.ITypeSpec) {
         	BaseNode b = ((DeclNode.ITypeSpec) snode).getTypeSpec();
@@ -444,8 +522,11 @@ public class Cat implements Cloneable {
         		}
         	}
             SymbolEntry sym = ((TypeNode.Usr) typeNode).getSymbol();
-
-            return Cat.fromSymbolNode(sym.node(), sym.scope(), isRef);
+            if (sym != null) {
+            	boolean isFcnRef = sym.node() instanceof DeclNode.Fcn;
+            	return Cat.fromSymbolNode(sym.node(), sym.scope(), isRef, isFcnRef );
+            }
+            else return Cat.fromScalarString("void");
         case pollenParser.T_FCN:
             Cat cat = new Cat.Fcn((TypeNode.Fcn) typeNode);
             return cat;
@@ -471,8 +552,18 @@ public class Cat implements Cloneable {
         return code;
     }
     
-    public boolean isAggVal() {
+    public boolean isAggArr() {
         return this instanceof Cat.Arr;
+    }
+    public boolean isAggTyp() {  
+    	
+    	if (!(this instanceof Cat.Agg))
+    		return false;
+    	Cat.Agg c = (Agg) this;
+    	if (c.isFcnRef)
+    		return false;
+    	return true;
+      	
     }
         
     public boolean isTypedMember() {

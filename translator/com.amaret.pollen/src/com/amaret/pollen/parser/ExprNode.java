@@ -5,12 +5,17 @@ import java.util.List;
 
 import org.antlr.runtime.CommonToken;
 
+import com.amaret.pollen.parser.DeclNode.Usr;
+
 public class ExprNode extends BaseNode {
 	
     public interface AggVal {}
+    public interface SubExprCat {
+    	 public Cat getSubExprCat();   	 // handle subexpressions
+    }
     
     // ExprNode.Binary
-    static public class Binary extends ExprNode {
+    static public class Binary extends ExprNode implements SubExprCat {
 
         static final private int LEFT = 1;
         static final private int OP = 0;
@@ -42,6 +47,32 @@ public class ExprNode extends BaseNode {
         public boolean isAssign() {
             return isAssign;
         }
+        /**
+         * 
+         * @return most refined Cat for the expr subtree
+         * E.g. cat for count in 'arr[i].count'
+         */
+
+        private Cat getSubExprCat(boolean isRight) {
+        	ExprNode e = isRight ? this.getRight() : this.getLeft();
+        	if (e.getChildren().isEmpty())
+        		return e.getCat();
+        	for (int i = e.getChildren().size()-1; i > 1; i--) {
+        		if (!(e.getChild(i) instanceof ExprNode))
+        			continue;
+        		e = (ExprNode) e.getChild(i);
+        		if (e instanceof ExprNode.Ident)
+        			return e.getCat();       		
+        	}
+			return isRight ? this.getRight().getCat() 
+					: this.getLeft().getCat();
+      	
+        }
+        public Cat getSubExprCat() {
+            Cat left = getSubExprCat(false); 
+            Cat right = getSubExprCat(true);             
+            return TypeRules.checkBinary(getOp().getText(), left, right);      	
+        }
         
         @Override
         protected void pass2End() {
@@ -51,14 +82,20 @@ public class ExprNode extends BaseNode {
                 TypeRules.checkInit(exprCat, getRight());
                 return;
             }
-            Cat left = getLeft().getCat();
-            Cat right = getRight().getCat();
-            if ((exprCat = TypeRules.preCheck(left, right)) != null) {
+            Cat left = getSubExprCat(false); 
+            Cat right = getSubExprCat(true); 
+            
+            boolean providedTypeTest = this.getParent() instanceof StmtNode.Provided;
+            providedTypeTest &= getLeft().getCat().isUnit() || getRight().getCat().isUnit();
+
+            if ((exprCat = TypeRules.preCheck(getLeft().getCat(), getRight().getCat())) != null) {
                 return;
             }
-            exprCat = TypeRules.checkBinary(getOp().getText(), getLeft().getCat(), getRight().getCat());
-            if (exprCat instanceof Cat.Error) {
-                ParseUnit.current().reportError(getOp(), ((Cat.Error) exprCat).getMsg());
+            if (!providedTypeTest) {
+            	exprCat = TypeRules.checkBinary(getOp().getText(), left, right);
+            	if (exprCat instanceof Cat.Error) {
+            		ParseUnit.current().reportError(getOp(), ((Cat.Error) exprCat).getMsg());
+            	}
             }
         }
     }
@@ -68,14 +105,27 @@ public class ExprNode extends BaseNode {
 
         static final private int NAME = 0;
         static final private int ARGS = 1;
-        static final private int DEREF = 2;
+        private SymbolEntry caller = null;   // in e.get() caller is for 'e'.
+        private SymbolEntry called = null;   // in e.get() called is for 'get()'. 
+        
+        public SymbolEntry getCaller() {
+			return caller;
+		}
+		public SymbolEntry getCalled() {
+			return called;
+		}
+		public boolean isThisPtr() {
+			return thisPtr;
+		}
+
+		private boolean thisPtr = false; // a class method call: add a this ptr as first parameter
         
         Call(int ttype, String ttext) {
             super(ttype, ttext);
         }
-        Call(int ttype, String ttext, boolean deref) {
+        Call(int ttype, String ttext, boolean dr) {
             super(ttype, ttext);
-            useScopeDeref = deref;
+            deref = dr;
         }
        
         @SuppressWarnings("unchecked")
@@ -86,22 +136,13 @@ public class ExprNode extends BaseNode {
         public ExprNode getName() {
             return (ExprNode) getChild(NAME);
         }
-        /**
-         * 
-         * @return if this call is dereferenced, return deref expr else null.
-         */
-        public ExprNode getDeref() {
-        	return this.getChildCount() == DEREF ? ((ExprNode) getChild(DEREF)) : null;
-        }
         @Override
         protected boolean pass1Begin() {
-        	// TODO resolve symbol
-        	// TODO if useScopeDeref, use scopeDeref for symbol resolution
         	 
         	return super.pass1Begin();
         }
         protected boolean pass2Begin() {
-        	SymbolEntry symbol = null;
+        	called = null;
         	ParseUnit currUnit = ParseUnit.current();
         	
         	SymbolTable symtab = currUnit.getSymbolTable();
@@ -112,21 +153,78 @@ public class ExprNode extends BaseNode {
 
         	if (getName() != null && getName() instanceof ExprNode.Ident) {
         		ExprNode.Ident ei = (ExprNode.Ident) getName();
-        		boolean flag = false;
-        		if (ei.getName().getText().equals("Interrupt.setHandler"))
-        			flag = true;
-            	symbol = symtab.curScope().lookupName(ei.getName().getText(), chkHostScope);
+        		
+        		String dbgs = ei.getName().getText();
+        		boolean dbg = false;
+        		if (dbgs.equals("t.init"))
+        			dbg = true;
+            	if (this.getParent() instanceof ExprNode.Ident 
+            			&& ((ExprNode.Ident) this.getParent()).getSymbol() != null) {
+            		// this is an access after a dereference: 'arr[i].fcn()'.
+            		// lookup scope for 'fcn()' is the type for arr. 
+            		
+            		
+            		IScope sc = ((ExprNode.Ident) this.getParent()).getSymbol().derefScope(false);
+            		called = sc.lookupName(ei.getName().getText());       
+            		if (called != null && called.node() instanceof DeclNode) {
+            			DeclNode d = (DeclNode) called.node();
+            			boolean accessible = d.query(EnumSet.of(Flags.PUBLIC));
+            			accessible |= (d.getUnit() == currUnit.getCurrUnitNode());
+            			called = (accessible) ? called : null;
+            		}
+            	}
             	
-            	if (symbol == null) { 
-            		currUnit.reportError(ei.getName(), "identifer is not declared in the current scope "
-            				+  symtab.curScope().getScopeName());
+            	if (called == null) {
+            		called = symtab.curScope().lookupName(ei.getName().getText(), chkHostScope);
+            	}
+            	
+            	if (ei.getName().getText().indexOf('.') != -1) {
+            		String n = ei.getName().getText();
+            		n = n.substring(0, n.lastIndexOf('.'));
+            		caller = symtab.curScope().lookupName(n,chkHostScope);
+            		if (caller == null && chkHostScope) 
+            			caller = symtab.curScope().lookupName(n,false);
+            		ei.setQualifier(caller);            		
             	}
             	else {
-            		ei.setSymbol(symbol);
+            		IScope sc = currUnit.getSymbolTable().curScope();
+            		while (!(sc instanceof DeclNode.Usr)) {
+            			sc = sc.getEnclosingScope();
+            			if ( sc instanceof DeclNode.Usr && ((DeclNode.Usr) sc).isClass()) {
+            				// if calling a method in current class, 'this' is the caller
+                			caller = symtab.curScope().lookupName("this",false);
+                			ei.setQualifier(caller);  
+            			}
+            		}           		
             	}
-        	}
+            	if (called == null) { 
+            		// Could be a host function accessed through a non-host caller:
+            		// look up in the host table of the deref scope of the caller.
+            		if (chkHostScope && caller != null) {
+                		String n = ei.getName().getText();
+                		if (n.indexOf('.') != -1) {
+                			n = n.substring(n.lastIndexOf('.')+1);
+                			called = caller.derefScope(true).lookupName(n, chkHostScope);
+                		}            			
+            		}
+            	}
+        		if (called == null)
+        			currUnit.reportError(ei.getName(), "identifier is not declared in the current scope "
+        				+  symtab.curScope().getScopeName());
 
-        	 
+            	else {
+            		ei.setSymbol(called);
+            		IScope sc = called.scope();
+            		boolean isHostFcn = (called.node() instanceof DeclNode.Fcn && ((DeclNode.Fcn)called.node()).isHost());
+            		if (!isHostFcn 
+            				&& sc instanceof DeclNode.Usr && ((DeclNode.Usr) sc).isClass()
+            				&& !((DeclNode.Usr) sc).isHost()
+            				&& !(called.node() instanceof DeclNode.FcnRef)) {
+            				// for function references, the scope of the function ref is not the scope of the called fcn
+            			thisPtr = true;     
+            		}
+            	}
+        	}        	 
         	return super.pass2Begin();
         }
         
@@ -151,10 +249,23 @@ public class ExprNode extends BaseNode {
             	DeclNode.TypedMember tm = (DeclNode.TypedMember) ((Cat.Agg) cat).aggScope();
              	cat = tm.getFcnTypeCat();
             }
+           
+            if (!(cat instanceof Cat.Fcn)) {               
+            	String n = (getName() instanceof ExprNode.Ident) ? "\'" + ((ExprNode.Ident) getName()).getName().getText() + "\' ": "";
+            	ParseUnit.current().reportError(getName(), n + "not a function");
+            	return;                
+            }
+            	
             Cat.Fcn fcncat = (Cat.Fcn) cat;
             int argc = getArgs().size();
+            if (thisPtr) argc++; // add one for this ptr (already added in the parser)
             int minArgc = fcncat.minArgc();
             int maxArgc = fcncat.maxArgc();
+           
+            if (thisPtr && fcncat.fcnD() != null && ((DeclNode.Usr) fcncat.fcnD().getEnclosingScope()).isProtocol()) {
+            	minArgc++;
+            	maxArgc++;  // a class is implementing a protocol: account for 'this' parameter.
+            }
             if (argc < minArgc || argc > maxArgc) {
                 currUnit.reportError(getName(), "wrong number of arguments");
                 return;
@@ -162,23 +273,54 @@ public class ExprNode extends BaseNode {
      
             exprCat = fcncat.retCat();
             
-            int k = -1;
-            for (ExprNode e : getArgs()) {
-                k += 1;
-                Cat ecat = e.getCat();
-                Cat acat = fcncat.argCats().get(k);
-                if (e instanceof ExprNode.AggVal) {
-                    TypeRules.checkInit(acat, e);
-                    continue;
-                }
-                if (TypeRules.preCheck(ecat) != null) {
-                    continue;
-                }
-                Cat res = TypeRules.checkBinary("=", acat, ecat, "argument type error");
-                if (res instanceof Cat.Error) {
-                    ParseUnit.current().reportError(e, ((Cat.Error) res).getMsg());
-                }
+            // for now, skip check for calling through function references
+            // TODO figure out how to pass 'this' ptr for function ref class method calls
+            if (!(called.node() instanceof DeclNode.TypedMember)) {
+                
+            	int k = (isThisPtr()) ? 0 : -1; // skip 'this'
+            	
+            	for (ExprNode e : getArgs()) {
+            		k += 1;
+            		Cat ecat = e instanceof ExprNode.SubExprCat ? ((ExprNode.SubExprCat)e).getSubExprCat() : e.getCat();
+            		Cat acat = fcncat.argCats().get(k);
+            		if (isThisPtr())
+            			continue; // the first parameter is 'this' (skip)
+            		if (acat.isAggTyp()) {
+            			if (((Cat.Agg)acat).isComposition()) {
+            				// TODO do I need to resolve to the module, for an export?
+            			}
+            			if (((Cat.Agg) acat).isProtocol()) {
+            				ParseUnit.current().reportError(this, "actual parameter type error for \'" + ((Cat.Agg) acat).aggName() + "\' (protocol not allowed)");
+            				continue;
+            			}
+
+            		}
+
+            		if (e instanceof ExprNode.AggVal) {
+            			TypeRules.checkInit(acat, e);
+            			continue;
+            		}
+            		if (TypeRules.preCheck(ecat) != null) {
+            			continue;
+            		}
+            		Cat res = TypeRules.checkBinary("=", acat, ecat, "formal / actual parameter type conflict");
+            		if (res instanceof Cat.Error) {
+            			ParseUnit.current().reportError(this.getName(), ((Cat.Error) res).getMsg());
+            		}
+            	}
             }
+    		
+    		
+    		ExprNode.Ident ei = (ExprNode.Ident) getName();
+    		if (thisPtr) {
+    			String n = ei.getName().getText();
+    			if (n.indexOf(".") != -1) {
+    				n = n.substring(n.lastIndexOf('.')+1);
+    				n = called != null ? called.scope().getScopeName() + "_" + n : n;
+    				ei.getName().setText(n); // For method in class Event, change call from e.get() to Event.get(e)
+    			}
+        		
+    		}           		
         }
     }   
     // ExprNode.Cond
@@ -341,24 +483,59 @@ public class ExprNode extends BaseNode {
     }
     
     // ExprNode.Ident
-    static public class Ident extends ExprNode {
+    static public class Ident extends ExprNode implements SubExprCat {
 
         static final private int NAME = 0;
         
-        private SymbolEntry symbol = null;
+        private SymbolEntry symbol = null;		// for obj.field symbol is for 'field'
+        private SymbolEntry qualifier = null;  	// for obj.field qualifier is 'obj'
+
+		private boolean thisPtr = false;		// add 'this' to accesses
         
-        Ident(int ttype, String ttext) {
+        public boolean isThisPtr() {
+			return thisPtr;
+		}
+
+		public SymbolEntry getQualifier() {
+			return qualifier;
+		}
+
+		public void setQualifier(SymbolEntry qualifier) {
+			this.qualifier = qualifier;
+		}
+
+		Ident(int ttype, String ttext) {
             super(ttype, ttext);
         }
         
-        Ident(int ttype, String ttext, boolean deref) {
+        Ident(int ttype, String ttext, boolean dr) {
             super(ttype, ttext);
-            useScopeDeref = deref;
+            deref = dr;
         }
    
         public Atom getName() {
             return (Atom) ((BaseNode) getChild(NAME)).getToken();
         }
+        /**
+         * 
+         * @return most refined Cat for the expr subtree
+         * E.g. cat for count in 'arr[i].count'
+         */
+
+        public Cat getSubExprCat() {
+        	ExprNode e;
+        	if (this.getChildren().isEmpty())
+        		return this.getCat();
+        	for (int i = this.getChildren().size()-1; i > 1; i--) {
+        		if (!(this.getChild(i) instanceof ExprNode))
+        			continue;
+        		e = (ExprNode) this.getChild(i);
+        		if (e instanceof ExprNode.Ident)
+        			return e.getCat();       		
+        	}
+			return this.getCat();     	
+        }
+        
         
         @Override
         public SymbolEntry getSymbol() {
@@ -376,10 +553,25 @@ public class ExprNode extends BaseNode {
 
 
         	ParseUnit currUnit = ParseUnit.current();
+        	if (this.getParent() instanceof ExprNode.Ident 
+        			&& ((ExprNode.Ident) this.getParent()).getSymbol() != null) {
+        		
+        		// This is an access after an indexed expr or call, such as 'arr[i].fld'.
+        		// lookup scope for 'fld' is the type for arr. 
+        		        		
+        		IScope sc = ((ExprNode.Ident) this.getParent()).getSymbol().derefScope(false);
+        		symbol = sc.lookupName(getName().getText());       
+        		if (symbol != null && symbol.node() instanceof DeclNode) {
+        			DeclNode d = (DeclNode) symbol.node();
+        			boolean accessible = d.query(EnumSet.of(Flags.PUBLIC));
+        			accessible |= (d.getUnit() == currUnit.getCurrUnitNode());
+        			symbol = (accessible) ? symbol : null;
+        		}
+        	}
         	if (symbol == null)
         		symbol = currUnit.getSymbolTable().resolveSymbol(getName());
         	if (symbol == null) {
-        		currUnit.reportError(getName(), "identifer is not declared in the current scope " + currUnit.getSymbolTable().curScope().getScopeName());
+        		currUnit.reportError(getName(), "identifier is not declared in the current scope " + currUnit.getSymbolTable().curScope().getScopeName());
 
         	}
         	return super.pass2Begin();
@@ -398,7 +590,19 @@ public class ExprNode extends BaseNode {
         				return;
         			}       			
         		}
+        		if (symbol.node() instanceof DeclNode.Var && symbol.scope() instanceof DeclNode.Class) {
+        			IScope sc = ParseUnit.current().getSymbolTable().curScope();
+        			if (sc instanceof StmtNode.Block || sc instanceof BodyNode) {
+        				do
+        					sc = sc.getEnclosingScope();
+        				while  (!(sc instanceof DeclNode.Fcn));
+        			}
+        			if (sc.getEnclosingScope() == symbol.scope() 
+        					&& !((DeclNode.Fcn)sc).isConstructor() && !((DeclNode.Fcn)sc).isHost())
+        				thisPtr  = true; // a class var accessed within a  method belonging to its class
+        		}
         		exprCat = symbol.node().getTypeCat();
+
         	}
         }
     }
@@ -477,12 +681,21 @@ public class ExprNode extends BaseNode {
         	// variable be declared before it is referenced.
         	
         	ParseUnit currUnit = ParseUnit.current();
+        	
+//        	if (currUnit.getCurrUnitNode().isHostScope()) {     		
+//        		currUnit.reportError(this, "use of \'@\' is prohibited in a host scope");
+//        		//return true;
+//        	}
+        	if (!currUnit.getCurrUnitNode().getUnitType().isClass()) {
+        		currUnit.reportError(this, "\'@\' can only be used in \'class\' methods");   		
+        	}
+
         	// do the lookup of the deref'd member here, where the self context
         	// is known, in case there is a name collision between a local var name
         	// and a member name. 
         	if (getMember() != null && getMember() instanceof ExprNode.Ident) {
         		ExprNode.Ident ei = (ExprNode.Ident) getMember();
-            	symbol = currUnit.getSymbolTable().resolveSymbol(ei.getName(), currUnit.getCurrUnitNode().getUnitType());
+            	symbol = currUnit.getSymbolTable().resolveSymbol(ei.getName(), currUnit.getSymbolTable().curScope());
             	if (symbol == null) {
             		currUnit.reportError(ei.getName(), "identifer is not declared in the current scope");
             	}
@@ -505,6 +718,37 @@ public class ExprNode extends BaseNode {
         	exprCat = symbol.node().getTypeCat();
         }
     }
+    // ExprNode.Size
+	static public class Size extends ExprNode {
+	
+	    static final private int TYPE = 0;
+	    static final private int FIELD = 1;
+	    
+	    private char op;
+	
+	    Size(int ttype, String ttext, char op) {
+	        super(ttype, ttext);
+	        this.op = op;
+	    }
+	    
+	    public Atom getFieldName() {
+	        return getChildCount() > FIELD ? ((BaseNode) getChild(FIELD)).getAtom() : null;
+	    }
+	    
+	    public char getOp() {
+	        return op;
+	    }
+	    
+	    public TypeNode getTypeSpec() {
+	        return ((TypeNode) getChild(TYPE));
+	    }
+	    
+	    @Override
+	    protected void pass2End() {
+	        
+	    }
+	}
+
 
     
     // ExprNode.Index
@@ -602,42 +846,11 @@ public class ExprNode extends BaseNode {
         }
     }
     
-    // ExprNode.Size
-    static public class Size extends ExprNode {
-
-        static final private int TYPE = 0;
-        static final private int FIELD = 1;
-        
-        private char op;
-
-        Size(int ttype, String ttext, char op) {
-            super(ttype, ttext);
-            this.op = op;
-        }
-        
-        public Atom getFieldName() {
-            return getChildCount() > FIELD ? ((BaseNode) getChild(FIELD)).getAtom() : null;
-        }
-        
-        public char getOp() {
-            return op;
-        }
-        
-        public TypeNode getTypeSpec() {
-            return ((TypeNode) getChild(TYPE));
-        }
-        
-        @Override
-        protected void pass2End() {
-            
-        }
-    }
-        
-
     // ExprNode.Unary
-    static public class Unary extends ExprNode {
+    static public class Unary extends ExprNode implements SubExprCat {
 
-        static final private int OPERATOR = 1;
+
+		static final private int OPERATOR = 1;
         static final private int OPERAND = 0;
 
         private boolean isPostfix;
@@ -662,16 +875,36 @@ public class ExprNode extends BaseNode {
         public boolean isPostfix() {
             return isPostfix;
         }
+        /**
+         * 
+         * @return most refined Cat for the expr subtree
+         * E.g. cat for count in 'arr[i].count'
+         */
+
+        public Cat getSubExprCat() {
+        	ExprNode e = this.getOperand();
+        	if (e.getChildren().isEmpty())
+        		return e.getCat();
+        	for (int i = e.getChildren().size()-1; i > 1; i--) {
+        		if (!( e.getChild(i) instanceof ExprNode))
+        			continue;
+        		e = (ExprNode) e.getChild(i);
+        		if (e instanceof ExprNode.Ident)
+        			return e.getCat();       		
+        	}
+			return getOperand().getCat();     	
+        }
         
         @Override
         protected void pass2End() {
             String op = getOperator().getText();
             isConst = !op.equals("++") && !op.equals("--") && getOperand().isConst;
+            Cat catSubtree = getSubExprCat();
             Cat cat = getOperand().getCat();
             if ((exprCat = TypeRules.preCheck(cat)) != null) {
                 return;
             }
-            exprCat = TypeRules.checkUnary(op, cat);
+            exprCat = TypeRules.checkUnary(op, catSubtree);
             if (exprCat instanceof Cat.Error) {
                 ParseUnit.current().reportError(getOperator(), ((Cat.Error) exprCat).getMsg());
             }
@@ -716,10 +949,8 @@ public class ExprNode extends BaseNode {
     protected Cat exprCat = Cat.UNKNOWN;
     protected boolean isConst = false;
     
-    // scopeDeref set by Call, Ident, Index.
-    static protected NestedScope scopeDeref = null;
-    // Lookups use scopeDeref when true.
-    protected boolean useScopeDeref = false;
+    // True when this expr or ident is to the right of a '.'
+    protected boolean deref = false;
     
     ExprNode(int ttype, String ttext) {
       	this.token = new Atom(ttype, ttext);

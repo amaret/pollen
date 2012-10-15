@@ -14,6 +14,7 @@ public class ListNode<T> extends BaseNode {
     }
     
 	@SuppressWarnings("unchecked")
+	public
     List<T> getElems() {
 	    if (elems == null) {
 	        elems = (children != null) ? children : new ArrayList<T>();

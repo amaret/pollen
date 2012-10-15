@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.Stack;
 
 import org.antlr.runtime.ANTLRFileStream;
@@ -13,6 +14,7 @@ import org.antlr.runtime.tree.TreeAdaptor;
 
 import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.driver.ProcessUnits.Termination;
+import com.amaret.pollen.target.ITarget;
 
 
 public class ParseUnit {
@@ -28,13 +30,38 @@ public class ParseUnit {
 	private static File currFile;
 	private UnitNode currUnitNode = null;
 	private SymbolTable symbolTable;
+	private Properties properties;
 	private String uname = "";
 	private String packageName = "";	
     private Stack<String> impChain;
     private HashMap<String,UnitNode> unitMap;
     private HashMap<String, String>	packages;
+    static private boolean debugMode = false;
+    
+    
+    public static void setDebugMode(boolean debugMode) {
+		ParseUnit.debugMode = debugMode;
+	}
+	public static boolean isDebugMode() {
+		return debugMode;
+	}
 
-	
+	static public enum Property {
+        POLLEN_ROOT
+    }
+	public PrintStream getErrorStream() {
+		return err;
+	}
+	public String getPollenRoot() {
+		return ProcessUnits.getPollenRoot();
+	}
+	public PrintStream getInfoStream() {
+		return info;
+	}	
+	public PrintStream getOutputStream() {
+		return out;
+	}
+
 	public SymbolTable getSymbolTable() {
 		return symbolTable;
 	}
@@ -44,7 +71,8 @@ public class ParseUnit {
 	}
 
 	public int getErrorCount() {
-		return errorCount;
+		return 0;
+		//return errorCount;
 	}
 	
 	public String getCurrPath() {
@@ -52,8 +80,7 @@ public class ParseUnit {
 			return path; // default is the input pollen file.
 		return paths.get(paths.size()-1);
 	}
-
-
+	
 	public String getPackageName() {
 		String p = getCurrPath();
 		return ParseUnit.mkPackageName(p);
@@ -64,10 +91,11 @@ public class ParseUnit {
 	}
 
 
-	private ParseUnit(String inputPath, HashMap<String, String> pkgs,
-			PrintStream outputStream, PrintStream errorStream, PrintStream infoStream, SymbolTable symtab) {
+	private ParseUnit(String inputPath, Properties props,
+			HashMap<String, String> pkgs, PrintStream outputStream, PrintStream errorStream, PrintStream infoStream, SymbolTable symtab) {
 	
 		path = inputPath;
+		properties = props;
 		out = outputStream;
 		err = errorStream;
 		info = infoStream;
@@ -75,10 +103,26 @@ public class ParseUnit {
 		packages = pkgs;		
         impChain = new Stack<String>();
         errorCount = 0;
-        unitMap = new HashMap<String, UnitNode>();
-
+        unitMap = new HashMap<String, UnitNode>();        
 	}
-    public UnitNode findUnit(String qualName) {
+
+    public String getProperty(Property key) {
+        return properties.getProperty(key.name());
+    }
+
+    public String getProperty(String key) {
+        return properties.getProperty(key);
+    }
+    
+    public void enterUnit(String qualname, UnitNode unit) {
+    	if (!unit.isVoid()) { // deferred
+    		unitMap.put(qualname, unit);
+    		if (!unit.getUnitType().getMetaQualName().isEmpty())
+    			unitMap.put(qualname + "_" + unit.getUnitType().getMetaQualName()	, unit);
+    	}
+    }
+
+	public UnitNode findUnit(String qualName) {
         return unitMap.get(qualName);
     }
 
@@ -86,26 +130,18 @@ public class ParseUnit {
 	/**
 	 * Initialize and start up for parse phase.
 	 * @param inputPath
+	 * @param props TODO
 	 * @param pkgs
 	 * @param outputStream
 	 * @param errorStream
 	 * @param infoStream
 	 * @param symtab
 	 */
-	public static void initParse(String inputPath, HashMap<String, String> pkgs,
-			PrintStream outputStream, PrintStream errorStream, PrintStream infoStream, SymbolTable symtab) {
+	public static void initParse(String inputPath, Properties props,
+			HashMap<String, String> pkgs, PrintStream outputStream, PrintStream errorStream, PrintStream infoStream, SymbolTable symtab) {
 
-		currParse = new ParseUnit(inputPath, pkgs, outputStream,
-				errorStream, infoStream, symtab);
-		// Put the output somewhere convenient.
-        // TODO make a command line option for location of output directory.
-		String wdir = inputPath.substring(0, inputPath.lastIndexOf(File.separator));
-        wdir = wdir.substring(0, wdir.lastIndexOf(File.separator));
-        wdir += '/' + ParseUnit.mkPackageName(inputPath) + "_out"; 
-        File dir = new File (wdir);
-        dir.mkdirs();
-        ProcessUnits.setWorkingDir(wdir);
-		
+		currParse = new ParseUnit(inputPath, props, pkgs,
+				outputStream, errorStream, infoStream, symtab);		
 
 	}
 	
@@ -139,8 +175,7 @@ public class ParseUnit {
             	unit.defineSymbol(name, imp);
             	continue;        	
             }
-
-
+            
             if (!(impSnode instanceof ImportNode)) {
             	try {
                     impUnit = parseUnit(pkgPath + File.separator + imp.getUnitName() + ".p", client, clientImport);
@@ -156,8 +191,12 @@ public class ParseUnit {
                     reportError(imp.getUnitName(), "import not bound to unit");
                     continue;
                 } 
+                // TODO 
+                // How to implement export?
                 // look for the name in the sourceUnit
                 // A visible name must have 'isExport' true
+                // This says an import is invalid unless it has isExport() true 
+                // which may be Em only. 
 //                SymbolEntry expSym = sourceUnit.resolveSymbol(imp.getUnitName());
 //                ISymbolNode expSnode = expSym != null ? expSym.node() : null;
 //                if (expSnode instanceof ImportNode) { // && ((ImportNode) expSnode).isExport()) {
@@ -176,9 +215,7 @@ public class ParseUnit {
                     continue;
                 }
                 if (imp.getMeta() == null) {
-                    if (impUnit.isMeta()) {
-                    	// is Meta and no arguments: instantiate to defaults
-                    }
+
                     imp.bindUnit(impUnit);
                 }
                 else {
@@ -186,13 +223,13 @@ public class ParseUnit {
                         reportError(imp.getUnitName(), "meta arguments provided but not a meta type");
                         continue;
                     }
-                    if (errorCount > 0) {
-                        continue;
-                    }
+//                    if (getErrorCount() > 0) {
+//                        continue;
+//                    }
                     imp.bindUnit(impUnit);
                 }
                 impUnit.addClient(unit);
-                unitMap.put(impUnit.getQualName(), impUnit);
+                this.enterUnit(impUnit.getQualName(), impUnit);
            }
         }
 
@@ -212,18 +249,21 @@ public class ParseUnit {
 		
 		String cname = client != null ? client.getQualName() : "null";
 		String ciname = clientImport != null ? clientImport.getQualName() : "null";
-		
-		String dbgStr = "  START parseUnit() : ";
-		dbgStr += "input " + ParseUnit.mkPackageName(inputPath) + "." + ParseUnit.mkUnitName(inputPath) + ", client " + cname + ", clientImport " + ciname;
-		if (clientImport != null && clientImport.getMeta() != null) {
-			dbgStr += ", meta args ";
-			for (BaseNode b : clientImport.getMeta()) {
-				dbgStr += b.getText() + "." + b.getChild(0).getText() + "  ";
+				
+		setDebugMode(false);
+		if (isDebugMode()) {			
+			String dbgStr = "  START parseUnit() : ";
+			dbgStr += "input " + ParseUnit.mkPackageName(inputPath) + "." + ParseUnit.mkUnitName(inputPath) + ", client " + cname + ", clientImport " + ciname;
+			if (clientImport != null && clientImport.getMeta() != null) {
+				dbgStr += ", meta args ";
+				for (BaseNode b : clientImport.getMeta()) {
+					dbgStr += b.getText() + "." + b.getChild(0).getText() + "  ";
+				}
 			}
+			System.out.println(dbgStr);
 		}
-		System.out.println(dbgStr);
-		
-		
+		//setDebugMode(false);
+	
 		paths.add(inputPath);
 		in = new ANTLRFileStream(inputPath);
 		
@@ -242,11 +282,13 @@ public class ParseUnit {
         
         UnitNode unit = (UnitNode)result.getTree();
        
-        System.out.println( "       AST: " + unit.toStringTree());
+        if (isDebugMode())
+        	System.out.println( "       AST: " + unit.toStringTree());
+        setDebugMode(false);
        
-        if (getErrorCount() > 0) {
-            return null;
-        }       
+//        if (getErrorCount() > 0) {
+//            return null;
+//        }       
         unit.init();
         
         if (!(unit.getPkgName().getText().equals(getPackageName()))) {
@@ -257,7 +299,7 @@ public class ParseUnit {
             reportError(unit.getName(), "unit name does not match the current file");
         }
         
-        unitMap.put(unit.getQualName(), unit);
+        enterUnit(unit.getQualName(), unit);
         parseImports(unit);
         checkUnit(unit);
         paths.remove(paths.size()-1);
@@ -328,15 +370,17 @@ public class ParseUnit {
 
         //unit.defineSymbol(unit.getName(), unit);
         currUnitNode = unit;
-        System.out.println("  START checkUnit() for " + unit.getName());
+        
+        if (isDebugMode())
+        	System.out.println("  START checkUnit() for " + unit.getName());
 
-        if (getErrorCount() == 0) {
+        //if (getErrorCount() == 0 || isDebugMode()) {
             unit.doPass1();
-        }
+        //}
 
-        if (getErrorCount() == 0) {
+        //if (getErrorCount() == 0 || isDebugMode()) {
             unit.doPass2();
-        }
+        //}
         
         currUnitNode = null;
     }

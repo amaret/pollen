@@ -23,9 +23,16 @@ public class ExportNode extends BaseNode {
         String[] path = name.getText().split("\\.");
         if (!(snode instanceof ImportNode)) {
         	sym = currUnit.getSymbolTable().lookupName(path[0]);
-        	snode = sym == null ? null : sym.node();
-        	if (!(snode instanceof ImportNode)) {
+        	ISymbolNode snode2 = sym == null ? null : sym.node();
+        	if (!(snode2 instanceof ImportNode)) {
         		currUnit.reportError(name, "not an imported unit");
+        	}
+        	else {
+            	if (path.length > 1) {  // enter exported functions so they can be found.
+            		Atom exportName = new Atom(name);
+            		exportName.setText(path[1]);
+            		currUnit.getSymbolTable().defineSymbol(exportName, snode);
+            	}
         	}
         }
         else {

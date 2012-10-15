@@ -9,6 +9,7 @@ import org.antlr.runtime.tree.Tree;
 
 import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
 import com.amaret.pollen.parser.DeclNode.Usr;
+import com.amaret.pollen.parser.ExprNode.Ident;
 
 public class StmtNode extends BaseNode {
 
@@ -78,10 +79,12 @@ public class StmtNode extends BaseNode {
         
         @Override 
         public String getScopeName() {
-        	IScope enc = null;
-        	do {
-        		enc = this.getEnclosingScope();
-        	} while (enc instanceof StmtNode.Block);
+        	
+        	IScope enc = this.getEnclosingScope();
+        	if (enc instanceof StmtNode.Block)
+        		do {
+        			enc = enc.getEnclosingScope();
+        		} while (enc instanceof StmtNode.Block);
         	return enc.getScopeName();       	
         }
 
@@ -480,10 +483,23 @@ public class StmtNode extends BaseNode {
 			for (ExprNode expr : v.getVals()) {
 				for (TypeNode t : l) {
 					Cat retcat = Cat.fromType(t);
-					Cat valcat = expr.getCat();
+		        	boolean dbg = false;
+		        	String s;
+		        	if (expr instanceof ExprNode.Binary && ((ExprNode.Binary)expr).getLeft() instanceof ExprNode.Ident){
+		        		ExprNode.Ident ei = (Ident) ((ExprNode.Binary)expr).getLeft();
+		            	s = ei.getName().getText();
+		            	if (s.equals("timers"))
+		            		dbg = true;
+		        	} 
+					Cat valcat = (expr instanceof ExprNode.SubExprCat) ? ((ExprNode.SubExprCat) expr)
+							.getSubExprCat()
+							: expr.getCat();
+
+
+					
 					if (TypeRules.preCheck(valcat) == null) {
 						Cat rescat = TypeRules.checkBinary("=", retcat, valcat,
-								"return type error");
+								"return type error (unmatched or invalid return types)");
 						if (rescat instanceof Cat.Error) {
 							ParseUnit.current().reportError(expr,
 									((Cat.Error) rescat).getMsg());
@@ -652,6 +668,11 @@ public class StmtNode extends BaseNode {
     
     static private void checkCond(ExprNode cond) {
         Cat cat = cond.getCat();
+        
+        if (cond instanceof ExprNode.SubExprCat) {
+        	cat = ((ExprNode.SubExprCat) cond).getSubExprCat();
+        }
+        
         if (TypeRules.preCheck(cat) != null) {
             return;
         }
