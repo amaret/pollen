@@ -1,29 +1,34 @@
 package blink.avr
 
 -------------------------------------------------------------------------------
-A module that spins in a loop toggling a pin that blinks an led. 
+A module that spins in a loop toggling a pin which blinks an led. 
 
 The pin driver is abstracted out into its own module coming from the 
 mcu.avr.atmega328p package. 
 
 This module is specific to avr microcontrollers (i.e. arduino).
-
-pollen -i /some_bundle -e cc.arduino.Environment blink.avr.BlinkLooped1
 -------------------------------------------------------------------------------
 
-from pollen.environment import Led
+from atmel.atmega328 import PD0 as Pin
 
-module BlinkLooped1 {
+module Blink1 {
 
 	pollen.reset() { 
-		pollen.environment.reset() 
+    Pin.clear()
 	}
 	
 	pollen.run() {
 		while (true) {
-			Led.toggle()
-			pollen.environment.wait(500000)
+      Pin.set()
+      delaySome()
+      Pin.clear()
+      delaySome()      
 		}
 	}
 	
+	delaySome() {
+		for(i = 0; i < 10000; i++) {
+			+{ asm("nop") }+
+		}
+	}
 }

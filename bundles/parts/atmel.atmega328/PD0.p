@@ -1,10 +1,10 @@
-package atmel.avr.atmega328p
+package atmel.atmega328
 
 -------------------------------------------------------------------------------
 Device driver for general purpose input/output pin PD0 on the atmega328p micro.
 -------------------------------------------------------------------------------
 
-from pollen.protocols import Pin
+from pollen.hardware import Pin
 
 module PD0 implements Pin {
 
@@ -27,7 +27,7 @@ module PD0 implements Pin {
 	}
 	
 	public makeInput() {
-		+{DDR0}+ &= ~(1 << 0)
+		+{DDRD}+ &= ~(1 << 0)
 	}
 	
 	public bool isInput() {

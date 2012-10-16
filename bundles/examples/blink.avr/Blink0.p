@@ -1,18 +1,20 @@
 package blink.avr
 
 -------------------------------------------------------------------------------
-A module that spins in a loop toggling a pin that blinks an led. 
+A module that spins in a loop toggling a pin which blinks an led. 
 
-The pin driver is in the code and it is specific to AVR microcontrollers 
+The pin driver is in the code and specific to AVR microcontrollers 
 (i.e. arduino)
 -------------------------------------------------------------------------------
 
-module BlinkLooped0 {
+module Blink0 {
 
 	+{ #include <avr/io.h> }+
 
 	pollen.run() {	
 
+		+{DDR0}+ &= ~(1 << 0)   # Make the pin an input
+    
 		while(true) {
 			setPin()
 			delaySome()
