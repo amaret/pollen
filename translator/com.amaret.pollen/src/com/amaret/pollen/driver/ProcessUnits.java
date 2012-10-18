@@ -15,7 +15,15 @@ import com.amaret.pollen.translator.Generator;
 public class ProcessUnits {
 	private static String workingDir = "";
 	private static String pollenRoot = "";
+	private static String pollenEnv = "";
+	private static String pollenEnvPkg = "";
 	
+	public static String getPollenEnvPkg() {
+		return pollenEnvPkg;
+	}
+	public static String getPollenEnv() {
+		return pollenEnv;
+	}
 	public static String getWorkingDir() {
 		if (workingDir.isEmpty())
 			 workingDir = new File(".").getAbsolutePath();
@@ -25,7 +33,7 @@ public class ProcessUnits {
 		return pollenRoot;
 	}
 
-	public static void setWorkingDir(String workingDir) {
+	private static void setWorkingDir(String workingDir) {
 		ProcessUnits.workingDir = workingDir;
 	}
 
@@ -102,10 +110,13 @@ public class ProcessUnits {
 	}
 	private String helpMessage() {
 
-		String pollenHelp = "Usage: java -jar pollen.jar <bundles> <pollen file>\nOptions include:";
-		pollenHelp += "\n" + "-o <directory>";
-		pollenHelp += "\n" + "\tSpecifies output directory for pollen output. \n\tFor \'<path>/dir/pollenfile.p\' the default is \'<path>/dir_out\'";
-		pollenHelp += "\n" + "-h\tThis help message.";
+		String pollenHelp = "Usage: java -jar pollen.jar <options> <bundles> <pollen file>\nOptions include:";
+		pollenHelp += "\n" + "  -o <directory>";
+		pollenHelp += "\n" + "\tSpecifies output directory for pollen output. \n\tFor \'<path>/dir/pollenfile\' the default is \'<path>/dir_out.\'";
+		pollenHelp += "\n" + "  -e <pollen path>";
+		pollenHelp += "\n" + "\tSpecifies fully qualified path to a pollen module that will";
+		pollenHelp += "\n" + "\tbe substituted for \'pollen.environment\' in import statements.";
+		pollenHelp += "\n" + "  -h\tThis help message.";
 		return pollenHelp;    
 	}
 	/**
@@ -138,23 +149,34 @@ public class ProcessUnits {
 				System.out.println(this.helpMessage());
 				System.exit(0); 
 			}
+			if (p.equals("-e")) {
+				String emod = (args.length > (++i) ? args[i] : "");
+				if (emod.isEmpty())	
+					continue;
+				if (isRelativePath(emod))	
+					emod = System.getProperty("user.dir" + File.separator + emod);
+				if (!(new File(emod + ".p")).exists())
+					throw new Termination ("Invalid -e usage: must specifiy a fully qualified module for pollen.environment");								
+				pollenEnvPkg = this.putModule(inputs, emod);
+				pollenEnv = emod.substring(emod.lastIndexOf(File.separator)+1);
+				continue;
+			}
+
 			if (this.isRelativePath(p)) {
 				p = System.getProperty("user.dir") + File.separator + p;
 			}
-			if (p.endsWith(".p")) { // pollen file
+			// Is this arg the pollen file?
+			String pollenFile = (p.endsWith(".p")) ? p : "";
+			if (pollenFile.isEmpty()) {
+				pollenFile = (new File(p + ".p")).exists() ? p + ".p" : "";
+			}
+			if (!pollenFile.isEmpty()) { // pollen file
 				if (!inputs.pollenFile.isEmpty()) {
 					throw new Termination ("Invalid inputs: translator accepts one pollen file and a set of bundles");					
-				}
-				inputs.pollenFile = p;
-				inputPath = p;
-		        int k = p.lastIndexOf(File.separatorChar);
-		        int j = p.lastIndexOf(File.separator, k-1);
-		        j = j == -1 ? 0 : j +1;
-		        String pname = p.substring(j, k);
-		        if (!inputs.packages.containsKey(pname)) {
-		        	// add the package of the pollen file 
-		        	inputs.packages.put(pname, p.substring(0,k));
-		        }
+				}				
+				inputs.pollenFile = pollenFile;
+				inputPath = pollenFile;
+		        putModule(inputs, pollenFile);
 				continue;
 			}			
 			// else 'p' is a bundle
@@ -175,6 +197,22 @@ public class ProcessUnits {
 			throw new Termination ("Invalid inputs: translator accepts one pollen file and a set of bundles");					
 		}
 		return inputs;
+	}
+	/**
+	 * @param inputs
+	 * @param fully qualified path of pollenFile
+	 * @return package name
+	 */
+	private String putModule(Inputs inputs, String pollenFile) {
+		int k = pollenFile.lastIndexOf(File.separatorChar);
+		int j = pollenFile.lastIndexOf(File.separator, k-1);
+		j = j == -1 ? 0 : j +1;
+		String pkgName = pollenFile.substring(j, k);
+		if (!inputs.packages.containsKey(pkgName)) {
+			// add the package of the pollen file 
+			inputs.packages.put(pkgName, pollenFile.substring(0,k));
+		}
+		return pkgName;
 	}
 	/**
 	 * Parse the pollen file and all its dependencies (imports). 

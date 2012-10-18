@@ -525,8 +525,8 @@ public class StmtNode extends BaseNode {
             return (ExprNode) getChild(PRO);
         }
 
-        public ExprNode getValue() {
-            return getChildCount() > VAL ? (ExprNode) getChild(VAL) : null;
+        public TypeNode getValue() {
+            return getChildCount() > VAL ? (TypeNode) getChild(VAL) : null;
         }
         
         @Override
@@ -537,7 +537,7 @@ public class StmtNode extends BaseNode {
         	Cat right = null;
         	if (getValue() != null && getPro() != null) {
         		left = getPro().getCat();
-        		right = getValue().getCat();
+        		right = Cat.fromType(getValue()); 
 
         		if (snode == null || !(snode instanceof DeclNode.TypedMember) || !(((DeclNode.TypedMember)snode).isProtocolMember())) {
         			ParseUnit.current().reportError(getPro(), "LHS of binding operator assignment must be a protocol member");   
@@ -547,8 +547,11 @@ public class StmtNode extends BaseNode {
         			ParseUnit.current().reportError(getPro(), "RHS of binding operator assignment must be a module");     
         			return;
         		}
-        		DeclNode.Usr m = (Usr) ((Cat.Agg) right).aggScope();
-        		((DeclNode.TypedMember)snode).bindModule(m.getUnit()); // bind it
+        		
+        		BaseNode d = (BaseNode) ((Cat.Agg) right).aggScope();
+        		UnitNode u = (UnitNode) ((d instanceof UnitNode) ? d : d instanceof DeclNode.Usr ? ((DeclNode.Usr)d).getUnit() : null);
+        			
+        		((DeclNode.TypedMember)snode).bindModule(u, getValue()); // bind it
         		
             	// check that a protocol is being bound to a module
             	// in either a host fcn or a module body
@@ -562,7 +565,7 @@ public class StmtNode extends BaseNode {
                	}             	
 
         		left = getPro().getCat();
-        		right = getValue().getCat();
+        		right = Cat.fromType(getValue());
         		// TODO move the above checks into TypeRules
         		if (!(left instanceof Cat.Error) && !(right instanceof Cat.Error)) {
         			Cat res = TypeRules.checkBinary("=", left, right);

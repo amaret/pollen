@@ -1,5 +1,6 @@
 package com.amaret.pollen.parser;
 
+import com.amaret.pollen.parser.DeclNode.Arr;
 import com.amaret.pollen.parser.DeclNode.Formal;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.parser.DeclNode.Var;
@@ -31,9 +32,9 @@ public class SymbolEntry {
     public final IScope derefScope(boolean scopeHost) {
     	IScope sc = null;
     	// For an interim result, the next lookup scope can be 
-    	// 1. the scope of the interim result (for a qualified unit name)
+    	// 1. the scope of the interim result 
     	// 2. or the scope of the type. 
-    	// For the latter case the scope of the lookup for 'myFcn()' in obj1.myFcn() is the class of obj1. 
+    	// For example the lookup for 'myFcn()' in obj1.myFcn() is the class of obj1. 
     	
     	if (this.node() instanceof ImportNode && ((ImportNode) this.node()).getUnit() != null) {   		
 			sc = ((ImportNode) this.node()).getUnit().getUnitType();   		
@@ -41,7 +42,10 @@ public class SymbolEntry {
 				return sc;   	
     	}
     	TypeNode.Usr t = null;
-    	if (this.node() instanceof DeclNode.ITypeSpec) {
+    	if (this.node() instanceof DeclNode.Arr){
+    		t = (Usr) ((DeclNode.Arr)this.node()).getTypeSpec();			
+		}
+    	else if (this.node() instanceof DeclNode.ITypeSpec) {
     		if (((DeclNode.ITypeSpec) this.node()).getTypeSpec() instanceof TypeNode.Usr) {
     			t = (Usr) ((DeclNode.ITypeSpec) this.node()).getTypeSpec();
     		}        			
@@ -61,8 +65,9 @@ public class SymbolEntry {
     	}
     	
     	if (t == null) {
-    		if (this.node() instanceof ITypeKind
-    				&& ((ITypeKind) this.node()).isEnum() || ((ITypeKind) this.node()).isClass()) {
+
+    		ITypeKind is = (ITypeKind) (this.node() instanceof ITypeKind ? this.node() : null);
+    		if (is != null && (is.isEnum() || is.isClass())) {
     			if ((this.node().getDefiningScope() instanceof DeclNode.Usr))
     				sc = ((DeclNode.Usr) this.node()).getScopeDeleg();
     		}

@@ -115,10 +115,12 @@ public class ParseUnit {
     }
     
     public void enterUnit(String qualname, UnitNode unit) {
-    	if (!unit.isVoid()) { // deferred
+    	if (!unit.isVoid()) { // deferred instantiation ('{}')
     		unitMap.put(qualname, unit);
-    		if (!unit.getUnitType().getMetaQualName().isEmpty())
-    			unitMap.put(qualname + "_" + unit.getUnitType().getMetaQualName()	, unit);
+    		if (!unit.getUnitType().getMetaQualName().isEmpty()) {
+    			String pkg = qualname.substring(0, qualname.lastIndexOf(".")+1);
+    			unitMap.put(pkg + unit.getUnitType().getMetaQualName(), unit);
+    		}
     	}
     }
 
@@ -161,7 +163,8 @@ public class ParseUnit {
 
             String fromPkg = imp.getFrom().getText();
             String pkgPath = packages.get(fromPkg);
-
+            
+        
             SymbolEntry impSym = unit.resolveSymbol(imp.getFrom());
             ISymbolNode impSnode = impSym == null ? null : impSym.node();
             UnitNode impUnit = null;
@@ -178,6 +181,12 @@ public class ParseUnit {
             
             if (!(impSnode instanceof ImportNode)) {
             	try {
+            		
+                    if (pkgPath == null) {
+                        reportError(imp.getUnitName(), "missing package " + fromPkg);
+                        continue;
+                    } 
+
                     impUnit = parseUnit(pkgPath + File.separator + imp.getUnitName() + ".p", client, clientImport);
                 }
                 catch (Termination te) {
@@ -223,9 +232,6 @@ public class ParseUnit {
                         reportError(imp.getUnitName(), "meta arguments provided but not a meta type");
                         continue;
                     }
-//                    if (getErrorCount() > 0) {
-//                        continue;
-//                    }
                     imp.bindUnit(impUnit);
                 }
                 impUnit.addClient(unit);
@@ -262,7 +268,6 @@ public class ParseUnit {
 			}
 			System.out.println(dbgStr);
 		}
-		//setDebugMode(false);
 	
 		paths.add(inputPath);
 		in = new ANTLRFileStream(inputPath);
@@ -281,10 +286,13 @@ public class ParseUnit {
         }
         
         UnitNode unit = (UnitNode)result.getTree();
-       
+        
+		setDebugMode(false);
         if (isDebugMode())
         	System.out.println( "       AST: " + unit.toStringTree());
-        setDebugMode(false);
+		setDebugMode(false);
+
+ 
        
 //        if (getErrorCount() > 0) {
 //            return null;

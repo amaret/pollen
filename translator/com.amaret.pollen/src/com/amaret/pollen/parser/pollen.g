@@ -96,6 +96,7 @@ tokens {
     import java.lang.*;
     import java.io.*;
     import com.amaret.pollen.parser.*;
+    import com.amaret.pollen.driver.ProcessUnits;
 }
 @parser::members {
 
@@ -455,22 +456,71 @@ compositionFeature
    |	injectionDecl
  	;
 stmtImport
-    :   (importFrom
-         qualName (metaArguments)?
-         importAs delim) -> ^(IMPORT<ImportNode>["IMPORT"] importFrom qualName importAs metaArguments?)
-    ;
-importFrom
+scope{
+	String qpkg;
+	String qimp;
+}
 @init{
 	String defaultPkg = "";
 	String path = this.getTokenStream().getSourceName();
    int k = path.lastIndexOf(File.separator);
    int j = path.lastIndexOf(File.separator, k-1);
-    j = j == -1 ? 0 : j+1;
+   j = j == -1 ? 0 : j+1;
     // the default package is the containing directory
     defaultPkg = path.substring(j, k);
 }
-    :   'from' qualName 'import' -> qualName
-    |		'import' -> IDENT[defaultPkg]
+ 	   :    'from'! importFrom
+    
+    	|	('import' qualName 
+    		{	
+    			if ($qualName.text.equals("pollen.environment")) {
+    				$stmtImport::qimp = ProcessUnits.getPollenEnv();
+    				defaultPkg = ProcessUnits.getPollenEnvPkg();
+    				if ($stmtImport::qimp.isEmpty())
+    					throw new PollenException("Missing module specification for pollen.environment", input);
+    			}
+    			else {
+    				$stmtImport::qimp = $qualName.text;
+    			}
+    		}  
+         (metaArguments)?
+         importAs 
+         delim) 
+         -> ^(IMPORT<ImportNode>["IMPORT"] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs metaArguments?)
+    ;
+catch [PollenException re] {
+    String hdr = getErrorHeader(re);
+    String msg = re.toString();
+    emitErrorMessage(hdr+" "+msg);
+}
+importFrom
+@init{
+}
+    :   	(q1=qualName 
+    		{	
+    			$stmtImport::qpkg = ($q1.text.equals("pollen.environment")) ? ProcessUnits.getPollenEnvPkg() : $q1.text;
+    			if ($stmtImport::qpkg.isEmpty())
+    				throw new PollenException("Missing module specification for pollen.environment", input);
+    		} 
+    		'import' 
+    		q2=qualName 
+    		{	
+    			$stmtImport::qimp = ($q2.text.equals("pollen.environment")) ? ProcessUnits.getPollenEnv() : $q2.text;
+    			if ($stmtImport::qimp.isEmpty())
+    				throw new PollenException("Missing module specification for pollen.environment", input);
+    		}  
+         (metaArguments)?
+         importAs delim) -> ^(IMPORT<ImportNode>["IMPORT"] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs metaArguments?)
+    	
+/*    |		('import' 
+    			q=qualName 
+    			{$stmtImport::qname = $q.qn;}
+    		 ) => 'import' 
+    		 		{
+    		 		   defaultPkg = (pollenEnv ? ProcessUnits.getPollenEnvPkg() : defaultPkg);
+    		 		} 
+    		 	-> IDENT[defaultPkg]
+    		 	*/
     ;
 importAs
 	:	'as' qualName -> qualName
@@ -481,7 +531,7 @@ importList
 	:  stmtImports
 	;
 stmtImports
-	:	((importFrom) => stmtImport+) -> ^(LIST<ListNode>["LIST"]  stmtImport+ )
+	:	stmtImport+ -> ^(LIST<ListNode>["LIST"]  stmtImport+ )
 	|	-> ^(LIST<ListNode>["LIST"])
 	;
 meta 
@@ -653,9 +703,6 @@ metaArgument
 	|	typeNameScalar
 	;
 typeName
-@init{
-	//System.out.print("typeName: "); DBG_LT(); <DeclNode.Fcn>["D_FCN_DCL", featureFlags]
-}
 	:	typeNameScalar
 	;
 typeNameScalar			// scalar as in 'not array'
@@ -663,11 +710,17 @@ typeNameScalar			// scalar as in 'not array'
 	|	userTypeName
 	;
 userTypeName
-	// Note the commented out syntax is obsolete (a hack to support value{Event} e)
+	// Note the commented out syntax from pollen vers 1 is obsolete (it was a hack to support value{Event} e)
 	//:	qualName metaArguments	-> ^(T_USR<TypeNode.Usr>["T_USR", featureFlags] qualName metaArguments)
 	:	qualName		-> ^(T_USR<TypeNode.Usr>["T_USR", typeMods] qualName)
 	;
-
+typeNameArray		
+	:	builtinType	-> ^(T_ARR<TypeNode.Arr>["T_ARR", typeMods] ^(T_STD<TypeNode.Std>["T_STD", typeMods] builtinType))
+	|	userTypeNameArr
+	;
+userTypeNameArr
+	:	qualName		-> ^(T_ARR<TypeNode.Arr>["T_ARR", typeMods] ^(T_USR<TypeNode.Usr>["T_USR", typeMods] qualName))
+	;
 
 unitTypeDefinition
 scope {
@@ -966,7 +1019,7 @@ fieldAccess
 	|	'.'	IDENT 	-> ^(E_IDENT<ExprNode.Ident>["E_IDENT", true] IDENT)
 	;
 arrayAccess
-	:	'['	(exprList)?	']'	-> ^(E_INDEX exprList?)
+	:	'['	(exprList)?	']'	-> ^(E_INDEX<ExprNode.Index>["E_INDEX"] exprList?)
 	;
 	
 	
@@ -1013,7 +1066,7 @@ stmtAssert
 	:	'assert' exprList	delim -> ^(S_ASSERT exprList)
 	;
 stmtBind
-	:	varOrFcnOrArray BIND  expr	 delim -> ^(S_BIND<StmtNode.Bind>["S_BIND"] varOrFcnOrArray  expr)	
+	:	varOrFcnOrArray BIND  userTypeName	 delim -> ^(S_BIND<StmtNode.Bind>["S_BIND"] varOrFcnOrArray  userTypeName)	
 	;
 stmtPrint
 @init {
@@ -1168,14 +1221,27 @@ fcnRefTypes
 	|	-> ^(LIST<ListNode>["LIST"])
 	;
 varArray
-	:	typeName IDENT varArraySpec ('=' initializer)? 
-	->  ^(D_ARR<DeclNode.Arr>["D_Arr", stmtFlags] typeName IDENT varArraySpec initializer?)
+scope{
+	Object varArrSpec;
+	Object typArrSpec;
+}
+@after {
+ 		((CommonTree) $varArray::typArrSpec).addChild(((CommonTree) $varArray::varArrSpec));				
+}
+	:	typeNameArray { $varArray::typArrSpec = $typeNameArray.tree; }
+		IDENT 
+		varArraySpec { $varArray::varArrSpec = $varArraySpec.tree; } 
+		('=' initializer)? 
+	->  ^(D_ARR<DeclNode.Arr>["D_ARR", stmtFlags] 
+		typeNameArray 
+		IDENT varArraySpec initializer?)
 	;	
+
 varArraySpec
 	:	('[' varDim ']')+	->   ^(LIST<ListNode>["LIST"] varDim+)
 	;
 varDim
-	:  expr  // restrict
+	:  expr  
 	| -> NIL 
 	;
 initializer
@@ -1224,7 +1290,7 @@ builtinType  returns [EnumSet<LitFlags> f]
     |   'uint32'	{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
     ;
     
-qualName
+qualName 
 scope {
   String s; 
 }
@@ -1234,7 +1300,7 @@ scope {
 @after {
 	//System.out.println("Qual : "  + $qualName::s);
 }      
-    :	   IDENT (qualNameList?)  -> IDENT[$IDENT.text + $qualName::s]
+    :	   IDENT (qualNameList?)  -> IDENT[$IDENT.text + $qualName::s] 
     ;
 
 qualNameList 
@@ -1344,14 +1410,18 @@ WS
 SL_COMMENT
     : '#' ~('\n'|'\r')*   { $channel=HIDDEN; }
     | '/''/' ~('\n'|'\r')*  { $channel=HIDDEN; }
+    //| '---' ~('\n'|'\r')* '---' { $channel=HIDDEN; }
     ;
 INJECT
 	: IJ_BEG ( options {greedy=false;} : .)* IJ_END
 //	: '+{' ( options {greedy=false;} : . )* '}+'
 	;
 ML_COMMENT	
-    :   '---' ( options {greedy=false;} : . )* '---' ('\n'|'\r')* { $channel=HIDDEN; }
+    :   '---'('-')* ( options {greedy=false;} : . )*  '---'('-')* ('\n'|'\r')* { $channel=HIDDEN; }
     ;
+//ML_COMMENT	
+//    :   '---' ( options {greedy=false;} : . )* '---' ('\n'|'\r')* { $channel=HIDDEN; }
+//    ;
 SEMI
     :   ';'
     ;

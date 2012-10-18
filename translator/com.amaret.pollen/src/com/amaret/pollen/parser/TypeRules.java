@@ -62,6 +62,9 @@ public class TypeRules {
 	}
 
 	static Cat checkBinary(String op, Cat left, Cat right) {
+		if (left == null || right == null) {
+			return Cat.fromError("expr problem", left, right);
+		}
 		String l = left.mkCode();
 		String r = right.mkCode();
 		if (l.equals("Cpollen.time.TimerManager") && r.equals("v"))
@@ -93,17 +96,23 @@ public class TypeRules {
 
 		String r = right.mkCode();
 		boolean leftAgg = left.mkCode().charAt(0) == 'C' || left.mkCode().charAt(0) == 'X';
-		boolean rightAgg = right.mkCode().charAt(0) == 'C' || right.mkCode().charAt(0) == 'X';
-		if (leftAgg && rightAgg) {
-			if (left.mkCode().substring(1).equals(right.mkCode().substring(1)))			
-				// No difference in this context between C and X
-				r = r.replaceFirst("^.", left.mkCode().substring(0, 1));
-			else
-				return mkResult(null, left, right, err); // unit/class types must match exactly
+		if (leftAgg) {
+			boolean rightAgg = right.mkCode().charAt(0) == 'C' || right.mkCode().charAt(0) == 'X';
+			if (leftAgg && rightAgg) {
+				if (left.mkCode().substring(1).equals(right.mkCode().substring(1)))			
+					// No difference in this context between C and X
+					r = r.replaceFirst("^.", left.mkCode().substring(0, 1));
+				else
+					return mkResult(null, left, right, err); // unit/class types must match exactly
+			}
+		}
+		String l = left.mkCode();
+		if (l.charAt(0) == 'V' && r.charAt(0) != 'V' && l.length() > 1) {
+			l = l.substring(1); // check assign of array element to value			
 		}
 				
 
-		String codes = left.mkCode() + '#' + r;
+		String codes = l + '#' + r;
 		String res = null;
 		int opKinds = bryOpTab.get(op);
 		if ((opKinds & OP_ASSIGN) != 0 && (opKinds & ~OP_ASSIGN) != 0) {
@@ -121,7 +130,7 @@ public class TypeRules {
 	}
 	static private String matchRules(int opKinds, String codes, Rule[] rules) {
 		int domain = ParseUnit.current().getCurrUnitNode().isHostScope() ? HOST_DOMAIN : TARG_DOMAIN;
-		//System.out.println("New match!");
+		//System.out.println("Begin new match:");
 		for (Rule rule : rules) {
 			if ((rule.opKinds & opKinds) != 0 && (rule.domain & domain) != 0) {
 				//System.out.println("rule pattern " + rule.pat.pattern());

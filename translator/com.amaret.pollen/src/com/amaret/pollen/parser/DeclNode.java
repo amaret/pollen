@@ -85,9 +85,16 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             super(ttype, ttext, flags);
         }
         
+        public TypeNode.Arr getTypeArr() {
+        	return (TypeNode.Arr) getChild(BASE);
+        }
+        /**
+         * Return the base type spec for the array.
+         */
         @Override
         public TypeNode getTypeSpec() {
-            return (TypeNode) getChild(BASE);
+        	TypeNode.Arr t = (TypeNode.Arr) getChild(BASE);
+        	return t.getBase();
         }
         @Override
         public Cat getTypeCat() {
@@ -100,10 +107,21 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         	}
         	return super.getTypeCat();
         }
-
-        public ExprNode getDim() {
-            return getChildCount() > DIM ? (ExprNode) getChild(DIM) : null;
+        /**
+         * 
+         * @return first dimension
+         * TODO delete and replace with getDim() after multi-dim is implemented
+         */
+        @SuppressWarnings("unchecked")
+		public ExprNode getFirstDim() {
+        	ListNode<ExprNode> child = (ListNode<ExprNode>) getChild(DIM);
+         	return (!child.getElems().isEmpty()) ? child.getElems().get(0) : null;  
         }
+		@SuppressWarnings("unchecked")
+		public ListNode<ExprNode> getDim() {
+			return getChildCount() > DIM ? (ListNode<ExprNode>) getChild(DIM) : null;
+			
+		}
         
         @Override
         public Atom getName() {
@@ -497,7 +515,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         static final private int INIT = 2; 
               
         private UnitNode unitType;
-        private UnitNode modUnit = null; // for protocol members
+        private UnitNode modUnit = null; 			// for protocol members
+        private TypeNode modTypeSpec = null; 		// for protocol members
         private NestedScope scopeDeleg = new NestedScope(this);
         private Cat.Fcn fcnCat = null;   // for function references
         private boolean isMetaPrimitive = false; // a TypedMember with a meta type instantiated to a primitive has null unitType
@@ -609,13 +628,14 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
     	/**
     	 * Connect the protocol member to its implementing module unit (unitNode). 
+    	 * @param mt After binding, use this type for typeSpec
     	 * @param impUnit
     	 */
-    	public void bindModule(UnitNode mUnit) {
+    	public void bindModule(UnitNode mUnit, TypeNode mt) {
     		if (this.isProtocolMember()) {
     			modUnit = mUnit;
-    			typeCat = Cat.fromSymbolNode(modUnit, unit.getDefiningScope());
-    			
+    			modTypeSpec = mt;
+    			typeCat = Cat.fromSymbolNode(modUnit, unit.getDefiningScope());   			
     		}
     	}
 
@@ -668,10 +688,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
         @Override
         public TypeNode getTypeSpec() {
+        	if (modTypeSpec != null)
+        		return modTypeSpec;
             return (TypeNode) getChild(TYPE);
         }
-
-
 		@Override
 		public boolean isClass() {
 			if (unitType != null)
@@ -740,6 +760,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         protected NestedScope scopeDeleg = new NestedScope(this);
         protected NestedScope scopeHost = new NestedScope(this);
         protected String qname = "";
+        private boolean qnameSet = false;
         
         public NestedScope getScopeHost() {
 			return scopeHost;
@@ -790,21 +811,19 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		}
         
         /** 
-         * Qualify the Unit name by its name in the instantiating unitType.
+         * Qualify the Unit name using 'as' name in the instantiating unitType.
          * This enforces uniqueness in the scope of reference despite 
          * multiple instantiations in the scope of reference. 
          * ONLY call just before translation phase.
          */
         public void setMetaQualName() {
-        	if (!qname.isEmpty()) {       		
-        		//getName().setText(getName().getText() + "_" + qname);  too complex
+        	if (!qnameSet && !qname.isEmpty()) {       		
+        		//getName().setText(getName().getText() + "_" + qname); // too complex
         		getName().setText(qname);
-        		qname = "";
+        		qnameSet = true;
         	}
         }
-
-
-        public String getMetaQualName() {
+		public String getMetaQualName() {
 			return qname;
 		}
 		public BaseNode getImplements() {

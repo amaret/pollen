@@ -12,12 +12,12 @@ import com.amaret.pollen.target.ITarget.TypeInfo;
 public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 	
     // TypeNode.Arr
-	// NOTE currently Array specifiers on the type name are not implemented.
+	// NOTE currently Array specifiers on the type name are not implemented in the 
+	// grammar. 
     static public class Arr extends TypeNode {
 
         static final private int BASE = 0;
-        static final private int NAME = 1;
-        static final private int DIM = 2;
+        static final private int DIM = 1;
         
         Arr(int ttype, String ttext, EnumSet<Flags> flags) {
             super(ttype, ttext, flags);
@@ -28,9 +28,23 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
             return (TypeNode) getChild(BASE);
         }
 
-        public ExprNode getDim() {
-            return getChildCount() > DIM ? (ExprNode) getChild(DIM) : null;
+        /**
+         * 
+         * @return first dimension
+         * TODO delete and replace with getDim() after multi-dim is implemented
+         */
+        @SuppressWarnings("unchecked")
+		public ExprNode getFirstDim() {
+        	ListNode<ExprNode> child = (ListNode<ExprNode>) getChild(DIM);
+         	return (!child.getElems().isEmpty()) ? child.getElems().get(0) : null;  
         }
+        
+		@SuppressWarnings("unchecked")
+		public ListNode<ExprNode> getDim() {
+			return getChildCount() > DIM ? (ListNode<ExprNode>) getChild(DIM) : null;
+			
+		}
+
         
         public boolean hasDim() {
             return getChildCount() > DIM;

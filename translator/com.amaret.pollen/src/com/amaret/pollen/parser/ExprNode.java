@@ -85,13 +85,19 @@ public class ExprNode extends BaseNode {
             Cat left = getSubExprCat(false); 
             Cat right = getSubExprCat(true); 
             
+            if (getLeft().getCat() == null) {
+            	
+            }
+            
             boolean providedTypeTest = this.getParent() instanceof StmtNode.Provided;
-            providedTypeTest &= getLeft().getCat().isUnit() || getRight().getCat().isUnit();
+            boolean isUnit = getLeft().getCat() != null && getLeft().getCat().isUnit();
+            isUnit |= getRight().getCat() != null && getRight().getCat().isUnit();
+            providedTypeTest &= isUnit;
 
             if ((exprCat = TypeRules.preCheck(getLeft().getCat(), getRight().getCat())) != null) {
                 return;
             }
-            if (!providedTypeTest) {
+            if (!providedTypeTest && getLeft().getCat() != null && getRight().getCat() != null) {
             	exprCat = TypeRules.checkBinary(getOp().getText(), left, right);
             	if (exprCat instanceof Cat.Error) {
             		ParseUnit.current().reportError(getOp(), ((Cat.Error) exprCat).getMsg());
@@ -598,7 +604,10 @@ public class ExprNode extends BaseNode {
         				while  (!(sc instanceof DeclNode.Fcn));
         			}
         			if (sc.getEnclosingScope() == symbol.scope() 
-        					&& !((DeclNode.Fcn)sc).isConstructor() && !((DeclNode.Fcn)sc).isHost())
+        					&& !((DeclNode.Fcn)sc).isConstructor() 
+        					&& !((DeclNode.Fcn)sc).isHost())
+//        					&& (!(this.getParent() instanceof ExprNode.Ident // e.g. idx in arr
+//        							|| this.getParent() instanceof ExprNode.Call)))
         				thisPtr  = true; // a class var accessed within a  method belonging to its class
         		}
         		exprCat = symbol.node().getTypeCat();
@@ -754,25 +763,45 @@ public class ExprNode extends BaseNode {
     // ExprNode.Index
     static public class Index extends ExprNode {
 
-        static final private int BASE = 0;
-        static final private int INDEX = 1;
+        static final private int INDEX = 0;
         
         Index(int ttype, String ttext) {
             super(ttype, ttext);
         }
        
         public ExprNode getBase() {
-            return (ExprNode)getChild(BASE);
+        	return (ExprNode) this.getParent();
+        	
+//        	if (this.getParent() != null && this.getParent().getChildCount() > 1) {
+//        		BaseNode b = (BaseNode) this.getParent().getChild(0);
+//        		if (!(b instanceof ExprNode)) {
+//        			ParseUnit.current().reportError(b, "invalid array base");
+//        			return null;
+//        		}
+//        		return (ExprNode) b;       		
+//        	}
+//            return null;
         }
-        
-        public ExprNode getIndex() {
-            return (ExprNode)getChild(INDEX);
+        /**
+         * 
+         * @return first index
+         * TODO delete and replace with getIndexes() after multi-dim is implemented
+         */
+        @SuppressWarnings("unchecked")
+		public ExprNode getFirstIndex() {
+        	ListNode<ExprNode> child = (ListNode<ExprNode>) getChild(INDEX);
+         	return (!child.getElems().isEmpty()) ? child.getElems().get(0) : null;  
+        }      
+//        public ExprNode getIndex() {
+//            return (ExprNode)getChild(INDEX);
+//        }
+        @SuppressWarnings("unchecked")
+        public List<ExprNode> getIndexes() {
+            return ((ListNode<ExprNode>) getChild(INDEX)).getElems();
         }
         
         @Override
         protected void pass1End() {
-        	// TODO
-        	// set scopeDeref to element type (if non primitive)
         }
         
         @Override
