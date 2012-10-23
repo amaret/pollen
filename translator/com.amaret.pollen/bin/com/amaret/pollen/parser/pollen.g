@@ -678,6 +678,7 @@ metaParmGen
 			 		if (b.getType() != pollenLexer.VOID && !(b instanceof ExprNode.Const)) 
 			 			throw new PollenException("Invalid meta value parameter specification (must be a constant)", input);
 			 		ctext = b.getText();
+			 		flags.add(Flags.META_ARG);
 			 		lf = EnumSet.noneOf(LitFlags.class);
 			 		if (b instanceof ExprNode.Const) {
 			 			arg = (ExprNode.Const) b;
@@ -691,7 +692,7 @@ metaParmGen
 			 		}
 		 		}
 	 		}
-		-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL"]  ^(T_STD<TypeNode.Std>["T_STD", EnumSet.noneOf(Flags.class)] builtinType) IDENT ^(E_CONST<ExprNode.Const>["E_CONST", lf] IDENT[ctext]))
+		-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", flags]  ^(T_STD<TypeNode.Std>["T_STD", EnumSet.noneOf(Flags.class)] builtinType) IDENT ^(E_CONST<ExprNode.Const>["E_CONST", lf] IDENT[ctext]))
 	;
 metaArguments
    :  '{' metaArgument  (',' metaArgument)* '}' -> ^(LIST<ListNode>["LIST"] metaArgument+)
@@ -1249,7 +1250,7 @@ initializer
 	| '{' initializer_list ','? '}' -> initializer_list
 	;
 initializer_list
-	: initializer (',' initializer)* -> ^(LIST<ListNode>["LIST"] initializer+)
+	: initializer (',' initializer)* ->  ^(E_VEC<ExprNode.Vec>["E_VEC"]  ^(LIST<ListNode>["LIST"] initializer+))
 	;
 varDeclList  // int x, y=3, z=3, a
 @init {

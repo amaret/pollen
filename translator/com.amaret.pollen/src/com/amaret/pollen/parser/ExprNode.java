@@ -57,12 +57,21 @@ public class ExprNode extends BaseNode {
         	ExprNode e = isRight ? this.getRight() : this.getLeft();
         	if (e.getChildren().isEmpty())
         		return e.getCat();
-        	for (int i = e.getChildren().size()-1; i > 1; i--) {
+        	for (int i = e.getChildren().size()-1; i > 0; i--) {
         		if (!(e.getChild(i) instanceof ExprNode))
         			continue;
         		e = (ExprNode) e.getChild(i);
         		if (e instanceof ExprNode.Ident)
-        			return e.getCat();       		
+        			return e.getCat(); 
+        		if (e instanceof ExprNode.Index) {
+        			ExprNode base = ((ExprNode.Index)e).getBase();
+        			if (base instanceof ExprNode.Ident) {
+        				SymbolEntry s = ((ExprNode.Ident) base).getSymbol();
+        				if (s != null && s.node() instanceof DeclNode.ITypeSpec) {
+        					return Cat.fromType(((DeclNode.ITypeSpec)s.node()).getTypeSpec());
+        				}
+        			}
+        		}
         	}
 			return isRight ? this.getRight().getCat() 
 					: this.getLeft().getCat();
@@ -83,11 +92,10 @@ public class ExprNode extends BaseNode {
                 return;
             }
             Cat left = getSubExprCat(false); 
+            boolean dbg = false;
+    		if (getLeft().getCat() instanceof Cat.Scalar && getRight().getCat() instanceof Cat.Arr)
+				dbg = true;
             Cat right = getSubExprCat(true); 
-            
-            if (getLeft().getCat() == null) {
-            	
-            }
             
             boolean providedTypeTest = this.getParent() instanceof StmtNode.Provided;
             boolean isUnit = getLeft().getCat() != null && getLeft().getCat().isUnit();
@@ -550,7 +558,13 @@ public class ExprNode extends BaseNode {
         
         public void setSymbol(SymbolEntry symbol) {
 			this.symbol = symbol;
+
 		}
+        public Cat getCat() {
+			if (exprCat == Cat.UNKNOWN && symbol != null ) 
+				exprCat = Cat.fromSymbolNode(symbol.node(), symbol.scope());
+			return exprCat;       	
+        }
       
         @Override
         protected boolean pass2Begin() {
@@ -792,9 +806,7 @@ public class ExprNode extends BaseNode {
         	ListNode<ExprNode> child = (ListNode<ExprNode>) getChild(INDEX);
          	return (!child.getElems().isEmpty()) ? child.getElems().get(0) : null;  
         }      
-//        public ExprNode getIndex() {
-//            return (ExprNode)getChild(INDEX);
-//        }
+
         @SuppressWarnings("unchecked")
         public List<ExprNode> getIndexes() {
             return ((ListNode<ExprNode>) getChild(INDEX)).getElems();
@@ -805,10 +817,15 @@ public class ExprNode extends BaseNode {
         }
         
         @Override
-        protected void pass2End() {
+        protected boolean pass2Begin() {
             Cat basecat = getBase().getCat();
-            if ((exprCat = TypeRules.preCheck(basecat)) != null) {
-                return;
+            boolean dbg = false;
+            if (basecat == null)
+            	dbg = true;
+            exprCat = TypeRules.preCheck(basecat);
+            //cat1 == Cat.INJECT || cat1 == Cat.UNKNOWN || cat1 instanceof Cat.Error
+            if (exprCat != null && (exprCat == Cat.INJECT || exprCat instanceof Cat.Error)) {
+                return true;
             }
             if (basecat instanceof Cat.Arr) {
                 exprCat = ((Cat.Arr) basecat).getBase();
@@ -816,11 +833,12 @@ public class ExprNode extends BaseNode {
             else if (basecat instanceof Cat.Scalar && ((Cat.Scalar) basecat).kind() == 's') {
                 exprCat = Cat.fromScalarCode("u1");
             }
-            else {
-                exprCat = Cat.UNKNOWN;
+            if (exprCat == Cat.UNKNOWN) {
                 ParseUnit.current().reportError(getBase(), "value cannot be indexed");
             }
+            return true;
         }
+        
     }
     
     // ExprNode.New
@@ -944,12 +962,21 @@ public class ExprNode extends BaseNode {
     static public class Vec extends ExprNode implements AggVal {
         
         static final private int VALS = 0;
+        SymbolEntry symbol = null;
         
         Vec(int ttype, String ttext) {
             super(ttype, ttext);
         }
 
-        @SuppressWarnings("unchecked")
+        public SymbolEntry getSymbol() {
+			return symbol;
+		}
+
+		public void setSymbol(SymbolEntry symbol) {
+			this.symbol = symbol;
+		}
+
+		@SuppressWarnings("unchecked")
         public List<ExprNode> getVals() {
             return ((ListNode<ExprNode>) getChild(VALS)).getElems();
         }
@@ -985,7 +1012,7 @@ public class ExprNode extends BaseNode {
       	this.token = new Atom(ttype, ttext);
     }
 
-    public final Cat getCat() {
+    public Cat getCat() {
         return exprCat;
     }
     

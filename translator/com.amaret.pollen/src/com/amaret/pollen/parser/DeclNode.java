@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import com.amaret.pollen.parser.ExprNode.Vec;
 import com.amaret.pollen.target.ITarget.TypeInfo;
 
 public class DeclNode extends BaseNode implements ISymbolNode {
@@ -23,12 +24,24 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         
         Formal(int ttype, String ttext, EnumSet<Flags> f) {
             super(ttype, ttext, f);
+            if (this.flags.contains(Flags.TYPE_META_ARG))
+            	this.flags.add(Flags.META_ARG);
         }
         public boolean isTypeMetaArg() {
         	if (flags.contains(Flags.TYPE_META_ARG))
         		return true;
         	return false;
         }
+        /**
+         * 
+         * @return true if this a value or type meta argument
+         */
+        public boolean isMetaArg() {
+        	if (flags.contains(Flags.META_ARG))
+        		return true;
+        	return false;
+        }
+
         protected boolean pass1Begin() {
             super.pass1Begin();
            
@@ -98,14 +111,20 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
         @Override
         public Cat getTypeCat() {
-        	if (typeCat == null && this.getTypeSpec() instanceof TypeNode.Usr) {
-        		String code = Cat.Scalar.codeFromString(((TypeNode.Usr) this.getTypeSpec()).getName().getText());
-        		if (code != null) {
-        			typeCat = Cat.fromScalarCode(code);
-        			return typeCat;
-        		}
-        	}
-        	return super.getTypeCat();
+            if (typeCat == null) {
+            	typeCat = Cat.fromType(this.getTypeArr());
+                //typeCat = Cat.fromSymbolNode(this, this.getDefiningScope());
+           }
+           return typeCat;
+
+//        	if (typeCat == null && this.getTypeSpec() instanceof TypeNode.Usr) {
+//        		String code = Cat.Scalar.codeFromString(((TypeNode.Usr) this.getTypeSpec()).getName().getText());
+//        		if (code != null) {
+//        			typeCat = Cat.fromScalarCode(code);
+//        			return typeCat;
+//        		}
+//        	}
+//        	return super.getTypeCat();
         }
         /**
          * 
@@ -134,16 +153,16 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         
         @Override
         public void pass2End() {
-
+        	ExprNode.Vec v = getInit();
+        	if (v != null) {
+        		SymbolEntry symbol = ParseUnit.current().getSymbolTable().resolveSymbol(getName());
+        		v.setSymbol(symbol);
+        	}
         }
 
-		
-		/**
-		 * @return  null as the initializer for an array is a list
-		 */
         @Override
-		public ExprNode getInit() {
-			return null;
+		public ExprNode.Vec getInit() {
+        	return (Vec) (getChildCount() > INIT ? getChild(INIT) : null);
 		}
 		/**
 		 * 

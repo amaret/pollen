@@ -503,7 +503,7 @@ public class Cat implements Cloneable {
             return UNKNOWN;
         }
     }    
-    static Cat fromType(TypeNode typeNode) {
+    public static Cat fromType(TypeNode typeNode) {
         return fromType(typeNode, false, ParseUnit.current().getSymbolTable().curScope());
     }
     

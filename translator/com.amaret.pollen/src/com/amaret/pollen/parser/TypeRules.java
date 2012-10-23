@@ -65,10 +65,7 @@ public class TypeRules {
 		if (left == null || right == null) {
 			return Cat.fromError("expr problem", left, right);
 		}
-		String l = left.mkCode();
-		String r = right.mkCode();
-		if (l.equals("Cpollen.time.TimerManager") && r.equals("v"))
-			l = "";
+		
 		Cat rtn =  checkBinary(op, left, right, "operand type error");
 		boolean dbg = false;
 		if (rtn instanceof Cat.Error)
