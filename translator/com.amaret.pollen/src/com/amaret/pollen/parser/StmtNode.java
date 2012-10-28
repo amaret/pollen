@@ -567,12 +567,13 @@ public class StmtNode extends BaseNode {
         		left = getPro().getCat();
         		right = Cat.fromType(getValue());
         		// TODO move the above checks into TypeRules
-        		if (!(left instanceof Cat.Error) && !(right instanceof Cat.Error)) {
-        			Cat res = TypeRules.checkBinary("=", left, right);
-        			if (res instanceof Cat.Error) {
-        				ParseUnit.current().reportError(getPro(), ((Cat.Error) res).getMsg());
-        			}
-        		}
+        		// the checks below fail because TypeRules don't understand protocol binding.
+//        		if (!(left instanceof Cat.Error) && !(right instanceof Cat.Error)) {
+//        			Cat res = TypeRules.checkBinary("=", left, right);
+//        			if (res instanceof Cat.Error) {
+//        				ParseUnit.current().reportError(getPro(), ((Cat.Error) res).getMsg());
+//        			}
+//        		}
         	}  
 
         }

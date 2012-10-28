@@ -21,6 +21,8 @@ public class ExprNode extends BaseNode {
         static final private int OP = 0;
         static final private int RIGHT = 2;
         
+        private boolean hasLeftIndexExpr = false;      
+        private ExprNode.Index leftIndexExpr = null;
         private boolean isAssign;
         
         Binary(int ttype, String ttext) {
@@ -32,7 +34,14 @@ public class ExprNode extends BaseNode {
             this.isAssign = isAssign;
         }
         
-        public ExprNode getLeft() {
+        public boolean hasLeftIndexExpr() {
+			return hasLeftIndexExpr;
+		}
+        public ExprNode.Index getLeftIndexExpr() {
+        	return leftIndexExpr;
+        }
+
+		public ExprNode getLeft() {
             return (ExprNode)getChild(LEFT);
         }
 		
@@ -64,6 +73,11 @@ public class ExprNode extends BaseNode {
         		if (e instanceof ExprNode.Ident)
         			return e.getCat(); 
         		if (e instanceof ExprNode.Index) {
+        			if (!isRight) {
+        				hasLeftIndexExpr = true;
+        				if (leftIndexExpr == null)
+        					leftIndexExpr = (Index) e; // first one
+        			}
         			ExprNode base = ((ExprNode.Index)e).getBase();
         			if (base instanceof ExprNode.Ident) {
         				SymbolEntry s = ((ExprNode.Ident) base).getSymbol();
@@ -198,6 +212,7 @@ public class ExprNode extends BaseNode {
             		caller = symtab.curScope().lookupName(n,chkHostScope);
             		if (caller == null && chkHostScope) 
             			caller = symtab.curScope().lookupName(n,false);
+            		
             		ei.setQualifier(caller);            		
             	}
             	else {
@@ -219,6 +234,15 @@ public class ExprNode extends BaseNode {
                 		if (n.indexOf('.') != -1) {
                 			n = n.substring(n.lastIndexOf('.')+1);
                 			called = caller.derefScope(true).lookupName(n, chkHostScope);
+                			// if the caller is non-host, replace the caller name with the unit name
+                    		if (caller != null && called != null && caller.node() instanceof DeclNode.Var) {
+                    			if (((DeclNode.Var) caller.node()).isStaticInstance()
+                    					&& called.scope() instanceof DeclNode.Usr) {
+                    				n = ei.getName().getText().substring(ei.getName().getText().lastIndexOf('.')+1);
+                    				ei.getName().setText(n); 
+                    			}
+                    			
+                    		}
                 		}            			
             		}
             	}

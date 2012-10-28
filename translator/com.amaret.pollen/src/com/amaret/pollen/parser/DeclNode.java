@@ -303,10 +303,14 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
      
         public String cname() {
-        	//return cname;
+        	
             IScope scope = getEnclosingScope();
-            cls = scope instanceof DeclNode.Class ? (DeclNode.Class) scope : null;
+            IScope outer = (scope != null) ? scope.getEnclosingScope() : null;
+           
+            // class name is a qualifier added to name only for nested class.
+            cls = scope instanceof DeclNode.Class  && (outer instanceof DeclNode.Usr) ? (DeclNode.Class) scope : null;
             cname = (cls == null) ? ("" + getName()) : ("" + cls.getName() + "__" + getName());
+
             return cname;
 
         }
@@ -330,6 +334,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             ParseUnit currUnit = ParseUnit.current();
             Atom name = getName();
             unit = currUnit.getCurrUnitNode();
+            
+            if (name.getText().matches("pollen.*"))
+            	flags.add(Flags.PUBLIC); // always
             
            	IScope scopeToUse = currUnit.getSymbolTable().curScope();
            	// Host functions go in a host scope 
@@ -411,7 +418,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         static final private int NAME = 1;
         static final private int TYPE_LST = 0;
         
-        FcnTyp(int ttype, String ttext) {
+        FcnTyp(int ttype, String ttext) { 
             super(ttype, ttext);
         }
 
@@ -430,6 +437,19 @@ public class DeclNode extends BaseNode implements ISymbolNode {
          	return (!child.getElems().isEmpty()) ? child.getElems().get(0) : null;        	
         } 
         protected boolean pass1Begin() {
+        	if (this.getName().getText().equals("init") 
+        			&& this.getToken().getText().equals("D_FCN_CTOR")) {
+        		DeclNode.Fcn p = (Fcn) (this.getParent() instanceof DeclNode.Fcn ? this.getParent() : null);
+        		if (p != null) {
+        			if (p.isHost()) {
+        				this.getName().setText("$$hostInit");
+        			}
+        			else {
+        				this.getName().setText("targetInit");
+        			}
+        		}
+        		
+        	}
         	boolean rtn =  super.pass1Begin();
         	if (!rtn) return false;
         	rtn = ((BaseNode) getChild(TYPE_LST)).pass1Begin();
@@ -1083,7 +1103,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
          * 
          * @return true if this has 'new' on the dcln
          */
-        boolean isStaticInstance() {
+        public boolean isStaticInstance() {
         	return (flags.contains(Flags.NEW));
         }
         @Override

@@ -96,11 +96,13 @@ public class TypeRules {
 		if (leftAgg) {
 			boolean rightAgg = right.mkCode().charAt(0) == 'C' || right.mkCode().charAt(0) == 'X';
 			if (leftAgg && rightAgg) {
+				
 				if (left.mkCode().substring(1).equals(right.mkCode().substring(1)))			
 					// No difference in this context between C and X
 					r = r.replaceFirst("^.", left.mkCode().substring(0, 1));
 				else
 					return mkResult(null, left, right, err); // unit/class types must match exactly
+				
 			}
 		}
 		String l = left.mkCode();
