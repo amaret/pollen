@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g 2012-10-23 12:01:58
+// $ANTLR 3.4 /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g 2012-10-29 12:51:18
 
     package com.amaret.pollen.parser;
     import java.util.EnumSet;
@@ -1264,7 +1264,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceClose.add(braceClose23.getTree());
 
             // AST REWRITE
-            // elements: classFeatureList, IDENT, implementsClause
+            // elements: implementsClause, IDENT, classFeatureList
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -1957,7 +1957,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceClose.add(braceClose35.getTree());
 
             // AST REWRITE
-            // elements: implementsClause, moduleFeatureList, IDENT
+            // elements: implementsClause, IDENT, moduleFeatureList
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2639,7 +2639,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: IDENT, enumList
+            // elements: enumList, IDENT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3174,7 +3174,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceClose.add(braceClose60.getTree());
 
             // AST REWRITE
-            // elements: protocolFeatureList, extendsClause, IDENT
+            // elements: IDENT, protocolFeatureList, extendsClause
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3607,7 +3607,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceClose.add(braceClose70.getTree());
 
             // AST REWRITE
-            // elements: compositionFeatureList, IDENT, extendsClause
+            // elements: IDENT, extendsClause, compositionFeatureList
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -4568,7 +4568,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: importAs, metaArguments
+            // elements: metaArguments, importAs
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -5638,7 +5638,7 @@ public TreeAdaptor getTreeAdaptor() {
                     	 		}
 
                     // AST REWRITE
-                    // elements: builtinType, IDENT, IDENT
+                    // elements: IDENT, IDENT, builtinType
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -8387,7 +8387,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_expr.add(expr155.getTree());
 
                     // AST REWRITE
-                    // elements: expr, expr, exprLogicalOr
+                    // elements: exprLogicalOr, expr, expr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -8568,7 +8568,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprLogicalAnd.add(exprLogicalAnd159.getTree());
 
             	    // AST REWRITE
-            	    // elements: exprLogicalOr, exprLogicalAnd, 192
+            	    // elements: 192, exprLogicalAnd, exprLogicalOr
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -8743,7 +8743,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprBitwiseOr.add(exprBitwiseOr162.getTree());
 
             	    // AST REWRITE
-            	    // elements: 125, exprBitwiseOr, exprLogicalAnd
+            	    // elements: exprBitwiseOr, exprLogicalAnd, 125
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -9093,7 +9093,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprBitwiseAnd.add(exprBitwiseAnd168.getTree());
 
             	    // AST REWRITE
-            	    // elements: 140, exprBitwiseXor, exprBitwiseAnd
+            	    // elements: exprBitwiseAnd, exprBitwiseXor, 140
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -9446,7 +9446,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprRelational.add(exprRelational174.getTree());
 
             	    // AST REWRITE
-            	    // elements: equalityOp, exprRelational, exprEquality
+            	    // elements: exprRelational, exprEquality, equalityOp
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -9622,7 +9622,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprShift.add(exprShift177.getTree());
 
             	    // AST REWRITE
-            	    // elements: exprShift, relationalOp, exprRelational
+            	    // elements: exprShift, exprRelational, relationalOp
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -9798,7 +9798,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprAddSub.add(exprAddSub180.getTree());
 
             	    // AST REWRITE
-            	    // elements: shiftOp, exprShift, exprAddSub
+            	    // elements: exprAddSub, shiftOp, exprShift
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -9974,7 +9974,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprMultDiv.add(exprMultDiv183.getTree());
 
             	    // AST REWRITE
-            	    // elements: addSubOp, exprMultDiv, exprAddSub
+            	    // elements: addSubOp, exprAddSub, exprMultDiv
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -10150,7 +10150,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprUnary.add(exprUnary186.getTree());
 
             	    // AST REWRITE
-            	    // elements: multDivModOp, exprUnary, exprMultDiv
+            	    // elements: exprUnary, multDivModOp, exprMultDiv
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -10274,7 +10274,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_fcnArgumentList.add(fcnArgumentList189.getTree());
 
             // AST REWRITE
-            // elements: typeName, fcnArgumentList
+            // elements: fcnArgumentList, typeName
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -10600,7 +10600,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_expr.add(expr194.getTree());
 
                     // AST REWRITE
-                    // elements: logicalNotOp, expr
+                    // elements: expr, logicalNotOp
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -10758,7 +10758,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_expr.add(expr201.getTree());
 
                     // AST REWRITE
-                    // elements: expr, MINUS
+                    // elements: MINUS, expr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -10814,7 +10814,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_incDecOp.add(incDecOp203.getTree());
 
                     // AST REWRITE
-                    // elements: varOrFcnOrArray, incDecOp
+                    // elements: incDecOp, varOrFcnOrArray
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -11068,7 +11068,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_fcnBody.add(fcnBody212.getTree());
 
             // AST REWRITE
-            // elements: formalParameterList, fcnBody, fcnType_fcnName
+            // elements: fcnBody, formalParameterList, fcnType_fcnName
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -11241,7 +11241,7 @@ public TreeAdaptor getTreeAdaptor() {
             		}
 
             // AST REWRITE
-            // elements: fcnBody, fcnType_fcnName, formalParameterList
+            // elements: formalParameterList, fcnType_fcnName, fcnBody
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -11653,7 +11653,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_delim.add(delim227.getTree());
 
             // AST REWRITE
-            // elements: formalParameterList, fcnType_fcnName
+            // elements: fcnType_fcnName, formalParameterList
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -12402,7 +12402,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_qualName.add(qualName237.getTree());
 
             // AST REWRITE
-            // elements: fcnTypes, qualName
+            // elements: qualName, fcnTypes
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -13579,7 +13579,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) { pFlags.add(Flags.TYPE_META_ARG); }
 
                     // AST REWRITE
-                    // elements: IDENT, typeName, IDENT
+                    // elements: typeName, IDENT, IDENT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -13689,7 +13689,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: typeName, IDENT, expr
+                    // elements: typeName, expr, IDENT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -14099,7 +14099,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: fcnArgumentList, fieldOrArrayAccess, typeName
+                    // elements: fcnArgumentList, typeName, fieldOrArrayAccess
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -14192,7 +14192,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: fieldOrArrayAccess, fcnArgumentList, IDENT
+                    // elements: fieldOrArrayAccess, IDENT, fcnArgumentList
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -14456,7 +14456,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: fieldOrArrayAccess, qualName, fcnArgumentList
+                    // elements: fieldOrArrayAccess, fcnArgumentList, qualName
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -14551,7 +14551,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: fieldOrArrayAccess, qualName
+                    // elements: qualName, fieldOrArrayAccess
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -16198,7 +16198,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_delim.add(delim315.getTree());
 
                     // AST REWRITE
-                    // elements: varOrFcnOrArray, ASSIGN, expr
+                    // elements: ASSIGN, expr, varOrFcnOrArray
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -16277,7 +16277,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_delim.add(delim319.getTree());
 
                     // AST REWRITE
-                    // elements: expr, injectionCode, ASSIGN
+                    // elements: injectionCode, expr, ASSIGN
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -16359,7 +16359,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_delim.add(delim323.getTree());
 
                     // AST REWRITE
-                    // elements: varOrFcnOrArray, assignOp, expr
+                    // elements: varOrFcnOrArray, expr, assignOp
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -16687,7 +16687,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_delim.add(delim334.getTree());
 
             // AST REWRITE
-            // elements: userTypeName, varOrFcnOrArray
+            // elements: varOrFcnOrArray, userTypeName
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -17638,7 +17638,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_stmtBlock.add(stmtBlock361.getTree());
 
             // AST REWRITE
-            // elements: stmtForNext, stmtForInit, stmtForCond, stmtBlock
+            // elements: stmtBlock, stmtForCond, stmtForInit, stmtForNext
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -18013,7 +18013,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: IDENT, expr, typeName
+                    // elements: expr, IDENT, typeName
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -18333,7 +18333,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceClose.add(braceClose380.getTree());
 
             // AST REWRITE
-            // elements: stmtDefault, expr, stmtsCase
+            // elements: stmtDefault, stmtsCase, expr
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -18768,7 +18768,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_stmts.add(stmts390.getTree());
 
             // AST REWRITE
-            // elements: INT_LIT, stmts
+            // elements: stmts, INT_LIT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -19054,7 +19054,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: stmtElse, stmtsElif, stmtIfBlock
+            // elements: stmtElse, stmtIfBlock, stmtsElif
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -19640,7 +19640,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: stmtBlock, expr, stmtElse
+            // elements: stmtElse, stmtBlock, expr
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -19774,7 +19774,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_stmtBlock.add(stmtBlock421.getTree());
 
             // AST REWRITE
-            // elements: expr, stmtBlock
+            // elements: stmtBlock, expr
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -20723,7 +20723,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) { stmtFlags.add(Flags.NEW); }
 
                     // AST REWRITE
-                    // elements: fcnArgumentList, t, t, IDENT
+                    // elements: fcnArgumentList, IDENT, t, t
                     // token labels: 
                     // rule labels: retval, t
                     // token list labels: 
@@ -20742,7 +20742,7 @@ public TreeAdaptor getTreeAdaptor() {
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
-                        new DeclNode.Var(D_VAR, "D_VAR", stmtFlags)
+                        new DeclNode.TypedMember(D_VAR, "D_VAR", stmtFlags)
                         , root_1);
 
                         adaptor.addChild(root_1, stream_t.nextTree());
@@ -20856,7 +20856,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: IDENT, typeName, fcnRefTypeList
+            // elements: fcnRefTypeList, typeName, IDENT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -21315,7 +21315,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: typeNameArray, varArraySpec, IDENT, initializer
+            // elements: varArraySpec, IDENT, typeNameArray, initializer
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -22349,7 +22349,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_expr.add(expr478.getTree());
 
                     // AST REWRITE
-                    // elements: expr, IDENT
+                    // elements: IDENT, expr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 

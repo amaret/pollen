@@ -1206,7 +1206,7 @@ scope {
 	|   (typeName varInit) => varDeclList
 	|	 'new' t=typeName IDENT fcnArgumentList  // declaration of an instance ('new')
 		 { stmtFlags.add(Flags.NEW); } 
-		-> ^(D_VAR<DeclNode.Var>["D_VAR", stmtFlags] $t
+		-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] $t
 		     IDENT ^(E_NEW<ExprNode.New>["E_NEW"] $t fcnArgumentList))
 	;
 varFcnRef

@@ -619,6 +619,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public boolean isFcnRef() {
         	return getFcnTypeCat() != null;
         }
+        public boolean isClassRef() {
+        	return this.isClass();
+        }
         public boolean isProtocolMember() {
         	if (flags.contains(Flags.PROTOCOL_MEMBER))
         		return true;
@@ -637,7 +640,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         protected boolean pass1Begin() {
             super.pass1Begin();
             UnitNode curr = ParseUnit.current().getCurrUnitNode();
-            SymbolEntry sym = curr.resolveSymbol(getTypeName());
+            SymbolEntry sym = curr.getUnitType().resolveSymbol(getTypeName());
             ISymbolNode snode = sym != null ? sym.node() : null;
             if (snode instanceof ImportNode) {
                 unitType = ((ImportNode) snode).getUnit();
@@ -645,10 +648,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             else if (snode instanceof UnitNode) {
                 unitType = (UnitNode) snode;
             }
-            else if (snode instanceof DeclNode.Fcn) {
-            	unitType = ((DeclNode.Fcn)snode).getUnit();
-            }
-
+            else if (snode instanceof DeclNode.Fcn || snode instanceof DeclNode.Usr)
+            	unitType = ((DeclNode)snode).getUnit();
+            
             if (unitType == null ) { 
             	isMetaPrimitive = true;
             	// this can happen when meta type is a instantiation to a primitive e.g. uint8
@@ -1102,9 +1104,14 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         /**
          * 
          * @return true if this has 'new' on the dcln
+         * and is a module member.
          */
         public boolean isStaticInstance() {
-        	return (flags.contains(Flags.NEW));
+        	IScope sc = this.getDefiningScope();
+        	boolean isStatic = sc instanceof DeclNode.Usr 
+        		&& ((DeclNode.Usr)sc).isModule() 
+        		&& flags.contains(Flags.NEW);
+        	return isStatic;
         }
         @Override
         public Atom getName() {

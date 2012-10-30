@@ -17,16 +17,23 @@ public class Cat implements Cloneable {
         private IScope aggScope;
         private IScope defScope;
         private boolean isRef;
+        private boolean isStaticRef;
         private boolean isFcnRef;
         
-        private Agg(IScope aggScope, IScope defScope, boolean isRef, boolean isFcnRef) {
+		private Agg(IScope aggScope, IScope defScope, boolean isRef, boolean isFcnRef) {
             this.aggScope = aggScope;
             this.defScope = defScope;
             this.isRef = isRef;
             this.isFcnRef = aggScope instanceof DeclNode.TypedMember 
             	? ((DeclNode.TypedMember) aggScope).isFcnRef() : false;
             this.isFcnRef |= isFcnRef;
+            this.isStaticRef = aggScope instanceof DeclNode.TypedMember 
+        	? ((DeclNode.TypedMember) aggScope).isStaticInstance() : false;
         }
+		
+        public boolean isStaticRef() {
+			return isStaticRef;
+		}
         
         public boolean isFcnRef() {
 			return isFcnRef;
@@ -424,7 +431,7 @@ public class Cat implements Cloneable {
     	UnitNode curr = ParseUnit.current().getCurrUnitNode();
     	SymbolEntry sym;
     	if (typeNode instanceof TypeNode.Usr) {
-    		sym = curr.resolveSymbol(((TypeNode.Usr) typeNode).getName());   		
+    		sym = ((TypeNode.Usr)typeNode).getSymbol(); 	
     	}
     	else sym = curr.resolveSymbol(typeNode.getAtom());
     	
