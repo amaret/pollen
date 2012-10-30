@@ -1417,11 +1417,15 @@ INJECT
 	: IJ_BEG ( options {greedy=false;} : .)* IJ_END
 //	: '+{' ( options {greedy=false;} : . )* '}+'
 	;
-ML_COMMENT	
-    :   '---'('-')* ( options {greedy=false;} : . )*  '---'('-')* ('\n'|'\r')* { $channel=HIDDEN; }
-    ;
 //ML_COMMENT	
-//    :   '---' ( options {greedy=false;} : . )* '---' ('\n'|'\r')* { $channel=HIDDEN; }
+//    :   '---'('-')* ( options {greedy=false;} : . )*  '---'('-')* ('\n'|'\r')* { $channel=HIDDEN; }
+//    ;
+ML_COMMENT	
+    :   '---' ('-')*( options {greedy=false;} : . )* '---'('-')* ('\n'|'\r')* { $channel=HIDDEN; }
+    |   '!--' ( options {greedy=false;} : . )*  '--!' ('\n'|'\r')* { $channel=HIDDEN; }
+    ;
+//ML_COMMENT2	
+//    :   '!--' ( options {greedy=false;} : . )*  '--!' ('\n'|'\r')* { $channel=HIDDEN; }
 //    ;
 SEMI
     :   ';'
