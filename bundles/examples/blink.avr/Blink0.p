@@ -1,11 +1,11 @@
 package blink.avr
 
--------------------------------------------------------------------------------
-A module that spins in a loop toggling a pin which blinks an led. 
-
-The pin driver is in the code and specific to AVR microcontrollers 
-(i.e. arduino)
--------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+# A module that spins in a loop toggling a pin which blinks an led. 
+#
+# The pin driver is in the code and specific to AVR microcontrollers 
+# (i.e. arduino)
+#-------------------------------------------------------------------------------
 
 module Blink0 {
 
@@ -13,28 +13,43 @@ module Blink0 {
 
 	pollen.run() {	
 
-		+{DDR0}+ &= ~(1 << 0)   # Make the pin an input
+		+{DDRB}+ |= (1 << 5)   # Make the pin an output
     
 		while(true) {
-			setPin()
+      togglePin()
 			delaySome()
-			clearPin()
-			delaySome()			
 		}
+		
+  	+{PORTB}+ &= ~(1 << 5)
+	}
+	
+	togglePin() {
+	  +{PORTB}+ ^= (1 << 5)
 	}
 	
 	setPin() { 
-		+{PORTD}+ |= (1 << 0)
+		+{PORTB}+ |= (1 << 5)
 	}
 	
 	clearPin() {
-		+{PORTD}+ &= (1 << 0)
+		+{PORTB}+ &= ~(1 << 5)
 	}
 
 	delaySome() {
-		for(i = 0; i < 10000; i++) {
-			+{ asm("nop") }+
-		}
+	  for(uint32 i = 0; i < 100000; i++) {
+		  +{ asm("nop") }+
+		  +{ asm("nop") }+
+		  +{ asm("nop") }+
+		  +{ asm("nop") }+
+		  +{ asm("nop") }+
+		  +{ asm("nop") }+
+		  +{ asm("nop") }+
+		  +{ asm("nop") }+
+		  +{ asm("nop") }+
+		  +{ asm("nop") }+
+		  +{ asm("nop") }+
+		  +{ asm("nop") }+		  		  		  
+	  }
 	}
 
 }

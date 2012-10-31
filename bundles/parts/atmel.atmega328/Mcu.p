@@ -36,20 +36,20 @@ module Mcu implements McuProtocol {
     +{ asm ("nop") }+
   }
 
-  public uint32 frequency() {
-    return @sysFreq  
+  public uint32 getFrequency() {
+    return sysFreq  
   }
 
-  public host uint32 frequency() {
-    return @sysFreq
+  public host uint32 getFrequency() {
+    return sysFreq
   }
 
-  public frequency(uint32 hz) {
-    @sysFreq = hz  
+  public setFrequency(uint32 hz) {
+    sysFreq = hz  
   }
 
-  public host frequency(uint32 hz) {
-    @sysFreq = hz
+  public host setFrequency(uint32 hz) {
+    sysFreq = hz
   }
 
   -----------------------------------------------------------------------------

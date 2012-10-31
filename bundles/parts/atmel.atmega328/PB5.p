@@ -1,44 +1,44 @@
 package atmel.atmega328
 
 -------------------------------------------------------------------------------
-Device driver for general purpose input/output pin PD0 on the atmega328p micro.
+Device driver for general purpose input/output pin PB5 on the atmega328p micro.
 -------------------------------------------------------------------------------
 
 from pollen.hardware import Pin
 
-module PD0 implements Pin {
+module PB5 implements Pin {
 
 	+{ #include <avr/io.h> }+
 	
 	public set() {
-		+{PORTD}+ |= (1 << 0)
+		+{PORTB}+ |= (1 << 5)
 	}
 
 	public clear() {
-		+{PORTD}+ &= (1 << 0)
+		+{PORTB}+ &= ~(1 << 5)
 	}
 	
 	public toggle() {
-		+{PORTD}+ ^= (1 << 0)
+		+{PORTB}+ ^= (1 << 5)
 	}	
 	
 	public bool get() {
-		return (+{PORTD}+ & (1 << 0)) ? true : false
+		return (+{PORTB}+ & (1 << 5)) ? true : false
 	}
 	
 	public makeInput() {
-		+{DDRD}+ &= ~(1 << 0)
+		+{DDRB}+ &= ~(1 << 5)
 	}
 	
 	public bool isInput() {
-		return (+{DDRD}+ & (1 << 0)) ? false : true
+		return (+{DDRB}+ & (1 << 5)) ? false : true
 	}
 	
 	public makeOutput() {
-		+{DDRD}+ &= ~(1 << 0)
+		+{DDRB}+ |= (1 << 5)
 	}
 	
 	public bool isOutput() {
-		return (+{DDRD}+ & (1 << 0)) ? true : false
+		return (+{DDRB}+ & (1 << 5)) ? true : false
 	}	
 }
