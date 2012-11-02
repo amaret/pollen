@@ -62,11 +62,7 @@ public class NestedScope implements IScope {
      * For calls. In host context, use host scope.
      */
     public SymbolEntry lookupName(String name, boolean checkHostScope) {
-    	
-    	if (checkHostScope) {
-    		
-    	}
-    	
+    	    	
         SymbolEntry result = symbolTable.get(name);
         if (result != null) {
             return result;

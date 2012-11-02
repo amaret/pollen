@@ -257,6 +257,7 @@ public class ParseUnit {
 		String ciname = clientImport != null ? clientImport.getQualName() : "null";
 				
 		setDebugMode(false);
+		//setDebugMode(true);
 		if (isDebugMode()) {			
 			String dbgStr = "  START parseUnit() : ";
 			dbgStr += "input " + ParseUnit.mkPackageName(inputPath) + "." + ParseUnit.mkUnitName(inputPath) + ", client " + cname + ", clientImport " + ciname;
@@ -287,7 +288,7 @@ public class ParseUnit {
         
         UnitNode unit = (UnitNode)result.getTree();
         
-		setDebugMode(false);
+		//setDebugMode(false);
         if (isDebugMode())
         	System.out.println( "       AST: " + unit.toStringTree());
 		setDebugMode(false);

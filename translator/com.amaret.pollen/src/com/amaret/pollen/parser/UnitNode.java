@@ -89,9 +89,6 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     
     @Override
     public boolean defineSymbol(Atom name, ISymbolNode node) {
-    	boolean dbg = false;
-    	if (name.getText().equals("Interrupts") && this.filePath.equals("/home/lucidbee/Documents/MeganAdams-Pollen/MeganAdams-Pollen/test/test5/amaret/mcu.atmel.atmega328p/Mcu.p"))
-    		dbg = true;
         if (resolveSymbol(name) != null) {
             return false;
         }
@@ -116,9 +113,9 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
         return id != null ? id : -1;
     }
     
-    public UnitNode getBaseUnit() {
-    	if (this.getUnitType().getBaseType() != null)
-    		return this.getUnitType().getBaseType().getUnit();
+    public UnitNode getContainingUnit() {
+    	if (this.getUnitType().getContainingType() != null)
+    		return this.getUnitType().getContainingType().getUnit();
     	return null;
     }
     /**
@@ -376,39 +373,63 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     			SymbolEntry s = iu.lookupName(imp.getUnitName().getText()); // lookup imported type in imported unit
     			if (s == null)
     				continue;
+    			SymbolEntry export = imp.getUnit().lookupName("$$export"+imp.getName().getText());
+
     			boolean compositionSymbols = (s.node() instanceof ITypeKind && ((ITypeKind)s.node()).isComposition());
     			// For this import, add its exported symbols to unit symbol table.
     			 if (compositionSymbols || s.node() instanceof ImportNode && ((ImportNode)s.node()).isExport())
+    				 if (dbg) {
+    					 ParseUnit.current().reportError(iu, "**************start unit " + this.getQualName() + "**********************" );
+    					 if (export == null)
+    						 System.out.println("NO EXPORT for " + imp.getName().getText());
+    				 }
     				    				
     				for (Map.Entry<String, SymbolEntry> exported : iu.symbolTable.entrySet()) {
-    					ISymbolNode exportedSnode = exported.getValue().node();
-    					if (exportedSnode instanceof DeclNode && !((DeclNode) exportedSnode).isPublic()) {
+    					ISymbolNode exportedNode = exported.getValue().node();
+    					if (exportedNode instanceof DeclNode && !((DeclNode) exportedNode).isPublic()) {
     						continue;
     					}
-    					if (exportedSnode instanceof ImportNode && !((ImportNode) exportedSnode).isExport()) {
+    					if (exportedNode instanceof ImportNode && !((ImportNode) exportedNode).isExport()) {
     						continue;
     					}
+//						The code below skips some imports, so i have kept the dependency on the 'isExport()' flag above
+//						(which itself has problems in UnitJScript.genUse(), so I am not using it there.)
+//    					if (exportedNode instanceof ImportNode) {
+//    						export = imp.getUnit().lookupName("$$export"+((ImportNode)exportedNode).getName().getText());
+//    						if (export == null)
+//    							continue;
+//    					}
+
+    					if (exportedNode instanceof ExportNode)
+    						continue;
     					//SymbolEntry exportedSe = new SymbolEntry(this, exportedSnode); doesn't seem to matter, this or below...
-    					SymbolEntry exportedSe = new SymbolEntry(exportedSnode.getDefiningScope(), exportedSnode);
+    					SymbolEntry newSymbol = new SymbolEntry(exportedNode.getDefiningScope(), exportedNode);
     					
     					if (dbg) {
     						e1 = exported.getKey();
-    						ef1 = exportedSe.scope().getScopeName();  	
+    						ef1 = newSymbol.scope().getScopeName();  	
      						ParseUnit.current().reportError(imp, "adding exported symbol " + e1 + " with scope " + ef1 );
 
     					}
     					SymbolEntry r2=null, r3=null;
-    					r2 = symbolTable.put(exported.getKey(), exportedSe);  
+    					r2 = symbolTable.put(exported.getKey(), newSymbol);  
     					if (r2 != null && dbg)  {
-    						String i = r2.node() instanceof ImportNode ? "import " : "";
+    						String i = "";
+    						if (r2.node() instanceof ImportNode) {
+    							ImportNode r2i = (ImportNode) r2.node();
+    							i =  "ImportNode ";
+    							i += r2i.isExport() ? "(isExport TRUE) ": "";   							
+    						}
+    						
     						e2 = r2.node().getName().getText();
-    						ef2 = r2.scope().getScopeName();    						
+    						ef2 = r2.scope().getScopeName();   
+    						
      						ParseUnit.current().reportError(imp, "replacing symboltable SymbolEntry for " + i + ef2 + "." + e2 + " with export entry " + exported.getKey());
     						
     					}
     					if (exported.getKey().equals(imp.getUnitName().getText()) && !exported.getKey().equals(imp.getName().getText())) {
 
-    						r3 = symbolTable.put(imp.getName().getText(), exportedSe);	// 	the 'as' name
+    						r3 = symbolTable.put(imp.getName().getText(), newSymbol);	// 	the 'as' name
     						if (dbg) {
     							ParseUnit.current().reportError(this, "enter " + exported.getKey() + " SymbolEntry with import name " + imp.getName());
     							if (r3 != null) {

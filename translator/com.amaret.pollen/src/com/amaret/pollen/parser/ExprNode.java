@@ -170,7 +170,7 @@ public class ExprNode extends BaseNode {
         	return super.pass1Begin();
         }
         protected boolean pass2Begin() {
-        	called = null;
+        	
         	ParseUnit currUnit = ParseUnit.current();
         	
         	SymbolTable symtab = currUnit.getSymbolTable();
@@ -184,9 +184,13 @@ public class ExprNode extends BaseNode {
         		
         		String dbgs = ei.getName().getText();
         		boolean dbg = false;
-        		if (dbgs.equals("t.init"))
+        		if (dbgs.equals("Arduino.cycle"))
         			dbg = true;
-            	if (this.getParent() instanceof ExprNode.Ident 
+        		if (dbgs.equals("disable"))
+        			dbg = true;
+
+            	if (called == null 
+            			&& this.getParent() instanceof ExprNode.Ident 
             			&& ((ExprNode.Ident) this.getParent()).getSymbol() != null) {
             		// this is an access after a dereference: 'arr[i].fcn()'.
             		// lookup scope for 'fcn()' is the type for arr. 
@@ -205,26 +209,32 @@ public class ExprNode extends BaseNode {
             	if (called == null) {
             		called = symtab.curScope().lookupName(ei.getName().getText(), chkHostScope);
             	}
-            	
-            	if (ei.getName().getText().indexOf('.') != -1) {
-            		String n = ei.getName().getText();
-            		n = n.substring(0, n.lastIndexOf('.'));
-            		caller = symtab.curScope().lookupName(n,chkHostScope);
-            		if (caller == null && chkHostScope) 
-            			caller = symtab.curScope().lookupName(n,false);
-            		
-            		ei.setQualifier(caller);            		
-            	}
-            	else {
-            		IScope sc = currUnit.getSymbolTable().curScope();
-            		while (!(sc instanceof DeclNode.Usr)) {
-            			sc = sc.getEnclosingScope();
-            			if ( sc instanceof DeclNode.Usr && ((DeclNode.Usr) sc).isClass()) {
-            				// if calling a method in current class, 'this' is the caller
-                			caller = symtab.curScope().lookupName("this",false);
-                			ei.setQualifier(caller);  
+            	if (caller == null) {
+            		if (ei.getName().getText().indexOf('.') != -1) {
+            			String n = ei.getName().getText();
+            			n = n.substring(0, n.lastIndexOf('.'));
+            			caller = symtab.curScope().lookupName(n,chkHostScope);
+            			if (caller == null && chkHostScope) 
+            				caller = symtab.curScope().lookupName(n,false);
+
+            			ei.setQualifier(caller);          
+            			if (caller != null && caller.node() instanceof ImportNode) {
+            				// The caller will get output by translator code.
+            				n = ei.getName().getText().substring(ei.getName().getText().lastIndexOf('.')+1);
+            				ei.getName().setText(n); 
             			}
-            		}           		
+            		}
+            		else {
+            			IScope sc = currUnit.getSymbolTable().curScope();
+            			while (!(sc instanceof DeclNode.Usr)) {
+            				sc = sc.getEnclosingScope();
+            				if ( sc instanceof DeclNode.Usr && ((DeclNode.Usr) sc).isClass()) {
+            					// if calling a method in current class, 'this' is the caller
+            					caller = symtab.curScope().lookupName("this",false);
+            					ei.setQualifier(caller);  
+            				}
+            			}           		
+            		}
             	}
             	if (called == null) { 
             		// Could be a host function accessed through a non-host caller:
@@ -313,7 +323,7 @@ public class ExprNode extends BaseNode {
             
             // for now, skip check for calling through function references
             // TODO figure out how to pass 'this' ptr for function ref class method calls
-            if (!(called.node() instanceof DeclNode.TypedMember)) {
+            if (!(called != null && called.node() instanceof DeclNode.TypedMember)) {
                 
             	int k = (isThisPtr()) ? 0 : -1; // skip 'this'
             	

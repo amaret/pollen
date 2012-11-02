@@ -432,6 +432,7 @@ compositionDefinition
 		{ 
 		  ti.setTypeName($IDENT.text); 
 		  ti.setUnitFlags(EnumSet.of(Flags.COMPOSITION));
+		  //ti.setUnitFlags(EnumSet.of(Flags.MODULE));
 		  if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().equals("NIL")) {
 	      	// if there is an 'as' name in the instantiating context, qualify the unit name 
 	      	qual = clientImport.getAs().getText();

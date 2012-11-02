@@ -553,7 +553,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         static final private int TYPE = 0;
         static final private int INIT = 2; 
               
-        private UnitNode unitType;
+        private UnitNode unitType;  // the unit that contains the type of this typed member. 
         private UnitNode modUnit = null; 			// for protocol members
         private TypeNode modTypeSpec = null; 		// for protocol members
         private NestedScope scopeDeleg = new NestedScope(this);
@@ -642,6 +642,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             UnitNode curr = ParseUnit.current().getCurrUnitNode();
             SymbolEntry sym = curr.getUnitType().resolveSymbol(getTypeName());
             ISymbolNode snode = sym != null ? sym.node() : null;
+            
+            //UnitNode unitType = null;   // The UnitNode that contains the type of this typed member. 
+              // For a nested type T in module M, that is the unit node for M. 
+            
             if (snode instanceof ImportNode) {
                 unitType = ((ImportNode) snode).getUnit();
             }
@@ -796,7 +800,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
      	//static final protected int META_IMPORTS = 4; // unused - earlier pollen
      	  // had imports valid only in 'meta' scope
      	      
-        protected DeclNode.Usr baseType = null;
+        protected DeclNode.Usr containingType = null;
+        protected DeclNode.Usr baseType = null; // from extends clause
         protected DeclNode.Usr implementedType = null;
         protected NestedScope scopeDeleg = new NestedScope(this);
         protected NestedScope scopeHost = new NestedScope(this);
@@ -817,7 +822,16 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		public boolean isReady() {
 			return true;
 		}
-        public EnumSet<Flags> getFlags() {
+        public DeclNode.Usr getBaseType() {
+        	if (baseType == null && this.getExtends() != null) {
+        		SymbolEntry p = lookupName(getExtends().getText());
+        		if (p != null) {
+        			baseType = (Usr) p.node();       				
+        		}
+        	}
+        	return baseType;
+		}
+		public EnumSet<Flags> getFlags() {
         	return flags;	// Except for nested class, these apply to unitType.
         }
         
@@ -826,12 +840,13 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         	return ((ListNode<DeclNode>)getChild(FEATURES)).getElems();
         }
         
-        public ExprNode getExtends() {
-        	if (!this.isProtocol())
+        public BaseNode getExtends() {
+        
+        	if (!this.isProtocol() && !this.isComposition())
         		return null;
-        	if (this.getChildCount() > EXTENDS) 
-        		return (ExprNode) this.getChild(EXTENDS);
-        	return null;
+        	if (this.getChild(EXTENDS).getType() == pollenParser.NIL)
+        		return null;
+        	return (BaseNode) this.getChild(EXTENDS);
         }
         /**
          * 
@@ -868,7 +883,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			return qname;
 		}
 		public BaseNode getImplements() {
-        	if (this.isEnum() || this.isProtocol())
+        	if (this.isEnum() || this.isProtocol() || this.isComposition())
         		return null;
         	if (this.getChild(IMPLEMENTS).getType() == pollenParser.NIL)
         		return null;
@@ -933,8 +948,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             return scopeDeleg.defineSymbol(name, symbol);
         }
 
-        public DeclNode.Usr getBaseType() {
-            return baseType;
+        public DeclNode.Usr getContainingType() {
+            return containingType;
         }
         /**
          * 
@@ -996,12 +1011,16 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             super.pass1Begin();
             
             if (currUnit.getCurrUnitNode().getUnitType() != this && this.isClass()) {
-            	baseType = currUnit.getCurrUnitNode().getUnitType();
+            	containingType = currUnit.getCurrUnitNode().getUnitType();
+            }
+            
+            if (this.getBaseType() != null) {
+            	scopeDeleg.addSymbols(this.getBaseType().scopeDeleg.getEntrySet());
             }
          
             SymbolTable symtab = currUnit.getSymbolTable();
-            if (baseType != null) {
-                scopeDeleg.addSymbols(baseType.scopeDeleg.getEntrySet());
+            if (containingType != null) {
+                scopeDeleg.addSymbols(containingType.scopeDeleg.getEntrySet());
                 symtab.curScope().replaceSymbol(getName(), this);
             }
             else {
