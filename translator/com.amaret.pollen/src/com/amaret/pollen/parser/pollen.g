@@ -1070,12 +1070,25 @@ stmtAssert
 stmtBind
 	:	varOrFcnOrArray BIND  userTypeName	 delim -> ^(S_BIND<StmtNode.Bind>["S_BIND"] varOrFcnOrArray  userTypeName)	
 	;
+printList	
+	:		printItemList	-> ^(LIST<ListNode>["LIST"] printItemList)
+	;
+printItemList
+	:	printItem	( ',' printItem) *	-> printItem+
+	|	-> NIL
+	;
+printItem
+	:	primitiveLit	
+	|	qualName	-> ^(E_IDENT<ExprNode.Ident>["E_IDENT"] qualName)
+	;
 stmtPrint
 @init {
 	EnumSet<Flags> flags = EnumSet.noneOf(Flags.class);
 }
-	:	'print' (stmtPrintTarget[flags])? exprList	
-		-> ^(S_PRINT<StmtNode.Print>["S_PRINT", flags] exprList)
+	:	'print' printList	{flags.add(Flags.OUT); } delim
+		-> ^(S_PRINT<StmtNode.Print>["S_PRINT", flags] printList) 
+	|	'print' (stmtPrintTarget[flags]) printList delim
+		-> ^(S_PRINT<StmtNode.Print>["S_PRINT", flags] printList) 
 	;
 stmtPrintTarget[EnumSet<Flags> f]
 	:	

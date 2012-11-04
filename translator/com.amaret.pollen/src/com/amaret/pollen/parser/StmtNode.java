@@ -361,10 +361,6 @@ public class StmtNode extends BaseNode {
             super(ttype, ttext);
             flags.addAll(f);
         }
-        Print(int ttype, String ttext) {
-            super(ttype, ttext);
-            flags.add(Flags.OUT);
-        }
         public boolean toStdout() {
         	if (flags.contains(Flags.OUT))
         		return true;
@@ -389,67 +385,6 @@ public class StmtNode extends BaseNode {
         @Override
         protected void pass2End() {
 
-            ParseUnit currUnit = ParseUnit.current();
-            List<ExprNode> args = getArgs();
-            ExprNode arg0 = args.get(0);
-
-            if (!arg0.getCat().isString() || !(arg0 instanceof ExprNode.Const)) {
-                currUnit.reportError(arg0, "printf requires a literal format string");
-                return;
-            }
-
-            if (args.size() > 5) {
-                currUnit.reportError(arg0, "printf accepts no more than four arguments");
-                return;
-            }
-
-            String fmt = ((ExprNode.Const) arg0).getValue().getText();
-            boolean pct = false;
-            boolean err = false;
-            int argc = 1;
-            for (int i = 0; i < fmt.length(); i++) {
-                char ch = fmt.charAt(i);
-                if (pct) {
-                    if (argc++ > args.size()) {
-                        currUnit.reportError(arg0, "insufficient number of printf arguments");
-                        err = true;
-                        break;
-                    }
-                    switch (ch) {
-                    case 'c':
-                        break;
-                    case 'd':
-                        break;
-                    case 'o':
-                        break;
-                    case 'p':
-                        break;
-                    case 's':
-                        break;
-                    case 'u':
-                        break;
-                    case 'x':
-                        break;
-                    case '%':
-                        break;
-                    default:
-                        currUnit.reportError(arg0, "'%" + ch + "': unrecognized printf format specifier");
-                        err = true;
-                        break;
-                    }
-                    pct = false;
-                }
-                else {
-                    pct = (ch == '%');
-                }
-                if (err) {
-                    break;
-                }
-            }
-
-            if (!err && argc != args.size()) {
-                currUnit.reportError(arg0, "too many printf arguments");
-            }
         }
     }
     

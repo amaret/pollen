@@ -11,9 +11,7 @@ public class Cat implements Cloneable {
 
     // Cat.Agg
     static public class Agg extends Cat {
-
-		
-        
+      
         private IScope aggScope;
         private IScope defScope;
         private boolean isRef;

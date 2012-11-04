@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.antlr.runtime.tree.Tree;
+
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 
 public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrapper, DeclNode.ITypeKind {
@@ -107,7 +109,6 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
         symbolTable = null;
         typeCat = null;
     }
-    
     public int findString(String s) {
         Integer id = exprConstStringTable.get(s);
         return id != null ? id : -1;

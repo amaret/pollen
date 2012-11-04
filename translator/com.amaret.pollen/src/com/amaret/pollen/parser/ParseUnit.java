@@ -10,6 +10,7 @@ import java.util.Stack;
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.tree.Tree;
 import org.antlr.runtime.tree.TreeAdaptor;
 
 import com.amaret.pollen.driver.ProcessUnits;
@@ -286,7 +287,7 @@ public class ParseUnit {
             return null;
         }
         
-        UnitNode unit = (UnitNode)result.getTree();
+        UnitNode unit = (UnitNode)result.getTree(); 
         
 		//setDebugMode(false);
         if (isDebugMode())

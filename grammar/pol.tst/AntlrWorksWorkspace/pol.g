@@ -104,7 +104,7 @@ tokens {
     EnumSet<LitFlags> litFlags = EnumSet.noneOf(LitFlags.class);
     
     protected enum AttrFlags {
-        HOST, PUBLIC, VOLATILE, CONST, NEW, PROTOCOL_MEMBER
+        HOST, PUBLIC, VOLATILE, CONST, NEW, PROTOCOL_MEMBER, OUT, ERR, LOG
     }
     EnumSet<AttrFlags> atFlags = EnumSet.noneOf(AttrFlags.class);
     
@@ -687,12 +687,30 @@ stmtAssert
 stmtBind
 	:	varOrFcnOrArray BIND  expr	 delim -> ^(S_BIND varOrFcnOrArray  expr)	
 	;
-stmtPrint
-	:	'print' (stmtPrintTarget)? exprList	
-		-> ^(S_PRINT stmtPrintTarget? exprList)
+printList	
+	:		printItemList	-> ^(LIST printItemList)
 	;
-stmtPrintTarget
-	:	('log' | 'err'	| 'out')
+printItemList
+	:	printItem	( ',' printItem) *	-> printItem+
+	;
+printItem
+	:	primitiveLit	|	qualName	
+	;
+stmtPrint
+@init {
+	EnumSet<AttrFlags> flags = EnumSet.noneOf(AttrFlags.class);
+}
+	:	'print' printList	{flags.add(AttrFlags.OUT); } delim
+		-> ^(S_PRINT printList) 
+	|	'print' (stmtPrintTarget[flags]) printList delim
+		-> ^(S_PRINT printList) 
+	;
+stmtPrintTarget[EnumSet<AttrFlags> f]
+	:	
+		(	  'log'  {f.add(AttrFlags.LOG); }
+			| 'err'	{f.add(AttrFlags.ERR); }
+			| 'out'  {f.add(AttrFlags.OUT); }
+		)
 	;
 stmtReturn
 // Note rules below require that returns of multiple values be surrounded by parens.
@@ -959,6 +977,7 @@ INJECT
 	;
 ML_COMMENT	
     :   '---' ( options {greedy=false;} : . )* '---' ('\n'|'\r')* { $channel=HIDDEN; }
+    |   '!--' ( options {greedy=false;} : . )*  '--!' ('\n'|'\r')* { $channel=HIDDEN; }
     ;
 SEMI
     :   ';'

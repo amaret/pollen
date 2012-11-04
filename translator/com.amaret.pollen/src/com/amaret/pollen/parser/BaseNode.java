@@ -2,6 +2,7 @@ package com.amaret.pollen.parser;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.tree.Tree;
 
 public class BaseNode extends CommonTree {
 
@@ -79,4 +80,5 @@ public class BaseNode extends CommonTree {
         startIndex = start;
         stopIndex = stop;
     }
+
 }
