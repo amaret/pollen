@@ -9,19 +9,19 @@ package blink.avr
 ------------------------------------------------------------------------------!
 
 from cc.arduino import ArduinoWithoutMeta as Arduino
-from Arduino import TestPin as Pin
+from Arduino import TestPin
 
 module Blink2 {
 
 	pollen.reset() { 
-    Pin.clear()
+    TestPin.clear()
 	}
 	
 	pollen.run() {
 		while (true) {
-      Pin.set()
+      TestPin.set()
       delaySome()
-      Pin.clear()
+      TestPin.clear()
       delaySome()      
 		}
 	}
