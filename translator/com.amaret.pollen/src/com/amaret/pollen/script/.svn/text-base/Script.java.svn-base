@@ -1,0 +1,28 @@
+package com.amaret.em.config;
+
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.JavaScriptException;
+import org.mozilla.javascript.Scriptable;
+
+import com.amaret.em.config.Value;
+import com.amaret.em.parser.Session;
+
+public class Script {
+
+    static public Object execute(String prog, String result, String fileName) throws Exception {
+
+        Context cx = Context.enter();
+        cx.setOptimizationLevel(-1);
+        Scriptable scope = cx.initStandardObjects();
+        try {
+            cx.evaluateString(scope, prog, fileName, 1, null);
+        }
+        catch (JavaScriptException jse) {
+            Session.current().reportFailure("JavaScript termination: " + jse.getMessage());
+            return null;
+        }
+
+        return Value.toVal(scope.get(result, scope));
+    }
+    
+}
