@@ -9,6 +9,7 @@ public interface ITarget {
     public static final String P_CCOPTSSUF = "pollen.target.compiler.flags.suffix";
     public static final String P_CLASS = "pollen.target.class";
     public static final String P_COMPORT = "pollen.target.comPort";
+    public static final String P_DISABLE = "pollen.target.disable";
     public static final String P_ECHO = "pollen.target.echo";
     public static final String P_MCU = "pollen.target.mcu";
     public static final String P_NAME = "pollen.target.name";

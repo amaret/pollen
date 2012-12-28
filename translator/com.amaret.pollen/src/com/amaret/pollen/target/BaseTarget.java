@@ -42,9 +42,9 @@ public abstract class BaseTarget implements ITarget {
     }
     
     protected int execCmd(String cmd, boolean useInfoStream, File dir) throws Exception {
-        if ("yes".equals(ParseUnit.current().getProperty(ITarget.P_ECHO))) {
+        //if ("yes".equals(ParseUnit.current().getProperty(ITarget.P_ECHO))) {
             ParseUnit.current().getInfoStream().printf("exec: %s\n", cmd);
-        }
+        //}
         Process proc = Runtime.getRuntime().exec(cmd, null, dir);
         BufferedReader procout = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
         String line;
@@ -53,6 +53,7 @@ public abstract class BaseTarget implements ITarget {
             errStream.println(line);
         }
         procout.close();
+        errStream.close();
         return proc.waitFor();
     }
 

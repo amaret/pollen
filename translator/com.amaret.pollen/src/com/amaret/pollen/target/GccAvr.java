@@ -6,9 +6,9 @@ import com.amaret.pollen.parser.ParseUnit;
 
 public class GccAvr extends GccBase {
 
-    static final private String CRT_S = "/crt0.s";
-    static final private String CRT_O = "/crt0.o";
-    static final private String LNK_CMD = "/lnk.cmd";
+//    static final private String CRT_S = "/crt0.s";
+//    static final private String CRT_O = "/crt0.o";
+//    static final private String LNK_CMD = "/lnk.cmd";
 
     {
         typeInfo.put(TypeId.BOOL,   new TypeInfo(2, 1));
@@ -28,17 +28,24 @@ public class GccAvr extends GccBase {
     public void compile(File srcFile) throws Exception {
         
         ParseUnit curr = ParseUnit.current();
+
+        if ("yes".equals(curr.getProperty(ITarget.P_DISABLE))) {       	
+        	//curr.getInfoStream().print("Skiping target compile\n");
+        	return;
+        } 
         
         String srcFilePath = srcFile.getAbsolutePath();
         
         String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
-        String asmFile = baseFile + ".s";
-        String objFile = baseFile + ".o";
+//        String asmFile = baseFile + ".s";
+//        String objFile = baseFile + ".o";
         String mapFile = baseFile + ".map";
         String outFile = baseFile + ".out";
+        String hexFile = baseFile + ".hex";
 
         String gcc = curr.getProperty(ITarget.P_TOOLSDIR) + "/" + curr.getProperty(ITarget.P_TOOLPREFIX) + "gcc";
-        String targDir = getTargDir();
+        String objcopy = curr.getProperty(ITarget.P_TOOLSDIR) + "/" + curr.getProperty(ITarget.P_TOOLPREFIX) + "objcopy";
+//        String targDir = getTargDir();
         
         String cmd;
         
@@ -69,16 +76,11 @@ public class GccAvr extends GccBase {
 //        }
 //        
         cmd = "";
-        cmd += gcc;
-        //cmd += " -mmcu=" + curr.getProperty(ITarget.P_MCU);
-        //cmd += " --entry __init -u __init -nostdlib";
-       cmd += " -o " + outFile;
-        //cmd += " " + targDir + CRT_O;
-        cmd += " " + objFile;
-        //cmd += " -T " + targDir + LNK_CMD;
-//        if (execCmd(cmd) != 0) {
-//            return;
-//        }
+        cmd += objcopy;
+        cmd += " -I elf32-avr -O ihex " + outFile + " " + hexFile;
+        if (execCmd(cmd) != 0) {
+            return;
+        }
         
     }
 

@@ -172,7 +172,6 @@ public class Generator {
         }
         
         target = this.loadTarget();
-
         target.compile(progFile);
     }
 
