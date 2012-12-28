@@ -1,0 +1,11 @@
+pollen.target.class = com.amaret.pollen.target.GccAvr
+pollen.target.compiler.flags = -g -O3 -ffunction-sections -fdata-sections 
+pollen.target.compiler.flags.prefix =
+pollen.target.compiler.flags.suffix =
+pollen.target.echo = yes
+pollen.target.name = pollen.target.gcc.avr
+pollen.target.sects = .text;.data;.bss
+pollen.target.tools.home = /Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/bin
+pollen.target.tools.prefix = avr-
+pollen.target.disable = yes
+
