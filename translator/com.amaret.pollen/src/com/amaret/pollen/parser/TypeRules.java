@@ -247,7 +247,7 @@ public class TypeRules {
 
 		UnitNode unit = protocol.node() instanceof ImportNode ? ((ImportNode) protocol.node()).getUnit() : null;
 		DeclNode.Usr p = unit.getUnitType();
-
+		
 		if (p == null || !p.isProtocol()) {
 			ParseUnit.current().reportError((BaseNode) protocol.node(), "implements clause requires a protocol");
 			return;
@@ -276,12 +276,12 @@ public class TypeRules {
 							}							
 						}
 						if (!matchSig) {
-							ParseUnit.current().reportError((BaseNode) protocol.node(), "all functions in protocol must be implemented with identical signatures");
+							ParseUnit.current().reportError((BaseNode) protocol.node(), "all functions in protocol \'" + protocol.node().getName().getText() + "\' must be implemented with identical signatures");
 						}
 					}											
 				}
 				if (!matchName) {
-					ParseUnit.current().reportError((BaseNode) protocol.node(), "all functions in protocol must be implemented");
+					ParseUnit.current().reportError((BaseNode) protocol.node(), "all functions in protocol \'" + protocol.node().getName().getText() + "\' must be implemented");
 					return;
 				}				
 			}		

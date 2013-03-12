@@ -291,10 +291,11 @@ classDefinition
 	      		qual = clientImport.getAs().getText();
 	      	}
 	      }
-		(implementsClause)
+	   extendsClause
+		implementsClause
 		braceOpen classFeatureList braceClose
 		-> ^(D_CLASS<DeclNode.Class>["D_CLASS", ti.getUnitFlags(), qual] 
-		IDENT classFeatureList implementsClause {$unitTypeDefinition::meta})//{$unitTypeDefinition::metaImports})
+		IDENT classFeatureList extendsClause implementsClause {$unitTypeDefinition::meta})//{$unitTypeDefinition::metaImports})
 		;
 classFeatureList
 	:	classFeature*	-> ^(LIST<ListNode>["LIST"] classFeature*)
@@ -330,10 +331,11 @@ moduleDefinition
 	      		qual = clientImport.getAs().getText();
 	      	}
 	      }
-			(implementsClause) 
+	      extendsClause
+	      implementsClause
 			braceOpen moduleFeatureList braceClose 
 			-> ^(D_MODULE<DeclNode.Usr>["D_MODULE", ti.getUnitFlags(), qual] 
-			IDENT moduleFeatureList implementsClause {$unitTypeDefinition::meta}) //{$unitTypeDefinition::metaImports})
+			IDENT moduleFeatureList extendsClause implementsClause {$unitTypeDefinition::meta}) //{$unitTypeDefinition::metaImports})
 	;
 moduleFeatureList
 	:	moduleFeature*	-> ^(LIST<ListNode>["LIST"] moduleFeature*)
@@ -400,9 +402,10 @@ protocolDefinition
 	      }
 		}
 		extendsClause
+		implementsClause
 		braceOpen protocolFeatureList braceClose 
 		-> ^(D_PROTOCOL<DeclNode.Usr>["D_PROTOCOL", ti.getUnitFlags(), qual] 
-			IDENT protocolFeatureList extendsClause {$unitTypeDefinition::meta}) //{$unitTypeDefinition::metaImports})
+			IDENT protocolFeatureList extendsClause implementsClause {$unitTypeDefinition::meta}) //{$unitTypeDefinition::metaImports})
 	;
 protocolFeatureList
 	:	protocolFeature*	-> ^(LIST<ListNode>["LIST"] protocolFeature*)
@@ -439,9 +442,10 @@ compositionDefinition
 	      }		  
 		}
 		extendsClause  
+		implementsClause
 		braceOpen compositionFeatureList braceClose 
 			-> ^(D_COMPOSITION<DeclNode.Usr>["D_COMPOSITION", ti.getUnitFlags(), qual] 
-			     IDENT compositionFeatureList extendsClause {$unitTypeDefinition::meta}) //{$unitTypeDefinition::metaImports})
+			     IDENT compositionFeatureList extendsClause implementsClause {$unitTypeDefinition::meta}) //{$unitTypeDefinition::metaImports})
 	;
 compositionFeatureList
 	:	compositionFeature*	-> ^(LIST<ListNode>["LIST"] compositionFeature*)
@@ -744,12 +748,22 @@ scope {
      )
    ;
 extendsClause
-    :   'extends' qualName -> qualName
+    :   'extends' qualName
+    {
+    	if (ti.getUnitFlags().contains(Flags.CLASS) || ti.getUnitFlags().contains(Flags.MODULE))
+    		throw new PollenException("\'extends\' clause is not supported for classes or modules", input);
+    }
+     -> qualName
     | 	-> NIL
     ;
 
 implementsClause
-    :   'implements' qualName -> qualName
+    :   'implements' qualName 
+    {
+    	if (ti.getUnitFlags().contains(Flags.PROTOCOL))
+    		throw new PollenException("\'implements\' clause is not supported for protocols", input);
+    }
+    -> qualName
     | -> NIL
     ;
 braceClose
@@ -1414,10 +1428,11 @@ INT_LIT
 	:	(MINUS)? D+ (LU)? 
 	;
 CHAR
-    :   '\'' (('\\' ~'\n') | ~('\\' | '\'' | '\n'))+ '\''
+    :   '\'' (('\\' ~'\n') | ~('\\' | '\'' | '\n')) '\''
     ;
 STRING
     :   '"' (('\\' ~'\n') | ~('\\' | '"' | '\n'))* '"'
+    |	  '\'' (('\\' ~'\n') | ~('\\' | '\'' | '\n'))+ '\''
     ; 
 WS
     :   (' ' | '\t')*  { $channel=HIDDEN; }
@@ -1425,6 +1440,7 @@ WS
 SL_COMMENT
     : '#' ~('\n'|'\r')*   { $channel=HIDDEN; }
     | '/''/' ~('\n'|'\r')*  { $channel=HIDDEN; }
+    | '---' ~('\n'|'\r')* { $channel=HIDDEN; }
     //| '---' ~('\n'|'\r')* '---' { $channel=HIDDEN; }
     ;
 INJECT
@@ -1435,9 +1451,13 @@ INJECT
 //    :   '---'('-')* ( options {greedy=false;} : . )*  '---'('-')* ('\n'|'\r')* { $channel=HIDDEN; }
 //    ;
 ML_COMMENT	
-    :   '---' ('-')*( options {greedy=false;} : . )* '---'('-')* ('\n'|'\r')* { $channel=HIDDEN; }
-    |   '!--' ( options {greedy=false;} : . )*  '--!' ('\n'|'\r')* { $channel=HIDDEN; }
+	 // Note the first has to have a min of 4 dashes to disambig w/ sl_comment
+      :  '----' ('-')* (' ' | '\t')* ('\n'|'\r') ( options {greedy=false;} : . )* '---' ('-')*('\n'|'\r')* { $channel=HIDDEN; }    
+    	|	'!--' ( options {greedy=false;} : . )*  '--!' ('\n'|'\r')* { $channel=HIDDEN; }
     ;
+//ML_COMMENT_CONT
+//	:	(( options {greedy=false;} : . )* '---' ('-')*('\n'|'\r')* { $channel=HIDDEN; } 
+//	;
 //ML_COMMENT2	
 //    :   '!--' ( options {greedy=false;} : . )*  '--!' ('\n'|'\r')* { $channel=HIDDEN; }
 //    ;

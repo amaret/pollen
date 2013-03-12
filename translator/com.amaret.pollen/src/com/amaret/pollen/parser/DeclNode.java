@@ -794,9 +794,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
      	static final protected int FEATURES = 1;
      	static final protected int EXTENDS = 2;
-     	static final protected int IMPLEMENTS = 2;
-     	static final protected int VALS = 1;
-     	static final protected int META = 3; 
+     	static final protected int IMPLEMENTS = 3;
+     	static final protected int VALS = 1; // enum
+     	static final protected int META = 4; 
      	//static final protected int META_IMPORTS = 4; // unused - earlier pollen
      	  // had imports valid only in 'meta' scope
      	      
@@ -883,7 +883,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			return qname;
 		}
 		public BaseNode getImplements() {
-        	if (this.isEnum() || this.isProtocol() || this.isComposition())
+        	if (this.isEnum() || this.isProtocol()) // || this.isComposition())
         		return null;
         	if (this.getChild(IMPLEMENTS).getType() == pollenParser.NIL)
         		return null;
@@ -1060,7 +1060,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public void pass2End() {
         	
         	if (this.getImplements() != null) {
-        		SymbolEntry p = lookupName(getImplements().getText());
+        		String n = this.getImplements().getText();
+        		SymbolEntry p = lookupName(n);
         		if (p != null && implementedType == null) {
         			if (p.node() instanceof ImportNode) {
         				implementedType = ((ImportNode)p.node()).getUnit().getUnitType();
