@@ -2,6 +2,7 @@ package com.amaret.pollen.target;
 
 import java.io.File;
 
+import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.ParseUnit;
 
 public class GccAvr extends GccBase {
@@ -26,6 +27,9 @@ public class GccAvr extends GccBase {
     }
     @Override
     public void compile(File srcFile) throws Exception {
+    	
+    	if (!ProcessUnits.isGccAvr())
+    		return;
         
         ParseUnit curr = ParseUnit.current();
 

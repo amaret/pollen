@@ -17,7 +17,14 @@ public class ProcessUnits {
 	private static String pollenRoot = "";
 	private static String pollenEnv = "";
 	private static String pollenEnvPkg = "";
+	private static boolean gccAvr = false;
 	
+	public static boolean isGccAvr() {
+		return gccAvr;
+	}
+	private static void setGccAvr(boolean gccAvr) {
+		ProcessUnits.gccAvr = gccAvr;
+	}
 	public static String getPollenEnvPkg() {
 		return pollenEnvPkg;
 	}
@@ -122,10 +129,11 @@ public class ProcessUnits {
 	/**
 	 * 
 	 * @param args - bundles and pollen file, possible options
+	 * @param errStream TODO
 	 * @return a HashMap of packages <name, path>
 	 * initialize working directory
 	 */
-	private Inputs getArgs(String[] args) throws Exception {
+	private Inputs getArgs(String[] args, PrintStream errStream) throws Exception {
 		
 		Inputs inputs = new Inputs();
 		boolean setWorkingDir = false;
@@ -159,6 +167,14 @@ public class ProcessUnits {
 					throw new Termination ("Invalid -e usage: must specifiy a fully qualified module for pollen.environment");								
 				pollenEnvPkg = this.putModule(inputs, emod);
 				pollenEnv = emod.substring(emod.lastIndexOf(File.separator)+1);
+				continue;
+			}
+			if (p.equals("-gccAvr")) { // UNDOCUMENTED, for testing
+				ProcessUnits.setGccAvr(true);
+				continue;
+			}
+			if (p.matches("-[A-z]+")) {
+				errStream.printf("Unknown option \'%s\'. Option skipped (use \'-h\' for list of options).\n", p);
 				continue;
 			}
 
@@ -232,7 +248,7 @@ public class ProcessUnits {
 			PrintStream errorStream, 
 			PrintStream infoStream, SymbolTable symtab) throws Exception {
 		
-		Inputs files = this.getArgs(args);
+		Inputs files = this.getArgs(args, errorStream);
 
 		ParseUnit.initParse(files.pollenFile, props, files.packages, outputStream, errorStream, infoStream, symtab);
 
@@ -299,8 +315,6 @@ public class ProcessUnits {
 		unitNodes = this.parseUnit(args, props, outputStream, infoStream, errorStream, symbolTable);
 		
 		return this.translateUnit(unitNodes);
-
-
 
 	}
 
