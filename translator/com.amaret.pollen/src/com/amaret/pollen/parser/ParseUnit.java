@@ -158,7 +158,14 @@ public class ParseUnit {
 	 */
 	private void parseImports(UnitNode unit) throws Exception {
 
+		String importer = (impChain.size()>0) ? impChain.get(impChain.size()-1) : "";       
+        if (impChain.contains(unit.getQualName()) && impChain.size()>0) {      
+        	if (!unit.getUnitType().isMeta()) // Seems to be okay if meta
+        		reportError(unit, "In unit \'" + importer + "\' import recursion for \'" + unit.getQualName() + "\' detected");
+        }
+        
         impChain.push(unit.getQualName());
+        
 
         for (ImportNode imp : unit.getImports()) {
 
@@ -225,10 +232,11 @@ public class ParseUnit {
                     continue;
                 }
                 if (imp.getMeta() == null) {
-
+                	
                     imp.bindUnit(impUnit);
                 }
                 else {
+                	
                     if (!impUnit.isMeta()) {
                         reportError(imp.getUnitName(), "meta arguments provided but not a meta type");
                         continue;
