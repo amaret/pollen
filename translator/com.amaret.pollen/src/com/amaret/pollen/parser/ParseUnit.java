@@ -191,11 +191,19 @@ public class ParseUnit {
             	try {
             		
                     if (pkgPath == null) {
-                        reportError(imp.getUnitName(), "missing package " + fromPkg);
-                        continue;
-                    } 
+                    	// Assume this is a composition in the default package: 'from c import m'
+                    	// In that case fromPkg contains the composition name 'c'.
+                    	pkgPath = ParseUnit.mkPackageName(getCurrPath());        
+                        pkgPath = path.substring(0, path.lastIndexOf(File.separator));
+                        impUnit = parseUnit(pkgPath + File.separator + fromPkg + ".p", client, clientImport);
 
-                    impUnit = parseUnit(pkgPath + File.separator + imp.getUnitName() + ".p", client, clientImport);
+                        //reportError(imp.getUnitName(), "missing package " + fromPkg);
+                        //continue;
+                    }
+                    else {
+                    	impUnit = parseUnit(pkgPath + File.separator + imp.getUnitName() + ".p", client, clientImport);
+                    }
+
                 }
                 catch (Termination te) {
                     reportError(imp, te.getMessage());
