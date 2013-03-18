@@ -30,9 +30,12 @@ function debug(where, obj) {
         $$printf(names)
 }
 
+// obj is the unit
+// sel is the field in unit being assigned to
+// val is the assigned value
 function $$bind( obj, sel, val ) {
 
-        //debug("entering $$bind ", obj)
+    //debug("entering $$bind ", obj)
 
     if (!('$$bound' in obj)) {
         obj.$$bound = {};
@@ -40,8 +43,10 @@ function $$bind( obj, sel, val ) {
     if (!obj.$$bound[sel]) {
         obj[sel] = val;
         obj.$$bound[sel] = true;
+        //debug("set obj.$$bound[sel] true ", obj)
+
     }
-        //debug("exiting $$bind ", obj)
+    //debug("exiting $$bind ", obj)
 
     return obj[sel];
 }
@@ -178,6 +183,31 @@ $$Struct.prototype.toString = function() {
 function $$Ref( t ) {
     this.$$category = '$$Ref';
     this.$$text = t;
+}
+
+function $$Struct( qn ) {
+    this.$$category = '$$Struct';
+    this.$$qname = qn;
+}
+
+$$Struct.prototype.$$assign = function( str ) {
+    for (var fld in this) {
+        if (str[fld] === undefined) {
+            continue;
+        }
+        var isAgg = this.$$isAggFld[fld];
+        if (isAgg === false) {
+            this[fld] = str[fld];
+        }
+        else if (isAgg === true) {
+            this[fld].$$assign(str[fld]);
+        }
+    }
+    return this
+}
+
+$$Struct.prototype.toString = function() {
+    return "struct " + this.$$qname;
 }
 
 $$Ref.prototype.toString = function() {
