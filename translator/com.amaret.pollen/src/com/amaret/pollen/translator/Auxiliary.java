@@ -141,7 +141,7 @@ class Auxiliary {
 
 	void genExpr(ExprNode expr) {
 		if (expr == null) {
-			gen.fmt.print("??");
+			gen.fmt.print("/* ?? null expr ?? */");
 			return;
 		}
 		int eType = expr.getType();
@@ -157,6 +157,11 @@ class Auxiliary {
 		}
 	}
 
+	/**
+	 * Generate the expr which is a dereference after (from) a function return, 
+	 * or a dereference after an index expr.
+	 * @param expr
+	 */
 	void genExprPost(ExprNode expr) {
 		if (expr.getChildCount() > 1) {
 			for (int i = 1; i < expr.getChildCount(); i++) {
@@ -319,11 +324,13 @@ class Auxiliary {
 		gen.fmt.print("(");
 		int argc = 0;
 
-		if (expr.isThisPtr() && expr.getCaller() != null) {
-			gen.fmt.print(sep);
+		if (expr.isThisPtr()) {
 			sep = ", ";
-			gen.fmt.print(mkQname(expr.getCaller()));
-			++argc;
+			if (expr.getCaller() != null)
+				gen.fmt.print(mkQname(expr.getCaller()));
+			else 
+				gen.fmt.print("NULL");
+			//++argc;
 		}
 
 		for (ExprNode e : expr.getArgs()) {
@@ -397,7 +404,7 @@ class Auxiliary {
 			}
 		}
 			
-		gen.fmt.print(expr.getName());
+		gen.fmt.print_literal(expr.getName());
 		gen.fmt.print("\n");
 	}
 
@@ -481,7 +488,7 @@ class Auxiliary {
 		String qn = (scope instanceof UnitNode ? ((UnitNode) scope)
 				.getQualName()
 				: (scope instanceof DeclNode.Usr) ? ((DeclNode.Usr) scope)
-						.getUnitQualName() : "??");
+						.getUnitQualName() : "/* ?? scope unknown ?? */");
 		if (isHost && !isLval) {
 			if (scope == gen.curUnit()) {
 				gen.fmt.print("%1.%2", gen.uname(), expr.getName());
@@ -661,15 +668,34 @@ class Auxiliary {
 		}
 	}
 
-	void genFcnArgs(List<DeclNode.Formal> args, boolean typeFlg) {
+	/**
+	 * 
+	 * @param args
+	 * @param typeFlg true if a type should be output for the parameter. (False for script output.)
+	 * @param fcn
+	 */
+	void genFcnArgs(List<DeclNode.Formal> args, boolean typeFlg, com.amaret.pollen.parser.DeclNode.Fcn fcn) {
+		
+		DeclNode.Formal thisPtr = fcn.getThisPtr();
 
 		if (args.size() == 0) {
+			if (thisPtr.isMethod()) {	// to access class data
+				gen.fmt.print("( ");
+				genType(thisPtr.getTypeSpec(), "" + thisPtr.getName());
+				gen.fmt.print(" )");
+				return;
+			}
 			gen.fmt.print("(%1)", "");
 			return;
 		}
 
 		String sep = "";
 		gen.fmt.print("( ");
+		
+		if (thisPtr.isMethod()) {	// to access class data
+			sep = ", ";
+			genType(thisPtr.getTypeSpec(), "" + thisPtr.getName());
+		}
 
 		for (DeclNode.Formal arg : args) {
 			gen.fmt.print(sep);
@@ -684,7 +710,7 @@ class Auxiliary {
 				} else
 					genType(arg.getTypeSpec(), "" + arg.getName());
 			} else
-				gen.fmt.print(arg.getName());
+				gen.fmt.print(arg.getName()); // javascript
 		}
 		gen.fmt.print(" )");
 	}
@@ -1229,7 +1255,7 @@ class Auxiliary {
 			String rtn = t instanceof TypeNode.Std ? ((TypeNode.Std) t)
 					.getIdent().getText()
 					: t instanceof TypeNode.Usr ? ((TypeNode.Usr) t).getName()
-							.getText() : "??";
+							.getText() : "/* ?? unknown return type ?? */";
 			curTypeString = rtn + " (*" + name + ")(";
 			String sep = "";
 			for (DeclNode.Formal arg : ((DeclNode.Fcn) s.node()).getFormals()) {
@@ -1356,7 +1382,7 @@ class Auxiliary {
 		String qn = (scope instanceof UnitNode ? ((UnitNode) scope)
 				.getQualName()
 				: (scope instanceof DeclNode.Usr) ? ((DeclNode.Usr) scope)
-						.getUnitQualName() : "??");
+						.getUnitQualName() : "/* ?? unknown module qualifier ?? */");
 		if (isHost && !isLval) {
 			if (scope == gen.curUnit()) {
 				gen.fmt.print("%1.%2", gen.uname(), name);

@@ -178,7 +178,7 @@ public class ProgCCode {
 
     private void genFwdAggs() {
 
-        gen.aux.genTitle("FORWARD AGGREGATE VALUES");
+        gen.aux.genTitle("forward aggregate values");
         ArrayList<FwdAgg> workList = new ArrayList<FwdAgg>();
 
         while (fwdAggList.size() > 0) {
@@ -221,7 +221,7 @@ public class ProgCCode {
     }
 
     private void genFwdAggDecls() {
-        gen.aux.genTitle("FORWARD AGGREGATE DECLATIONS");
+        gen.aux.genTitle("forward aggregate declarations");
         for (FwdAgg fwdagg : fwdAggDecls) {
             if (fwdagg.cls != null) {
                 gen.fmt.print("%1 %2;\n", fwdagg.tname, fwdagg.cname);
@@ -368,7 +368,7 @@ public class ProgCCode {
             	DeclNode.Var v = (DeclNode.Var) decl;
             	if (v.isHost()) {
         			if (!title) {
-        				gen.aux.genTitle("HOST DATA DEFINITIONS (unit " + unit.getName().getText() + ")");
+        				gen.aux.genTitle("host data definitions (unit " + unit.getName().getText() + ")");
         				title = true;
         			}
             		genHostVal(ud, v);
@@ -379,7 +379,7 @@ public class ProgCCode {
     	String n = gen.cname();
 		
     	if (!unit.isClass()) {
-    		gen.aux.genTitle("TARGET DATA DEFINITIONS (unit " + unit.getName().getText() + ")");
+    		gen.aux.genTitle("target data definitions (unit " + unit.getName().getText() + ")");
 
     		gen.fmt.print("struct %1 %2 = { %3\n", n, n.substring(0, n.length()-1), "/* module data */");
     		gen.fmt.print("%+");

@@ -41,6 +41,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         		return true;
         	return false;
         }
+        public boolean isMethod() {            
+        	if (flags.contains(Flags.METHOD))
+        		return true;
+        	return false;       	
+        }
 
         protected boolean pass1Begin() {
             super.pass1Begin();
@@ -57,6 +62,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         @Override
         public void pass2End() {
         	       	
+        	if (this.getParent() instanceof DeclNode.Fcn) {
+        		return; // synthesized       		
+        	}
         	Cat c = this.getTypeCat();
         	if (c instanceof Cat.Agg){
         		if (((Cat.Agg)c).isProtocol() || ((Cat.Agg)c).isComposition())  {
@@ -209,7 +217,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
         static final private int TYPE_NAME = 0;
     	static final private int FORMALS = 1;
-        static final private int BODY = 2;
+    	static final private int THIS_PTR = 2;
+        static final private int BODY = 3;
         
         // subtree
         static final private int TYPE = 0;
@@ -253,6 +262,15 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public BodyNode getBody() {
         	return ((BodyNode) getChild(BODY));
         }
+        /**
+         * This is a ptr to class data added to class method calls,
+         * declarations, and definitions. 
+         * Not a part of the signature for typing purposes.
+         * @return the synthesized 'this' ptr
+         */
+        public DeclNode.Formal getThisPtr() {
+        	return ((DeclNode.Formal) getChild(THIS_PTR));
+       }
 
         @Override
         public IScope getEnclosingScope() {
@@ -289,7 +307,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         		return true;
         	return false;       	
         }
-        
+      
         public boolean isHost() {
         	if (flags.contains(Flags.HOST))
         		return true;
@@ -328,6 +346,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public String getScopeName() {
         	return getName().getText();
         }
+        public boolean isMethod() {            
+        	if (flags.contains(Flags.METHOD))
+        		return true;
+        	return false;       	
+        }
         @Override
         protected boolean pass1Begin() {
             
@@ -335,8 +358,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             Atom name = getName();
             unit = currUnit.getCurrUnitNode();
             
-            if (name.getText().matches("pollen.*"))
+            if (name.getText().matches("pollen.*")) {
             	flags.add(Flags.PUBLIC); // always
+            	if (isMethod())
+            		currUnit.reportError(name, "pollen lifecycle functions must be defined in modules");
+            }
             
            	IScope scopeToUse = currUnit.getSymbolTable().curScope();
            	// Host functions go in a host scope 
@@ -642,6 +668,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             UnitNode curr = ParseUnit.current().getCurrUnitNode();
             SymbolEntry sym = curr.getUnitType().resolveSymbol(getTypeName());
             ISymbolNode snode = sym != null ? sym.node() : null;
+            boolean isClass = (snode != null && snode instanceof DeclNode.Class);
             
             //UnitNode unitType = null;   // The UnitNode that contains the type of this typed member. 
               // For a nested type T in module M, that is the unit node for M. 
@@ -663,7 +690,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             	if (unitType.isProtocol() && !(snode instanceof DeclNode.Fcn))
             		flags.add(Flags.PROTOCOL_MEMBER);
             	else {
-            		if (!unitType.isClass() && !this.isFcnRef()) {
+            		if (!unitType.isClass() && !this.isFcnRef() && !isClass) {
             			ParseUnit.current().reportError(getTypeName(), "a typed member can have protocol, class, or function type");
             		}
             	}

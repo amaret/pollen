@@ -32,7 +32,7 @@ public class UnitBody {
 		
 		gen.aux.genType(fcn.getTypeSpec(), gen.cname()
 				+ gen.aux.mkPollenCname(fcn.cname()) + gen.aux.mkSuf(fcn));
-		gen.aux.genFcnArgs(body.getFormals(), true);
+		gen.aux.genFcnArgs(body.getFormals(), true, fcn);
 		gen.fmt.print(" {\n%+");
 		String n = gen.cname();
 		gen.aux.genLocals(body.getLocalVars());
@@ -69,7 +69,7 @@ public class UnitBody {
 
 		gen.aux.setHost(false);
 
-		gen.aux.genTitle("STRING LITERALS");
+		gen.aux.genTitle("string literals");
 		genStrings(unit);
 
 		
@@ -79,7 +79,7 @@ public class UnitBody {
     			if (f.isHost())
     				continue;
     			if (!title) {
-    				gen.aux.genTitle("FUNCTION BODIES");
+    				gen.aux.genTitle("function definitions");
     				title = true;
     			}
     			genBody(f.getBody());

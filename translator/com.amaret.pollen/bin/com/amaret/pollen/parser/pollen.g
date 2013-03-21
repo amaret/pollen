@@ -903,8 +903,14 @@ exprUnary
 fcnDefinition
 	: ('public' { featureFlags.add(Flags.PUBLIC); } )? 
 		('host' { featureFlags.add(Flags.HOST); } )? 
-		fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree]
-		-> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", featureFlags] fcnType_fcnName formalParameterList fcnBody)
+		fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] 
+		-> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", featureFlags] 
+			fcnType_fcnName 
+			formalParameterList 
+			^(D_FORMAL<DeclNode.Formal>["D_FORMAL", featureFlags] 
+				^(T_USR<TypeNode.Usr>["T_USR", featureFlags] IDENT[ti.getTypeName()]) IDENT["this"])
+			fcnBody
+		)
 	;
 fcnDefinitionHost
 // composition
@@ -914,7 +920,12 @@ fcnDefinitionHost
 			if (!featureFlags.contains(Flags.HOST))
        		throw new PollenException("Composition features must be one of host functions, export statements, or enum definitions.", input);
 		}
-		-> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", featureFlags] fcnType_fcnName formalParameterList fcnBody)		
+		-> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", featureFlags] 
+				fcnType_fcnName 
+				formalParameterList 
+				^(D_FORMAL<DeclNode.Formal>["D_FORMAL", featureFlags] 
+					^(T_USR<TypeNode.Usr>["T_USR", featureFlags] IDENT[ti.getTypeName()]) IDENT["this"])
+				fcnBody)		
 	;
 catch [PollenException re] {
     String hdr = getErrorHeader(re);
@@ -932,8 +943,14 @@ fcnDeclaration
    :	('public' { featureFlags.add(Flags.PUBLIC); } )? 
 		('host' { featureFlags.add(Flags.HOST); } )? 
 		fcnType_fcnName (formalParameterList) delim
-   -> ^(D_FCN_DCL<DeclNode.Fcn>["D_FCN_DCL", featureFlags] fcnType_fcnName formalParameterList)
+   -> ^(D_FCN_DCL<DeclNode.Fcn>["D_FCN_DCL", featureFlags] 
+   		fcnType_fcnName 
+   		formalParameterList 
+		 ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", featureFlags] 
+			^(T_USR<TypeNode.Usr>["T_USR", featureFlags] IDENT[ti.getTypeName()]) IDENT["this"])
+   	)
    ;
+
 fcnType_fcnName
 // function names in a dcln can be qualified, e.g. pollen.reset()
 // function return is always a list, empty for void fcn.
@@ -971,23 +988,30 @@ formalParameterList
 	:	'(' formalParameters ')' -> formalParameters
 	;
 methodParameters
-@init {
-	EnumSet<Flags> mFlags = EnumSet.noneOf(Flags.class);		
+@init {	
+	featureFlags.add(Flags.METHOD); 
 }
-// class methods (except constructors & host methods) are hacked to pass a ptr to their struct 
-// as a first parameter: implementation of 'this' ptr.
+// class methods (except constructors & host methods) will pass a ptr to their struct 
+// as a first parameter: implementation of 'this' ptr. This is added to 'c' and is not a 
+// part of the internal signature. 
 	:	formalParameter (',' formalParameter)* 
-		-> ^(LIST<ListNode>["LIST"] 
-			^(D_FORMAL<DeclNode.Formal>["D_FORMAL", mFlags] ^(T_USR<TypeNode.Usr>["T_USR", mFlags] IDENT[ti.getTypeName()]) IDENT["this"])
-			formalParameter+)
-	|	-> ^(LIST<ListNode>["LIST"] 
-			^(D_FORMAL<DeclNode.Formal>["D_FORMAL", mFlags] ^(T_USR<TypeNode.Usr>["T_USR", mFlags] IDENT[ti.getTypeName()]) IDENT["this"]))
+				-> ^(LIST<ListNode>["LIST"] formalParameter+)
+	|	-> ^(LIST<ListNode>["LIST"])
 	;
+// Old: synthezise a 'this' and add to signature
+//		-> ^(LIST<ListNode>["LIST"] 
+//			^(D_FORMAL<DeclNode.Formal>["D_FORMAL", mFlags] ^(T_USR<TypeNode.Usr>["T_USR", mFlags] IDENT[ti.getTypeName()]) IDENT["this"])
+//			formalParameter+)
+//	|	-> ^(LIST<ListNode>["LIST"] 
+//			^(D_FORMAL<DeclNode.Formal>["D_FORMAL", mFlags] ^(T_USR<TypeNode.Usr>["T_USR", mFlags] IDENT[ti.getTypeName()]) IDENT["this"]))
+//	;
 	
 formalParameters
-	:	{(ti.getUnitFlags().contains(Flags.CLASS) 
-			&& !(featureFlags.contains(Flags.CONSTRUCTOR))
-			&& !(featureFlags.contains(Flags.HOST))) }? methodParameters
+	:	{(ti.getUnitFlags().contains(Flags.CLASS) && 
+			!(featureFlags.contains(Flags.CONSTRUCTOR)) &&
+			!(featureFlags.contains(Flags.HOST))) }? 
+			
+			methodParameters
 	|	formalParameter (',' formalParameter)* 
 		-> ^(LIST<ListNode>["LIST"] formalParameter+)
 	|	-> ^(LIST<ListNode>["LIST"])

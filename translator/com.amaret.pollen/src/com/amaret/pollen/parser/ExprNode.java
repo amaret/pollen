@@ -306,14 +306,10 @@ public class ExprNode extends BaseNode {
             	
             Cat.Fcn fcncat = (Cat.Fcn) cat;
             int argc = getArgs().size();
-            if (thisPtr) argc++; // add one for this ptr (already added in the parser)
+            //if (thisPtr) argc++; // add one for this ptr (already added in the parser)
             int minArgc = fcncat.minArgc();
             int maxArgc = fcncat.maxArgc();
            
-            if (thisPtr && fcncat.fcnD() != null && ((DeclNode.Usr) fcncat.fcnD().getEnclosingScope()).isProtocol()) {
-            	minArgc++;
-            	maxArgc++;  // a class is implementing a protocol: account for 'this' parameter.
-            }
             if (argc < minArgc || argc > maxArgc) {
                 currUnit.reportError(getName(), "wrong number of arguments");
                 return;
@@ -325,14 +321,12 @@ public class ExprNode extends BaseNode {
             // TODO figure out how to pass 'this' ptr for function ref class method calls
             if (!(called != null && called.node() instanceof DeclNode.TypedMember)) {
                 
-            	int k = (isThisPtr()) ? 0 : -1; // skip 'this'
+            	int k = -1; 
             	
             	for (ExprNode e : getArgs()) {
             		k += 1;
             		Cat ecat = e instanceof ExprNode.SubExprCat ? ((ExprNode.SubExprCat)e).getSubExprCat() : e.getCat();
             		Cat acat = fcncat.argCats().get(k);
-            		if (isThisPtr())
-            			continue; // the first parameter is 'this' (skip)
             		if (acat.isAggTyp()) {
             			if (((Cat.Agg)acat).isComposition()) {
             				// TODO do I need to resolve to the module, for an export?

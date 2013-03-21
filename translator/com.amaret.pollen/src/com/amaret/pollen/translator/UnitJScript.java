@@ -38,7 +38,7 @@ public class UnitJScript {
                 gen.uname(),
                 cls != null ? ("." + cls.getName()) + ".prototype" : "", 
                 fcn.getName());
-        gen.aux.genFcnArgs(fcn.getFormals(), false);
+        gen.aux.genFcnArgs(fcn.getFormals(), false, fcn);
         gen.fmt.print(" {\n%+");
         if (fcn.isHost()) {
             gen.fmt.print("%tvar $$text = '';\n");

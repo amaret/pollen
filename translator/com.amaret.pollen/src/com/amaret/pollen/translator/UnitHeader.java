@@ -129,7 +129,7 @@ public class UnitHeader {
         String s = decl.cname();
         TypeNode ft = decl.getTypeSpec();
         gen.aux.genType(ft, gen.cname() + gen.aux.mkPollenCname(decl.cname()) + gen.aux.mkSuf(decl));
-        gen.aux.genFcnArgs(decl.getFormals(), true);
+        gen.aux.genFcnArgs(decl.getFormals(), true, decl);
         gen.fmt.print(";\n");
     }
 
@@ -223,7 +223,7 @@ public class UnitHeader {
         	}
         }
         gen.fmt.print("%-%t};\n"); 
-               
+        gen.fmt.print("%ttypedef struct %1 %1;\n", gen.cname(), gen.cname());             
     }
 
     private void genDecl$Var(DeclNode.Var decl) {

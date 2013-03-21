@@ -90,6 +90,17 @@ public class Formatter {
 	    	if (col - (TAB * n) >= 0)
 	    		col -= TAB * n;
 	    }
+	    /**
+	     * Do not interpret printf formatting characters: just print them.
+	     * Use when the text to be printed comes from an injection block.
+	     * @param atom
+	     */
+	    public void print_literal(Atom atom) {
+	    	char[] ca = atom.getText().toCharArray();
+	    	for (int i = 0; i < ca.length; i++) {	            
+	    		sb.append(ca[i]);
+	    	}
+	    }
 
 	    public void print(Atom atom) {
 	        doPrint(atom.getText(), null, null, null, null);
