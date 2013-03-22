@@ -126,6 +126,10 @@ public class ProcessUnits {
 		pollenHelp += "\n" + "  -h\tThis help message.";
 		return pollenHelp;    
 	}
+	static String  v = "0.2.0";  // user release . internal rev . fix number
+	private static String version() {
+		return "pollen version " + v;		
+	}
 	/**
 	 * 
 	 * @param args - bundles and pollen file, possible options
@@ -155,6 +159,10 @@ public class ProcessUnits {
 			}
 			if (p.equals("-h")) {
 				System.out.println(this.helpMessage());
+				System.exit(0); 
+			}
+			if (p.equals("-v")) {
+				System.out.println(ProcessUnits.version());
 				System.exit(0); 
 			}
 			if (p.equals("-e")) {
