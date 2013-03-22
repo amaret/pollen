@@ -193,12 +193,18 @@ public class ParseUnit {
                     if (pkgPath == null) {
                     	// Assume this is a composition in the default package: 'from c import m'
                     	// In that case fromPkg contains the composition name 'c'.
-                    	pkgPath = ParseUnit.mkPackageName(getCurrPath());        
                         pkgPath = path.substring(0, path.lastIndexOf(File.separator));
+                        String pkg = pkgPath + File.separator + fromPkg + ".p";
+                        
+                		File f = new File(pkg);
+                		if (!f.exists()) {
+                			if (!(new File(pkgPath + File.separator + fromPkg)).exists()) {
+                				reportError(getFileName(), "missing package \'" + fromPkg + "\'");
+                				continue;
+                			}
+                		}
                         impUnit = parseUnit(pkgPath + File.separator + fromPkg + ".p", client, clientImport);
 
-                        //reportError(imp.getUnitName(), "missing package " + fromPkg);
-                        //continue;
                     }
                     else {
                     	impUnit = parseUnit(pkgPath + File.separator + imp.getUnitName() + ".p", client, clientImport);
@@ -285,6 +291,12 @@ public class ParseUnit {
 				}
 			}
 			System.out.println(dbgStr);
+		}
+		File f = new File(inputPath);
+		if (!f.exists()) {
+			reportError(getFileName(), "Missing file \'"
+					+ ParseUnit.mkUnitName(inputPath) + "\'");
+			return null;
 		}
 	
 		paths.add(inputPath);
@@ -440,6 +452,17 @@ public class ParseUnit {
     public void reportError(RecognitionException e, String msg) {
         reportErrorConsole(getFileName(), e.line, e.charPositionInLine + 1, msg);
         
+    }
+    /**
+     * 
+     * @param fname file name
+     * @param msg
+     */
+    public void reportError(String fname, String msg) {
+        String quote = "'";       
+        fname = fname != null ? fname : getFileName();
+        msg = quote + fname + quote + ": " + msg;
+        reportErrorConsole(fname, 0, 0, msg);
     }
     /**
      * 
