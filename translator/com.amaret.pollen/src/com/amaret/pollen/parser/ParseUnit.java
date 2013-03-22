@@ -105,6 +105,7 @@ public class ParseUnit {
         impChain = new Stack<String>();
         errorCount = 0;
         unitMap = new HashMap<String, UnitNode>();        
+        out.printf("%s", ProcessUnits.version() + "\n");
 	}
 
     public String getProperty(Property key) {

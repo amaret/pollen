@@ -88,7 +88,8 @@ public class ProgCCode {
         if (gen.getMainUnit().lookupFcn("pollen.shutdown") == null) {
         	gen.aux.genTitle("pollen.shutdown()");
             gen.fmt.print("%tvoid %1pollen__shutdown__E() {\n%+", gen.cname());
-            gen.fmt.print("%t/* empty default */\n");
+            gen.fmt.print("%tvolatile int dummy = 0xCAFE;\n");
+            gen.fmt.print("%twhile (dummy) ;\n");
             gen.fmt.print("%-}\n");
         }
 
@@ -122,10 +123,8 @@ public class ProgCCode {
             }
         }
         gen.fmt.print("%t%1pollen__shutdown__E();\n", gen.cname());
-       
-        gen.fmt.print("%tvolatile int dummy = 0xCAFE;\n");
-        gen.fmt.print("%twhile (dummy) ;\n");
         gen.fmt.print("%-}\n");
+       
     }
 
     public void generate(Value.Arr unitsArr) {
