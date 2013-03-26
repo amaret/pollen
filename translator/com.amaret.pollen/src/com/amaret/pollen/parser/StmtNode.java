@@ -486,7 +486,7 @@ public class StmtNode extends BaseNode {
         		BaseNode d = (BaseNode) ((Cat.Agg) right).aggScope();
         		UnitNode u = (UnitNode) ((d instanceof UnitNode) ? d : d instanceof DeclNode.Usr ? ((DeclNode.Usr)d).getUnit() : null);
         			
-        		((DeclNode.TypedMember)snode).bindModule(u, getValue()); // bind it
+        		((DeclNode.TypedMember)snode).bindModule(u, getValue(), this); // bind it
         		
             	// check that a protocol is being bound to a module
             	// in either a host fcn or a module body

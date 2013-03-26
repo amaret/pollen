@@ -318,10 +318,10 @@ public class ParseUnit {
         
         UnitNode unit = (UnitNode)result.getTree(); 
         
-		setDebugMode(false);
-        if (isDebugMode())
-        	System.out.println( "       AST: " + unit.toStringTree());
-		setDebugMode(false);
+		//setDebugMode(false);
+        //if (isDebugMode())
+        //	System.out.println( "       AST: " + unit.toStringTree());
+		//setDebugMode(false);
 
  
        

@@ -47,7 +47,7 @@ public class UnitHeader {
     	
     	if (unit.getUnitType().isEnum()) {
     		// the unit type is an enum
-    		gen.aux.genTitle("ENUM DEFINITION (unit " + unit.getName().getText() + ")");
+    		gen.aux.genTitle("enum definition (unit " + unit.getName().getText() + ")");
     		genDecl$Enum(unit.getUnitType());
     		return;
     	}
@@ -60,7 +60,7 @@ public class UnitHeader {
             // the unit type contains an enum 
             case pollenParser.D_ENUM:
     			if (!title) {
-    				gen.aux.genTitle("ENUM DEFINITIONS (unit " + unit.getName().getText() + ")");
+    				gen.aux.genTitle("enum definitions (unit " + unit.getName().getText() + ")");
     				title = true;
     			}
                 genDecl$Enum((DeclNode.Usr) decl);
@@ -75,7 +75,7 @@ public class UnitHeader {
 			for (BaseNode b : unit.getUnitType().getMetaFormals().getElems()) {
 				if (b instanceof DeclNode.Formal) {
         			if (!title) {
-            	        gen.aux.genTitle("CONST DEFINITIONS");
+            	        gen.aux.genTitle("const definitions");
         				title = true;
         			}
 					DeclNode.Formal f = (Formal) b;
@@ -94,7 +94,7 @@ public class UnitHeader {
     			
     			if (((DeclNode.Var)decl).isConst()) {
         			if (!title) {
-            	        gen.aux.genTitle("CONST DEFINITIONS");
+            	        gen.aux.genTitle("const definitions");
         				title = true;
         			}
     				genDecl$Const((DeclNode.Var) decl);
@@ -271,13 +271,13 @@ public class UnitHeader {
     		return;
     	
     	if (unit.getContainingUnit() != null && unit.getContainingUnit().isClass()) {
-    		gen.aux.genTitle("CLASS DEFINITION (unit " + unit.getName().getText() + ")");
+    		gen.aux.genTitle("class definition (unit " + unit.getName().getText() + ")");
     		genDecl$Class((Class) unit.getUnitType().getContainingType());
     	}
      	
     	if (unit.getUnitType().isClass()) {
     		// the unit type is a class
-    		gen.aux.genTitle("CLASS DEFINITION (unit " + unit.getName().getText() + ")");
+    		gen.aux.genTitle("class definition (unit " + unit.getName().getText() + ")");
     		genDecl$Class((Class) unit.getUnitType());
     		
     	}
@@ -291,7 +291,7 @@ public class UnitHeader {
                 // the unit type contains a class
                 case pollenParser.D_CLASS:
         			if (!title) {
-        				gen.aux.genTitle("CLASS DEFINITION (unit " + unit.getName().getText() + "." + decl.getName() + ")");
+        				gen.aux.genTitle("class definition (unit " + unit.getName().getText() + "." + decl.getName() + ")");
         				title = true;
         			}
                     genDecl$Class((DeclNode.Class) decl);
@@ -301,7 +301,7 @@ public class UnitHeader {
                 }
             }
 
-    		gen.aux.genTitle("MODULE DEFINITION (unit " + unit.getName().getText() + ")");
+    		gen.aux.genTitle("struct module definition (unit " + unit.getName().getText() + ")");
     		genDecl$Module(unit.getUnitType());
     		return;
     		
@@ -313,7 +313,7 @@ public class UnitHeader {
             // the unit type contains a class
             case pollenParser.D_CLASS:
     			if (!title) {
-    				gen.aux.genTitle("CLASS DEFINITION (unit " + unit.getName().getText() + ")");
+    				gen.aux.genTitle("class definition (unit " + unit.getName().getText() + ")");
     				title = true;
     			}
                 genDecl$Class((DeclNode.Class) decl);
@@ -337,7 +337,7 @@ public class UnitHeader {
     			if (f.isHost())
     				continue;
     			if (!title) {
-        	        gen.aux.genTitle("FUNCTION MEMBERS (unit " + unit.getName().getText() + ")");
+        	        gen.aux.genTitle("function members (unit " + unit.getName().getText() + ")");
     				title = true;
     			}
     			genDecl$Fcn(f);   			
@@ -373,7 +373,7 @@ public class UnitHeader {
     		case pollenParser.D_ARR:
     			if (((DeclNode.Var)decl).isHost())
         			if (!title) {
-        				gen.aux.genTitle("HOST VARIABLES (unit " + unit.getName().getText() + ")");
+        				gen.aux.genTitle("host variables (unit " + unit.getName().getText() + ")");
         				title = true;
         			}
     				genDecl$HostVar((DeclNode.Var) decl);
@@ -416,7 +416,7 @@ public class UnitHeader {
             UnitNode u = imp.getUnit();
             if (u != null && (u.isModule() || u.isClass())) {
     			if (!title) {
-    				gen.aux.genTitle("IMPORTS");
+    				gen.aux.genTitle("imports");
     				title = true;
     			}
                 gen.aux.genHeaderInclude(u.getQualName());
@@ -425,7 +425,7 @@ public class UnitHeader {
     }
     private void genForwards(UnitNode unit) {
     	
-    	gen.aux.genTitle("FORWARDS");
+    	gen.aux.genTitle("forward declarations");
         gen.fmt.print("void %1pollen_print_bool(bool b);\n", gen.cname());
         gen.fmt.print("void %1pollen_print_int(int32 i);\n", gen.cname());
         gen.fmt.print("void %1pollen_print_uint(uint32 u);\n", gen.cname());
@@ -443,7 +443,7 @@ public class UnitHeader {
             }
             if (decl instanceof ITypeKind && !((ITypeKind) decl).isClass())
             	continue;
-            gen.aux.genTitle("NESTED CLASS");
+            gen.aux.genTitle("nested class");
             gen.fmt.print("%ttypedef %1%2 %1%2;\n", gen.cname(), decl.getName());           
         }
     }
@@ -473,7 +473,7 @@ public class UnitHeader {
     		}
     		if (decl instanceof DeclNode.Var) {
     			if (!title) {
-    				gen.aux.genTitle("DATA MEMBERS (unit " + unit.getName().getText() + ")");
+    				gen.aux.genTitle("data members (unit " + unit.getName().getText() + ")");
     				title = true;
     			}
     			genDecl$Var((DeclNode.Var)decl);

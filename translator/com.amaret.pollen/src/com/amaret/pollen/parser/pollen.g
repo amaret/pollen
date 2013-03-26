@@ -943,6 +943,10 @@ fcnDeclaration
    :	('public' { featureFlags.add(Flags.PUBLIC); } )? 
 		('host' { featureFlags.add(Flags.HOST); } )? 
 		fcnType_fcnName (formalParameterList) delim
+		{
+			if (ti.getUnitFlags().contains(Flags.PROTOCOL))
+				featureFlags.add(Flags.PUBLIC);
+		}
    -> ^(D_FCN_DCL<DeclNode.Fcn>["D_FCN_DCL", featureFlags] 
    		fcnType_fcnName 
    		formalParameterList 

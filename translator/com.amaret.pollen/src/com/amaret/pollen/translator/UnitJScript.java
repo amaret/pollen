@@ -199,6 +199,7 @@ public class UnitJScript {
 
     private void genPrivateDecls(UnitNode unit) {
         gen.fmt.print("%t%1.$$privateInit = function() {\n%+", gen.uname());
+        String dbg = gen.uname();
         for (DeclNode decl : unit.getFeatures()) {
             if (isPrivateInit(decl)) {
                 genDecl(decl);
@@ -240,7 +241,7 @@ public class UnitJScript {
     }   
 
     private void genUses(UnitNode unit) {
-        ParseUnit.setDebugMode(false);
+        //ParseUnit.setDebugMode(false);
         if (ParseUnit.isDebugMode())
                 debugUses(unit);
         List<ImportNode> impL = unit.getImports();
@@ -253,7 +254,7 @@ public class UnitJScript {
                 }
             }
             gen.fmt.print("%-%t}\n");
-            ParseUnit.setDebugMode(false);
+            //ParseUnit.setDebugMode(false);
         }
     }
 

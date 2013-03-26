@@ -38,12 +38,12 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 	}
 
 	public void setExport(boolean isExport) {
-		ParseUnit.setDebugMode(false);
+		//ParseUnit.setDebugMode(false);
 		if (ParseUnit.isDebugMode() && isExport) {
 			System.out.println("Import " + this.getName() + " isExportTrue in unit " + ParseUnit.current().getUnitName());
 		}
 		this.isExport = isExport;
-		ParseUnit.setDebugMode(false);
+		//ParseUnit.setDebugMode(false);
 	}
 
 	/**

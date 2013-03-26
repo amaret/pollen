@@ -1,6 +1,7 @@
 package com.amaret.pollen.translator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import com.amaret.pollen.parser.TypeNode;
 import com.amaret.pollen.parser.UnitNode;
 import com.amaret.pollen.parser.pollenParser;
 import com.amaret.pollen.parser.DeclNode.ITypeSpec;
-import com.amaret.pollen.parser.ParseUnit.Property;
+import com.amaret.pollen.parser.DeclNode.TypedMember;
 import com.amaret.pollen.parser.TypeNode.Usr;
 import com.amaret.pollen.script.Value;
 import com.amaret.pollen.script.Value.Obj;
@@ -33,10 +34,44 @@ public class ProgCCode {
         TypeNode.Arr tarr;
         Cat basecat;
     }
-    
+    HashMap<String, UnitDesc> unitDescs = new HashMap<String, UnitDesc>();
     private class UnitDesc {
-        UnitNode unit;
-        Value.Obj unitObj;
+        private UnitNode unit;
+        private Value.Obj unitObj;
+
+        public UnitDesc(UnitNode u, Value.Obj uo){
+        	setUnit(u);
+        	setUnitObj(uo);
+        	unitDescs.put(u.getQualName(), this);
+        }
+
+		/**
+		 * @param unit the unit to set
+		 */
+		void setUnit(UnitNode unit) {
+			this.unit = unit;
+		}
+
+		/**
+		 * @return the unit
+		 */
+		UnitNode getUnit() {
+			return unit;
+		}
+
+		/**
+		 * @param unitObj the unitObj to set
+		 */
+		void setUnitObj(Value.Obj unitObj) {
+			this.unitObj = unitObj;
+		}
+
+		/**
+		 * @return the unitObj
+		 */
+		Value.Obj getUnitObj() {
+			return unitObj;
+		}
     }
     
     private ArrayList<FwdAgg> fwdAggList = new ArrayList<FwdAgg>();
@@ -44,6 +79,7 @@ public class ProgCCode {
     private HashSet<String> fwdAggNames = new HashSet<String>();
     private Generator gen;
     private List<UnitDesc> units = new ArrayList<UnitDesc>();
+    
     
     public ProgCCode(Generator gen) {
         this.gen = gen;
@@ -53,7 +89,7 @@ public class ProgCCode {
     	
     	gen.aux.genTitle("module functions");
         for (UnitDesc ud : units) {
-            UnitNode u = ud.unit;
+            UnitNode u = ud.getUnit();
             if (u.isTarget() && !u.isEnum()) {
                 gen.fmt.print("#include \"../../%1/%2/%2.c\"\n", u.getPkgName(), u.getName());
             }
@@ -97,13 +133,13 @@ public class ProgCCode {
         gen.fmt.print("int main() {\n%+");
         gen.fmt.print("%t%1pollen__reset__E();\n", gen.cname());
         for (UnitDesc ud : units) {
-            UnitNode u = ud.unit;
+            UnitNode u = ud.getUnit();
             if (u.lookupFcn("targetInit") != null) {
                 genSingleFcnCall("targetInit");
             }
         }
         for (UnitDesc ud : units) {
-            UnitNode u = ud.unit;
+            UnitNode u = ud.getUnit();
             if (u == gen.getMainUnit())
             	continue;
             if (u.lookupFcn("pollen.ready") != null) {
@@ -115,7 +151,7 @@ public class ProgCCode {
         gen.fmt.print("%t%1pollen__run__E();\n", gen.cname());
         
         for (UnitDesc ud : units) {
-            UnitNode u = ud.unit;
+            UnitNode u = ud.getUnit();
             if (u == gen.getMainUnit())
             	continue;
             if (u.lookupFcn("pollen.shutdown") != null) {
@@ -135,9 +171,7 @@ public class ProgCCode {
         for (int i = 0; i < unitsArr.length(); i++) {
             Value.Obj uobj = unitsArr.getObj(i);
             if (uobj.getBool("pollen$used")) {
-                UnitDesc ud = new UnitDesc();
-                ud.unitObj = uobj;
-                ud.unit = cur.findUnit(uobj.getStr("$name"));
+                UnitDesc ud = new UnitDesc(cur.findUnit(uobj.getStr("$name")), uobj);
                 units.add(ud);
             }
         }
@@ -146,7 +180,7 @@ public class ProgCCode {
         String part1 = gen.fmt.toString();
         gen.fmt.reset();
         
-        genMods();
+        genModules();
         genEpilogue();
         String part3 = gen.fmt.toString();
         gen.fmt.reset();
@@ -232,11 +266,11 @@ public class ProgCCode {
         }
     }
 
-    private void genMods() {
+    private void genModules() {
 
         for (UnitDesc ud : units) {
 
-            UnitNode unit = ud.unit;
+            UnitNode unit = ud.getUnit();
 
             gen.setupUnit(unit);
             
@@ -244,7 +278,7 @@ public class ProgCCode {
                 genUnitDefs(unit, ud);
             }
 
-            String code = ud.unitObj.getStr("$$code");
+            String code = ud.getUnitObj().getStr("$$code");
             if (code != null) {
                 gen.aux.genTitle(unit.getQualName() + " CODE TEMPLATE");
                 gen.fmt.print("%1", code);
@@ -257,15 +291,15 @@ public class ProgCCode {
         gen.fmt.print("#include <pollen.lang/std.h>\n\n");
         for (UnitDesc ud : units) {
       
-            UnitNode unit = ud.unit;
+            UnitNode unit = ud.getUnit();
             if (unit.isTarget()) {
                 gen.setupUnit(unit);
                 genProtocolMembers(unit, ud);
             }
         }
-        gen.aux.genTitle("UNIT HEADERS");
+        gen.aux.genTitle("unit headers");
         for (UnitDesc ud : units) {
-            UnitNode u = ud.unit;
+            UnitNode u = ud.getUnit();
             if (u.isTarget()) {
                 gen.aux.genHeaderInclude(u.getQualName());
             }
@@ -285,10 +319,19 @@ public class ProgCCode {
             if (!(protoMem.isProtocolMember()))
             	continue;
             
-            Object val = ud.unitObj.getAny(protoMem.getName());
+            Object val = ud.getUnitObj().getAny(protoMem.getName());
+   
             if (val == Value.UNDEF) {
-                ParseUnit.current().reportError(protoMem.getName(), "protocol member has never been bound");
-                return;
+            	
+                if (protoMem.getBindUnit() != null) {
+            		String qname = protoMem.getDefiningScope().getScopeName() + "." + protoMem.getName().getText();
+            		UnitDesc udsc = unitDescs.get(protoMem.getBindUnit().getQualName());
+            		val = udsc.getUnitObj().getAny(qname);
+                }        
+                if (val == Value.UNDEF) {
+                	ParseUnit.current().reportError(protoMem.getName(), "protocol member has never been bound");
+                	return;
+                }
             }
             String qn;
             if (!(val instanceof NativeObject || val instanceof NativeArray)) {
@@ -299,7 +342,7 @@ public class ProgCCode {
             	qn = ((Value.Obj) Value.toVal(val)).getStr("$name");
             String pcn = gen.cname() + protoMem.getName() + '_';
             String dcn = qn.replace('.', '_') + '_';
-            gen.aux.genTitle("PROTOCOL MEMBER " + gen.curUnit().getQualName() + '.' + protoMem.getName() + " DELEGATES " + qn);
+            gen.aux.genTitle("protocol member " + gen.curUnit().getQualName() + '.' + protoMem.getName() + " delegates " + qn);
             gen.aux.genHeaderInclude(qn);
             genProtocolMemDefines(protoMem.getTypeUnit(), pcn, dcn);
         }
@@ -327,7 +370,7 @@ public class ProgCCode {
     
     private void genSingleFcnCall(String fcnName) {
         for (UnitDesc ud : units) {
-            UnitNode u = ud.unit;
+            UnitNode u = ud.getUnit();
             if (u.lookupFcn(fcnName) != null) {
                 gen.fmt.print("%t%1_%2__E();\n", u.getQualName().replace('.', '_'), gen.aux.mkPollenCname(fcnName));
             }
@@ -339,7 +382,7 @@ public class ProgCCode {
     	if (!decl.isHost())
     		return;
 
-        Object val = ud.unitObj.getAny(decl.getName());
+        Object val = ud.getUnitObj().getAny(decl.getName());
         if (val == Value.UNDEF) {
             ParseUnit.current().reportError(decl.getName(), "config parameter has never been assigned");
             return;
@@ -402,10 +445,8 @@ public class ProgCCode {
 
     private void genUnitVar(UnitDesc ud, DeclNode.Var decl) {
 
-    	String n = /* gen.uname() + "." + */ decl.getName().getText();
-        Object obj = ud.unitObj.getAny(n);
-        String xx = "";
-        Object ooo = ud.unitObj.getAny(xx);
+    	String n =  decl.getName().getText();
+        Object obj = ud.getUnitObj().getAny(n);
         if (obj == Value.UNDEF) {
             ParseUnit.current().reportError(decl.getName(), "private variable has never been assigned");
             return;
@@ -415,16 +456,33 @@ public class ProgCCode {
         //	return;
 
         Object val = Value.toVal(obj);
+        
         // Now this is initializing fields of structs (values embedded in {}). Name assignments not needed.
 //        String cname = gen.cname() + decl.getName() + gen.aux.mkSuf(decl);        
 //        gen.aux.genType(decl.getTypeSpec(), cname);
 //        gen.fmt.print(" = ");
 
         
-        if (decl instanceof DeclNode.TypedMember && ((DeclNode.TypedMember) decl).isProtocolMember())
-        	gen.fmt.print("&");
+        if (decl instanceof DeclNode.TypedMember && ((DeclNode.TypedMember) decl).isProtocolMember()) {
+
+
+        	if (((TypedMember) decl).getBindUnit() != ud.getUnit()
+        			&& ((TypedMember) decl).getBindUnit() != null) {
+        		
+        		// Get the binding from the bind unit
+        		
+        		String qname = decl.getDefiningScope().getScopeName() + "." + decl.getName().getText();
+        		UnitDesc udsc = unitDescs.get(((TypedMember) decl).getBindUnit().getQualName());
+        		if (udsc != null) {
+        			obj = udsc.getUnitObj().getAny(qname);
+        			val = Value.toVal(obj);
+        		}
+        		
+        	}
+        	gen.fmt.print("&");        	
+        }
         genVal(decl, val);
-        gen.fmt.print(",\n");
+    	gen.fmt.print(",\n");
     }
     
     private void genVal(Cat cat, TypeNode cast, Object val) {

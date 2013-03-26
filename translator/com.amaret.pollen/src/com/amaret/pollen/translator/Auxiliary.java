@@ -484,11 +484,28 @@ class Auxiliary {
 			}
 			return;
 		}
-
-		String qn = (scope instanceof UnitNode ? ((UnitNode) scope)
-				.getQualName()
-				: (scope instanceof DeclNode.Usr) ? ((DeclNode.Usr) scope)
-						.getUnitQualName() : "/* ?? scope unknown ?? */");
+		
+		String qn = "";
+		if (expr.getQualifier() != null
+				&& expr.getQualifier().node() != null
+				&& expr.getQualifier().node() instanceof DeclNode.TypedMember
+				&& ((DeclNode.TypedMember) expr.getQualifier().node())
+						.isProtocolMember()) {
+			// qualify to the binding unit
+			if (((DeclNode.TypedMember) expr.getQualifier().node()).getBindToUnit() == null) {
+				ParseUnit.current().reportError(expr, "Unbound protocol member detected");
+			}
+			else 
+				qn = ((DeclNode.TypedMember) expr.getQualifier().node()).getBindToUnit().getQualName();
+		}
+		
+		if (qn.isEmpty()) {
+			qn = (scope instanceof UnitNode ? ((UnitNode) scope)
+					.getQualName()
+					: (scope instanceof DeclNode.Usr) ? ((DeclNode.Usr) scope)
+							.getUnitQualName() : "/* ?? scope unknown ?? */");
+		}
+		
 		if (isHost && !isLval) {
 			if (scope == gen.curUnit()) {
 				gen.fmt.print("%1.%2", gen.uname(), expr.getName());

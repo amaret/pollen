@@ -39,14 +39,14 @@ public class ProgJScript {
     }
 
     private void genEpilogue(UnitNode main) {
-        gen.aux.genTitle("EPILOGUE");
+        gen.aux.genTitle("epilogue");
         gen.fmt.print("$units['%1'].pollen$used = true;\n\n", main.getQualName());
         File file = new File(ProcessUnits.getPollenRoot() + "/pollen.lang/epilogue.js");
         gen.fmt.insert(file);
     }
 
     private void genPrologue() {
-        gen.aux.genTitle("PROLOGUE");
+        gen.aux.genTitle("prologue");
         File file = new File(ProcessUnits.getPollenRoot());
         file.mkdirs();
         file = new File(ProcessUnits.getPollenRoot() + "/pollen.lang/prologue.js");

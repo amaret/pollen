@@ -13,7 +13,7 @@ public class Script {
         Context cx = Context.enter();
         cx.setOptimizationLevel(-1);
         Scriptable scope = cx.initStandardObjects();
-        ParseUnit.setDebugMode(false);
+        //ParseUnit.setDebugMode(false);
         if (ParseUnit.isDebugMode())
         	System.out.println("\n\nSCRIPT source: " + prog  + "\n\nfilename: " + fileName);
         
@@ -26,7 +26,7 @@ public class Script {
         }
         if (ParseUnit.isDebugMode())
         	System.out.println("\n\n SCRIPT result: " + result + "\n\nfilename: " + fileName);
-        ParseUnit.setDebugMode(false);
+        //ParseUnit.setDebugMode(false);
 
 
         return Value.toVal(scope.get(result, scope));

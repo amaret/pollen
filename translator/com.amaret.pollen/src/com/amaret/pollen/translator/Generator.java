@@ -84,6 +84,7 @@ public class Generator {
         uname = unit.getName().getText();
         cname = unit.getPkgName().getText().replace('.', '_') + '_'  + uname + '_';	
         jsname = unit.getPkgName().getText() + '.'  + uname;	
+        
 	}
 
 	public String jsname() {

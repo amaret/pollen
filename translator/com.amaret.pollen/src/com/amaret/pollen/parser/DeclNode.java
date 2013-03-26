@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import com.amaret.pollen.parser.ExprNode.Vec;
+import com.amaret.pollen.parser.StmtNode.Bind;
 import com.amaret.pollen.target.ITarget.TypeInfo;
 
 public class DeclNode extends BaseNode implements ISymbolNode {
@@ -579,9 +580,13 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         static final private int TYPE = 0;
         static final private int INIT = 2; 
               
-        private UnitNode unitType;  // the unit that contains the type of this typed member. 
-        private UnitNode modUnit = null; 			// for protocol members
-        private TypeNode modTypeSpec = null; 		// for protocol members
+        private UnitNode unitType;  // the unit for the type of this typed member. 
+        
+        // for protocol members
+        private UnitNode bindToUnit = null; 			// the module to which this protocol member is bound
+        private TypeNode bindToTypeSpec = null; 		// typeSpec for that module
+        private UnitNode bindLocUnit = null;			// module where binding takes place 
+		
         private NestedScope scopeDeleg = new NestedScope(this);
         private Cat.Fcn fcnCat = null;   // for function references
         private boolean isMetaPrimitive = false; // a TypedMember with a meta type instantiated to a primitive has null unitType
@@ -590,6 +595,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public boolean isMetaPrimitive() {
 			return isMetaPrimitive;
 		}
+        public UnitNode getBindUnit() {
+			return bindLocUnit;
+		}
+
 
 		public Atom getTypeName() {
         	TypeNode.Usr t = ((TypeNode.Usr) getChild(TYPE));
@@ -698,20 +707,27 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             }
             return false;
         }
+
     	/**
     	 * Connect the protocol member to its implementing module unit (unitNode). 
     	 * @param mt After binding, use this type for typeSpec
-    	 * @param impUnit
     	 */
-    	public void bindModule(UnitNode mUnit, TypeNode mt) {
+    	public void bindModule(UnitNode mUnit, TypeNode mt, Bind bind) {
     		if (this.isProtocolMember()) {
-    			modUnit = mUnit;
-    			modTypeSpec = mt;
-    			typeCat = Cat.fromSymbolNode(modUnit, unit.getDefiningScope());   			
+    			if (bindToUnit != null) {
+                    ParseUnit.current().reportError(this, "More than one binding encountered for a protocol member. Warning: binding order is indeterminate.");
+    			}
+    			bindToUnit = mUnit;
+    			bindToTypeSpec = mt;
+    			typeCat = Cat.fromSymbolNode(bindToUnit, unit.getDefiningScope());   		
+    			bindLocUnit = ParseUnit.current().getCurrUnitNode();		
     		}
     	}
 
-        @Override
+        public UnitNode getBindToUnit() {
+			return bindToUnit;
+		}
+		@Override
         public boolean defineSymbol(Atom name, ISymbolNode node) {
             return scopeDeleg.defineSymbol(name, node);
         }
@@ -755,13 +771,13 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public ExprNode getInit() {
         	if (getChildCount() > INIT) {
         		return ((ExprNode) getChild(INIT));  		
-        	}        
+        	}  
             return null;
         }
         @Override
         public TypeNode getTypeSpec() {
-        	if (modTypeSpec != null)
-        		return modTypeSpec;
+        	if (bindToTypeSpec != null)
+        		return bindToTypeSpec;
             return (TypeNode) getChild(TYPE);
         }
 		@Override
