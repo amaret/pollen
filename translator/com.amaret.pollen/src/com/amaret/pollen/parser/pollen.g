@@ -177,6 +177,20 @@ tokens {
 			return "PollenException(" + msg + ")";
 		}
 	}
+	public class PollenFatalException extends Exception {
+		String msg;
+
+		public PollenFatalException(String m) {
+			msg = m;
+		}
+		public String toString() {
+			return "PollenFatalException(" + msg + ")";
+		}
+	}
+	public void reportFailure( Exception e )
+    {
+    	ParseUnit.current().reportFailure(e);
+    }
 }
 @lexer::header {
     package com.amaret.pollen.parser;
@@ -232,6 +246,7 @@ tokens {
     {
     	ParseUnit.current().reportError(e, getErrorMessage(e, getTokenNames()));
     }
+
 }
 unit
     :   (NL)* unitPackage   -> ^(UNIT<UnitNode>["UNIT"] unitPackage)  
@@ -498,6 +513,7 @@ catch [PollenException re] {
     String msg = re.toString();
     emitErrorMessage(hdr+" "+msg);
 }
+
 importFrom
 @init{
 }
@@ -659,7 +675,7 @@ metaParmGen
 		    		else if (b.getType() == pollenLexer.VOID) // deferred instantiation
                    name = b.getText();
 		    		else {
-		    			throw new PollenException("Meta type parameter requires type to instantiate", input);
+		    			throw new PollenFatalException("Meta type parameter requires type to instantiate");
 		    		}		    		
 		    	}
 
@@ -681,7 +697,7 @@ metaParmGen
 
 			 		BaseNode b = clientImport.getMeta().get($metaParmsGen::idx);
 			 		if (b.getType() != pollenLexer.VOID && !(b instanceof ExprNode.Const)) 
-			 			throw new PollenException("Invalid meta value parameter specification (must be a constant)", input);
+			 			throw new PollenFatalException("Invalid meta value parameter specification (must be a constant)");
 			 		ctext = b.getText();
 			 		flags.add(Flags.META_ARG);
 			 		lf = EnumSet.noneOf(LitFlags.class);
@@ -699,6 +715,9 @@ metaParmGen
 	 		}
 		-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", flags]  ^(T_STD<TypeNode.Std>["T_STD", EnumSet.noneOf(Flags.class)] builtinType) IDENT ^(E_CONST<ExprNode.Const>["E_CONST", lf] IDENT[ctext]))
 	;
+catch [PollenFatalException e] {
+    ParseUnit.current().reportFailure(e);
+}	
 metaArguments
    :  '{' metaArgument  (',' metaArgument)* '}' -> ^(LIST<ListNode>["LIST"] metaArgument+)
    |	'{' '}'      -> LIST<ListNode>["LIST"]	// defer metaArgument binding  

@@ -36,7 +36,13 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
         @SuppressWarnings("unchecked")
 		public ExprNode getFirstDim() {
         	ListNode<ExprNode> child = (ListNode<ExprNode>) getChild(DIM);
-         	return (!child.getElems().isEmpty()) ? child.getElems().get(0) : null;  
+        	if (child.getElems().isEmpty())
+        		return null;
+        	BaseNode b = child.getElems().get(0);
+        	if ( b instanceof ExprNode )
+        		return (ExprNode) b;
+        	else 
+        		return null;
         }
         
 		@SuppressWarnings("unchecked")

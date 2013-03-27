@@ -466,11 +466,13 @@ class Auxiliary {
 		}
 
 		if (snode instanceof ImportNode) {
-			String qn = ((ImportNode) snode).getUnit().getQualName();
-			if (isHost && !isLval) {
-				gen.fmt.print("$units['%1']", qn);
-			} else {
-				gen.fmt.print("%2%1%2", qn.replace('.', '_'), qs);
+			if (((ImportNode) snode).getUnit() != null) {
+				String qn = ((ImportNode) snode).getUnit().getQualName();
+				if (isHost && !isLval) {
+					gen.fmt.print("$units['%1']", qn);
+				} else {
+					gen.fmt.print("%2%1%2", qn.replace('.', '_'), qs);
+				}
 			}
 			return;
 		}

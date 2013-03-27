@@ -384,7 +384,7 @@ public class ProgCCode {
 
         Object val = ud.getUnitObj().getAny(decl.getName());
         if (val == Value.UNDEF) {
-            ParseUnit.current().reportError(decl.getName(), "config parameter has never been assigned");
+            ParseUnit.current().reportError(decl.getName(), "host variable has never been assigned");
             return;
         }
 

@@ -641,7 +641,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         	if (fcnCat == null) {
         		if (this.getTypeSpec() instanceof TypeNode.Usr) {
         			SymbolEntry s = ((TypeNode.Usr) this.getTypeSpec()).getSymbol();
-        			if (s.node() instanceof DeclNode.Fcn) {
+        			if (s != null && s.node() instanceof DeclNode.Fcn) {
         				fcnCat = (Cat.Fcn) s.node().getTypeCat();
         				if (!(this instanceof DeclNode.FcnRef)) {
         					ParseUnit.current().reportError(this.getName(), "function reference declarations require a parenthesized parameter type list");

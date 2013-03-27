@@ -2,6 +2,7 @@ package com.amaret.pollen.translator;
 
 import java.util.List;
 
+import com.amaret.pollen.parser.Atom;
 import com.amaret.pollen.parser.BodyNode;
 import com.amaret.pollen.parser.Cat;
 import com.amaret.pollen.parser.DeclNode;
@@ -219,20 +220,38 @@ public class UnitJScript {
         }
     }
     private void genUse(ImportNode imp, List<String> inserted) {
-    	if ((imp.getUnit().isModule() || imp.getUnit().isClass() || imp.getUnit().isEnum())
-    			&& !imp.getUnit().isMeta()) {
-    		String n = imp.getUnit().getQualName();
-    		if (!inserted.contains(n)) {
-    			inserted.add(n);
-    			gen.fmt.print("%t$$bind($units['%1'], 'pollen$used', true);\n", n);
+    	
+    	String nameU = imp.getUnit().getQualName();
+    	String nImp = imp.getUnitName().getText();
+    	String nUnit = imp.getUnit().getName().getText();
+    	
+    	
+    	if (ParseUnit.isDebugMode()) {
+    		System.out.println("genUse(): in " + this.gen.curUnit().getQualName() + " check use of " + nameU);
+    	}
+    	boolean metaInstance = imp.getUnit().isMeta() && !(nUnit.equals(nImp)); // if the names are the same, not a real instantiation
+    	
+    	boolean genUseType = imp.getUnit().isModule() || imp.getUnit().isClass() || imp.getUnit().isEnum();
+    	
+    	boolean genUse = (genUseType) && !imp.getUnit().isMeta();
+    	
+    	// only generate uses for actual instantiations of meta types
+    	genUse = genUse || ((genUseType) && (metaInstance));
+ 
+    	if (genUse) {
+
+    		if (!inserted.contains(nameU)) {
+    			inserted.add(nameU);
+    			if (ParseUnit.isDebugMode()) System.out.println("  genUse(): use " + nameU);
+    			gen.fmt.print("%t$$bind($units['%1'], 'pollen$used', true);\n", nameU);
     		}
     	}
     	else  if (imp.getUnit().isComposition()) {
     		List<ImportNode> impCL = imp.getUnit().getImports();
     		for (ImportNode impC : impCL) {
     			SymbolEntry export = imp.getUnit().lookupName("$$export"+impC.getName().getText());
-    			if (ParseUnit.isDebugMode())
-    				System.out.println("Import " + impC.getName() + " in unit " + imp.getUnit().getQualName() + " has isExport " + (impC.isExport() ? "TRUE" : "FALSE"));
+//    			if (ParseUnit.isDebugMode())
+//    				System.out.println("  genUse(): Import " + impC.getName() + " in unit " + imp.getUnit().getQualName() + " has isExport " + (impC.isExport() ? "TRUE" : "FALSE"));
     			if (export != null) {
     				genUse(impC, inserted);
     			}

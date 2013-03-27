@@ -255,6 +255,10 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     		return true;
     	return false;
     }
+    /**
+     * 
+     * @return true if this unit is a meta instance (instantiated with meta parms).
+     */
     public boolean isMeta() {
     	if (flags.contains(Flags.META))
     		return true;
