@@ -2,6 +2,8 @@ package com.amaret.pollen.parser;
 
 import org.antlr.runtime.CommonToken;
 
+import com.amaret.pollen.parser.DeclNode.Fcn;
+
 public class ExportNode extends BaseNode implements ISymbolNode {
 
     static private final int NAME = 0;
@@ -59,8 +61,9 @@ public class ExportNode extends BaseNode implements ISymbolNode {
             		n.setText(path[1]);
             		currUnit.getSymbolTable().defineSymbol(n, snode);
             		currUnit.getCurrUnitNode().defineSymbol(n, snode);   
+            		currUnit.getCurrUnitNode().addFcn(n.getText(), (Fcn) snode);
             		n.setText(path[0]);
-            		enterExport(n);
+            		enterExport(n);          		
             	}
         	}
         }

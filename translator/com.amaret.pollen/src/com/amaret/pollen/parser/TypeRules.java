@@ -252,22 +252,23 @@ public class TypeRules {
 			ParseUnit.current().reportError((BaseNode) protocol.node(), "implements clause requires a protocol");
 			return;
 		}
-		UnitNode iu = (UnitNode) implementor.getUnit();
-		UnitNode pu = (UnitNode) p.getUnit();
+		UnitNode implemUnit = (UnitNode) implementor.getUnit();
+		UnitNode protoUnit = (UnitNode) p.getUnit();
 
-		for (List<DeclNode.Fcn> pl : pu.getFcnMap().values()) {
+		for (List<DeclNode.Fcn> protoUnitFcnLst : protoUnit.getFcnMap().values()) {
 			boolean matchSig = false;
-			String dbg1, dbg2;
-			for (DeclNode.Fcn pf : pl) {
+			String dbg1, dbg2, dbg3;
+			dbg3 = protoUnit.getQualName();
+			for (DeclNode.Fcn protoUnitFcn : protoUnitFcnLst) {
 				Cat pfc = null;		
 				boolean matchName = false;
-				for (String ifn : iu.getFcnMap().keySet()) {					
-					if (ifn.equals(pf.getName().getText())) {
+				for (String implemUnitFcnName : implemUnit.getFcnMap().keySet()) {					
+					if (implemUnitFcnName.equals(protoUnitFcn.getName().getText())) {
 						matchName = true;
-						for (DeclNode.Fcn ifd : iu.getFcnMap().get(ifn)) {
+						for (DeclNode.Fcn ifd : implemUnit.getFcnMap().get(implemUnitFcnName)) {
 							Cat ifc = new Cat.Fcn(ifd, ifd.getEnclosingScope());
 							if (pfc == null)
-								pfc = new Cat.Fcn(pf, pf.getEnclosingScope());
+								pfc = new Cat.Fcn(protoUnitFcn, protoUnitFcn.getEnclosingScope());
 							dbg1 = ifc.sigString();
 							dbg2 = pfc.sigString();
 							if (ifc.sigString() != null && ifc.sigString().equals(pfc.sigString())) {
