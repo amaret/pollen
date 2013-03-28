@@ -222,23 +222,32 @@ public class UnitJScript {
     private void genUse(ImportNode imp, List<String> inserted) {
     	
     	String nameU = imp.getUnit().getQualName();
-    	String nImp = imp.getUnitName().getText();
     	String nUnit = imp.getUnit().getName().getText();
+		String asName = imp.getName().getText();
+		
+		if (!(asName.equals(nUnit)) && imp.getUnit().isMeta()) {
+			// meta modules are generated with the 'as' name
+			nameU = nameU.substring(0, nameU.lastIndexOf(".")+1) + asName;   			
+		}
+		 	
+		if (ParseUnit.isDebugMode()) {
+			System.out.println("genUse(): in " + this.gen.curUnit().getQualName() + " check use of " + nameU);			
+//				if (!(asName.equals(nUnit)) && imp.getUnit().isMeta()) {
+//					nameU = nameU.substring(0, nameU.lastIndexOf(".")+1) + asName;   			
+//				}
+//				if (nameU.matches(".*mcu.atmel.atmega328p.Mcu.*")) {
+//					dbg = true;
+//				}
+		}
+    	//boolean metaInstance = imp.getUnit().isMeta(); // && !(nUnit.equals(nImp)); // if the names are the same, not a real instantiation
     	
+    	boolean genUseType = imp.getUnit().isModule() || imp.getUnit().isClass() || imp.getUnit().isEnum();    	
     	
-    	if (ParseUnit.isDebugMode()) {
-    		System.out.println("genUse(): in " + this.gen.curUnit().getQualName() + " check use of " + nameU);
-    	}
-    	boolean metaInstance = imp.getUnit().isMeta() && !(nUnit.equals(nImp)); // if the names are the same, not a real instantiation
-    	
-    	boolean genUseType = imp.getUnit().isModule() || imp.getUnit().isClass() || imp.getUnit().isEnum();
-    	
-    	boolean genUse = (genUseType) && !imp.getUnit().isMeta();
-    	
+    	//boolean genUse = (genUseType) && !imp.getUnit().isMeta();    	
     	// only generate uses for actual instantiations of meta types
-    	genUse = genUse || ((genUseType) && (metaInstance));
+    	//genUse = genUse || ((genUseType) && (metaInstance));
  
-    	if (genUse) {
+    	if (genUseType) {
 
     		if (!inserted.contains(nameU)) {
     			inserted.add(nameU);

@@ -74,6 +74,11 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     }
        
     @Override
+    /**
+     * Return the name which is used locally. 
+     * import m           // returns m
+     * import m as q      // returns q
+     */
     public Atom getName() {
     	if (!getAs().getText().equals("NIL"))
     		return getAs();
@@ -84,7 +89,15 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     	return getName().getText();
     }
     
- 
+    /**
+     * (If bound) 
+     * Return the qualified name of the unit to which
+     * this import is bound.
+     * from p import m        // returns p.m
+     * from p import m as q   // returns p.m
+     * (If not bound) 
+     * in the above cases return m
+     */
     public String getQualName() {
     	if (unit != null)
     		return getUnit().getQualName();
