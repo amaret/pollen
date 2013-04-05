@@ -317,7 +317,7 @@ public class ProcessUnits {
         
         props = new PropsLoader().apply(props, pollenRoot + File.separator + "props", System.err);
         if (props == null) {
-            System.exit(1);
+            System.exit(1); 
         }
 
 		unitNodes = this.parseUnit(args, props, outputStream, infoStream, errorStream, symbolTable);

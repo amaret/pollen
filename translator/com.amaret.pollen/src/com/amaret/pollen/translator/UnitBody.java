@@ -71,8 +71,19 @@ public class UnitBody {
 
 		gen.aux.genTitle("string literals");
 		genStrings(unit);
-
 		
+		for (DeclNode decl: unit.getUnitType().getFeatures()) {
+    		if (decl instanceof DeclNode.Inject) {
+    			if (!title) {
+    				gen.aux.genTitle("code injections");
+    				title = true;
+    			}
+    			gen.aux.genExpr(((DeclNode.Inject) decl).getInjectExpr());
+    			gen.fmt.print("\n");
+    		}			
+		}
+
+		title = false;
     	Collection<List<DeclNode.Fcn>> c = unit.getFcnMap().values();
     	for (List<DeclNode.Fcn> l : c) {
     		for (DeclNode.Fcn f : l) {

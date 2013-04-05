@@ -379,33 +379,48 @@ class Auxiliary {
 	}
 
 	private void genExpr$Inject(ExprNode.Inject expr) { 
-		
-		if (gen.curUnit().getUnitType().getMetaFormals() != null) {
-
-			// String meta value parameters: the quotes are stripped and the value
-			// is injected into c as a (c) SYMBOL (which is assumed to have been defined).
-			
-			SymbolEntry sym = gen.curUnit().getUnitType().lookupName(expr.getName().getText());
+				
+		int i = 0;
+		for (SymbolEntry sym : expr.getSymbols()) {
 			ISymbolNode snode = sym != null ? sym.node() : null;
-			if (snode instanceof DeclNode.Formal) {
-				DeclNode.Formal f = (Formal) snode;
-				Cat cat = Cat.fromType(f.getTypeSpec());
-				if (f.isMetaArg()
-						&& cat.code().equals("s") 
-						&& f.getName().getText().equals(expr.getName().getText())) {
-					if (f.getInit() instanceof ExprNode.Const) {
-						String injectVal = ((ExprNode.Const) f.getInit()).getValue().getText();
-						injectVal = injectVal.replaceAll("^\"|\"$", "");
-						injectVal = injectVal.replaceAll("^\'|\'$", "");
-						gen.fmt.print(injectVal + "\n");
-						return; // done
+			BaseNode b = expr.getInjects().get(i++);
+			if (sym != null) {
+
+				// String meta value parameters: the quotes are stripped and the
+				// value is injected into c as a (c) SYMBOL (which is assumed to have
+				// been defined).
+
+				if (snode instanceof DeclNode.Formal
+						&& gen.curUnit().getUnitType().getMetaFormals() != null) {
+					DeclNode.Formal f = (Formal) snode;
+					Cat cat = Cat.fromType(f.getTypeSpec());
+					if (f.isMetaArg() && cat.code().equals("s")
+							&& f.getName().getText().equals(((ExprNode.Ident) b).getName().getText())) {
+						if (f.getInit() instanceof ExprNode.Const) {
+							String injectVal = ((ExprNode.Const) f.getInit())
+							.getValue().getText();
+							injectVal = injectVal.replaceAll("^\"|\"$", "");
+							injectVal = injectVal.replaceAll("^\'|\'$", "");
+							// gen.fmt.print(injectVal + "\n");
+							gen.fmt.print(injectVal);
+						}
 					}
 				}
+				else if (b instanceof ExprNode.Ident) {
+					genExpr$Ident((Ident) b); // a pollen name
+				}
 			}
+			else  // not a meta formal
+				if (b instanceof ExprNode.Ident) {
+					genExpr$Ident((Ident) b); // a pollen name
+				}
+				else {
+					// text to be output as is
+					gen.fmt.print_literal(b.getAtom()); // injected text
+				}
+
 		}
-			
-		gen.fmt.print_literal(expr.getName());
-		gen.fmt.print("\n");
+		//gen.fmt.print("\n");
 	}
 
 	private void genExpr$Hash(ExprNode.Hash expr) {
@@ -447,7 +462,7 @@ class Auxiliary {
 		ISymbolNode snode = sym.node();
 		IScope scope = sym.scope();
 
-		String qs = isLval ? "'" : "";
+		String quot = isLval ? "'" : "";
 		boolean externScope = scope instanceof UnitNode
 				|| scope instanceof DeclNode.Usr;
 		if (scope instanceof DeclNode.Usr) {
@@ -471,7 +486,7 @@ class Auxiliary {
 				if (isHost && !isLval) {
 					gen.fmt.print("$units['%1']", qn);
 				} else {
-					gen.fmt.print("%2%1%2", qn.replace('.', '_'), qs);
+					gen.fmt.print("%2%1%2", qn.replace('.', '_'), quot);
 				}
 			}
 			return;
@@ -482,7 +497,7 @@ class Auxiliary {
 				gen.fmt.print(gen.uname());
 			} else {
 				gen.fmt.print("%2%1%2", gen.curUnit().getQualName().replace(
-						'.', '_'), qs);
+						'.', '_'), quot);
 			}
 			return;
 		}
@@ -534,7 +549,7 @@ class Auxiliary {
 			}
 
 			gen.fmt.print("%4%1_%2%3%4", qn.replace('.', '_'), mkCname(expr),
-					mkSuf(snode), qs);
+					mkSuf(snode), quot);
 		}
 	}
 
@@ -1476,6 +1491,7 @@ class Auxiliary {
 	 */
 	String mkCname(ExprNode.Ident e) {
 		String rtn = e.getName().getText();
+
 		if (isLval || isHost)
 			return rtn;
 		if (e.getSymbol().node() instanceof ImportNode
@@ -1510,6 +1526,51 @@ class Auxiliary {
 
 		return rtn.replace('.', '_');
 	}
+	/**
+	 * Not host, not lval, not import, not unit.
+	 * 
+	 * @param inj
+	 * @param sym TODO
+	 * @param snode TODO
+	 * @return
+	 */
+//	String mkCname(ExprNode.Inject inj, SymbolEntry s, ISymbolNode snode) {
+//		String rtn = inj.getName().getText();
+//		if (isLval || isHost)
+//			return rtn;
+//		if (inj.getSymbol().node() instanceof ImportNode
+//				|| inj.getSymbol().node() instanceof UnitNode)
+//			return rtn;
+//		
+//		if (rtn.indexOf(".") == -1) {
+//			return rtn;
+//		}
+//		//SymbolEntry s = inj.getSymbol();
+//		SymbolEntry qs = inj.getQualifier();
+//		String qual = rtn.substring(0, rtn.indexOf("."));
+//		// SymbolEntry qs = gen.curUnit().lookupName(qual);
+//		if (qs != null) {
+//			if (qs.node() instanceof ImportNode) {
+//				if (((ImportNode) qs.node()).isTypeMetaArg()) {
+//					// first qualifier is spurious
+//					return rtn.substring(rtn.indexOf(".") + 1);
+//				}
+//				if (((ImportNode) qs.node()).getName().getText().equals(qual)) {
+//					// first qualifier is spurious
+//					return rtn.substring(rtn.indexOf(".") + 1);
+//				}
+//			}
+//			if (qs.node() instanceof DeclNode.TypedMember) {
+//				if (((DeclNode.TypedMember) qs.node()).isProtocolMember()) {
+//					// the protocol member name is an alias for the module name
+//					return rtn.substring(rtn.indexOf(".") + 1);
+//				}
+//			}
+//		}
+//
+//		return rtn.replace('.', '_');
+//	}
+
 
 	String mkPollenCname(String id) {
 		return id.startsWith("pollen.") ? ("pollen__" + id.substring("pollen."

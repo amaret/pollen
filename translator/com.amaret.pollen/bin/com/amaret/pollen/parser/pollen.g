@@ -54,6 +54,7 @@ tokens {
     FCNBODY;
     HOST;
     IMPORT;
+    INJECT;
     LIST;
     MODULE;
     NIL;
@@ -138,12 +139,96 @@ tokens {
     TypeInfo ti;
     
     String getInject(String text) {
-        	return text.substring(text.indexOf("{")+1,text.lastIndexOf("}"));
+        return text.substring(text.indexOf("+{")+2,text.lastIndexOf("}+"));
     }
+
     
     void DBG(String dbg) {
     	System.out.println(dbg);
     }
+    	/**
+    	 * Synthesize tree to handle qualified pollen names in injected text. 
+		 * @param root
+		 * @param inject
+		 * @return the root of the synthesized tree.
+		 */
+		private BaseNode addInjectChild(BaseNode root, TypedInject inject) {
+			
+			root = (root == null) ? (BaseNode)adaptor.nil() : root;
+			if (inject.isName()) {
+       		BaseNode id =  (BaseNode)adaptor.becomeRoot(
+                            new ExprNode.Ident(E_IDENT, "E_IDENT")
+                            , (BaseNode) adaptor.nil());
+    			adaptor.addChild(root, id);
+    			adaptor.addChild(id, 
+    						(BaseNode)adaptor.create(pollenParser.IDENT, (inject.getText())));
+
+    		}
+    		else {
+    				adaptor.addChild(root, 
+    						(BaseNode)adaptor.create(INJECT, (inject.getText())));
+    		}
+
+    		root = (BaseNode)adaptor.rulePostProcessing(root);
+    		return root;
+		}
+    	class TypedInject {
+    		private boolean isName = false;
+    		public boolean isName() {
+				return isName;
+			}
+			public String getText() {
+				return text;
+			}
+			private String text = "";
+    		public TypedInject(String str,boolean name) {
+    			text = str;
+    			isName = name;
+    		}
+    	}
+
+        	/**
+        	 * Split the text that was injected into a list of IDENT and INJECT nodes.
+        	 * The IDENTs will be emitted as pollen names formatted for output.
+        	 * @param root
+        	 * @param inject
+        	 * @return a BaseNode with child nodes for the injects or names in the order encountered.
+        	 */
+            public BaseNode createInjectNodes(BaseNode root, String inject) {
+            	final char BT = '`';
+            	if (inject.indexOf(BT) == -1) {
+            		return addInjectChild(root, new TypedInject(inject, false));
+            		
+            	}
+            	List<TypedInject> l = new ArrayList<TypedInject>();
+            	int startBT = 0;
+            	int endBT = 0;
+            	String name = "", data = "";
+            	while (true) {
+            		startBT = inject.indexOf(BT);
+        			endBT = inject.indexOf(BT, startBT+1);
+
+            		if (startBT > 0) { // data
+            			l.add(new TypedInject(inject.substring(0, startBT), false));
+            		} 
+            		else if (startBT == -1) { // remaining inject is all data
+            			endBT = -1;
+            			l.add(new TypedInject(inject, false));
+            		} 
+
+            		if (endBT == -1)
+            			break; 
+            		l.add(new TypedInject(inject.substring(startBT+1, endBT), true));// a pollen name
+            		inject = inject.substring(endBT+1);
+            	}
+            	
+            	for (TypedInject t : l) {
+            		addInjectChild(root, t);
+            	}
+            	return root;
+        	}
+
+
     // Override to extract PollenException message when present
     public void displayRecognitionError(String[] tokenNames,
                                         RecognitionException e) {
@@ -255,12 +340,13 @@ unitPackage
 scope {
 	Object unitImports;
 }
-	:  stmtPackage
-	   importList {$unitPackage::unitImports = $importList.tree;}
-      stmtInjectionList
-      unitTypeDefinition
-      stmtInjectionList
-      pollenEOF
+	:       stmtPackage
+	        importList {$unitPackage::unitImports = $importList.tree;}
+	        // these are the injects that go into the header file
+           stmtInjectionList
+           unitTypeDefinition
+           stmtInjectionList
+           pollenEOF
 	;
 pollenEOF
 	:	EOF!
@@ -322,8 +408,8 @@ classFeature
     :   fcnDefinition 
     |   enumDefinition
     |   fieldDeclaration
-    |	  classDefinition
-    |	  injectionDecl
+    |   classDefinition
+    |   injectionDecl
     ; 
 moduleDefinition 
 @init{
@@ -533,15 +619,6 @@ importFrom
          (metaArguments)?
          importAs delim) -> ^(IMPORT<ImportNode>["IMPORT"] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs metaArguments?)
     	
-/*    |		('import' 
-    			q=qualName 
-    			{$stmtImport::qname = $q.qn;}
-    		 ) => 'import' 
-    		 		{
-    		 		   defaultPkg = (pollenEnv ? ProcessUnits.getPollenEnvPkg() : defaultPkg);
-    		 		} 
-    		 	-> IDENT[defaultPkg]
-    		 	*/
     ;
 importAs
 	:	'as' qualName -> qualName
@@ -596,8 +673,8 @@ scope {
  		}
  	}
 }
-	:	m1=metaParmGen { $metaParmsGen::l.add($m1.tree); }
-		(','
+	:	m1=metaParmGen { $metaParmsGen::l.add($m1.tree); } NL*
+		( ',' NL*
 			m2=metaParmGen { $metaParmsGen::l.add($m2.tree); }
 		)*
 		-> ^(LIST<ListNode>["LIST"] metaParmGen+)
@@ -641,7 +718,7 @@ metaParmGen
 @after {
 	$metaParmsGen::idx++;
 }
-	:	'type' IDENT ( '=' typeName {name = $typeName.text;})?
+	:	'type' IDENT ( '=' typeName {name = $typeName.text;})? 
 			{ 
 			   flags.add(Flags.TYPE_META_ARG); 
 			   // get 'as' name
@@ -682,7 +759,7 @@ metaParmGen
 	    	}
 	  -> ^(IMPORT<ImportNode>["IMPORT", flags] IDENT[from] IDENT[name] IDENT[as])
 	  
-	 |   builtinType id=IDENT ('=' primitiveLit { ctext = $primitiveLit.text; } )? 
+	 |   builtinType id=IDENT ('=' primitiveLit { ctext = $primitiveLit.text; } )?
 	 		{
 	 			if (clientImport.getMeta() == null || isEmptyMetaArgs) {
 		    		// instantiate to defaults
@@ -750,7 +827,6 @@ userTypeNameArr
 unitTypeDefinition
 scope {
   Object meta; 			// specification of meta type/value parameters
-  //Object metaImports;	// imports that apply to the meta type instantiation context
 }
 @after{
    // debug
@@ -1431,25 +1507,56 @@ scope {
 	    -> ^(E_CONST<ExprNode.Const>["E_CONST", $primitiveLit::litFlags] CHAR)
 	;
 stmtInjection
+	:	inject
+	NL+	
+	-> ^(S_INJ<StmtNode.Inject> ["S_INJ"] ^(E_INJ<ExprNode.Inject>["E_INJ"] inject))
+	;
+// Here we synthesize nodes that split the injected code into pollen names and straight output code.
+// The pollen names will be formatted for output.
+inject
+@init {
+	BaseNode r = (BaseNode)adaptor.nil();
+}
 	:	c=INJECT  {           
             $c.setText(getInject($c.getText()));
+           	createInjectNodes(r, $c.getText());           
         }
-	NL+	
-	-> ^(S_INJ<StmtNode.Inject> ["S_INJ"] ^(E_INJ<ExprNode.Inject>["E_INJ"] INJECT))
+	-> ^(LIST<ListNode>["LIST"] {r})
 	;
 injectionCode
-	:	c=INJECT  {           
-            $c.setText(getInject($c.getText()));
-        } 
-	-> ^(E_INJ<ExprNode.Inject>["E_INJ"] INJECT) // don't consume delimiter
+	:	inject
+	-> ^(E_INJ<ExprNode.Inject>["E_INJ"]  inject) // don't consume delimiter
 	;
 injectionDecl
-	:	c=INJECT  {           
-            $c.setText(getInject($c.getText()));
-        }
+	:	inject
         NL+
-         -> ^(D_INJ<DeclNode.Inject>["D_INJ"] ^(E_INJ<ExprNode.Inject>["E_INJ"] INJECT))
+         -> ^(D_INJ<DeclNode.Inject>["D_INJ"] ^(E_INJ<ExprNode.Inject>["E_INJ"] inject))
+	;
+	/*
+injectionCode
+	:	injection_list -> ^(INJECT<InjectionBlock>["INJECT"] injection_list)
+	;
+injectionDecl
+	:	injection_list NL+ 
+		-> ^(D_INJ<DeclNode.Inject>["D_INJ"] ^(INJECT<InjectionBlock>["INJECT"] injection_list))
+	;
+stmtInjection
+	:	injection_list NL+	
+	-> ^(S_INJ<StmtNode.Inject>["S_INJ"] ^(INJECT<InjectionBlock>["INJECT"] injection_list))
+	;
+injection_list
+	:	IJ_BEG		
+			injectionElem+
+		IJ_END
+		-> ^(LIST<ListNode>["LIST"] injectionElem+)
+	;
+injectionElem
+	:
+		INJ_TXT -> ^(E_INJ<ExprNode.Inject>["E_INJ_TXT"] INJ_TXT)
+	| 
+		INJ_ID  -> ^(E_INJ<ExprNode.Inject>["E_INJ_ID"] INJ_ID )
 	;	
+	*/
 delim
 	:	(SEMI) (NL)*	-> 
 	|	(NL)+	-> 
@@ -1492,22 +1599,14 @@ SL_COMMENT
     ;
 INJECT
 	: IJ_BEG ( options {greedy=false;} : .)* IJ_END
-//	: '+{' ( options {greedy=false;} : . )* '}+'
 	;
-//ML_COMMENT	
-//    :   '---'('-')* ( options {greedy=false;} : . )*  '---'('-')* ('\n'|'\r')* { $channel=HIDDEN; }
-//    ;
+
 ML_COMMENT	
 	 // Note the first has to have a min of 4 dashes to disambig w/ sl_comment
       :  '----' ('-')* (' ' | '\t')* ('\n'|'\r') ( options {greedy=false;} : . )* '---' ('-')*('\n'|'\r')* { $channel=HIDDEN; }    
     	|	'!--' ( options {greedy=false;} : . )*  '--!' ('\n'|'\r')* { $channel=HIDDEN; }
     ;
-//ML_COMMENT_CONT
-//	:	(( options {greedy=false;} : . )* '---' ('-')*('\n'|'\r')* { $channel=HIDDEN; } 
-//	;
-//ML_COMMENT2	
-//    :   '!--' ( options {greedy=false;} : . )*  '--!' ('\n'|'\r')* { $channel=HIDDEN; }
-//    ;
+
 SEMI
     :   ';'
     ;
@@ -1524,8 +1623,6 @@ fragment O:			 '0'..'7';
 fragment H:        'a'..'f' | 'A'..'F' | '0'..'9' ;
 fragment E:        ('E' | 'e') (PLUS | MINUS)? (D)+ ;
 fragment LU:       'LU' | 'Lu' | 'lU' | 'lu' | 'UL' | 'uL' | 'Ul' | 'ul' | 'l' | 'u' | 'L' | 'U' ;
-fragment IJ_BEG:	 '+{';
-fragment IJ_END:	 '}+';
 
 INC		: '++';
 PLUS		: '+';
@@ -1551,3 +1648,16 @@ LOG_NOT	:	'!';
 BIT_NOT	:	'~';
 GT			:  '>';
 LT			:	'<';
+// injection blocks
+
+IJ_BEG:	 '+{';
+IJ_END:	 '}+';
+/*
+INJ_ID
+	: ('\`')( options {greedy=false;} : .)* ('\`')
+	;
+// must be last or it will be returned in place of tokens with less restricted utility
+INJ_TXT
+	: ~('\`')( options {greedy=false;} : .)* ~('\`')
+	;
+*/

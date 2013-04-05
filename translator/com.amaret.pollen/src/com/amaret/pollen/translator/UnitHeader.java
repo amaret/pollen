@@ -17,6 +17,7 @@ import com.amaret.pollen.parser.ISymbolNode;
 import com.amaret.pollen.parser.ImportNode;
 import com.amaret.pollen.parser.ListNode;
 import com.amaret.pollen.parser.ParseUnit;
+import com.amaret.pollen.parser.StmtNode;
 import com.amaret.pollen.parser.SymbolEntry;
 import com.amaret.pollen.parser.TypeNode;
 import com.amaret.pollen.parser.UnitNode;
@@ -285,6 +286,7 @@ public class UnitHeader {
     	if (unit.getUnitType().isModule()) {
     		// the unit type is a module
     		// the nested classes are first to resolve references to them in the module
+			gen.aux.genTitle("extern definition");
             gen.fmt.print("extern struct %1%2%3", gen.cname(), " ", gen.cname().substring(0, gen.cname().length()-1) + ";\n"); 
             for (DeclNode decl : unit.getFeatures()) {
                 switch (decl.getType()) {
@@ -449,12 +451,27 @@ public class UnitHeader {
     }
     
     private void genInject(UnitNode unit) {
-    	for (DeclNode decl : unit.getFeatures()) {
-    		if (decl instanceof DeclNode.Inject) {
-    			gen.aux.genExpr(((DeclNode.Inject) decl).getInjectExpr());
+    	boolean title = false;
+    	for (BaseNode decl : unit.getInject1()) {
+			if (!title) {
+				gen.aux.genTitle("header injections");
+				title = true;
+			}
+    		if (decl instanceof StmtNode.Inject) {
+    			gen.aux.genExpr(((StmtNode.Inject)decl).getExpr());
+    			gen.fmt.print("\n");
     		}
     	}
-    	
+    	for (BaseNode decl : unit.getInject2()) {
+			if (!title) {
+				gen.aux.genTitle("header injections");
+				title = true;
+			}
+    		if (decl instanceof StmtNode.Inject) {
+    			gen.aux.genExpr(((StmtNode.Inject)decl).getExpr());
+    			gen.fmt.print("\n");
+    		}
+    	}    	
     }
 
     private void genVars(UnitNode unit) {

@@ -182,12 +182,12 @@ public class ExprNode extends BaseNode {
         	if (getName() != null && getName() instanceof ExprNode.Ident) {
         		ExprNode.Ident ei = (ExprNode.Ident) getName();
         		
-        		String dbgs = ei.getName().getText();
-        		boolean dbg = false;
-        		if (dbgs.equals("Arduino.cycle"))
-        			dbg = true;
-        		if (dbgs.equals("disable"))
-        			dbg = true;
+//        		String dbgs = ei.getName().getText();
+//        		boolean dbg = false;
+//        		if (dbgs.equals("Arduino.cycle"))
+//        			dbg = true;
+//        		if (dbgs.equals("disable"))
+//        			dbg = true;
 
             	if (called == null 
             			&& this.getParent() instanceof ExprNode.Ident 
@@ -464,26 +464,62 @@ public class ExprNode extends BaseNode {
         }
     }
     
-    // ExprNode.Esc
+    // ExprNode.Inj
     static public class Inject extends ExprNode {
         
-        static final private int NAME = 0;
-        static final private int CODE = 0;
-        
+        static final private int LIST = 0;
+             
         Inject(int ttype, String ttext) {
             super(ttype, ttext);
         }
+        SymbolEntry[] symbols = null;
+        public SymbolEntry[] getSymbols() {
+			return symbols;
+		}
 
-        public Atom getName() {
-            return (Atom) ((BaseNode) getChild(NAME)).getToken();
+		@SuppressWarnings("unchecked")
+        public List<BaseNode> getInjects() {
+            return ((ListNode<BaseNode>) getChild(LIST)).getElems();
         }
-        public String getCode() {
-        	return ((BaseNode) getChild(CODE)).getToken().getText();
+
+        protected boolean pass2Begin() {
+        	
+        	symbols = new SymbolEntry[getInjects().size()];
+
+        	ParseUnit currUnit = ParseUnit.current();
+        	int i = 0;
+        	for (BaseNode e : getInjects()) {
+        		int typ = e.getAtom().getType();
+				switch (typ) {
+				case pollenParser.E_IDENT:
+					symbols[i] = currUnit.getSymbolTable().resolveSymbol(
+							((ExprNode.Ident)e).getName());
+					if (symbols[i] == null) {
+						currUnit.reportError(e,
+								"identifier is not declared in the current scope "
+										+ currUnit.getSymbolTable().curScope()
+												.getScopeName());
+					}
+					break;
+				case pollenParser.INJECT:
+					symbols[i] = null; // to be output as is (text)
+					break;
+				default:
+					currUnit.reportError(e, "injected code error");
+					break;
+
+				}
+        		i++;
+        		
+        	}
+        	
+        	return true;
         }
-        
+       
         @Override
         protected void pass2End() {
             exprCat = Cat.INJECT;
+            super.pass2End();
         }
     }
     
@@ -529,7 +565,7 @@ public class ExprNode extends BaseNode {
 
         static final private int NAME = 0;
         
-        private SymbolEntry symbol = null;		// for obj.field symbol is for 'field'
+        protected SymbolEntry symbol = null;	// for obj.field symbol is for 'field'
         private SymbolEntry qualifier = null;  	// for obj.field qualifier is 'obj'
 
 		private boolean thisPtr = false;		// add 'this' to accesses
