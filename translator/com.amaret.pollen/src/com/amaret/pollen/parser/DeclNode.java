@@ -464,19 +464,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
          	return (!child.getElems().isEmpty()) ? child.getElems().get(0) : null;        	
         } 
         protected boolean pass1Begin() {
-        	if (this.getName().getText().equals("init") 
-        			&& this.getToken().getText().equals("D_FCN_CTOR")) {
-        		DeclNode.Fcn p = (Fcn) (this.getParent() instanceof DeclNode.Fcn ? this.getParent() : null);
-        		if (p != null) {
-        			if (p.isHost()) {
-        				this.getName().setText("$$hostInit");
-        			}
-        			else {
-        				this.getName().setText("targetInit");
-        			}
-        		}
-        		
-        	}
+        	
         	boolean rtn =  super.pass1Begin();
         	if (!rtn) return false;
         	rtn = ((BaseNode) getChild(TYPE_LST)).pass1Begin();

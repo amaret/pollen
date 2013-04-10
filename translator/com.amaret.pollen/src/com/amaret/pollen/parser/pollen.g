@@ -1051,20 +1051,24 @@ fcnDeclaration
    ;
 
 fcnType_fcnName
+@init{
+	String modCtor = "";
+}
 // function names in a dcln can be qualified, e.g. pollen.reset()
 // function return is always a list, empty for void fcn.
-// module constructors have the name "init", class constructors have the name "new"
+// module constructors have the name "targetInit" or "$$hostInit", class constructors have the name "new"
 	:	typeName qualName  
 		-> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"]  ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] ^(LIST<ListNode>["LIST"] typeName)) qualName)      // int myfcn()
 	|	{input.LT(1).getText().equals(ti.getTypeName()) && !(ti.getUnitFlags().contains(Flags.CLASS)) }? 
 		typeName	         
 		{ 
 		  featureFlags.add(Flags.CONSTRUCTOR); 
+		  modCtor = (featureFlags.contains(Flags.HOST)) ? ("$$" + "hostInit") : "targetInit";
 		}
 		-> ^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
 			^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
 			^(LIST<ListNode>["LIST"] ^(T_STD<TypeNode.Std>["T_STD", featureFlags] VOID["void"]))) 
-			IDENT["init"]) 		  
+			IDENT[modCtor]) 		  
 	|	{input.LT(1).getText().equals(ti.getTypeName()) }? // Class constructor
 		typeName	 
 		{ 

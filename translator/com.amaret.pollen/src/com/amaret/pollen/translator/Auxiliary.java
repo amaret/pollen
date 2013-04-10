@@ -1436,6 +1436,12 @@ class Auxiliary {
 		return false;
 
 	}
+	
+	String mkCname(UnitNode u) {
+		String uname = u.getName().getText();
+		String  cname = u.getPkgName().getText().replace('.', '_') + '_'  + uname + '_';	
+		return cname;
+	}
 
 	String mkCname(TypeNode t) {
 

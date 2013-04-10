@@ -140,9 +140,8 @@ public class ProgCCode {
         gen.fmt.print("int main() {\n%+");
         gen.fmt.print("%t%1pollen__reset__E();\n", gen.cname());
         for (UnitDesc ud : units) {
-            UnitNode u = ud.getUnit();
-            if (u.lookupFcn("targetInit") != null) {
-                genSingleFcnCall("targetInit");
+            if (ud.getUnit().lookupFcn("targetInit") != null) {
+                genSingleFcnCall("targetInit", ud.getUnit());
             }
         }
         for (UnitDesc ud : units) {
@@ -382,13 +381,16 @@ public class ProgCCode {
         }
     }
     
-    private void genSingleFcnCall(String fcnName) {
-        for (UnitDesc ud : units) {
-            UnitNode u = ud.getUnit();
-            if (u.lookupFcn(fcnName) != null) {
-                gen.fmt.print("%t%1_%2__E();\n", u.getQualName().replace('.', '_'), gen.aux.mkPollenCname(fcnName));
-            }
-        }
+    private void genSingleFcnCall(String fcnName, UnitNode un) {
+    	UnitNode u = un.getUnit();
+    	List<DeclNode.Fcn> fl = u.lookupFcn(fcnName);
+    	DeclNode.Fcn f = fl.get(0);
+    	String suf = f.isPublic() ? "E" : "I";
+
+    	if (u.lookupFcn(fcnName) != null) {
+    		gen.fmt.print("%t%1_%2__" + suf + "();\n", u.getQualName().replace('.', '_'), gen.aux.mkPollenCname(fcnName));
+    	}
+
     }
 
     private void genHostVal(UnitDesc ud, DeclNode.Var decl) {
