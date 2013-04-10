@@ -27,10 +27,11 @@ public class ProgJScript {
 
     void includeUnits(Set<UnitNode> uses) {
         for (UnitNode unit : uses) {
-            if (unit.isModule() || unit.isClass() || unit.isEnum()) {
+            if (unit.isModule() || unit.isClass() || unit.isEnum() || unit.isComposition()) {
+            	
             	if (ParseUnit.isDebugMode())
             		System.out.println("   INCLUDE .js for " + unit.getQualName());
-                ParseUnit.current();
+                
 				File file = ParseUnit.cacheFile(unit.getQualName(), ".js");
 				if (file.exists())
 					gen.fmt.insert(file);

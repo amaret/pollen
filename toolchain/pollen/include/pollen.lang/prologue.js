@@ -18,16 +18,21 @@ function $$printf() {
     var out = Packages.com.amaret.pollen.parser.ParseUnit.current().getOutputStream();
     out.printf.apply(out, args)
 }
+function debug_line(where, obj) {
+        //$$printf("DBG:" + where + " for unit " + obj.$name + "\n")
+}
 
 function debug(where, obj) {
         
-        $$printf(where + " " + "DEBUG\n")
-        var names = "";
-        for (var name in obj) {
-                names += "   " + name + ": ";
-                names += obj[name] + '\n';
-        }
-        $$printf(names)
+        //$$printf("DBG:" + where + " for unit " + obj.$name + "\n")
+
+                // old:
+        //var names = "";
+        //for (var name in obj) {
+        //      names += "   DBG:" + name + ": ";
+        //      names += obj[name] + '\n';
+        //
+        //$$printf(names)
 }
 
 // obj is the unit
@@ -35,7 +40,7 @@ function debug(where, obj) {
 // val is the assigned value
 function $$bind( obj, sel, val ) {
 
-    //debug("entering $$bind ", obj)
+    debug_line("entering $$bind ", obj)
 
     if (!('$$bound' in obj)) {
         obj.$$bound = {};
@@ -43,10 +48,10 @@ function $$bind( obj, sel, val ) {
     if (!obj.$$bound[sel]) {
         obj[sel] = val;
         obj.$$bound[sel] = true;
-        //debug("set obj.$$bound[sel] true ", obj)
+        debug_line("...in $$bind, set " + sel + " to " + val, obj)
 
     }
-    //debug("exiting $$bind ", obj)
+    debug_line("exiting $$bind ", obj)
 
     return obj[sel];
 }

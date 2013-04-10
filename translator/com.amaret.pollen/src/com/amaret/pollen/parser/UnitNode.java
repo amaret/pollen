@@ -221,7 +221,11 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     }
 	public void setHostScope(boolean hostScope) {
 		this.hostScope = hostScope;
-	}    
+	}   
+	/**
+	 * 
+	 * @return true if not a composition
+	 */
     public boolean isTarget() {
     	return !isHost();
     }

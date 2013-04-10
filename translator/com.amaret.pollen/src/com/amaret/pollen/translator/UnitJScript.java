@@ -3,6 +3,7 @@ package com.amaret.pollen.translator;
 import java.util.List;
 
 import com.amaret.pollen.parser.Atom;
+import com.amaret.pollen.parser.BaseNode;
 import com.amaret.pollen.parser.BodyNode;
 import com.amaret.pollen.parser.Cat;
 import com.amaret.pollen.parser.DeclNode;
@@ -26,7 +27,7 @@ public class UnitJScript {
     private void genBody(BodyNode body) {
 
         DeclNode.Fcn fcn = body.getFcn();
-        String s = fcn.getName().getText();
+        
         if (!fcn.isHost()) {
             return;
         }
@@ -149,6 +150,8 @@ public class UnitJScript {
     private void genDecls(UnitNode unit) {
     	if (unit == null)
     		return;
+    	if (unit.isComposition())
+    		return;
     	genDecls(unit.getContainingUnit());
     	genDecls(unit.getImplementedUnit());
     	genDecl(unit.getUnitType());
@@ -182,9 +185,10 @@ public class UnitJScript {
             }
         }
 
-        genDecls(unit);
+        if (unit.isTarget())
+        	genDecls(unit);
 
-        for (DeclNode d : unit.getFeatures()) {
+        for (BaseNode d: unit.getFeatures()) {
         	if (d instanceof DeclNode.Fcn) {
         		genBody(((DeclNode.Fcn)d).getBody());
         	}
@@ -211,15 +215,18 @@ public class UnitJScript {
     
     private void debugUses(UnitNode unit) {
         List<ImportNode> impL = unit.getImports();
-        System.out.println("Unit " + gen.uname() + " imports: ");
+        System.out.println("genUses() debug, Unit " + gen.uname() + " imports: ");
         if (impL.size() > 0) {
              for (ImportNode imp : impL) {
-            	String im = imp.getQualName() + (imp.getUnit() == null ? " NOT BOUND" : " BOUND" );
+            	String im = imp.getQualName() + ", this import " + (imp.getUnit() == null ? " NOT BOUND" : " BOUND" );
             	System.out.println("   " + im);
              }
         }
     }
     private void genUse(ImportNode imp, List<String> inserted) {
+    	
+    	if (imp.getUnit() == null)
+    		return;
     	
     	String nameU = imp.getUnit().getQualName();
     	String nUnit = imp.getUnit().getName().getText();
@@ -239,13 +246,8 @@ public class UnitJScript {
 //					dbg = true;
 //				}
 		}
-    	//boolean metaInstance = imp.getUnit().isMeta(); // && !(nUnit.equals(nImp)); // if the names are the same, not a real instantiation
     	
     	boolean genUseType = imp.getUnit().isModule() || imp.getUnit().isClass() || imp.getUnit().isEnum();    	
-    	
-    	//boolean genUse = (genUseType) && !imp.getUnit().isMeta();    	
-    	// only generate uses for actual instantiations of meta types
-    	//genUse = genUse || ((genUseType) && (metaInstance));
  
     	if (genUseType) {
 
@@ -256,20 +258,25 @@ public class UnitJScript {
     		}
     	}
     	else  if (imp.getUnit().isComposition()) {
+    		// for compositions, the imports are used.
     		List<ImportNode> impCL = imp.getUnit().getImports();
     		for (ImportNode impC : impCL) {
     			SymbolEntry export = imp.getUnit().lookupName("$$export"+impC.getName().getText());
-//    			if (ParseUnit.isDebugMode())
-//    				System.out.println("  genUse(): Import " + impC.getName() + " in unit " + imp.getUnit().getQualName() + " has isExport " + (impC.isExport() ? "TRUE" : "FALSE"));
+    			if (ParseUnit.isDebugMode())
+    				System.out.println("  genUse(): Import " + impC.getName() + " in unit " + imp.getUnit().getQualName() + " has isExport " + (impC.isExport() ? "TRUE" : "FALSE"));
     			if (export != null) {
     				genUse(impC, inserted);
     			}
+    			else if (impC.isProtocolBindTarget()) {
+    				genUse(impC, inserted);
+    			}
+    		
     		}    
     	}    
     }   
 
     private void genUses(UnitNode unit) {
-        //ParseUnit.setDebugMode(false);
+        //ParseUnit.setDebugMode(true);
         if (ParseUnit.isDebugMode())
                 debugUses(unit);
         List<ImportNode> impL = unit.getImports();
@@ -277,7 +284,7 @@ public class UnitJScript {
         if (impL.size() > 0) {
             gen.fmt.print("%t%1.pollen__uses__ = function() {\n%+", gen.uname());
             for (ImportNode imp : impL) {
-                if (imp.getUnit() != null) {
+                if (imp.getUnit() != null) { 
                         genUse(imp, inserted);
                 }
             }

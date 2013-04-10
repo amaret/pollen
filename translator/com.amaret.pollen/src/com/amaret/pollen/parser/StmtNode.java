@@ -473,6 +473,22 @@ public class StmtNode extends BaseNode {
         	if (getValue() != null && getPro() != null) {
         		left = getPro().getCat();
         		right = Cat.fromType(getValue()); 
+        		
+        		// for compositions, need to pollen.use these imported units
+        		// if they are used as a bind target.
+        		UnitNode cur = ParseUnit.current().getCurrUnitNode();
+        		if (cur.isComposition()) {
+        			SymbolEntry s = ((TypeNode.Usr) getValue()).getSymbol();
+        			ISymbolNode n = (s != null) ? s.node() : null;
+        			if (n != null && n instanceof ImportNode) {       				
+        				for (ImportNode imp : cur.getImports()) {
+        					if (imp == n) {
+        						imp.setProtocolBindTarget(true);
+        						break;
+        					}
+        				}
+        			}
+        		}
 
         		if (snode == null || !(snode instanceof DeclNode.TypedMember) || !(((DeclNode.TypedMember)snode).isProtocolMember())) {
         			ParseUnit.current().reportError(getPro(), "LHS of binding operator assignment must be a protocol member");   

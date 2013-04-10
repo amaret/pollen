@@ -34,15 +34,19 @@ public class ProgCCode {
         TypeNode.Arr tarr;
         Cat basecat;
     }
+    /**
+     * HashMap of <unit, Value.Obj> for units for which target c will be generated. 
+     */
     HashMap<String, UnitDesc> unitDescs = new HashMap<String, UnitDesc>();
     private class UnitDesc {
         private UnitNode unit;
         private Value.Obj unitObj;
 
-        public UnitDesc(UnitNode u, Value.Obj uo){
+        public UnitDesc(UnitNode u, Value.Obj uo, boolean insertUnitDescs){
         	setUnit(u);
         	setUnitObj(uo);
-        	unitDescs.put(u.getQualName(), this);
+        	if (insertUnitDescs)
+        		unitDescs.put(u.getQualName(), this);
         }
 
 		/**
@@ -78,6 +82,9 @@ public class ProgCCode {
     private ArrayList<FwdAgg> fwdAggDecls = new ArrayList<FwdAgg>();
     private HashSet<String> fwdAggNames = new HashSet<String>();
     private Generator gen;
+    /**
+     * target 'c' code is generated for these units.
+     */
     private List<UnitDesc> units = new ArrayList<UnitDesc>();
     
     
@@ -170,9 +177,16 @@ public class ProgCCode {
         ParseUnit cur = ParseUnit.current();
         for (int i = 0; i < unitsArr.length(); i++) {
             Value.Obj uobj = unitsArr.getObj(i);
+            UnitDesc ud;
+            UnitNode u = cur.findUnit(uobj.getStr("$name"));
             if (uobj.getBool("pollen$used")) {
-                UnitDesc ud = new UnitDesc(cur.findUnit(uobj.getStr("$name")), uobj);
-                units.add(ud);
+                ud = new UnitDesc(u, uobj, true);
+                units.add(ud); // will get c code generated from these
+            }
+            else {
+            	if (u.isComposition()) {
+            		ud = new UnitDesc(u, uobj, true); // host only
+            	}
             }
         }
 
@@ -323,9 +337,9 @@ public class ProgCCode {
    
             if (val == Value.UNDEF) {
             	
-                if (protoMem.getBindUnit() != null) {
+                if (protoMem.getBindLocUnit() != null) {
             		String qname = protoMem.getDefiningScope().getScopeName() + "." + protoMem.getName().getText();
-            		UnitDesc udsc = unitDescs.get(protoMem.getBindUnit().getQualName());
+            		UnitDesc udsc = unitDescs.get(protoMem.getBindLocUnit().getQualName());
             		val = udsc.getUnitObj().getAny(qname);
                 }        
                 if (val == Value.UNDEF) {
@@ -466,17 +480,24 @@ public class ProgCCode {
         if (decl instanceof DeclNode.TypedMember && ((DeclNode.TypedMember) decl).isProtocolMember()) {
 
 
-        	if (((TypedMember) decl).getBindUnit() != ud.getUnit()
-        			&& ((TypedMember) decl).getBindUnit() != null) {
+        	if (((TypedMember) decl).getBindLocUnit() != ud.getUnit()
+        			&& ((TypedMember) decl).getBindLocUnit() != null) {
         		
         		// Get the binding from the bind unit
         		
         		String qname = decl.getDefiningScope().getScopeName() + "." + decl.getName().getText();
-        		UnitDesc udsc = unitDescs.get(((TypedMember) decl).getBindUnit().getQualName());
+        		UnitDesc udsc = unitDescs.get(((TypedMember) decl).getBindLocUnit().getQualName());
         		if (udsc != null) {
         			obj = udsc.getUnitObj().getAny(qname);
         			val = Value.toVal(obj);
         		}
+//        		else {
+//        			udsc = unitDescs.get(((TypedMember) decl).getBindToUnit().getQualName());
+//        			obj = udsc.getUnitObj().getAny(((TypedMember) decl).getBindToUnit().getQualName());
+//        			val = Value.toVal(obj);
+//
+//        			
+//        		}
         		
         	}
         	gen.fmt.print("&");        	

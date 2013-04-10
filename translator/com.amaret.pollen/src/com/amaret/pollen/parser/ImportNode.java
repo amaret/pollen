@@ -16,7 +16,21 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     private Cat cat = null;
     private IScope definingScope;
     private boolean isExport;
-    private UnitNode unit;
+    private boolean isProtocolBindTarget = false;
+    /**
+     * true if this import is used in a composition to bind a protocol member
+     */
+    public boolean isProtocolBindTarget() {
+		return isProtocolBindTarget;
+	}
+    /**
+     * true if this import is used in a composition to bind a protocol member
+     */
+	public void setProtocolBindTarget(boolean isProtocolBindTarget) {
+		this.isProtocolBindTarget = isProtocolBindTarget;
+	}
+
+	private UnitNode unit;
     private EnumSet<Flags> flags = EnumSet.noneOf(Flags.class);
     
     ImportNode(int ttype, String ttext) {

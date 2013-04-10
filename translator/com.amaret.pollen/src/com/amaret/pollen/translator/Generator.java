@@ -99,7 +99,8 @@ public class Generator {
 		
 	}
     private void genJScript() throws Exception {
-    	if (!curUnit.isComposition() && !curUnit.isProtocol()) {
+    	if (!curUnit.isProtocol()) {
+        //if (!curUnit.isComposition() && !curUnit.isProtocol()) {
         //if (curUnit.isModule() || curUnit.isClass() || curUnit.isEnum()) {
             File file = ParseUnit.cacheFile(curUnit.getQualName(), ".js");
             fmt.reset();

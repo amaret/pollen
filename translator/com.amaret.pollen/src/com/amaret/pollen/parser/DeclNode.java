@@ -595,7 +595,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public boolean isMetaPrimitive() {
 			return isMetaPrimitive;
 		}
-        public UnitNode getBindUnit() {
+        public UnitNode getBindLocUnit() {
 			return bindLocUnit;
 		}
 
