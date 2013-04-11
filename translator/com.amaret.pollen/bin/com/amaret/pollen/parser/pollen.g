@@ -816,7 +816,7 @@ catch [PollenFatalException e] {
     ParseUnit.current().reportFailure(e);
 }	
 metaArguments
-   :  '{' metaArgument  (',' metaArgument)* '}' -> ^(LIST<ListNode>["LIST"] metaArgument+)
+   :  '{' metaArgument (NL)* (',' (NL*) metaArgument (NL*) )* '}' -> ^(LIST<ListNode>["LIST"] metaArgument+)
    |	'{' '}'      -> LIST<ListNode>["LIST"]	// defer metaArgument binding  
    ;
  	
