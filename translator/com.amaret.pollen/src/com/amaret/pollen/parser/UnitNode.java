@@ -268,7 +268,13 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     		return true;
     	return false;
     }
-    public boolean isVoid() { // deferred instantiation for a meta type
+    /**
+     * True if this is a deferred instantiation for a meta type
+     * (for which no code will be generated).
+     * Used only for name resolution, etc.
+     * @return Flags.VOID_INSTANCE
+     */
+    public boolean isVoid() { 
     	if (flags.contains(Flags.VOID_INSTANCE))
     		return true;
     	return false;

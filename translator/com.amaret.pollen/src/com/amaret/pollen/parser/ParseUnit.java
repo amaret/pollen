@@ -277,18 +277,23 @@ public class ParseUnit {
 	 */
 	private UnitNode parseUnit(String inputPath, UnitNode client, ImportNode clientImport) throws Exception {
 		
-		String cname = client != null ? client.getQualName() : "null";
-		String ciname = clientImport != null ? clientImport.getQualName() : "null";
+		String cname = client != null ? client.getQualName() : "<no import>";
+		String ciname = clientImport != null ? clientImport.getQualName() : "<none>";
 				
 		setDebugMode(false);
 		//setDebugMode(true);
 		if (isDebugMode()) {			
 			String dbgStr = "  START parseUnit() : ";
-			dbgStr += "input " + ParseUnit.mkPackageName(inputPath) + "." + ParseUnit.mkUnitName(inputPath) + ", client " + cname + ", clientImport " + ciname;
+			dbgStr += "parse \'" + ParseUnit.mkPackageName(inputPath) + "." + ParseUnit.mkUnitName(inputPath) + "\', imported from client \'" + cname + "\' with \'import " + ciname + "\' statement";
 			if (clientImport != null && clientImport.getMeta() != null) {
 				dbgStr += ", meta args ";
+				String comma = "";
 				for (BaseNode b : clientImport.getMeta()) {
-					dbgStr += b.getText() + "." + b.getChild(0).getText() + "  ";
+					dbgStr += comma;
+					if (b.getType() != pollenParser.NIL)
+						dbgStr += b.getText() + "." + b.getChild(0).getText();
+					else dbgStr += "<none, use default>";
+					comma = ", ";
 				}
 			}
 			System.out.println(dbgStr);

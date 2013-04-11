@@ -102,7 +102,8 @@ tokens {
 @parser::members {
 
 	private boolean isMetaInstance = false;
-	private boolean isEmptyMetaArgs = false; // deferred instantiation
+	private boolean isVoidInstance = false; // deferred instantiation: '{}'. No code gen.
+	private boolean instantiateToDefaults = false; // A meta type imported with no '{..}'
 	private UnitNode client = null;
 	private ImportNode clientImport = null;
 	// Trigger meta instantiation via this constructor
@@ -111,7 +112,8 @@ tokens {
 	    isMetaInstance = (cl != null && cli != null); 
 	    client = cl;
 	    clientImport = cli;
-	    isEmptyMetaArgs = (cli != null && cli.getMeta() != null && cli.getMeta().size() == 0);
+	    isVoidInstance = (cli != null && cli.getMeta() != null && cli.getMeta().size() == 0);
+	    instantiateToDefaults = (cli != null && cli.getMeta() == null);
 	}
 	    
     EnumSet<Flags> featureFlags = EnumSet.noneOf(Flags.class); 
@@ -705,15 +707,13 @@ metaParmGen
 	EnumSet<Flags> flags = EnumSet.noneOf(Flags.class);		
 	String ctext = "";
 	EnumSet<LitFlags> lf = EnumSet.noneOf(LitFlags.class);
-	if (isEmptyMetaArgs) {
+	if (isVoidInstance) {
 		//Atom v = new Atom(new CommonToken(pollenLexer.VOID, "void"));
 		//BaseNode bv = new BaseNode(v);
 		//clientImport.getMeta().add(bv);
 		metaFlags.add(Flags.VOID_INSTANCE);
 	}
-	else 	if (clientImport.getMeta() != null && clientImport.getMeta().size() < $metaParmsGen::idx+1) {
-		  throw new PollenException("Not enough parameters to instantiate meta type", input);
-	}
+
 }
 @after {
 	$metaParmsGen::idx++;
@@ -731,29 +731,39 @@ metaParmGen
 		    		}
 		    	}	
 		    	// get import name
-		    	if (clientImport.getMeta() == null || isEmptyMetaArgs) {
+		    	if (instantiateToDefaults || isVoidInstance) {
 		    		// instantiate to defaults
 		    		if (name.isEmpty()) {
-		    			if (isEmptyMetaArgs)
+		    			if (isVoidInstance)
 		    				throw new PollenException("Using \'{}\' to instantiate a meta type requires default values for all meta parameters", input);
 		    			if (clientImport.getMeta() == null)
 		    				throw new PollenException("Instantiating a meta type without parameters requires default values for all meta parameters", input);
 		    		}
 		    	}
 		    	else {
-		    		// get instantiation value
-		    		BaseNode b = clientImport.getMeta().get($metaParmsGen::idx);
-		    		if (b instanceof TypeNode.Usr) {
-		    			name = ((TypeNode.Usr) b).getName().getText();		    			
-		    		}
-		    		else if (b instanceof TypeNode.Std) {
-		    			name = ((TypeNode.Std) b).getIdent().getText();		    			
-		    		}
-		    		else if (b.getType() == pollenLexer.VOID) // deferred instantiation
-                   name = b.getText();
-		    		else {
-		    			throw new PollenFatalException("Meta type parameter requires type to instantiate");
-		    		}		    		
+		    	BaseNode b = (clientImport.getMeta() != null && clientImport.getMeta().size() >= $metaParmsGen::idx+1) 
+		    			? clientImport.getMeta().get($metaParmsGen::idx) : null ;
+		    	
+		    	  if (b != null && b.getType() != pollenParser.NIL) { // if false, will use default
+		    		  // get instantiation value
+		    		  
+		    		  if (b instanceof TypeNode.Usr) {
+		    			  name = ((TypeNode.Usr) b).getName().getText();		    			
+		    		  }
+		    		  else if (b instanceof TypeNode.Std) {
+		    			  name = ((TypeNode.Std) b).getIdent().getText();		    			
+		    		  }
+		    		  else if (b.getType() == pollenLexer.VOID) // deferred instantiation
+                     name = b.getText();
+		    		  else {
+		    			  throw new PollenFatalException("Meta type parameter requires type to instantiate");
+		    		  }
+		    	  }
+		    	  else {
+			 	    if (name.isEmpty()) { // no default supplied
+			 	  	    throw new PollenException("Missing actual parameter for meta type instantiation where no default value specified", input);
+			 	    }
+			 	   }		    		
 		    	}
 
 	    	}
@@ -761,33 +771,43 @@ metaParmGen
 	  
 	 |   builtinType id=IDENT ('=' primitiveLit { ctext = $primitiveLit.text; } )?
 	 		{
-	 			if (clientImport.getMeta() == null || isEmptyMetaArgs) {
+	 			if (instantiateToDefaults || isVoidInstance) {
 		    		// instantiate to defaults
 		    		if (ctext.isEmpty()) {
-		    			if (isEmptyMetaArgs)
+		    			if (isVoidInstance)
 		    				throw new PollenException("Using \'{}\' to instantiate a meta type requires default values for all meta parameters", input);
 		    			if (clientImport.getMeta() == null)
 		    				throw new PollenException("Instantiating a meta type without parameters requires default values for all meta parameters", input);
 		    		}
 		    	}
 		    	else {
-
-			 		BaseNode b = clientImport.getMeta().get($metaParmsGen::idx);
-			 		if (b.getType() != pollenLexer.VOID && !(b instanceof ExprNode.Const)) 
-			 			throw new PollenFatalException("Invalid meta value parameter specification (must be a constant)");
-			 		ctext = b.getText();
-			 		flags.add(Flags.META_ARG);
-			 		lf = EnumSet.noneOf(LitFlags.class);
-			 		if (b instanceof ExprNode.Const) {
-			 			arg = (ExprNode.Const) b;
-			 			ctext = arg.getValue().getText();
-			 			EnumSet<LitFlags> formalType = $builtinType.f;
-			 			lf = arg.getLitFlags();
-			 			if (!(arg.getLitFlags().contains(LitFlags.NUM) && formalType.contains(LitFlags.NUM))) {
-			 				if (!(arg.getLitFlags().equals(formalType)))
-			 					throw new PollenException("Fomal and actual meta value parameters have inconsistent types", input);	 		
-			 			}
-			 		}
+		    	  flags.add(Flags.META_ARG);
+		    	  BaseNode b = (clientImport.getMeta() != null && clientImport.getMeta().size() >= $metaParmsGen::idx+1) 
+		    			? clientImport.getMeta().get($metaParmsGen::idx) : null ;
+		    			
+		    	  if (b != null && b.getType() != pollenParser.NIL) { // if false, will use default
+			 		
+			 		  if (b.getType() != pollenLexer.VOID && !(b instanceof ExprNode.Const)) 
+   			 			throw new PollenFatalException("Invalid meta value parameter specification (must be a constant)");
+	  		 		  ctext = b.getText();
+			 		
+			 		  lf = EnumSet.noneOf(LitFlags.class);
+			 		  if (b instanceof ExprNode.Const) {
+			 			  arg = (ExprNode.Const) b;
+			 			  ctext = arg.getValue().getText();
+			 			  EnumSet<LitFlags> formalType = $builtinType.f;
+			 			  lf = arg.getLitFlags();
+			 			  if (!(arg.getLitFlags().contains(LitFlags.NUM) && formalType.contains(LitFlags.NUM))) {
+			 				  if (!(arg.getLitFlags().equals(formalType)))
+			 					  throw new PollenException("Fomal and actual meta value parameters have inconsistent types", input);	 		
+			 			  }
+			 		  }
+			 	 }
+			 	 else {
+			 	    if (ctext.isEmpty()) { // no default supplied
+			 	  	    throw new PollenException("Missing actual parameter for meta type instantiation where no default value specified", input);
+			 	    }
+			 	 }
 		 		}
 	 		}
 		-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", flags]  ^(T_STD<TypeNode.Std>["T_STD", EnumSet.noneOf(Flags.class)] builtinType) IDENT ^(E_CONST<ExprNode.Const>["E_CONST", lf] IDENT[ctext]))
@@ -803,6 +823,7 @@ metaArguments
 metaArgument
 	:	primitiveLit 
 	|	typeNameScalar
+	| 	-> NIL
 	;
 typeName
 	:	typeNameScalar

@@ -47,6 +47,9 @@ public class Generator {
 
 		for (UnitNode u : units.values()) {
 			
+			if (u.isVoid())
+				continue;
+
 			if (ParseUnit.isDebugMode()) {	
 				System.out.println("GENUNIT " + u.getQualName());
 			}
