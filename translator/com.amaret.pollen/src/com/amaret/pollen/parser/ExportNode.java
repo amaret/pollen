@@ -46,6 +46,10 @@ public class ExportNode extends BaseNode implements ISymbolNode {
     	ParseUnit currUnit = ParseUnit.current();
         Atom name = getName();
         SymbolEntry sym = currUnit.getSymbolTable().resolveSymbol(name);
+        // If the sym is null, this could be an exported host function
+        // so check the host scopes.
+        if (sym == null) 
+        	sym = currUnit.getSymbolTable().resolveSymbol(name, true);
         ISymbolNode snode = sym == null ? null : sym.node();
         String[] path = name.getText().split("\\.");
         if (!(snode instanceof ImportNode)) {

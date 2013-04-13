@@ -35,6 +35,10 @@ public class SymbolTable {
     public SymbolEntry lookupName(String name) {
         return curScope == null ? null : curScope.lookupName(name);
     }
+    public SymbolEntry lookupName(String name, boolean chkHostScope) {
+        return curScope == null ? null : curScope.lookupName(name, chkHostScope);
+    }
+
     
     public SymbolEntry resolveSymbol(Atom name, IScope sc) {
         return lookupName(name.getText(), sc);
@@ -43,6 +47,10 @@ public class SymbolTable {
     public SymbolEntry resolveSymbol(Atom name) {
         return lookupName(name.getText());
     }
+    public SymbolEntry resolveSymbol(Atom name, boolean chkHostScope) {
+        return lookupName(name.getText(), chkHostScope);
+    }
+
     /**
      * For calls. In host context, look in host scope.
      * @return true if current scope is a host scope.
