@@ -63,9 +63,20 @@ public class ExportNode extends BaseNode implements ISymbolNode {
             		((ImportNode) snode2).setExport(true);
             		Atom n = new Atom(name);
             		n.setText(path[1]);
+            		String u = currUnit.getUnitName();
+            		
+            		boolean dbg = n.getText().equals("wait");
+            		if (dbg)
+            			dbg = false;
+            		
             		currUnit.getSymbolTable().defineSymbol(n, snode);
             		currUnit.getCurrUnitNode().defineSymbol(n, snode);   
+//            		n.setText(u + "." + path[1]);
+//            		currUnit.getSymbolTable().defineSymbol(n, snode);
+//            		currUnit.getCurrUnitNode().defineSymbol(n, snode);   
+
             		currUnit.getCurrUnitNode().addFcn(n.getText(), (Fcn) snode);
+            		n = new Atom(name);
             		n.setText(path[0]);
             		enterExport(n);          		
             	}

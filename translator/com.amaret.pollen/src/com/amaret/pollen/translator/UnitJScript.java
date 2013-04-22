@@ -231,14 +231,16 @@ public class UnitJScript {
     	String nameU = imp.getUnit().getQualName();
     	String nUnit = imp.getUnit().getName().getText();
 		String asName = imp.getName().getText();
-		
+		ParseUnit.setDebugMode(false);
 		if (!(asName.equals(nUnit)) && imp.getUnit().isMeta()) {
 			// meta modules are generated with the 'as' name
 			nameU = nameU.substring(0, nameU.lastIndexOf(".")+1) + asName;   			
 		}
 		 	
 		if (ParseUnit.isDebugMode()) {
-			System.out.println("genUse(): in " + this.gen.curUnit().getQualName() + " check use of " + nameU);			
+			String n = ((UnitNode) imp.getParent().getParent()).getQualName();
+			System.out.println("genUse(): for " + n + " importing " + imp.getUnitName().getText() + " check use of " + nameU);	
+			
 //				if (!(asName.equals(nUnit)) && imp.getUnit().isMeta()) {
 //					nameU = nameU.substring(0, nameU.lastIndexOf(".")+1) + asName;   			
 //				}
@@ -253,30 +255,39 @@ public class UnitJScript {
 
     		if (!inserted.contains(nameU)) {
     			inserted.add(nameU);
-    			if (ParseUnit.isDebugMode()) System.out.println("  genUse(): use " + nameU);
+    			if (ParseUnit.isDebugMode()) System.out.println("  genUse(): USE " + nameU);
     			gen.fmt.print("%t$$bind($units['%1'], 'pollen$used', true);\n", nameU);
     		}
     	}
     	else  if (imp.getUnit().isComposition()) {
     		// for compositions, the imports are used.
-    		List<ImportNode> impCL = imp.getUnit().getImports();
-    		for (ImportNode impC : impCL) {
-    			SymbolEntry export = imp.getUnit().lookupName("$$export"+impC.getName().getText());
-    			if (ParseUnit.isDebugMode())
-    				System.out.println("  genUse(): Import " + impC.getName() + " in unit " + imp.getUnit().getQualName() + " has isExport " + (impC.isExport() ? "TRUE" : "FALSE"));
-    			if (export != null) {
-    				genUse(impC, inserted);
-    			}
-    			else if (impC.isProtocolBindTarget()) {
-    				genUse(impC, inserted);
-    			}
-    		
-    		}    
-    	}    
+			if (ParseUnit.isDebugMode()) System.out.println("  genUse() " + nameU + " is composition, check exports");
+
+    		DeclNode.Usr compos = imp.getUnit().getUnitType();
+    		//while (true) {
+        		List<ImportNode> impCL = compos.getUnit().getImports();
+    			for (ImportNode impC : impCL) {
+    				SymbolEntry export = compos.getUnit().lookupName("$$export"+impC.getName().getText());
+    				if (ParseUnit.isDebugMode())
+    					System.out.println("  genUse(): Import " + impC.getName() + " in unit " + compos.getUnit().getQualName() + " has isExport " + (impC.isExport() ? "TRUE" : "FALSE") + ", export sym exists " + (export != null ? "TRUE" : "FALSE") );
+    				if (export != null) {
+    					genUse(impC, inserted);
+    				}
+    				else if (impC.isProtocolBindTarget()) {
+    					genUse(impC, inserted);
+    				}   		
+    			} 
+//    			if (compos.getBaseType() != null) { // has extends clause; get base imports
+//    				compos = compos.getBaseType();			
+//    			}
+//    			else break;
+//    		}
+    	}   
+    	ParseUnit.setDebugMode(false);
     }   
 
     private void genUses(UnitNode unit) {
-        //ParseUnit.setDebugMode(true);
+        ParseUnit.setDebugMode(false);
         if (ParseUnit.isDebugMode())
                 debugUses(unit);
         List<ImportNode> impL = unit.getImports();

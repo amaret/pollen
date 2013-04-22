@@ -857,7 +857,13 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         	if (baseType == null && this.getExtends() != null) {
         		SymbolEntry p = lookupName(getExtends().getText());
         		if (p != null) {
-        			baseType = (Usr) p.node();       				
+        			BaseNode b = (BaseNode) p.node();
+        			if (b instanceof ImportNode
+        					&& ((ImportNode)b).getUnit() != null) {
+        				baseType = ((ImportNode)b).getUnit().getUnitType();       				
+        			}
+        			else if (b instanceof DeclNode.Usr)
+        				baseType = (Usr) p.node();       				
         		}
         	}
         	return baseType;

@@ -285,6 +285,8 @@ public class ParseUnit {
 		if (isDebugMode()) {			
 			String dbgStr = "  START parseUnit() : ";
 			dbgStr += "parse \'" + ParseUnit.mkPackageName(inputPath) + "." + ParseUnit.mkUnitName(inputPath) + "\', imported from client \'" + cname + "\' with \'import " + ciname + "\' statement";
+			if (ParseUnit.mkUnitName(inputPath).equals("Queue"))
+				dbgStr += " ";
 			if (clientImport != null && clientImport.getMeta() != null) {
 				dbgStr += ", meta args ";
 				String comma = "";

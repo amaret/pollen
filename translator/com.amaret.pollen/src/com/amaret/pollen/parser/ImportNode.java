@@ -117,7 +117,10 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     		return getUnit().getQualName();
     	return getUnitName().getText();
     }
-    
+    /**
+     * 
+     * @return name of the imported unit
+     */
     public Atom getUnitName() {
         return ((BaseNode) getChild(UNIT)).getAtom();
     }
