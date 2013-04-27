@@ -488,6 +488,9 @@ public class Cat implements Cloneable {
         			 return Cat.fromScalarCode(code);       			 
         		 }
         	}
+//				UnitNode u = ((ImportNode) snode).getUnit();
+//				SymbolEntry s2 = u.lookupName(((ImportNode) snode).getUnitName().getText());
+//				return fromSymbolNode(s2.node(), defScope);
         	return fromSymbolNode(((ImportNode) snode).getUnit(), defScope);
         }
         else if (snode instanceof DeclNode.TypedMember) {

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.antlr.runtime.tree.Tree;
 
+import com.amaret.pollen.parser.Cat.Agg;
 import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
 import com.amaret.pollen.parser.DeclNode.Usr;
 import com.amaret.pollen.parser.ExprNode.Ident;
@@ -451,6 +452,9 @@ public class StmtNode extends BaseNode {
 
         static final private int PRO = 0;
         static final private int VAL = 1;
+        
+        private UnitNode bindToUnit = null; 			// the module to which the protocol member is bound
+
 
         Bind(int ttype, String ttext) {
             super(ttype, ttext);
@@ -468,11 +472,22 @@ public class StmtNode extends BaseNode {
         protected void pass2End() {
         	SymbolEntry sym = getPro().getSymbol();
         	ISymbolNode snode = sym != null ? sym.node() : null;
-        	Cat left = null;
         	Cat right = null;
-        	if (getValue() != null && getPro() != null) {
-        		left = getPro().getCat();
+        	if (getValue() != null && getPro() != null) {        		
         		right = Cat.fromType(getValue()); 
+        		if (!right.isModule()) {
+        			// if this is 'from composition import mod' then the Cat 
+        			// will be for the composition. get Cat for mod.
+        			if (right instanceof Cat.Agg && ((Agg) right).aggScope() instanceof UnitNode
+        					&& getValue() instanceof TypeNode.Usr) {
+        				SymbolEntry s = ((com.amaret.pollen.parser.TypeNode.Usr) getValue()).getSymbol();
+        				if (s.node() instanceof ImportNode) {
+        					UnitNode u = ((ImportNode) s.node()).getUnit();
+        					SymbolEntry s2 = u.lookupName(((ImportNode) s.node()).getUnitName().getText());
+        					right = (s2 != null) ? Cat.fromSymbolNode(s2.node(), s2.scope()) : right;
+        				}
+        			}
+        		}
         		
         		// for compositions, need to pollen.use these imported units
         		// if they are used as a bind target.
@@ -494,15 +509,19 @@ public class StmtNode extends BaseNode {
         			ParseUnit.current().reportError(getPro(), "LHS of binding operator assignment must be a protocol member");   
         			return;
         		}
-        		if (right == null || !right.isModule()) {
+        		if (right == null) {
         			ParseUnit.current().reportError(getPro(), "RHS of binding operator assignment must be a module");     
         			return;
         		}
-        		
+        		if (!right.isModule()) {
+        			ParseUnit.current().reportError(getPro(), "RHS of binding operator assignment must be a module");    
+        			return;
+        		}
+   		
         		BaseNode d = (BaseNode) ((Cat.Agg) right).aggScope();
-        		UnitNode u = (UnitNode) ((d instanceof UnitNode) ? d : d instanceof DeclNode.Usr ? ((DeclNode.Usr)d).getUnit() : null);
-        			
+        		UnitNode u = (UnitNode) ((d instanceof UnitNode) ? d : d instanceof DeclNode.Usr ? ((DeclNode.Usr)d).getUnit() : null);      			
         		((DeclNode.TypedMember)snode).bindModule(u, getValue(), this); // bind it
+        		bindToUnit = ((DeclNode.TypedMember)snode).getBindToUnit();
         		
             	// check that a protocol is being bound to a module
             	// in either a host fcn or a module body
@@ -515,7 +534,6 @@ public class StmtNode extends BaseNode {
         			return;
                	}             	
 
-        		left = getPro().getCat();
         		right = Cat.fromType(getValue());
         		// TODO move the above checks into TypeRules
         		// the checks below fail because TypeRules don't understand protocol binding.
@@ -528,6 +546,10 @@ public class StmtNode extends BaseNode {
         	}  
 
         }
+
+		public UnitNode getBindToUnit() {
+			return bindToUnit;
+		}
     }
     
     // StmtNode.Switch

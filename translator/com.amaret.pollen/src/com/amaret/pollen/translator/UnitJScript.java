@@ -264,10 +264,10 @@ public class UnitJScript {
 			if (ParseUnit.isDebugMode()) System.out.println("  genUse() " + nameU + " is composition, check exports");
 
     		DeclNode.Usr compos = imp.getUnit().getUnitType();
-    		//while (true) {
+    		while (true) {
         		List<ImportNode> impCL = compos.getUnit().getImports();
     			for (ImportNode impC : impCL) {
-    				SymbolEntry export = compos.getUnit().lookupName("$$export"+impC.getName().getText());
+    				SymbolEntry export = compos.getUnit().lookupName(ParseUnit.EXPORT_PREFIX+impC.getName().getText());
     				if (ParseUnit.isDebugMode())
     					System.out.println("  genUse(): Import " + impC.getName() + " in unit " + compos.getUnit().getQualName() + " has isExport " + (impC.isExport() ? "TRUE" : "FALSE") + ", export sym exists " + (export != null ? "TRUE" : "FALSE") );
     				if (export != null) {
@@ -277,11 +277,11 @@ public class UnitJScript {
     					genUse(impC, inserted);
     				}   		
     			} 
-//    			if (compos.getBaseType() != null) { // has extends clause; get base imports
-//    				compos = compos.getBaseType();			
-//    			}
-//    			else break;
-//    		}
+    			if (compos.getBaseType() != null) { // has extends clause; get base imports
+    				compos = compos.getBaseType();			
+    			}
+    			else break;
+    		}
     	}   
     	ParseUnit.setDebugMode(false);
     }   

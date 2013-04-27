@@ -315,7 +315,7 @@ class Auxiliary {
 		if (expr.getName() instanceof ExprNode.Ident) {
 			boolean dbg = false;
 			String s = ((ExprNode.Ident)expr.getName()).getName().getText();
-			if (s.equals("cycle"))
+			if (s.equals("wait"))
 				dbg = true;
 		}
 		
@@ -517,6 +517,10 @@ class Auxiliary {
 		}
 		
 		if (qn.isEmpty()) {
+			if (scope instanceof UnitNode && ((UnitNode) scope).isComposition())	{
+				scope = ((DeclNode) snode).getUnit();
+				
+			}
 			qn = (scope instanceof UnitNode ? ((UnitNode) scope)
 					.getQualName()
 					: (scope instanceof DeclNode.Usr) ? ((DeclNode.Usr) scope)
@@ -605,10 +609,10 @@ class Auxiliary {
 			return;
 
 		gen.fmt.print("var $$v = \'");
-		if (typ == null) {
+		if (typ == null ) {
 			gen.fmt.print("undefined");
 		} else {
-			String s = mkCname(typ);
+			String s = (stmt.getBindToUnit() != null ?  mkCname(stmt.getBindToUnit()) : mkCname(typ));
 			gen.fmt.print(s.substring(0, s.length()-1)); //(this.mkJSname(typ));
 			//this.genType(typ, "");
 			// genExpr(vexpr);
@@ -1462,11 +1466,24 @@ class Auxiliary {
 							qualifier = Cat.Scalar
 									.codeFromString(((ImportNode) s.node())
 											.getUnitName().getText());
-					} else
-						qualifier = i.isTypeMetaArg() ? "" : i.getUnit()
-								.getQualName().replace(".", "_")
+					} else {
+						String qname = "";
+						if (i.getUnit().isComposition()) {
+							// if the import is a composition, resolve down to the imported module.
+							UnitNode u = i.getUnit();
+							SymbolEntry se = u.lookupName(i.getUnitName().getText());
+							if (se.node() instanceof ImportNode)
+								qname = ((ImportNode) se.node()).getQualName().replace(".", "_")
 								+ "_";
-					return qualifier; // + i.getUnitName().getText();
+						}
+						else {
+							qname = i.getUnit()
+							.getQualName().replace(".", "_")
+							+ "_";
+						}						
+						qualifier = i.isTypeMetaArg() ? "" : qname;
+					}
+					return qualifier; 
 				} else {
 					if (s.node() instanceof DeclNode.Usr) {
 						if (s.scope() instanceof DeclNode.Usr) // nested

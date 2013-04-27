@@ -38,6 +38,7 @@ public class ParseUnit {
     private HashMap<String,UnitNode> unitMap;
     private HashMap<String, String>	packages;
     static private boolean debugMode = false;
+    public static final String EXPORT_PREFIX = "$$export";
     
     
     public static void setDebugMode(boolean debugMode) {

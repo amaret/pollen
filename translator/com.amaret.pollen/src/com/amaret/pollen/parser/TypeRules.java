@@ -252,37 +252,51 @@ public class TypeRules {
 			ParseUnit.current().reportError((BaseNode) protocol.node(), "implements clause requires a protocol");
 			return;
 		}
-		UnitNode implemUnit = (UnitNode) implementor.getUnit();
 		UnitNode protoUnit = (UnitNode) p.getUnit();
-
+		String dbg4 = protoUnit.getQualName();
+		UnitNode implemUnit = (UnitNode) implementor.getUnit();
+		String pfcnName, dbg2, dbg3;		
 		for (List<DeclNode.Fcn> protoUnitFcnLst : protoUnit.getFcnMap().values()) {
 			boolean matchSig = false;
-			String dbg1, dbg2, dbg3;
-			dbg3 = protoUnit.getQualName();
+			
+			implemUnit = (UnitNode) implementor.getUnit();
 			for (DeclNode.Fcn protoUnitFcn : protoUnitFcnLst) {
+				pfcnName = protoUnitFcn.getName().getText();
 				Cat pfc = null;		
 				boolean matchName = false;
-				for (String implemUnitFcnName : implemUnit.getFcnMap().keySet()) {					
-					if (implemUnitFcnName.equals(protoUnitFcn.getName().getText())) {
-						matchName = true;
-						for (DeclNode.Fcn ifd : implemUnit.getFcnMap().get(implemUnitFcnName)) {
-							Cat ifc = new Cat.Fcn(ifd, ifd.getEnclosingScope());
-							if (pfc == null)
-								pfc = new Cat.Fcn(protoUnitFcn, protoUnitFcn.getEnclosingScope());
-							dbg1 = ifc.sigString();
-							dbg2 = pfc.sigString();
-							if (ifc.sigString() != null && ifc.sigString().equals(pfc.sigString())) {
-								matchSig = true;
-								break;
-							}							
-						}
-						if (!matchSig) {
-							ParseUnit.current().reportError((BaseNode) protocol.node(), "all functions in protocol \'" + protocol.node().getName().getText() + "\' must be implemented with identical signatures");
-						}
-					}											
+				while (implemUnit != null) {
+					implemUnit.getFcnMap().get(protoUnitFcn.getName().getText());
+					for (String implemUnitFcnName : implemUnit.getFcnMap().keySet()) {	
+						dbg3 = implemUnitFcnName;
+						if (implemUnitFcnName.equals("$$hostInit"))
+							continue;
+						if (implemUnitFcnName.equals(protoUnitFcn.getName().getText())) {
+							matchName = true;
+							for (DeclNode.Fcn ifd : implemUnit.getFcnMap().get(implemUnitFcnName)) {
+								Cat ifc = new Cat.Fcn(ifd, ifd.getEnclosingScope());
+								if (pfc == null)
+									pfc = new Cat.Fcn(protoUnitFcn, protoUnitFcn.getEnclosingScope());
+								dbg3 = ifc.sigString();
+								dbg2 = pfc.sigString();
+								if (ifc.sigString() != null && ifc.sigString().equals(pfc.sigString())) {
+									matchSig = true;
+									break;
+								}							
+							}
+							if (!matchSig) {
+								String more = (pfcnName.isEmpty()) ? "" : " ('" + pfcnName + "' has signature mismatch)" ;
+								ParseUnit.current().reportError((BaseNode) protocol.node(), "all functions in protocol \'" + protocol.node().getName().getText() + "\' must be implemented with identical signatures" + more);
+							}
+						}											
+					}
+					if (!matchName) // check base unit
+						implemUnit = implemUnit.getUnitType().getBaseType() == null ? null
+							: implemUnit.getUnitType().getBaseType().getUnit();
+					else implemUnit = null;
 				}
 				if (!matchName) {
-					ParseUnit.current().reportError((BaseNode) protocol.node(), "all functions in protocol \'" + protocol.node().getName().getText() + "\' must be implemented");
+					String more = (pfcnName.isEmpty()) ? "" : " ('" + pfcnName + "' not found)" ;
+					ParseUnit.current().reportError((BaseNode) protocol.node(), "all functions in protocol \'" + protocol.node().getName().getText() + "\' must be implemented" + more);
 					return;
 				}				
 			}		

@@ -357,6 +357,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     
     @Override
     protected boolean pass1Begin() {
+    	//System.out.println("**UnitNode " + this.getQualName() + " pass1Begin()");
     	flags = unitType.getFlags();
     	ParseUnit currUnit = ParseUnit.current();               
         currUnit.getSymbolTable().enterScope(this);
@@ -371,7 +372,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
         		//defineSymbol(imp.getAs(), imp);
         	}
         }
-        this.importSymbols();
+        //this.importSymbols(); // moved to pass1End() because imports/exports must be handled first.
         return true;
     }
     
@@ -380,7 +381,10 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     	
     	boolean dbg = false;
 		String e1 = null, ef1 = null, e2 = null, ef2 = null, e3 = null, ef3 = null;
-		
+		 if (dbg) {
+			 ParseUnit.current().reportError(this, "**************importSymbols() for unit " + this.getQualName() + "**********************" );
+		 }
+
     	for (ImportNode imp : this.getImports()) {
     		UnitNode iu = imp.getUnit();
     		if (iu != null) {
@@ -388,19 +392,23 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     			SymbolEntry s = iu.lookupName(imp.getUnitName().getText()); // lookup imported type in imported unit
     			if (s == null)
     				continue;
-    			SymbolEntry export = imp.getUnit().lookupName("$$export"+imp.getName().getText());
+    			SymbolEntry export = this.lookupName(ParseUnit.EXPORT_PREFIX+imp.getName().getText());
 
     			boolean compositionSymbols = (s.node() instanceof ITypeKind && ((ITypeKind)s.node()).isComposition());
     			// For this import, add its exported symbols to unit symbol table.
     			 if (compositionSymbols || s.node() instanceof ImportNode && ((ImportNode)s.node()).isExport())
     				 if (dbg) {
-    					 ParseUnit.current().reportError(iu, "**************start unit " + this.getQualName() + "**********************" );
-    					 if (export == null)
-    						 System.out.println("NO EXPORT for " + imp.getName().getText());
+    					 if (export == null ) // consistency check, only a problem if it was exported
+    						 System.out.println("In unit " + this.getQualName() + " import '" + imp.getName().getText() + "' has NO EXPORT" );
     				 }
     				    				
-    				for (Map.Entry<String, SymbolEntry> exported : iu.symbolTable.entrySet()) {
-    					ISymbolNode exportedNode = exported.getValue().node();
+    			 for (Map.Entry<String, SymbolEntry> exported : iu.symbolTable.entrySet()) {
+    				 ISymbolNode exportedNode = exported.getValue().node();
+    				 if (dbg) {
+    					 e1 = exported.getKey();
+    					 ParseUnit.current().reportError(this, "check for export of symbol '" + e1 + "' from scope " + ef1 + " into scope " + this.getScopeName());
+
+    				 }
     					if (exportedNode instanceof DeclNode && !((DeclNode) exportedNode).isPublic()) {
     						continue;
     					}
@@ -410,20 +418,24 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
 //						The code below skips some imports, so i have kept the dependency on the 'isExport()' flag above
 //						(which itself has problems in UnitJScript.genUse(), so I am not using it there.)
 //    					if (exportedNode instanceof ImportNode) {
-//    						export = imp.getUnit().lookupName("$$export"+((ImportNode)exportedNode).getName().getText());
+//    						export = imp.getUnit().lookupName(ParseUnit.EXPORT_PREFIX+((ImportNode)exportedNode).getName().getText());
 //    						if (export == null)
 //    							continue;
 //    					}
 
-    					if (exportedNode instanceof ExportNode)
+    					if (exportedNode instanceof ExportNode) // e.g. not an import or function
     						continue;
+    					
+    					// for imports or functions that are exported, make a SymbolEntry that replaces the one created for the import.
+    					
     					//SymbolEntry exportedSe = new SymbolEntry(this, exportedSnode); doesn't seem to matter, this or below...
     					SymbolEntry newSymbol = new SymbolEntry(exportedNode.getDefiningScope(), exportedNode);
+    					
     					
     					if (dbg) {
     						e1 = exported.getKey();
     						ef1 = newSymbol.scope().getScopeName();  	
-     						ParseUnit.current().reportError(imp, "adding exported symbol " + e1 + " with scope " + ef1 );
+     						ParseUnit.current().reportError(this, "  import exported symbol '" + e1 + "' from scope " + ef1 + " into scope " + this.getScopeName());
 
     					}
     					SymbolEntry r2=null, r3=null;
@@ -436,19 +448,19 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     							i += r2i.isExport() ? "(isExport TRUE) ": "";   							
     						}
     						
-    						e2 = r2.node().getName().getText();
-    						ef2 = r2.scope().getScopeName();   
+    						e2 =  r2.node().getName().getText() + "'";
+    						ef2 = "'" + r2.scope().getScopeName() ;   
     						
-     						ParseUnit.current().reportError(imp, "replacing symboltable SymbolEntry for " + i + ef2 + "." + e2 + " with export entry " + exported.getKey());
+     						ParseUnit.current().reportError(this, "  and replace SymbolEntry for " + i + ef2 + "." + e2 + " with export '" + exported.getKey() + "'");
     						
     					}
     					if (exported.getKey().equals(imp.getUnitName().getText()) && !exported.getKey().equals(imp.getName().getText())) {
 
     						r3 = symbolTable.put(imp.getName().getText(), newSymbol);	// 	the 'as' name
     						if (dbg) {
-    							ParseUnit.current().reportError(this, "enter " + exported.getKey() + " SymbolEntry with import name " + imp.getName());
+    							ParseUnit.current().reportError(this, "enter " + exported.getKey() + " SymbolEntry with import 'as' name " + imp.getName());
     							if (r3 != null) {
-    								ParseUnit.current().reportError(imp, "replacing symboltable SymbolEntry for " + imp.getQualName() + " (" + imp.getName().getText() + ") "+ " with export entry " + exported.getKey());
+    								ParseUnit.current().reportError(this, "  and replace SymbolEntry for " + imp.getQualName() + " (" + imp.getName().getText() + ") "+ " with SymbolEntry for export " + exported.getKey());
     							}
     						}
     					}
@@ -461,7 +473,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     
     @Override
     protected void pass1End() {
-
+    	this.importSymbols();
         ParseUnit.current().getSymbolTable().leaveScope();
     }
     @Override
