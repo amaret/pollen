@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.antlr.runtime.CommonToken;
 
+import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.parser.DeclNode.Usr;
 
 public class ExprNode extends BaseNode {
@@ -182,10 +183,10 @@ public class ExprNode extends BaseNode {
         	if (getName() != null && getName() instanceof ExprNode.Ident) {
         		ExprNode.Ident ei = (ExprNode.Ident) getName();
         		
-//        		String dbgs = ei.getName().getText();
-//        		boolean dbg = false;
-//        		if (dbgs.equals("Arduino.cycle"))
-//        			dbg = true;
+        		String dbgs = ei.getName().getText();
+        		boolean dbg = false;
+        		if (dbgs.equals("Comp.foo"))
+        			dbg = true;
 //        		if (dbgs.equals("disable"))
 //        			dbg = true;
 
@@ -271,7 +272,17 @@ public class ExprNode extends BaseNode {
             				// for function references, the scope of the function ref is not the scope of the called fcn
             			thisPtr = true;     
             		}
+            		if (caller != null && caller.node() instanceof ITypeKind && ((ITypeKind) caller.node()).isComposition()
+            				&& !isHostFcn) {
+            			// Strip the composition from the qualification: it won't exist
+                		String n = ei.getName().getText();
+                		if (n.indexOf('.') != -1) {
+                			n = n.substring(n.lastIndexOf('.')+1);
+            				ei.getName().setText(n); 
+                		}            			
+            		}
             	}
+        		
         	}        	 
         	return super.pass2Begin();
         }

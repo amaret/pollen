@@ -315,7 +315,7 @@ class Auxiliary {
 		if (expr.getName() instanceof ExprNode.Ident) {
 			boolean dbg = false;
 			String s = ((ExprNode.Ident)expr.getName()).getName().getText();
-			if (s.equals("wait"))
+			if (s.equals("LocalMcu.shutdown") || s.equals(("wait")))
 				dbg = true;
 		}
 		

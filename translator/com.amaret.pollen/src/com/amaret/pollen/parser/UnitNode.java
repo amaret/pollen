@@ -286,6 +286,9 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     
     @Override
     public SymbolEntry lookupName(String name) {
+    	boolean isComposition = this.isComposition();
+    	String compositionName = isComposition ? this.getName().getText() : "";
+    	
     	SymbolEntry result = symbolTable.get(name);
         if (result != null) {
             return result;
@@ -296,6 +299,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
         	IScope sc = this;
         	String qualifier = name.substring(0, name.indexOf("."));
         	name = name.substring(name.indexOf(".")+1, name.length());
+
         	while (true) {
         		if (result != null && result.node() instanceof IScope)
         			result = ((IScope) result.node()).lookupName(qualifier);
@@ -303,8 +307,13 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
         			result = sc.lookupName(qualifier);
         		if (result == null)
         			break;
+    	    	if (result != null && isComposition && result.node() instanceof DeclNode.Fcn && !((DeclNode.Fcn) result.node()).isHost()) {
+    				ParseUnit.current().reportError(ParseUnit.current().getCurrUnitNode(), "Qualification by composition name ('" + compositionName + "'" + ".<function_call>) is only supported for host functions of the composition. For all other functions qualification must include module name.");  
+    	    	}
         		if (name.isEmpty())
         			return result;
+        		isComposition = result.node() instanceof ITypeKind ? ((ITypeKind) result.node()).isComposition() : false;
+        		if (isComposition) compositionName = result.node().getName().getText();
         		sc = result.scope();
         		if (name.indexOf(".") == -1) {
         			qualifier = name;
@@ -312,14 +321,18 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
         		}
         		else {
         			qualifier = name.substring(0, name.indexOf("."));
-                	name = name.substring(name.indexOf(".")+1, name.length()-1);
+                	name = name.substring(name.indexOf(".")+1, name.length());
         		}      		      		
         	}
         }
+
         return null;
     }
     @Override
     public SymbolEntry lookupName(String name, boolean chkHostScope) {
+    	boolean isComposition = this.isComposition();
+    	String compositionName = isComposition ? this.getName().getText() : "";
+
     	SymbolEntry result = symbolTable.get(name);
         if (result != null) {
             return result;
@@ -330,6 +343,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
         	IScope sc = this;
         	String qualifier = name.substring(0, name.indexOf("."));
         	name = name.substring(name.indexOf(".")+1, name.length());
+
         	while (true) {
         		if (result != null && result.node() instanceof IScope)
         			result = ((IScope) result.node()).lookupName(qualifier, chkHostScope);
@@ -337,8 +351,15 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
         			result = sc.lookupName(qualifier, chkHostScope);
         		if (result == null)
         			break;
-        		if (name.isEmpty())
+    	    	if (result != null && isComposition && result.node() instanceof DeclNode.Fcn && !((DeclNode.Fcn) result.node()).isHost()) {
+    	    		// necessary for unambiguous qualification
+    				ParseUnit.current().reportError(ParseUnit.current().getCurrUnitNode(), "Qualification by composition name ('" + compositionName + "'" + ".<function_call>) is only supported for host functions of the composition. For all other functions qualification must include module name.");  
+    	    	}
+        		if (name.isEmpty()) {
         			return result;
+        		}
+        		isComposition = result.node() instanceof ITypeKind ? ((ITypeKind) result.node()).isComposition() : false;
+        		if (isComposition) compositionName = result.node().getName().getText();
         		sc = result.derefScope(false);
         		//sc = result.scope();
         		if (name.indexOf(".") == -1) {
@@ -347,10 +368,11 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
         		}
         		else {
         			qualifier = name.substring(0, name.indexOf("."));
-                	name = name.substring(name.indexOf(".")+1, name.length()-1);
+                	name = name.substring(name.indexOf(".")+1, name.length());
         		}      		      		
         	}
         }
+
         return null;
 
     }
@@ -378,96 +400,120 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     
     private void importSymbols() {
     	// import all the units that are exported by the units this unit imports
-    	
+
     	boolean dbg = false;
-		String e1 = null, ef1 = null, e2 = null, ef2 = null, e3 = null, ef3 = null;
-		 if (dbg) {
-			 ParseUnit.current().reportError(this, "**************importSymbols() for unit " + this.getQualName() + "**********************" );
-		 }
+    	ParseUnit.setDebugMode(dbg);
+    	String e1 = null, ef1 = null, e2 = null, ef2 = null, e3 = null, ef3 = null;
+    	if (dbg) {
+    		ParseUnit.current().reportError(this, "**************importSymbols() for unit " + this.getQualName() + "**********************" );
+    	}
 
     	for (ImportNode imp : this.getImports()) {
     		UnitNode iu = imp.getUnit();
+    		boolean foundExport = false;
+    		SymbolEntry newSymbol;
+    		if (iu == null) {
+    			if (dbg)
+   					ParseUnit.current().reportError(this, "Import " + imp.getQualName() + " has unit = NULL");   			
+    		}
+    		else 
     		if (iu != null) {
-    			
+
     			SymbolEntry s = iu.lookupName(imp.getUnitName().getText()); // lookup imported type in imported unit
     			if (s == null)
     				continue;
     			SymbolEntry export = this.lookupName(ParseUnit.EXPORT_PREFIX+imp.getName().getText());
 
     			boolean compositionSymbols = (s.node() instanceof ITypeKind && ((ITypeKind)s.node()).isComposition());
+    			
+
+    			if (compositionSymbols || s.node() instanceof ImportNode && ((ImportNode)s.node()).isExport()) {
+    				if (dbg) {
+    					if (export == null ) // consistency check, only a problem if it was exported
+    						System.out.println("In unit " + this.getQualName() + " import '" + imp.getName().getText() + "' has NO EXPORT" );
+    				}
+    			}
     			// For this import, add its exported symbols to unit symbol table.
-    			 if (compositionSymbols || s.node() instanceof ImportNode && ((ImportNode)s.node()).isExport())
-    				 if (dbg) {
-    					 if (export == null ) // consistency check, only a problem if it was exported
-    						 System.out.println("In unit " + this.getQualName() + " import '" + imp.getName().getText() + "' has NO EXPORT" );
-    				 }
-    				    				
-    			 for (Map.Entry<String, SymbolEntry> exported : iu.symbolTable.entrySet()) {
-    				 ISymbolNode exportedNode = exported.getValue().node();
-    				 if (dbg) {
-    					 e1 = exported.getKey();
-    					 ParseUnit.current().reportError(this, "check for export of symbol '" + e1 + "' from scope " + ef1 + " into scope " + this.getScopeName());
 
-    				 }
-    					if (exportedNode instanceof DeclNode && !((DeclNode) exportedNode).isPublic()) {
-    						continue;
-    					}
-    					if (exportedNode instanceof ImportNode && !((ImportNode) exportedNode).isExport()) {
-    						continue;
-    					}
-//						The code below skips some imports, so i have kept the dependency on the 'isExport()' flag above
-//						(which itself has problems in UnitJScript.genUse(), so I am not using it there.)
-//    					if (exportedNode instanceof ImportNode) {
-//    						export = imp.getUnit().lookupName(ParseUnit.EXPORT_PREFIX+((ImportNode)exportedNode).getName().getText());
-//    						if (export == null)
-//    							continue;
-//    					}
-
-    					if (exportedNode instanceof ExportNode) // e.g. not an import or function
-    						continue;
-    					
-    					// for imports or functions that are exported, make a SymbolEntry that replaces the one created for the import.
-    					
-    					//SymbolEntry exportedSe = new SymbolEntry(this, exportedSnode); doesn't seem to matter, this or below...
-    					SymbolEntry newSymbol = new SymbolEntry(exportedNode.getDefiningScope(), exportedNode);
-    					
-    					
-    					if (dbg) {
-    						e1 = exported.getKey();
-    						ef1 = newSymbol.scope().getScopeName();  	
-     						ParseUnit.current().reportError(this, "  import exported symbol '" + e1 + "' from scope " + ef1 + " into scope " + this.getScopeName());
-
-    					}
-    					SymbolEntry r2=null, r3=null;
-    					r2 = symbolTable.put(exported.getKey(), newSymbol);  
-    					if (r2 != null && dbg)  {
-    						String i = "";
-    						if (r2.node() instanceof ImportNode) {
-    							ImportNode r2i = (ImportNode) r2.node();
-    							i =  "ImportNode ";
-    							i += r2i.isExport() ? "(isExport TRUE) ": "";   							
-    						}
-    						
-    						e2 =  r2.node().getName().getText() + "'";
-    						ef2 = "'" + r2.scope().getScopeName() ;   
-    						
-     						ParseUnit.current().reportError(this, "  and replace SymbolEntry for " + i + ef2 + "." + e2 + " with export '" + exported.getKey() + "'");
-    						
-    					}
-    					if (exported.getKey().equals(imp.getUnitName().getText()) && !exported.getKey().equals(imp.getName().getText())) {
-
-    						r3 = symbolTable.put(imp.getName().getText(), newSymbol);	// 	the 'as' name
-    						if (dbg) {
-    							ParseUnit.current().reportError(this, "enter " + exported.getKey() + " SymbolEntry with import 'as' name " + imp.getName());
-    							if (r3 != null) {
-    								ParseUnit.current().reportError(this, "  and replace SymbolEntry for " + imp.getQualName() + " (" + imp.getName().getText() + ") "+ " with SymbolEntry for export " + exported.getKey());
-    							}
-    						}
-    					}
+    			for (Map.Entry<String, SymbolEntry> exported : iu.symbolTable.entrySet()) {
+    				ISymbolNode exportedNode = exported.getValue().node();
+    				if (dbg) {
+    					e1 = exported.getKey();
+    					ParseUnit.current().reportError(this, "check for export of symbol '" + e1 + "' from scope " + ef1 + " into scope " + this.getScopeName());
 
     				}
+    				if (exportedNode instanceof UnitNode)
+    					exportedNode = ((UnitNode) exportedNode).getUnitType();
+    				
+    				if (exportedNode instanceof DeclNode && !((DeclNode) exportedNode).isPublic()) {
+    					continue;
+    				}
+    				
+    				if (exportedNode instanceof ImportNode && !((ImportNode) exportedNode).isExport()) {
+    					continue;
+    				}
+    				//						The code below skips some imports, so i have kept the dependency on the 'isExport()' flag above
+    				//						(which itself has problems in UnitJScript.genUse(), so I am not using it there.)
+    				//    					if (exportedNode instanceof ImportNode) {
+    				//    						export = imp.getUnit().lookupName(ParseUnit.EXPORT_PREFIX+((ImportNode)exportedNode).getName().getText());
+    				//    						if (export == null)
+    				//    							continue;
+    				//    					}
+
+    				if (exportedNode instanceof ExportNode) // e.g. not an import or function
+    					continue;
+    				
+    				foundExport = true;
+
+    				// for imports or functions that are exported, make a SymbolEntry that replaces the one created for the import.
+
+    				//SymbolEntry exportedSe = new SymbolEntry(this, exportedSnode); doesn't seem to matter, this or below...
+    				newSymbol = new SymbolEntry(exportedNode.getDefiningScope(), exportedNode);
+
+
+    				if (dbg) {
+    					e1 = exported.getKey();
+    					ef1 = newSymbol.scope().getScopeName();  	
+    					ParseUnit.current().reportError(this, "  import exported symbol '" + e1 + "' from scope " + ef1 + " into scope " + this.getScopeName());
+
+    				}
+    				SymbolEntry r2=null, r3=null;
+    				r2 = symbolTable.put(exported.getKey(), newSymbol);  
+    				if (r2 != null && dbg)  {
+    					String i = "";
+    					if (r2.node() instanceof ImportNode) {
+    						ImportNode r2i = (ImportNode) r2.node();
+    						i =  "ImportNode ";
+    						i += r2i.isExport() ? "(isExport TRUE) ": "";   							
+    					}
+
+    					e2 =  r2.node().getName().getText() + "'";
+    					ef2 = "'" + r2.scope().getScopeName() ;   
+
+    					ParseUnit.current().reportError(this, "  and replace SymbolEntry for " + i + ef2 + "." + e2 + " with export '" + exported.getKey() + "'");
+
+    				}
+    				if (exported.getKey().equals(imp.getUnitName().getText()) && !exported.getKey().equals(imp.getName().getText())) {
+
+    					r3 = symbolTable.put(imp.getName().getText(), newSymbol);	// 	the 'as' name
+    					if (dbg) {
+    						ParseUnit.current().reportError(this, "enter " + exported.getKey() + " SymbolEntry with import 'as' name " + imp.getName());
+    						if (r3 != null) {
+    							ParseUnit.current().reportError(this, "  and replace SymbolEntry for " + imp.getQualName() + " (" + imp.getName().getText() + ") "+ " with SymbolEntry for export " + exported.getKey());
+    						}
+    					}
+    				}
+    			}
+        		if (foundExport && iu.isComposition()) {
+        			// enter the composition name. This is just for error messages: qualification by composition name is not 
+        			// supported, but to give a useful message we must know the name.
+        			newSymbol = new SymbolEntry(iu.getUnitType().getDefiningScope(), iu.getUnitType());
+        			this.symbolTable.put(iu.getName().getText(), newSymbol);
+        			
+        		}
     		}
     	}
+    	ParseUnit.setDebugMode(false);
     }
 
     

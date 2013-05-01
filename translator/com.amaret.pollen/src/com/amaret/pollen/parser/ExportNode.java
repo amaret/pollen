@@ -88,7 +88,8 @@ public class ExportNode extends BaseNode implements ISymbolNode {
             			// this is a function that is not explicitly exported. 
             			UnitNode u1 = ((ImportNode) snode2).getUnit();
             			String mod = ((ImportNode) snode2).getUnitName().getText();
-            			currUnit.reportError(name, "in \'" + mod + "\' this name should be explicitly exported");   
+            			// Exporting from a derived composition does not requre exporting from a base composition (I think)
+            			//currUnit.reportError(name, "in \'" + mod + "\' this name should be explicitly exported");   
             			SymbolEntry s2 = u1.lookupName(mod);
             			if (s2.scope() instanceof UnitNode) {
             				sym = s2.scope().resolveSymbol(name);

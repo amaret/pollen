@@ -37,6 +37,7 @@ public class ParseUnit {
     private Stack<String> impChain;
     private HashMap<String,UnitNode> unitMap;
     private HashMap<String, String>	packages;
+    private HashMap<String, String> errors;
     static private boolean debugMode = false;
     public static final String EXPORT_PREFIX = "$$export";
     
@@ -105,7 +106,8 @@ public class ParseUnit {
 		packages = pkgs;		
         impChain = new Stack<String>();
         errorCount = 0;
-        unitMap = new HashMap<String, UnitNode>();        
+        errors = new HashMap<String, String>();
+        unitMap = new HashMap<String, UnitNode>();      
         out.printf("%s", ProcessUnits.version() + "\n");
 	}
 
@@ -201,7 +203,7 @@ public class ParseUnit {
                 		File f = new File(pkg);
                 		if (!f.exists()) {
                 			if (!(new File(pkgPath + File.separator + fromPkg)).exists()) {
-                				reportError(getFileName(), "missing package \'" + fromPkg + "\'");
+                				reportError(getPackageName() + "." + getFileName(), "missing package \'" + fromPkg + "\'");
                 				continue;
                 			}
                 		}
@@ -286,8 +288,6 @@ public class ParseUnit {
 		if (isDebugMode()) {			
 			String dbgStr = "  START parseUnit() : ";
 			dbgStr += "parse \'" + ParseUnit.mkPackageName(inputPath) + "." + ParseUnit.mkUnitName(inputPath) + "\', imported from client \'" + cname + "\' with \'import " + ciname + "\' statement";
-			if (ParseUnit.mkUnitName(inputPath).equals("Queue"))
-				dbgStr += " ";
 			if (clientImport != null && clientImport.getMeta() != null) {
 				dbgStr += ", meta args ";
 				String comma = "";
@@ -303,7 +303,7 @@ public class ParseUnit {
 		}
 		File f = new File(inputPath);
 		if (!f.exists()) {
-			reportError(getFileName(), "Missing file \'"
+			reportError(getPackageName() + "." + getFileName(), "Missing file \'"
 					+ ParseUnit.mkUnitName(inputPath) + "\'");
 			return null;
 		}
@@ -311,7 +311,7 @@ public class ParseUnit {
 		paths.add(inputPath);
 		in = new ANTLRFileStream(inputPath);
 		
-        pollenLexer lexer = new pollenLexer(in, getFileName());
+        pollenLexer lexer = new pollenLexer(in, getPackageName() + "." + getFileName());
 
         AtomStream tokens = new AtomStream(lexer);
         tokens.discardOffChannelTokens(true);
@@ -469,7 +469,7 @@ public class ParseUnit {
      */
     public void reportError(String fname, String msg) {
         String quote = "'";       
-        fname = fname != null ? fname : getFileName();
+        fname = fname != null ? fname : getPackageName() + "." + getFileName();
         msg = quote + fname + quote + ": " + msg;
         reportErrorConsole(fname, 0, 0, msg);
     }
@@ -494,6 +494,11 @@ public class ParseUnit {
      * @param msg
      */
     private void reportErrorConsole(String fileName, int line, int col, String msg) {
+    	
+    	String key = fileName + line + col + msg; // don't emit duplicate error msgs.
+    	if (!ParseUnit.isDebugMode() && errors.containsKey(key)) 
+    		return;
+    	errors.put(key, key);
         err.printf("%s, line %d:%d, %s\n", fileName, line, col, msg);
         errorCount += 1;
     }

@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import com.amaret.pollen.parser.DeclNode.ITypeKind;
+
 public class NestedScope implements IScope {
 	
 	private HashMap<String,SymbolEntry> symbolTable = new HashMap<String,SymbolEntry>();
@@ -62,6 +64,9 @@ public class NestedScope implements IScope {
      * For calls. In host context, use host scope.
      */
     public SymbolEntry lookupName(String name, boolean checkHostScope) {
+    	boolean isComposition = this instanceof ITypeKind ? ((ITypeKind) this).isComposition() : false;
+    	String compositionName = isComposition ? this.getScopeName() : "";
+
     	    	
         SymbolEntry result = symbolTable.get(name);
         if (result != null) {
@@ -85,8 +90,13 @@ public class NestedScope implements IScope {
         			result = sc.lookupName(qualifier, checkHostScope);
         		if (result == null)
         			break;
+    	    	checkResult(result, isComposition, compositionName);
         		if (name.isEmpty())
         			return result;
+        		
+        		isComposition = result.node() instanceof ITypeKind ? ((ITypeKind) result.node()).isComposition() : false;
+        		if (isComposition) compositionName = result.node().getName().getText();
+
         		sc = result.derefScope(false);
         		if (name.indexOf(".") == -1) {
         			qualifier = name;
@@ -94,12 +104,34 @@ public class NestedScope implements IScope {
         		}
         		else {
         			qualifier = name.substring(0, name.indexOf("."));
-                	name = name.substring(name.indexOf(".")+1, name.length()-1);
+                	name = name.substring(name.indexOf(".")+1, name.length());
         		}      		      		
         	}
         }
+        checkResult(result, isComposition, compositionName);
         return null;
     }
+
+	/**
+	 * @param result
+	 * @param isComposition
+	 * @param compositionName
+	 */
+	private void checkResult(SymbolEntry result, boolean isComposition,
+			String compositionName) {
+		if (!isComposition)
+			return;
+		if (result == null) {
+			ParseUnit.current().reportError(ParseUnit.current().getCurrUnitNode(), "Qualification by composition name ('" + compositionName + "'" + ".<function_call>) is only supported for host functions of the composition. For all other functions qualification must include module name."); 
+			return;
+		}
+		if (result.node() instanceof DeclNode.Fcn && !((DeclNode.Fcn) result.node()).isHost()) {
+			ParseUnit.current().reportError(ParseUnit.current().getCurrUnitNode(), "Qualification by composition name ('" + compositionName + "'" + ".<function_call>) is only supported for host functions of the composition. For all other functions qualification must include module name.");  
+		}
+		if (result.node() instanceof DeclNode.Usr) {
+			ParseUnit.current().reportError(ParseUnit.current().getCurrUnitNode(), "Qualification by composition name ('" + compositionName + "'" + ".<module_name>) is not supported. Use just the module name.");  
+		}
+	}
     
     @Override
     public void replaceSymbol(Atom name, ISymbolNode node) {

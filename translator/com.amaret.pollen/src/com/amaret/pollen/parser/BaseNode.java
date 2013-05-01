@@ -11,12 +11,12 @@ public class BaseNode extends CommonTree {
     private int stopIndex;
     
     BaseNode() {
-        fileName = ParseUnit.current().getFileName();
+        fileName = ParseUnit.current().getPackageName() + "." + ParseUnit.current().getFileName();
     }
     
     BaseNode(Token t) {
 	    super(t);
-        fileName = ParseUnit.current().getFileName();
+        fileName = ParseUnit.current().getPackageName() + "." + ParseUnit.current().getFileName();
 	}
     
     final void doPass1() {
