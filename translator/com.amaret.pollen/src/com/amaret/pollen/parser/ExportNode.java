@@ -189,6 +189,7 @@ public class ExportNode extends BaseNode implements ISymbolNode {
 		// 'foo' instead of 'Mod.foo'
    		
 		if (exportedNode == null 
+				&& exportedUnit != null
 				&& exportedUnit.node() instanceof ImportNode) {
    			ImportNode i = (ImportNode) exportedUnit.node();    			
 			i = (ImportNode) i.getUnit().lookupModuleDefn(i); // look in module where function was defined
