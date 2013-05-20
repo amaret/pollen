@@ -1,6 +1,8 @@
 package com.amaret.pollen.parser;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,7 +18,67 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     private Cat cat = null;
     private IScope definingScope;
     private boolean isExport;
+    private boolean isCopy = false;
     private boolean isProtocolBindTarget = false;
+    private Map<String, SymbolEntry> exportFcns = new HashMap<String, SymbolEntry>();
+    private Map<String, List<SymbolEntry>> scopesExportFcns = new HashMap<String,  List<SymbolEntry>>();
+    
+    public Map<String, List<SymbolEntry>> getScopesExportFcns() {
+		return scopesExportFcns;
+	}
+	public void setExportFcns(Map<String, SymbolEntry> exportFcns) {
+		this.exportFcns = exportFcns;
+	}
+	public boolean isCopy() {
+		return isCopy;
+	}
+	public Map<String, SymbolEntry> getExportFcns() {
+		return exportFcns;
+	}
+	/**
+     * @param name function name
+     * @return true if this is a call to an exported function else false.
+     */
+    public boolean isValidExportFcnCall(String name) {
+    	return (exportFcns.get(name) != null) ?  true : false;
+    }
+    /**
+     * lookup name in the list of fcns exported from this import.
+     * @param name
+     * @return the SymbolEntry if it exists or null
+     */
+    public SymbolEntry lookupExportFcn(String name) {
+    	return exportFcns == null ? null : exportFcns.get(name);
+    }
+    
+    public boolean hasExportFcns() {
+    	return exportFcns != null && exportFcns.size() > 0;
+    }
+    /**
+     * Insert function into the exportFcn list.
+     * Also add this function to the map scopesExportFcns
+     * where the key is the scopeName for the exported fcn.
+     * @param name
+     * @param s
+     */
+    public void insertExportFcn(String name, SymbolEntry s) {
+    	if (exportFcns == null)
+    		return;
+    	exportFcns.put(name, s);
+    	
+    	if (!(s.node() instanceof DeclNode.Usr))
+    		ParseUnit.internalMsg("export fcn " + s.node().getName().getText() + " lacks user type");
+    	
+    	String sc = s.scope().getScopeName();
+    	List<SymbolEntry> fcns;
+    	if (this.scopesExportFcns.get(sc) == null) {
+    		fcns = new ArrayList<SymbolEntry>();    		
+    	}
+    	else
+    		fcns = this.scopesExportFcns.get(sc);
+    	fcns.add(s);
+    	this.scopesExportFcns.put(sc, fcns);
+    }
     /**
      * true if this import is used in a composition to bind a protocol member
      */
@@ -40,6 +102,29 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
         this(ttype, ttext);
         flags = f;
     }
+    ImportNode(BaseNode b) {
+    	
+    }
+    /**
+     * copy
+     * This preserves the export filter on the import being copied.
+     * Called by UnitNode.importSymbols().
+     */
+    public ImportNode copy() {
+    	ImportNode newi = new ImportNode(new BaseNode(this.token));
+    	newi.unit = unit;
+    	newi.cat = cat;
+    	newi.definingScope = definingScope;
+    	newi.children = children;
+    	newi.parent = parent;
+    	newi.childIndex = childIndex;
+    	newi.setIndexes(this.getStartIndex(), this.getStopIndex());
+    	newi.isProtocolBindTarget = isProtocolBindTarget;
+    	newi.isExport = isExport;
+    	newi.exportFcns = exportFcns;   
+    	newi.isCopy = true;
+    	return newi;    	
+    }
     
     public boolean isTypeMetaArg() {
     	if (flags.contains(Flags.TYPE_META_ARG))
@@ -53,9 +138,6 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 
 	public void setExport(boolean isExport) {
 		//ParseUnit.setDebugMode(false);
-		if (ParseUnit.isDebugMode() && isExport) {
-			System.out.println("Import " + this.getName() + " isExportTrue in unit " + ParseUnit.current().getUnitName());
-		}
 		this.isExport = isExport;
 		//ParseUnit.setDebugMode(false);
 	}
@@ -118,7 +200,7 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     	return getUnitName().getText();
     }
     /**
-     * 
+     * Always the original name (never the 'as' name).
      * @return name of the imported unit
      */
     public Atom getUnitName() {
@@ -204,8 +286,20 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 	 */
 	public void bindUnit(UnitNode impUnit) {
 		unit = impUnit;
-        cat = Cat.fromSymbolNode(unit, unit.getDefiningScope());		
-	}
+        cat = Cat.fromSymbolNode(unit, unit.getDefiningScope());
+        boolean dbg = false;
+        if (dbg) {
+        	String list = "";
+        	for (List<DeclNode.Fcn> fl : this.getUnit().getFcnMap().values()) {
+        		for (DeclNode.Fcn f : fl) {
+        			list += f.getName() + " ";
+        		}        		
+        	}
+        	if (!list.isEmpty())
+        		ParseUnit.current().reportError("", "Binding module '" + getName().getText() + "' to unit '" + unit.getQualName() + "' containing fcns: " + list);
+        }
+	}      
+	
 	@Override
 	public boolean isClass() {
 		if (unit != null)
@@ -216,7 +310,8 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 	@Override
 	public boolean isComposition() {
 		if (unit != null)
-			return unit.isComposition();		
+			return unit.isComposition();	
+		System.out.println("Null unit for import " + getName());
 		return false;
 
 	}

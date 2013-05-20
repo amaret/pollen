@@ -47,8 +47,17 @@ public class SymbolTable {
     public SymbolEntry resolveSymbol(Atom name) {
         return lookupName(name.getText());
     }
+    /**
+     * Checks 
+     * @param name
+     * @param chkHostScope
+     * @return
+     */
     public SymbolEntry resolveSymbol(Atom name, boolean chkHostScope) {
-        return lookupName(name.getText(), chkHostScope);
+    	SymbolEntry se = lookupName(name.getText());
+    	if (se == null && chkHostScope == true)
+    		se = lookupName(name.getText(), chkHostScope);
+    	return se;
     }
 
     /**

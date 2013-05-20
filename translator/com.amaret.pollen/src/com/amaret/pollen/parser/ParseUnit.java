@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 import java.util.Stack;
 
@@ -32,16 +33,21 @@ public class ParseUnit {
 	private UnitNode currUnitNode = null;
 	private SymbolTable symbolTable;
 	private Properties properties;
-	private String uname = "";
-	private String packageName = "";	
-    private Stack<String> impChain;
+	private Stack<String> impChain;
     private HashMap<String,UnitNode> unitMap;
     private HashMap<String, String>	packages;
     private HashMap<String, String> errors;
-    static private boolean debugMode = false;
+    private List<String> metaModules = new ArrayList<String>();
+	static private boolean debugMode = false;
     public static final String EXPORT_PREFIX = "$$export";
     
-    
+    public List<String> getMetaModules() {
+		return metaModules;
+	}
+	public void setMetaModules(List<String> metaModules) {
+		this.metaModules = metaModules;
+	}
+       
     public static void setDebugMode(boolean debugMode) {
 		ParseUnit.debugMode = debugMode;
 	}
@@ -226,24 +232,24 @@ public class ParseUnit {
                     reportError(imp.getUnitName(), "import not bound to unit");
                     continue;
                 } 
-                // TODO 
-                // How to implement export?
-                // look for the name in the sourceUnit
-                // A visible name must have 'isExport' true
-                // This says an import is invalid unless it has isExport() true 
-                // which may be Em only. 
-//                SymbolEntry expSym = sourceUnit.resolveSymbol(imp.getUnitName());
-//                ISymbolNode expSnode = expSym != null ? expSym.node() : null;
-//                if (expSnode instanceof ImportNode) { // && ((ImportNode) expSnode).isExport()) {
-//                    impUnit = ((ImportNode) expSnode).getUnit();
-//                }
-//                else {
-//                    reportError(imp.getUnitName(), "not an exported unit");
-//                    continue;
-//                }
+
+                // This code handles:
+                //   'from compositionC import moduleA as moduleB'
+                // moduleA must be exported from compositionC
+                // Note impUnit in this case is moduleA
+                SymbolEntry expSym = impUnit.resolveSymbol(imp.getUnitName());
+                ISymbolNode expSnode = expSym != null ? expSym.node() : null;
+                if (expSnode instanceof ImportNode && ((ImportNode) expSnode).isExport()) {
+                    impUnit = ((ImportNode) expSnode).getUnit();
+                }
+                else {
+                    reportError(imp.getUnitName(), "not an exported unit");
+                    continue;
+                }
             }
 
             if (impUnit != null) {
+            	
                 Atom name = imp.getName();
                 if (unit.defineSymbol(name, imp) == false) {
                     reportError(name, "identifier already defined in the current scope");
@@ -453,6 +459,13 @@ public class ParseUnit {
 	public void reportError(BaseNode node, String msg) {        
         reportErrorConsole(node.getFileName(), node.getLine(), node.getCharPositionInLine() + 1, msg);
     }
+	/**
+	 * Consistency check
+	 */
+	public static void internalMsg(String msg) {
+		if (ParseUnit.isDebugMode())
+		System.err.println("\nInternal: " + msg + "\n");
+	}
     /**
      * 
      * @param e - Exception object

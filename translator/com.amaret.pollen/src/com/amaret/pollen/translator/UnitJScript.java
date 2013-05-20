@@ -231,22 +231,31 @@ public class UnitJScript {
     	String nameU = imp.getUnit().getQualName();
     	String nUnit = imp.getUnit().getName().getText();
 		String asName = imp.getName().getText();
-		ParseUnit.setDebugMode(false);
-		if (!(asName.equals(nUnit)) && imp.getUnit().isMeta()) {
-			// meta modules are generated with the 'as' name
-			nameU = nameU.substring(0, nameU.lastIndexOf(".")+1) + asName;   			
+		String impName = imp.getUnitName().getText();
+		
+//		if (asName.equals("Digital13")) //  || asName.equals("PB5")) //nUnit.equals("MetaPin"))
+//			ParseUnit.setDebugMode(true);
+		if (ParseUnit.isDebugMode()) {
+			debugUse(imp, nUnit, asName, impName);			
 		}
+		
+		if (imp.getUnit().isMeta() && ! imp.getUnit().isComposition()) {
+			// Get the code name of the meta module
+			if (imp.getMeta() != null) {
+				nameU = nameU.substring(0, nameU.lastIndexOf(".")+1) + asName;
+			}
+			else {
+				if (imp.getUnit().isGeneratedMetaInstance())
+					nameU = nameU.substring(0, nameU.lastIndexOf(".")+1) + nUnit;
+				else 
+					nameU = nameU.substring(0, nameU.lastIndexOf(".")+1) + impName;
+			}
+		}
+		
 		 	
 		if (ParseUnit.isDebugMode()) {
 			String n = ((UnitNode) imp.getParent().getParent()).getQualName();
-			System.out.println("genUse(): for " + n + " importing " + imp.getUnitName().getText() + " check use of " + nameU);	
-			
-//				if (!(asName.equals(nUnit)) && imp.getUnit().isMeta()) {
-//					nameU = nameU.substring(0, nameU.lastIndexOf(".")+1) + asName;   			
-//				}
-//				if (nameU.matches(".*mcu.atmel.atmega328p.Mcu.*")) {
-//					dbg = true;
-//				}
+			System.out.println("genUse(): for " + n + " importing " + imp.getUnitName().getText() + " check use of " + nameU);				
 		}
     	
     	boolean genUseType = imp.getUnit().isModule() || imp.getUnit().isClass() || imp.getUnit().isEnum();    	
@@ -284,10 +293,29 @@ public class UnitJScript {
     		}
     	}   
     	ParseUnit.setDebugMode(false);
-    }   
+    }
+
+	/**
+	 * @param imp
+	 * @param nUnit
+	 * @param asName
+	 * @param impName
+	 */
+	private void debugUse(ImportNode imp, String nUnit, String asName,
+			String impName) {
+		String s = "import ";
+		s = "from " + imp.getFrom() + " " + s + imp.getUnitName() + " as " + imp.getName().getText();
+		if (imp.getUnit().isMeta()) s += ", isMeta";
+		if (imp.getMeta() != null) s += ", isMetaImport";
+		if (imp.getUnit().isComposition())	s += ", isComposition";
+		if (imp.getUnit().isGeneratedMetaInstance())	s+= ", isGeneratedMetaInstance";
+		System.out.println(s);
+		s = "  nUnit " + nUnit + ", impName " + impName + ", asName " + asName;
+		System.out.println(s);
+	}   
 
     private void genUses(UnitNode unit) {
-        ParseUnit.setDebugMode(false);
+        //ParseUnit.setDebugMode(true);
         if (ParseUnit.isDebugMode())
                 debugUses(unit);
         List<ImportNode> impL = unit.getImports();

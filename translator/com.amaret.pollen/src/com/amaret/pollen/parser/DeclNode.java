@@ -448,7 +448,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         FcnTyp(int ttype, String ttext) { 
             super(ttype, ttext);
         }
-
         
        @Override
         public Atom getName() {       
@@ -460,7 +459,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         	// TODO 
         	// this returns the first child in a list
         	// implement the list of types as the return type 
-        	ListNode<TypeNode> child = (ListNode<TypeNode>) getChild(TYPE_LST);
+        	//BaseNode child = (BaseNode) getChild(TYPE_LST);
+        	//ListNode<TypeNode> child = (ListNode<TypeNode>) getChild(TYPE_LST);;
+        	TypeNode.Lst t = (TypeNode.Lst) getChild(TYPE);        	
+        	ListNode<TypeNode> child = (ListNode<TypeNode>) t.getChild(TYPE_LST);
          	return (!child.getElems().isEmpty()) ? child.getElems().get(0) : null;        	
         } 
         protected boolean pass1Begin() {
@@ -854,7 +856,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			return true;
 		}
         public DeclNode.Usr getBaseType() {
-        	if (baseType == null && this.getExtends() != null) {
+        	if (baseType == null 
+        			&& this.getExtends() != null) {
         		SymbolEntry p = lookupName(getExtends().getText());
         		if (p != null) {
         			BaseNode b = (BaseNode) p.node();
@@ -1090,6 +1093,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
         @Override
         protected void pass1End() {
+        	
             ParseUnit.current().getSymbolTable().leaveScope();
             super.pass1End();
         }
@@ -1108,6 +1112,13 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         			TypeRules.checkImplements(this,p);       		
         		}
         	}
+            if (this.getBaseType() != null) {
+            	scopeDeleg.addSymbols(this.getBaseType().scopeDeleg.getEntrySet());
+            }
+            if (this.getExtends() != null && this.getBaseType() == null) {
+            	ParseUnit.current().reportError(this, "Use of the clause 'extends " + this.getExtends().getText() + "' requires that '" + this.getExtends().getText() + "' be imported" );
+            }
+
         	ParseUnit.current().getSymbolTable().leaveScope();
         	super.pass2End();
         }

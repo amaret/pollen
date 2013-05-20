@@ -183,9 +183,9 @@ public class ExprNode extends BaseNode {
         	if (getName() != null && getName() instanceof ExprNode.Ident) {
         		ExprNode.Ident ei = (ExprNode.Ident) getName();
         		
-        		String dbgs = ei.getName().getText();
+        		String call = ei.getName().getText();
         		boolean dbg = false;
-        		if (dbgs.equals("Comp.foo"))
+        		if (call.equals("Dispatcher.bindGlobalInterrupts"))
         			dbg = true;
 //        		if (dbgs.equals("disable"))
 //        			dbg = true;
@@ -257,12 +257,53 @@ public class ExprNode extends BaseNode {
                 		}            			
             		}
             	}
-        		if (called == null)
-        			currUnit.reportError(ei.getName(), "identifier is not declared in the current scope "
-        				+  symtab.curScope().getScopeName());
+            	if (called == null && caller != null && caller.node() instanceof ImportNode) {
+        			called = ((ImportNode) caller.node()).getUnit().lookupName(call, chkHostScope);   
+        			if (called == null /* && is composition*/ ) { 
+        				// This may be an exported function,
+        				// so look in the local symtab, where such functions are inserted.
+        				called = symtab.curScope.lookupName(call.substring(call.lastIndexOf('.')+1));
+        			}
+            	}
+            	if (called == null)
+            		currUnit.reportError(call, "identifier is not declared in the current scope "
+            				+  symtab.curScope().getScopeName());
 
-            	else {
-            		ei.setSymbol(called);
+            	else 
+            		if (caller != null) {
+            			if (!(caller.node() instanceof ImportNode)) {
+            				ei.setSymbol(called);
+            			} else { 
+            				// check if this is a valid call to a function
+						if (((ImportNode) caller.node())
+								.isValidExportFcnCall(called.node().getName()
+										.getText())
+								|| (!((ImportNode) caller
+										.node()).isExport())
+								|| ((called.node() instanceof DeclNode.Fcn) && ((DeclNode.Fcn) called
+										.node()).isHost())) // host fcns don't
+															// need to be
+															// exported
+							ei.setSymbol(called);
+            				
+            				else {
+            					ParseUnit.current().reportError(
+            							ParseUnit.current().getCurrUnitNode(),
+            							"Trying to call function '"
+            							+ call // called.node().getName().getText()
+            							+ "' which is not exported");
+            					if (((ImportNode) caller.node()).getExportFcns().size() == 0) {
+            						ParseUnit.current().reportError(
+            								ParseUnit.current().getCurrUnitNode(),
+            								"Note that the import for '"
+            								+ caller.node().getName().getText() 
+            								+ "' does not import any exported functions");
+
+            					}
+            				}
+            			}
+            			
+
             		IScope sc = called.scope();
             		boolean isHostFcn = (called.node() instanceof DeclNode.Fcn && ((DeclNode.Fcn)called.node()).isHost());
             		if (!isHostFcn 
@@ -664,7 +705,7 @@ public class ExprNode extends BaseNode {
         		}
         	}
         	if (symbol == null)
-        		symbol = currUnit.getSymbolTable().resolveSymbol(getName());
+        		symbol = currUnit.getSymbolTable().resolveSymbol(getName(), true);
         	if (symbol == null) {
         		currUnit.reportError(getName(), "identifier is not declared in the current scope " + currUnit.getSymbolTable().curScope().getScopeName());
 

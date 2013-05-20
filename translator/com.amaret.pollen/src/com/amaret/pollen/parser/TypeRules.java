@@ -258,8 +258,10 @@ public class TypeRules {
 		String pfcnName, dbg2, dbg3;		
 		for (List<DeclNode.Fcn> protoUnitFcnLst : protoUnit.getFcnMap().values()) {
 			boolean matchSig = false;
+			boolean dbg = false;
 			
 			implemUnit = (UnitNode) implementor.getUnit();
+			next:
 			for (DeclNode.Fcn protoUnitFcn : protoUnitFcnLst) {
 				pfcnName = protoUnitFcn.getName().getText();
 				Cat pfc = null;		
@@ -270,6 +272,9 @@ public class TypeRules {
 						dbg3 = implemUnitFcnName;
 						if (implemUnitFcnName.equals("$$hostInit"))
 							continue;
+						if (dbg)
+							ParseUnit.current().reportError(implemUnit, "checkImplements names (imple " + implemUnit.getName() + ", proto " + protoUnit.getName() + "): " + implemUnitFcnName + ", " + protoUnitFcn.getName().getText());
+
 						if (implemUnitFcnName.equals(protoUnitFcn.getName().getText())) {
 							matchName = true;
 							for (DeclNode.Fcn ifd : implemUnit.getFcnMap().get(implemUnitFcnName)) {
@@ -287,7 +292,10 @@ public class TypeRules {
 								String more = (pfcnName.isEmpty()) ? "" : " ('" + pfcnName + "' has signature mismatch)" ;
 								ParseUnit.current().reportError((BaseNode) protocol.node(), "all functions in protocol \'" + protocol.node().getName().getText() + "\' must be implemented with identical signatures" + more);
 							}
-						}											
+							if (matchName && matchSig)
+								continue next;
+						}	
+
 					}
 					if (!matchName) // check base unit
 						implemUnit = implemUnit.getUnitType().getBaseType() == null ? null
