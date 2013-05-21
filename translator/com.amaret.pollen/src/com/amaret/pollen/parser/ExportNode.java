@@ -165,7 +165,7 @@ public class ExportNode extends BaseNode implements ISymbolNode {
 	        currUnit.getCurrUnitNode().getExportList().add(this);
 			if (exportedSym != null && exportedSym.node() instanceof ITypeKind
 					&& ((ITypeKind) exportedSym.node()).isModule()) {
-				String msg = " (whereas for compositions, export of the composition will export all exported functions).)";
+				String msg = " (whereas for compositions, export of the composition will export all exported functions).";
 				currUnit
 						.reportError(
 								ParseUnit.current().getCurrUnitNode(),

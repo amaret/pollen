@@ -1231,6 +1231,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             if (getInit() != null) {
             	getInit().pass2End();
             }
+            ITypeSpecInit tsi = (ITypeSpecInit) this;
+            ExprNode init = tsi.getInit();
+            if (init != null)
+            	TypeRules.checkInit(tsi.getTypeCat(), init);
         }
     }
     

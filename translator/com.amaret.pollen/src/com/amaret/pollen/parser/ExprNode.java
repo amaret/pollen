@@ -502,7 +502,17 @@ public class ExprNode extends BaseNode {
                 exprCat = Cat.fromScalarCode("s");
             }
             else if (vs.startsWith("'")) {
-                exprCat = Cat.fromScalarCode("u1");
+            	if (vs.length() > 1) {
+            		this.getLitFlags().add(LitFlags.STR);
+            		this.getLitFlags().remove(LitFlags.CHR);
+					currUnit.reportError(this,
+							"Using single quotes to enclose a multi-byte string is not recommended. Literal will be treated as a string literal enclosed in double quotes.");
+					getValue().setText("\"" + vs.substring(1, vs.length()-1) + "\"");
+	                currUnit.getCurrUnitNode().addString(getValue().getText());
+	                exprCat = Cat.fromScalarCode("s");
+            	}
+            	else 
+            		exprCat = Cat.fromScalarCode("u1");
             }
             else if (Character.isDigit(vs.charAt(0))) {
                 exprCat = Cat.fromScalarCode("n");
