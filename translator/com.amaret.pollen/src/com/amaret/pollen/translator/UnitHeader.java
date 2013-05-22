@@ -288,7 +288,8 @@ public class UnitHeader {
     		// the nested classes are first to resolve references to them in the module
 			gen.aux.genTitle("extern definition");
             gen.fmt.print("extern struct %1%2%3", gen.cname(), " ", gen.cname().substring(0, gen.cname().length()-1) + ";\n"); 
-            for (DeclNode decl : unit.getFeatures()) {
+            for (/*DeclNode decl*/ BaseNode b : unit.getFeatures()) {
+            	DeclNode decl = (DeclNode) b;
                 switch (decl.getType()) {
                 // the unit type contains a class
                 case pollenParser.D_CLASS:

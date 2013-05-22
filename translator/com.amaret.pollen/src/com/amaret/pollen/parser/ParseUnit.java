@@ -336,9 +336,7 @@ public class ParseUnit {
         if (isDebugMode())
         	System.out.println( "       AST: " + unit.toStringTree());
 		setDebugMode(false);
-
- 
-       
+     
 //        if (getErrorCount() > 0) {
 //            return null;
 //        }       
@@ -460,7 +458,7 @@ public class ParseUnit {
         reportErrorConsole(node.getFileName(), node.getLine(), node.getCharPositionInLine() + 1, msg);
     }
 	/**
-	 * Consistency check
+	 * Consistency check - only emitted if debug is ON.
 	 */
 	public static void internalMsg(String msg) {
 		if (ParseUnit.isDebugMode())

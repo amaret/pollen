@@ -538,7 +538,6 @@ compositionDefinition
 		{ 
 		  ti.setTypeName($IDENT.text); 
 		  ti.setUnitFlags(EnumSet.of(Flags.COMPOSITION));
-		  //ti.setUnitFlags(EnumSet.of(Flags.MODULE));
 		  if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().equals("NIL")) {
 	      	// if there is an 'as' name in the instantiating context, qualify the unit name 
 	      	qual = clientImport.getAs().getText();
@@ -1216,10 +1215,23 @@ stmt
 	|	stmtInjection
 	|	expr delim -> ^(S_EXPR<StmtNode.Expr>["S_EXPR"] expr)
 	;
+	
+exprAssign
+	:	
+	(exprUnary ASSIGN ) => exprChainedAssign
+
+	| expr
+	;
+exprChainedAssign
+	:	( exprUnary ASSIGN exprAssign 
+		-> ^(E_BINARY<ExprNode.Binary>["E_BINARY"] ASSIGN exprUnary  exprAssign)
+		)
+	;
+	
 stmtAssign
-	:	varOrFcnOrArray ASSIGN expr	delim
-		-> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] ASSIGN varOrFcnOrArray expr))
-	|	injectionCode ASSIGN expr		delim
+	:	varOrFcnOrArray ASSIGN exprAssign delim
+		-> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] ASSIGN varOrFcnOrArray exprAssign))
+	|	injectionCode ASSIGN expr delim
 		-> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] ASSIGN injectionCode expr))
 	|	varOrFcnOrArray assignOp expr  delim
 		-> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] assignOp varOrFcnOrArray expr))
@@ -1432,11 +1444,17 @@ varDeclList  // int x, y=3, z=3, a
 @init {
 	assert $varDecl::typ != null;
 }  
-	:	varBuiltInType! {$varDecl::typ = $varBuiltInType.tree; } varInit2 (','! varInit2)*
-	|	userTypeName! {$varDecl::typ = $userTypeName.tree; } varInit (','! varInit)*
+	:	varBuiltInType! {$varDecl::typ = $varBuiltInType.tree; } varListBuiltInType
+	|	userTypeName! {$varDecl::typ = $userTypeName.tree; } varListUserDefType
 	;	
 varBuiltInType
 	:	builtinType -> ^(T_STD<TypeNode.Std>["T_STD", stmtFlags] builtinType)
+	;
+varListBuiltInType
+	:	varInit2 (','! varInit2)* 	// -> ^(LIST<ListNode>["LIST"] varInit2+) doesn't work with unit features, which expects decls not list
+	;
+varListUserDefType
+	:	varInit (','! varInit)* 	// -> ^(LIST<ListNode>["LIST"] varInit+)
 	;
 varInit2		// built in type
 	:	IDENT ASSIGN expr
@@ -1612,7 +1630,7 @@ CHAR
 STRING
     :   '"' (('\\' ~'\n') | ~('\\' | '"' | '\n'))* '"'
     |	  '\'' (('\\' ~'\n') | ~('\\' | '\'' | '\n'))+ '\''
-    ; 
+    ;     
 WS
     :   (' ' | '\t')*  { $channel=HIDDEN; }
     ;

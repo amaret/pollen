@@ -1029,26 +1029,27 @@ class Auxiliary {
 	}
 
 	private void genStmt$Decl(StmtNode.Decl stmt) {
-		DeclNode.Var decl = stmt.getVar();
-		boolean arrayInit = decl instanceof DeclNode.Arr && ((DeclNode.Arr) decl).getInit() != null;
-		if (decl.getInit() != null) {
-			if (isHost || !arrayInit) {
-				gen.fmt.print("%1 = ", decl.getName());
-				genExpr(decl.getInit());
-				gen.fmt.print(";");
+		for (DeclNode.Var decl : stmt.getVars()) {
+			boolean arrayInit = decl instanceof DeclNode.Arr && ((DeclNode.Arr) decl).getInit() != null;
+			if (decl.getInit() != null) {
+				if (isHost || !arrayInit) {
+					gen.fmt.print("%1 = ", decl.getName());
+					genExpr(decl.getInit());
+					gen.fmt.print(";");
+				}
+				else {
+					// in c, 'int arr[2] = {1,2};' cannot be split into 2 statements.
+					// Special case to prevent that splitting.
+					gen.fmt.print("%t");
+					TypeNode t = ((DeclNode.Arr) decl).getTypeArr();
+					genType(t, "" + decl.getName());
+					gen.fmt.print(" = ");
+					genExpr(decl.getInit());
+					gen.fmt.print(";");
+				}
+			} else {
+				gen.fmt.print("", decl.getName());
 			}
-			else {
-				// in c, 'int arr[2] = {1,2};' cannot be split into 2 statements.
-				// Special case to prevent that splitting.
-				gen.fmt.print("%t");
-				TypeNode t = ((DeclNode.Arr) decl).getTypeArr();
-				genType(t, "" + decl.getName());
-				gen.fmt.print(" = ");
-				genExpr(decl.getInit());
-				gen.fmt.print(";");
-			}
-		} else {
-			gen.fmt.print("/* var %1 */", decl.getName());
 		}
 	}
 

@@ -190,27 +190,33 @@ public class StmtNode extends BaseNode {
     // StmtNode.Decl
     static public class Decl extends StmtNode {
 
-        static final private int VAR = 0;
         
         Decl(int ttype, String ttext) {
             super(ttype, ttext);
         }
-      
-        public DeclNode.Var getVar() {
-            return (DeclNode.Var) getChild(VAR);
-        }
-        public ExprNode getInit() {
-        	return ((DeclNode.Var) getChild(VAR)).getInit();
+        /**
+         * 
+         * I should be creating a ListNode in the grammar but that
+         * runs into conflicts with how DeclNode.Var is treated 
+         * in the unit features list. This code called is for locals.
+         * Do not add/delete from the list.
+         * @return the children list consisting of DeclNode.Var.
+         */
+        @SuppressWarnings("unchecked")
+        public List<DeclNode.Var> getVars() {
+            return ((List<DeclNode.Var>) this.children);
         }
         
         @Override
         protected void pass2End() {
             BodyNode body = BodyNode.current();
-            ExprNode init = getVar().getInit();
-            if (init != null) {
-                init.setCat(getVar().getTypeCat());
+            for (DeclNode.Var decl : getVars()) {
+                ExprNode init = decl.getInit();
+                if (init != null) {
+                    init.setCat(decl.getTypeCat());
+                }
+                body.addLocalVar(decl );
             }
-            body.addLocalVar(getVar());
         }
     }
 
