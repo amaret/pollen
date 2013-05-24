@@ -714,11 +714,16 @@ public class ExprNode extends BaseNode {
         			symbol = (accessible) ? symbol : null;
         		}
         	}
+        	String n = this.getName().getText();
         	if (symbol == null)
         		symbol = currUnit.getSymbolTable().resolveSymbol(getName(), true);
         	if (symbol == null) {
         		currUnit.reportError(getName(), "identifier is not declared in the current scope " + currUnit.getSymbolTable().curScope().getScopeName());
-
+        	}
+        	else {
+        		
+        		if (symbol.node() instanceof DeclNode.Var && ((DeclNode.Var) symbol.node()).isIntrinsic())
+        			((DeclNode.Var) symbol.node()).setIntrinsicUsed(true); // only emit if used
         	}
         	return super.pass2Begin();
         }

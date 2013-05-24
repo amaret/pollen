@@ -380,6 +380,7 @@ classDefinition
 		ti.setUnitFlags(metaFlags); 
 		metaFlags = EnumSet.noneOf(Flags.class);		
 		String qual = "";
+		String name = "";
 }
 @after{
    	ti = tl.remove(tl.size()-1);
@@ -389,19 +390,23 @@ classDefinition
 	:	'class' IDENT
 			{ 
 	      	ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.CLASS));
-	      	if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().equals("NIL")) {
+	      	if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().getText().equals("NIL")) {
 	      		// if there is an 'as' name in the instantiating context, qualify the unit name 
 	      		qual = clientImport.getAs().getText();
 	      	}
+	      	name = qual.isEmpty() ? ti.getTypeName() : qual;
 	      }
 	   extendsClause
 		implementsClause
-		braceOpen classFeatureList braceClose
+		braceOpen classFeatureList[name]
 		-> ^(D_CLASS<DeclNode.Class>["D_CLASS", ti.getUnitFlags(), qual] 
 		IDENT classFeatureList extendsClause implementsClause {$unitTypeDefinition::meta})//{$unitTypeDefinition::metaImports})
 		;
-classFeatureList
-	:	classFeature*	-> ^(LIST<ListNode>["LIST"] classFeature*)
+classFeatureList[String n]
+	:	classFeature*	intrinsicVarsBraceClose[n] 
+			-> ^(LIST<ListNode>["LIST"] 
+									classFeature* 
+									intrinsicVarsBraceClose)
 	;
 classFeature
 @init {
@@ -420,6 +425,7 @@ moduleDefinition
 		metaFlags = EnumSet.noneOf(Flags.class);		
 		tl.add(ti);		
 		String qual = "";
+		String name = "";
 }
 @after{
    	ti = tl.remove(tl.size()-1);
@@ -429,19 +435,34 @@ moduleDefinition
 	:	   'module' IDENT
 	      { 
 	      	ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.MODULE));
-	      	if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().equals("NIL")) {
+	      	if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().getText().equals("NIL")) {
 	      		// if there is an 'as' name in the instantiating context, qualify the unit name 
 	      		qual = clientImport.getAs().getText();
 	      	}
+	      	name = qual.isEmpty() ? ti.getTypeName() : qual;
 	      }
 	      extendsClause
 	      implementsClause
-			braceOpen moduleFeatureList braceClose 
+			braceOpen moduleFeatureList[name]
 			-> ^(D_MODULE<DeclNode.Usr>["D_MODULE", ti.getUnitFlags(), qual] 
-			IDENT moduleFeatureList extendsClause implementsClause {$unitTypeDefinition::meta}) //{$unitTypeDefinition::metaImports})
+			IDENT moduleFeatureList extendsClause implementsClause {$unitTypeDefinition::meta}) 
 	;
-moduleFeatureList
-	:	moduleFeature*	-> ^(LIST<ListNode>["LIST"] moduleFeature*)
+moduleFeatureList[String n]
+	:	moduleFeature*	intrinsicVarsBraceClose[n] -> ^(LIST<ListNode>["LIST"] 
+									moduleFeature*
+									intrinsicVarsBraceClose
+									
+			)
+	;
+/*
+ * This rule synthesizes a declaration of an intrincic variable 'unit.name' which holds the name of the unit. 
+ * Can add more intrinsic variables here.
+ */
+intrinsicVarsBraceClose[String n]
+	:	(NL)* '}' (NL)* -> ^(D_VAR<DeclNode.Var>["D_VAR", EnumSet.of(Flags.INTRINSIC_VAR)] 
+									^(T_STD<TypeNode.Std>["T_STD", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME["string"]) 
+										IDENT["__unit_name"] 
+										^(E_CONST<ExprNode.Const>["E_CONST", EnumSet.of(LitFlags.STR)] STRING["\"" + n + "\""]))
 	;
 moduleFeature
 @init {
@@ -468,7 +489,7 @@ enumDefinition
 }
 	:  'enum'(IDENT 
 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.ENUM));
-			if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().equals("NIL")) {
+			if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().getText().equals("NIL")) {
 	      	// if there is an 'as' name in the instantiating context, qualify the unit name 
 	      	qual = clientImport.getAs().getText();
 	      }
@@ -499,7 +520,7 @@ protocolDefinition
 }
 	:	'protocol' IDENT
 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.PROTOCOL));
-			if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().equals("NIL")) {
+			if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().getText().equals("NIL")) {
 	      	// if there is an 'as' name in the instantiating context, qualify the unit name 
 	      	qual = clientImport.getAs().getText();
 	      }
@@ -538,7 +559,7 @@ compositionDefinition
 		{ 
 		  ti.setTypeName($IDENT.text); 
 		  ti.setUnitFlags(EnumSet.of(Flags.COMPOSITION));
-		  if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().equals("NIL")) {
+		  if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().getText().equals("NIL")) {
 	      	// if there is an 'as' name in the instantiating context, qualify the unit name 
 	      	qual = clientImport.getAs().getText();
 	      }		  
@@ -1487,16 +1508,23 @@ builtinType  returns [EnumSet<LitFlags> f]
     
 qualName 
 scope {
-  String s; 
+  Object qtree; 
+  String s;
 }
 @init {
+	$qualName::qtree = null;
 	$qualName::s = "";
 }
 @after {
-	//System.out.println("Qual : "  + $qualName::s);
+    if (((CommonTree) $qualName::qtree).getText().equals("unit.name"))
+    		((CommonTree) $qualName::qtree).getToken().setText("__unit_name");
 }      
-    :	   IDENT (qualNameList?)  -> IDENT[$IDENT.text + $qualName::s] 
+    :	   qualNameConcat  { $qualName::qtree = $qualNameConcat.tree; }
     ;
+ 
+qualNameConcat 
+	:	IDENT (qualNameList?)  -> IDENT[$IDENT.text + $qualName::s] 
+	;   
 
 qualNameList 
 	:

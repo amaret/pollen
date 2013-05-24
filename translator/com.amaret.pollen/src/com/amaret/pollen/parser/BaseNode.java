@@ -21,9 +21,7 @@ public class BaseNode extends CommonTree {
     
     final void doPass1() {
     	
-    	String s = this.getFileName();
-
-        if (!pass1Begin()) {
+    	if (!pass1Begin()) {
             return;
         }
         if (getChildCount() > 0) {

@@ -125,9 +125,6 @@ public class UnitHeader {
     
     private void genDecl$Fcn(DeclNode.Fcn decl) {
         gen.fmt.print("extern ");
-        // TODO using only the first of the set of return fcn values
-        // implement this properly.
-        String s = decl.cname();
         TypeNode ft = decl.getTypeSpec();
         gen.aux.genType(ft, gen.cname() + gen.aux.mkPollenCname(decl.cname()) + gen.aux.mkSuf(decl));
         gen.aux.genFcnArgs(decl.getFormals(), true, decl);
@@ -172,6 +169,12 @@ public class UnitHeader {
         
         gen.fmt.print("%tstruct %1 {\n%+", clsStruct /*, decl.getName() + "_class"*/);
         for (DeclNode fld : fields) {
+        	
+			if (fld instanceof DeclNode.Var
+					&& ((DeclNode.Var) fld).isIntrinsic()
+					&& !((DeclNode.Var) fld).isIntrinsicUsed())
+				continue;
+
         	if (fld instanceof DeclNode.ITypeSpec && !(fld instanceof DeclNode.Fcn)) {
         		gen.fmt.print("%t");
         		gen.aux.genType(((DeclNode.ITypeSpec) fld).getTypeSpec(), "" + fld.getName());
@@ -193,6 +196,12 @@ public class UnitHeader {
         gen.fmt.print("%tstruct %1 {\n%+", gen.cname());
         String dbg = gen.cname();
         for (DeclNode fld : fields) {
+        	
+			if (fld instanceof DeclNode.Var
+					&& ((DeclNode.Var) fld).isIntrinsic()
+					&& !((DeclNode.Var) fld).isIntrinsicUsed())
+				continue;
+
         	if (!fld.isHost() && fld instanceof DeclNode.ITypeSpec && !(fld instanceof DeclNode.Fcn)) {
         		gen.fmt.print("%t");     
         		
@@ -229,6 +238,9 @@ public class UnitHeader {
 
     private void genDecl$Var(DeclNode.Var decl) {
     	
+    	if (decl.isIntrinsic() && !decl.isIntrinsicUsed())
+    		return;
+    	
     	if (gen.curUnit().isModule() && !decl.isHost()) {
     		gen.fmt.print("#define " + gen.cname() + decl.getName() + gen.aux.mkSuf(decl) + " ");
     		String cname = gen.cname().substring(0, gen.cname().length()-1);
@@ -244,6 +256,12 @@ public class UnitHeader {
 	    			List<DeclNode> fields = cls.getFeatures();
 	    			String deref = staticInstance ? "." : "->";
 	    			for (DeclNode fld : fields) {
+	    				
+						if (fld instanceof DeclNode.Var
+								&& ((DeclNode.Var) fld).isIntrinsic()
+								&& !((DeclNode.Var) fld).isIntrinsicUsed())
+							continue;
+						
 	    	    		gen.fmt.print("#define " + gen.cname() + decl.getName() + "_" + fld.getName() + gen.aux.mkSuf(decl) + " ");
 	    	    		cname = gen.cname().substring(0, gen.cname().length()-1);
 	    	    		gen.fmt.print(cname + "." + decl.getName() + deref + fld.getName());

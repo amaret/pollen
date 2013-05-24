@@ -1157,12 +1157,30 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     	static final private int NAME = 1;
     	static final private int TYPE = 0;
     	static final private int INIT = 2;
+    	
+    	boolean intrinsicUsed = false;
         
         Var(int ttype, String ttext, EnumSet<Flags>  flags) {
             super(ttype, ttext, flags);
         }
+        
+        public boolean isIntrinsic() {
+        	return (flags.contains(Flags.INTRINSIC_VAR));
+        }
 
-        @Override
+        /**
+         * @return for an intrinsic variable return true if used, all other cases false.
+         */
+        public boolean isIntrinsicUsed() {
+			return intrinsicUsed;
+		}
+
+		public void setIntrinsicUsed(boolean intrinsicUsed) {
+			if (flags.contains(Flags.INTRINSIC_VAR))
+				this.intrinsicUsed = intrinsicUsed;
+		}
+
+		@Override
         public ExprNode getInit() {
         	if (getChildCount() > INIT) {
         		return ((ExprNode) getChild(INIT));

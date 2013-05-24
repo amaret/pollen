@@ -104,6 +104,11 @@ public class UnitJScript {
         gen.fmt.print("%tthis.$$uname = '%1';\n", gen.curUnit().getQualName());
         for (DeclNode fld : decl.getFeatures()) {
         	if (fld instanceof DeclNode.Var) {
+        		
+				if (((DeclNode.Var) fld).isIntrinsic()
+						&& !((DeclNode.Var) fld).isIntrinsicUsed())
+					continue;
+
         		gen.fmt.print("%tthis.%1 = ", fld.getName());
         		genInit((DeclNode.Var)fld);
         		gen.fmt.print(";\n");
@@ -114,6 +119,12 @@ public class UnitJScript {
         gen.fmt.print("%t%1.%2.prototype = new $$Struct('%3.%2');\n", gen.uname(), decl.getName(), gen.curUnit().getQualName());
         gen.fmt.print("%t%1.%2.prototype.$$isAggFld = {};\n", gen.uname(), decl.getName());
         for (DeclNode fld : decl.getFeatures()) {
+    		
+			if (fld instanceof DeclNode.Var && ((DeclNode.Var) fld).isIntrinsic()
+					&& !((DeclNode.Var) fld).isIntrinsicUsed())
+				continue;
+
+
         	if (fld instanceof DeclNode.Var) {
         		String tc = fld.getTypeCat().code();
         		boolean isAgg = tc.startsWith("A") || tc.startsWith("S") || tc.startsWith("V");
@@ -130,6 +141,8 @@ public class UnitJScript {
 
     
     private void genDecl$Var(DeclNode.Var decl) {
+    	if (decl.isIntrinsic() && !decl.isIntrinsicUsed())
+    		return;
     	if (decl.isHost()) {
             gen.fmt.print("%t%1.%2 = ", gen.uname(), decl.getName());
             genInit(decl);

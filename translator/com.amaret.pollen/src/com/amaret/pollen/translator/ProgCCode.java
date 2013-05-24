@@ -214,6 +214,8 @@ public class ProgCCode {
         gen.fmt.print("%t{\n%+", name);
         for (DeclNode fld : cls.getFeatures()) {
         	if (fld instanceof DeclNode.Var) {
+        		if (((DeclNode.Var)fld).isIntrinsic() &&  !((DeclNode.Var)fld).isIntrinsicUsed())
+        			continue;
         		gen.fmt.print("%t");
         		genVal((ITypeSpec) fld, vobj.getAny(fld.getName()));
         		gen.fmt.print(",  /* %1 */\n", fld.getName());
@@ -424,6 +426,8 @@ public class ProgCCode {
              case pollenParser.D_VAR:
              case pollenParser.D_ARR:
             	DeclNode.Var v = (DeclNode.Var) decl;
+            	if (v.isIntrinsic() && !v.isIntrinsicUsed())
+            		continue;
             	if (v.isHost()) {
         			if (!title) {
         				gen.aux.genTitle("host data definitions (unit " + unit.getName().getText() + ")");
@@ -447,6 +451,8 @@ public class ProgCCode {
     			case pollenParser.D_VAR:
     			case pollenParser.D_ARR:
     				DeclNode.Var v = (DeclNode.Var) decl;
+    				if (v.isIntrinsic() && !v.isIntrinsicUsed())
+    					continue;
     				if (!v.isHost()) {
     					gen.fmt.print("%t");
     					genUnitVar(ud, v);
