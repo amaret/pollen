@@ -114,7 +114,7 @@ public class ProgCCode {
         gen.fmt.print("%tvoid %1pollen_print_x(void* print, void* val) {\n%+", gen.cname());
         gen.fmt.print("%-}\n");
         
-        // Generate defaults for pollen.reset, pollen.ready, pollen.shutdown
+        // Generate defaults for pollen.reset, pollen.ready, pollen.shutdown, pollen.wake, pollen.hibernate.
         // if they do not exist.
         if (gen.getMainUnit().lookupFcn("pollen.reset") == null) {
         	gen.aux.genTitle("pollen.reset()");
@@ -135,6 +135,20 @@ public class ProgCCode {
             gen.fmt.print("%twhile (dummy) ;\n");
             gen.fmt.print("%-}\n");
         }
+        if (gen.getMainUnit().lookupFcn("pollen.wake") == null) {
+        	gen.aux.genTitle("pollen.wake(uint8 id)");
+            gen.fmt.print("%tvoid %1pollen__wake__E(byte id) {\n%+", gen.cname());
+            gen.fmt.print("%t/* empty default */\n");
+            gen.fmt.print("%-}\n");
+        }
+        if (gen.getMainUnit().lookupFcn("pollen.hibernate") == null) {
+        	gen.aux.genTitle("pollen.hibernate(uint8 id)");
+            gen.fmt.print("%tvoid %1pollen__hibernate__E(byte id) {\n%+", gen.cname());
+            gen.fmt.print("%t/* empty default */\n");
+            gen.fmt.print("%-}\n");
+        }
+
+
 
         gen.aux.genTitle("main()");
         gen.fmt.print("int main() {\n%+");

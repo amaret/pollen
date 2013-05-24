@@ -311,14 +311,7 @@ class Auxiliary {
 
 		Cat cat = expr.getName().getCat();
 		Cat.Fcn fcncat = cat instanceof Cat.Fcn ? (Cat.Fcn) cat : null;
-		
-		if (expr.getName() instanceof ExprNode.Ident) {
-			boolean dbg = false;
-			String s = ((ExprNode.Ident)expr.getName()).getName().getText();
-			if (s.equals("LocalMcu.shutdown") || s.equals(("wait")))
-				dbg = true;
-		}
-		
+				
 		genExpr(expr.getName());
 		String sep = "";
 		gen.fmt.print("(");
@@ -1554,8 +1547,8 @@ class Auxiliary {
 	 * Not host, not lval, not import, not unit.
 	 * 
 	 * @param inj
-	 * @param sym TODO
-	 * @param snode TODO
+	 * @param sym 
+	 * @param snode 
 	 * @return
 	 */
 //	String mkCname(ExprNode.Inject inj, SymbolEntry s, ISymbolNode snode) {
