@@ -72,8 +72,9 @@ public class ExportNode extends BaseNode implements ISymbolNode {
     	
 
         Atom exportedName = getName();
-        if (exportedName.getText().matches("pollen\\..*")) {
-			ParseUnit.current().reportError(ParseUnit.current().getCurrUnitNode(), "Invalid export ('export " + getName() + "') will be ignored.");  
+        if (exportedName.getText().matches(ParseUnit.INTRINSIC_PREFIX + ".*")) {
+        	String n = getName().getText().substring(getName().getText().lastIndexOf("_")+1);      	
+			ParseUnit.current().reportError(ParseUnit.current().getCurrUnitNode(), "Invalid export ('export " + "pollen." + n + "') will be ignored.");  
 			return false;
         }
         

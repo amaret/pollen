@@ -143,6 +143,27 @@ tokens {
     String getInject(String text) {
         return text.substring(text.indexOf("+{")+2,text.lastIndexOf("}+"));
     }
+    
+    void handleIntrinsics(CommonTree t) {
+    	if (t.getText().equals("unit.name")) {
+    		t.getToken().setText("__unit_name");
+    		return;
+    	}
+    	if (t.getText().indexOf('.') == -1) 
+    		return;
+    	char c = t.getText().charAt(0);
+    	switch (c) {
+    	case 'p':
+    		String s = t.getText();             
+    		if (s.substring(0, s.indexOf('.')).equals("pollen")) {
+    			s = s.replaceFirst("\\.", "__");
+    			t.getToken().setText(s);
+    		}       
+    		break;
+    	default:
+    		break;        
+    	}    
+    }
 
     
     void DBG(String dbg) {
@@ -1516,8 +1537,7 @@ scope {
 	$qualName::s = "";
 }
 @after {
-    if (((CommonTree) $qualName::qtree).getText().equals("unit.name"))
-    		((CommonTree) $qualName::qtree).getToken().setText("__unit_name");
+	handleIntrinsics((CommonTree) $qualName::qtree);
 }      
     :	   qualNameConcat  { $qualName::qtree = $qualNameConcat.tree; }
     ;

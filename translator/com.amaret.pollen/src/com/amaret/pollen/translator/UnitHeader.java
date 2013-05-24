@@ -429,6 +429,7 @@ public class UnitHeader {
         genConsts(unit);
         
         genVars(unit);
+        
     }
 
     private void genImports(UnitNode unit) {
@@ -446,13 +447,28 @@ public class UnitHeader {
     }
     private void genForwards(UnitNode unit) {
     	
-    	gen.aux.genTitle("forward declarations");
-        gen.fmt.print("void %1pollen_print_bool(bool b);\n", gen.cname());
-        gen.fmt.print("void %1pollen_print_int(int32 i);\n", gen.cname());
-        gen.fmt.print("void %1pollen_print_uint(uint32 u);\n", gen.cname());
-        gen.fmt.print("void %1pollen_print_str(string s);\n", gen.cname());
-        gen.fmt.print("void %1pollen_print_x(void* print, void* val);\n", gen.cname());
-
+    	gen.aux.genTitle("forward declarations for intrinsics");
+        gen.fmt.print("void %1pollen__print_bool(bool b);\n", gen.cname());
+        gen.fmt.print("void %1pollen__print_int(int32 i);\n", gen.cname());
+        gen.fmt.print("void %1pollen__print_uint(uint32 u);\n", gen.cname());
+        gen.fmt.print("void %1pollen__print_str(string s);\n", gen.cname());
+        gen.fmt.print("void %1pollen__print_x(void* print, void* val);\n", gen.cname());
+        
+        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "reset") == null) {
+            gen.fmt.print("void %1pollen__reset__E();\n", gen.cname());
+        }
+        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "ready") == null) {
+            gen.fmt.print("void %1pollen__ready__E();\n", gen.cname());
+        }
+        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "shutdown") == null) {
+            gen.fmt.print("void %1pollen__shutdown__E();\n", gen.cname());
+        }
+        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "wake") == null) {
+            gen.fmt.print("void %1pollen__wake__E(byte id);\n", gen.cname());
+        }
+        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "hibernate") == null) {
+            gen.fmt.print("void %1pollen__hibernate__E(byte id);\n", gen.cname());
+        }
     }
 
     private void genNestedClassName(UnitNode unit) {

@@ -92,6 +92,7 @@ public class ProgCCode {
         this.gen = gen;
     }
 
+
     private void genEpilogue() {
     	
     	gen.aux.genTitle("module functions");
@@ -103,53 +104,51 @@ public class ProgCCode {
         }
         
         gen.aux.genTitle("pollen.print");
-        gen.fmt.print("%tvoid %1pollen_print_bool(bool b) {\n%+", gen.cname());
+        gen.fmt.print("%tvoid %1pollen__print_bool(bool b) {\n%+", gen.cname());
         gen.fmt.print("%-}\n");
-        gen.fmt.print("%tvoid %1pollen_print_int(int32 i) {\n%+", gen.cname());
+        gen.fmt.print("%tvoid %1pollen__print_int(int32 i) {\n%+", gen.cname());
         gen.fmt.print("%-}\n");
-        gen.fmt.print("%tvoid %1pollen_print_uint(uint32 u) {\n%+", gen.cname());
+        gen.fmt.print("%tvoid %1pollen__print_uint(uint32 u) {\n%+", gen.cname());
         gen.fmt.print("%-}\n");
-        gen.fmt.print("%tvoid %1pollen_print_str(string s) {\n%+", gen.cname());
+        gen.fmt.print("%tvoid %1pollen__print_str(string s) {\n%+", gen.cname());
         gen.fmt.print("%-}\n");
-        gen.fmt.print("%tvoid %1pollen_print_x(void* print, void* val) {\n%+", gen.cname());
+        gen.fmt.print("%tvoid %1pollen__print_x(void* print, void* val) {\n%+", gen.cname());
         gen.fmt.print("%-}\n");
         
         // Generate defaults for pollen.reset, pollen.ready, pollen.shutdown, pollen.wake, pollen.hibernate.
         // if they do not exist.
-        if (gen.getMainUnit().lookupFcn("pollen.reset") == null) {
+        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "reset") == null) {
         	gen.aux.genTitle("pollen.reset()");
             gen.fmt.print("%tvoid %1pollen__reset__E() {\n%+", gen.cname());
             gen.fmt.print("%t/* empty default */\n");
             gen.fmt.print("%-}\n");
         }
-        if (gen.getMainUnit().lookupFcn("pollen.ready") == null) {
+        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "ready") == null) {
         	gen.aux.genTitle("pollen.ready()");
             gen.fmt.print("%tvoid %1pollen__ready__E() {\n%+", gen.cname());
             gen.fmt.print("%t/* empty default */\n");
             gen.fmt.print("%-}\n");
         }
-        if (gen.getMainUnit().lookupFcn("pollen.shutdown") == null) {
+        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "shutdown") == null) {
         	gen.aux.genTitle("pollen.shutdown()");
             gen.fmt.print("%tvoid %1pollen__shutdown__E() {\n%+", gen.cname());
             gen.fmt.print("%tvolatile int dummy = 0xCAFE;\n");
             gen.fmt.print("%twhile (dummy) ;\n");
             gen.fmt.print("%-}\n");
         }
-        if (gen.getMainUnit().lookupFcn("pollen.wake") == null) {
+        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "wake") == null) {
         	gen.aux.genTitle("pollen.wake(uint8 id)");
             gen.fmt.print("%tvoid %1pollen__wake__E(byte id) {\n%+", gen.cname());
             gen.fmt.print("%t/* empty default */\n");
             gen.fmt.print("%-}\n");
         }
-        if (gen.getMainUnit().lookupFcn("pollen.hibernate") == null) {
+        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "hibernate") == null) {
         	gen.aux.genTitle("pollen.hibernate(uint8 id)");
             gen.fmt.print("%tvoid %1pollen__hibernate__E(byte id) {\n%+", gen.cname());
             gen.fmt.print("%t/* empty default */\n");
             gen.fmt.print("%-}\n");
         }
-
-
-
+              
         gen.aux.genTitle("main()");
         gen.fmt.print("int main() {\n%+");
         gen.fmt.print("%t%1pollen__reset__E();\n", gen.cname());
@@ -162,7 +161,7 @@ public class ProgCCode {
             UnitNode u = ud.getUnit();
             if (u == gen.getMainUnit())
             	continue;
-            if (u.lookupFcn("pollen.ready") != null) {
+            if (u.lookupFcn("pollen_ready") != null) {
                 gen.fmt.print("%t%1_pollen__ready__E();\n", u.getQualName().replace('.', '_'));
             }
         }
@@ -174,7 +173,7 @@ public class ProgCCode {
             UnitNode u = ud.getUnit();
             if (u == gen.getMainUnit())
             	continue;
-            if (u.lookupFcn("pollen.shutdown") != null) {
+            if (u.lookupFcn("pollen_shutdown") != null) {
                 gen.fmt.print("%t%1_pollen__shutdown__E();\n", u.getQualName().replace('.', '_'));
             }
         }

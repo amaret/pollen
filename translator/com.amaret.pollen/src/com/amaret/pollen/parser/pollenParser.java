@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g 2013-05-23 19:40:17
+// $ANTLR 3.4 /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g 2013-05-24 13:56:46
 
     package com.amaret.pollen.parser;
     import java.util.EnumSet;
@@ -290,6 +290,27 @@ public TreeAdaptor getTreeAdaptor() {
         String getInject(String text) {
             return text.substring(text.indexOf("+{")+2,text.lastIndexOf("}+"));
         }
+        
+        void handleIntrinsics(CommonTree t) {
+        	if (t.getText().equals("unit.name")) {
+        		t.getToken().setText("__unit_name");
+        		return;
+        	}
+        	if (t.getText().indexOf('.') == -1) 
+        		return;
+        	char c = t.getText().charAt(0);
+        	switch (c) {
+        	case 'p':
+        		String s = t.getText();             
+        		if (s.substring(0, s.indexOf('.')).equals("pollen")) {
+        			s = s.replaceFirst("\\.", "__");
+        			t.getToken().setText(s);
+        		}       
+        		break;
+        	default:
+        		break;        
+        	}    
+        }
 
         
         void DBG(String dbg) {
@@ -434,7 +455,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "unit"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:338:1: unit : ( NL )* unitPackage -> ^( UNIT[\"UNIT\"] unitPackage ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:359:1: unit : ( NL )* unitPackage -> ^( UNIT[\"UNIT\"] unitPackage ) ;
     public final pollenParser.unit_return unit() throws RecognitionException {
         pollenParser.unit_return retval = new pollenParser.unit_return();
         retval.start = input.LT(1);
@@ -453,10 +474,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 1) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:339:5: ( ( NL )* unitPackage -> ^( UNIT[\"UNIT\"] unitPackage ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:339:9: ( NL )* unitPackage
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:360:5: ( ( NL )* unitPackage -> ^( UNIT[\"UNIT\"] unitPackage ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:360:9: ( NL )* unitPackage
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:339:9: ( NL )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:360:9: ( NL )*
             loop1:
             do {
                 int alt1=2;
@@ -469,7 +490,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt1) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:339:10: NL
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:360:10: NL
             	    {
             	    NL1=(Atom)match(input,NL,FOLLOW_NL_in_unit691); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_NL.add(NL1);
@@ -504,9 +525,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 339:29: -> ^( UNIT[\"UNIT\"] unitPackage )
+            // 360:29: -> ^( UNIT[\"UNIT\"] unitPackage )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:339:32: ^( UNIT[\"UNIT\"] unitPackage )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:360:32: ^( UNIT[\"UNIT\"] unitPackage )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -565,7 +586,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "unitPackage"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:341:1: unitPackage : stmtPackage importList stmtInjectionList unitTypeDefinition stmtInjectionList pollenEOF ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:362:1: unitPackage : stmtPackage importList stmtInjectionList unitTypeDefinition stmtInjectionList pollenEOF ;
     public final pollenParser.unitPackage_return unitPackage() throws RecognitionException {
         unitPackage_stack.push(new unitPackage_scope());
         pollenParser.unitPackage_return retval = new pollenParser.unitPackage_return();
@@ -592,8 +613,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 2) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:345:2: ( stmtPackage importList stmtInjectionList unitTypeDefinition stmtInjectionList pollenEOF )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:345:10: stmtPackage importList stmtInjectionList unitTypeDefinition stmtInjectionList pollenEOF
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:366:2: ( stmtPackage importList stmtInjectionList unitTypeDefinition stmtInjectionList pollenEOF )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:366:10: stmtPackage importList stmtInjectionList unitTypeDefinition stmtInjectionList pollenEOF
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -678,7 +699,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "pollenEOF"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:353:1: pollenEOF : EOF !;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:374:1: pollenEOF : EOF !;
     public final pollenParser.pollenEOF_return pollenEOF() throws RecognitionException {
         pollenParser.pollenEOF_return retval = new pollenParser.pollenEOF_return();
         retval.start = input.LT(1);
@@ -694,8 +715,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 3) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:354:2: ( EOF !)
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:354:4: EOF !
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:375:2: ( EOF !)
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:375:4: EOF !
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -736,7 +757,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtInjectionList"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:359:1: stmtInjectionList : ( stmtInjection )* -> ^( LIST[\"LIST\"] ( stmtInjection )* ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:380:1: stmtInjectionList : ( stmtInjection )* -> ^( LIST[\"LIST\"] ( stmtInjection )* ) ;
     public final pollenParser.stmtInjectionList_return stmtInjectionList() throws RecognitionException {
         pollenParser.stmtInjectionList_return retval = new pollenParser.stmtInjectionList_return();
         retval.start = input.LT(1);
@@ -752,10 +773,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 4) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:360:2: ( ( stmtInjection )* -> ^( LIST[\"LIST\"] ( stmtInjection )* ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:360:3: ( stmtInjection )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:381:2: ( ( stmtInjection )* -> ^( LIST[\"LIST\"] ( stmtInjection )* ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:381:3: ( stmtInjection )*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:360:3: ( stmtInjection )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:381:3: ( stmtInjection )*
             loop2:
             do {
                 int alt2=2;
@@ -768,7 +789,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt2) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:360:4: stmtInjection
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:381:4: stmtInjection
             	    {
             	    pushFollow(FOLLOW_stmtInjection_in_stmtInjectionList837);
             	    stmtInjection10=stmtInjection();
@@ -799,16 +820,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 360:20: -> ^( LIST[\"LIST\"] ( stmtInjection )* )
+            // 381:20: -> ^( LIST[\"LIST\"] ( stmtInjection )* )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:360:23: ^( LIST[\"LIST\"] ( stmtInjection )* )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:381:23: ^( LIST[\"LIST\"] ( stmtInjection )* )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ListNode(LIST, "LIST")
                 , root_1);
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:360:48: ( stmtInjection )*
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:381:48: ( stmtInjection )*
                 while ( stream_stmtInjection.hasNext() ) {
                     adaptor.addChild(root_1, stream_stmtInjection.nextTree());
 
@@ -859,7 +880,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtPackage"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:362:1: stmtPackage : ( 'package' qualName delim -> ^( S_PACKAGE[pkg] qualName ) | -> ^( S_PACKAGE[pkg] ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:383:1: stmtPackage : ( 'package' qualName delim -> ^( S_PACKAGE[pkg] qualName ) | -> ^( S_PACKAGE[pkg] ) );
     public final pollenParser.stmtPackage_return stmtPackage() throws RecognitionException {
         pollenParser.stmtPackage_return retval = new pollenParser.stmtPackage_return();
         retval.start = input.LT(1);
@@ -884,7 +905,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 5) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:366:2: ( 'package' qualName delim -> ^( S_PACKAGE[pkg] qualName ) | -> ^( S_PACKAGE[pkg] ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:387:2: ( 'package' qualName delim -> ^( S_PACKAGE[pkg] qualName ) | -> ^( S_PACKAGE[pkg] ) )
             int alt3=2;
             int LA3_0 = input.LA(1);
 
@@ -904,7 +925,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt3) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:366:4: 'package' qualName delim
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:387:4: 'package' qualName delim
                     {
                     string_literal11=(Atom)match(input,175,FOLLOW_175_in_stmtPackage867); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_175.add(string_literal11);
@@ -937,9 +958,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 366:29: -> ^( S_PACKAGE[pkg] qualName )
+                    // 387:29: -> ^( S_PACKAGE[pkg] qualName )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:366:32: ^( S_PACKAGE[pkg] qualName )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:387:32: ^( S_PACKAGE[pkg] qualName )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -960,7 +981,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:367:4: 
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:388:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -975,9 +996,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 367:4: -> ^( S_PACKAGE[pkg] )
+                    // 388:4: -> ^( S_PACKAGE[pkg] )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:367:7: ^( S_PACKAGE[pkg] )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:388:7: ^( S_PACKAGE[pkg] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -1030,7 +1051,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtExport"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:369:1: stmtExport : 'export' qualName delim -> ^( EXPORT[\"EXPORT\"] qualName ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:390:1: stmtExport : 'export' qualName delim -> ^( EXPORT[\"EXPORT\"] qualName ) ;
     public final pollenParser.stmtExport_return stmtExport() throws RecognitionException {
         pollenParser.stmtExport_return retval = new pollenParser.stmtExport_return();
         retval.start = input.LT(1);
@@ -1052,8 +1073,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 6) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:370:5: ( 'export' qualName delim -> ^( EXPORT[\"EXPORT\"] qualName ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:370:9: 'export' qualName delim
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:391:5: ( 'export' qualName delim -> ^( EXPORT[\"EXPORT\"] qualName ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:391:9: 'export' qualName delim
             {
             string_literal14=(Atom)match(input,157,FOLLOW_157_in_stmtExport906); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_157.add(string_literal14);
@@ -1086,9 +1107,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 370:33: -> ^( EXPORT[\"EXPORT\"] qualName )
+            // 391:33: -> ^( EXPORT[\"EXPORT\"] qualName )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:370:36: ^( EXPORT[\"EXPORT\"] qualName )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:391:36: ^( EXPORT[\"EXPORT\"] qualName )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -1141,7 +1162,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exportList"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:372:1: exportList : ( stmtExport )+ -> ^( LIST[\"LIST\"] ( stmtExport )+ ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:393:1: exportList : ( stmtExport )+ -> ^( LIST[\"LIST\"] ( stmtExport )+ ) ;
     public final pollenParser.exportList_return exportList() throws RecognitionException {
         pollenParser.exportList_return retval = new pollenParser.exportList_return();
         retval.start = input.LT(1);
@@ -1157,10 +1178,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 7) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:373:5: ( ( stmtExport )+ -> ^( LIST[\"LIST\"] ( stmtExport )+ ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:373:9: ( stmtExport )+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:394:5: ( ( stmtExport )+ -> ^( LIST[\"LIST\"] ( stmtExport )+ ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:394:9: ( stmtExport )+
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:373:9: ( stmtExport )+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:394:9: ( stmtExport )+
             int cnt4=0;
             loop4:
             do {
@@ -1174,7 +1195,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt4) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:373:9: stmtExport
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:394:9: stmtExport
             	    {
             	    pushFollow(FOLLOW_stmtExport_in_exportList940);
             	    stmtExport17=stmtExport();
@@ -1210,9 +1231,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 374:6: -> ^( LIST[\"LIST\"] ( stmtExport )+ )
+            // 395:6: -> ^( LIST[\"LIST\"] ( stmtExport )+ )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:374:9: ^( LIST[\"LIST\"] ( stmtExport )+ )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:395:9: ^( LIST[\"LIST\"] ( stmtExport )+ )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -1272,7 +1293,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "classDefinition"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:376:1: classDefinition : 'class' IDENT extendsClause implementsClause braceOpen classFeatureList[name] -> ^( D_CLASS[\"D_CLASS\", ti.getUnitFlags(), qual] IDENT classFeatureList extendsClause implementsClause ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:397:1: classDefinition : 'class' IDENT extendsClause implementsClause braceOpen classFeatureList[name] -> ^( D_CLASS[\"D_CLASS\", ti.getUnitFlags(), qual] IDENT classFeatureList extendsClause implementsClause ) ;
     public final pollenParser.classDefinition_return classDefinition() throws RecognitionException {
         pollenParser.classDefinition_return retval = new pollenParser.classDefinition_return();
         retval.start = input.LT(1);
@@ -1311,8 +1332,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 8) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:390:2: ( 'class' IDENT extendsClause implementsClause braceOpen classFeatureList[name] -> ^( D_CLASS[\"D_CLASS\", ti.getUnitFlags(), qual] IDENT classFeatureList extendsClause implementsClause ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:390:4: 'class' IDENT extendsClause implementsClause braceOpen classFeatureList[name]
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:411:2: ( 'class' IDENT extendsClause implementsClause braceOpen classFeatureList[name] -> ^( D_CLASS[\"D_CLASS\", ti.getUnitFlags(), qual] IDENT classFeatureList extendsClause implementsClause ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:411:4: 'class' IDENT extendsClause implementsClause braceOpen classFeatureList[name]
             {
             string_literal18=(Atom)match(input,147,FOLLOW_147_in_classDefinition984); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_147.add(string_literal18);
@@ -1360,7 +1381,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_classFeatureList.add(classFeatureList23.getTree());
 
             // AST REWRITE
-            // elements: IDENT, implementsClause, extendsClause, classFeatureList
+            // elements: extendsClause, classFeatureList, implementsClause, IDENT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -1372,9 +1393,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 402:3: -> ^( D_CLASS[\"D_CLASS\", ti.getUnitFlags(), qual] IDENT classFeatureList extendsClause implementsClause )
+            // 423:3: -> ^( D_CLASS[\"D_CLASS\", ti.getUnitFlags(), qual] IDENT classFeatureList extendsClause implementsClause )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:402:6: ^( D_CLASS[\"D_CLASS\", ti.getUnitFlags(), qual] IDENT classFeatureList extendsClause implementsClause )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:423:6: ^( D_CLASS[\"D_CLASS\", ti.getUnitFlags(), qual] IDENT classFeatureList extendsClause implementsClause )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -1442,7 +1463,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "classFeatureList"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:405:1: classFeatureList[String n] : ( classFeature )* intrinsicVarsBraceClose[n] -> ^( LIST[\"LIST\"] ( classFeature )* intrinsicVarsBraceClose ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:426:1: classFeatureList[String n] : ( classFeature )* intrinsicVarsBraceClose[n] -> ^( LIST[\"LIST\"] ( classFeature )* intrinsicVarsBraceClose ) ;
     public final pollenParser.classFeatureList_return classFeatureList(String n) throws RecognitionException {
         pollenParser.classFeatureList_return retval = new pollenParser.classFeatureList_return();
         retval.start = input.LT(1);
@@ -1461,10 +1482,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 9) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:406:2: ( ( classFeature )* intrinsicVarsBraceClose[n] -> ^( LIST[\"LIST\"] ( classFeature )* intrinsicVarsBraceClose ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:406:4: ( classFeature )* intrinsicVarsBraceClose[n]
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:427:2: ( ( classFeature )* intrinsicVarsBraceClose[n] -> ^( LIST[\"LIST\"] ( classFeature )* intrinsicVarsBraceClose ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:427:4: ( classFeature )* intrinsicVarsBraceClose[n]
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:406:4: ( classFeature )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:427:4: ( classFeature )*
             loop5:
             do {
                 int alt5=2;
@@ -1477,7 +1498,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt5) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:406:4: classFeature
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:427:4: classFeature
             	    {
             	    pushFollow(FOLLOW_classFeature_in_classFeatureList1047);
             	    classFeature24=classFeature();
@@ -1503,7 +1524,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_intrinsicVarsBraceClose.add(intrinsicVarsBraceClose25.getTree());
 
             // AST REWRITE
-            // elements: intrinsicVarsBraceClose, classFeature
+            // elements: classFeature, intrinsicVarsBraceClose
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -1515,16 +1536,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 407:4: -> ^( LIST[\"LIST\"] ( classFeature )* intrinsicVarsBraceClose )
+            // 428:4: -> ^( LIST[\"LIST\"] ( classFeature )* intrinsicVarsBraceClose )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:407:7: ^( LIST[\"LIST\"] ( classFeature )* intrinsicVarsBraceClose )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:428:7: ^( LIST[\"LIST\"] ( classFeature )* intrinsicVarsBraceClose )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ListNode(LIST, "LIST")
                 , root_1);
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:408:10: ( classFeature )*
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:429:10: ( classFeature )*
                 while ( stream_classFeature.hasNext() ) {
                     adaptor.addChild(root_1, stream_classFeature.nextTree());
 
@@ -1577,7 +1598,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "classFeature"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:411:1: classFeature : ( fcnDefinition | enumDefinition | fieldDeclaration | classDefinition | injectionDecl );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:432:1: classFeature : ( fcnDefinition | enumDefinition | fieldDeclaration | classDefinition | injectionDecl );
     public final pollenParser.classFeature_return classFeature() throws RecognitionException {
         pollenParser.classFeature_return retval = new pollenParser.classFeature_return();
         retval.start = input.LT(1);
@@ -1604,7 +1625,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 10) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:415:5: ( fcnDefinition | enumDefinition | fieldDeclaration | classDefinition | injectionDecl )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:436:5: ( fcnDefinition | enumDefinition | fieldDeclaration | classDefinition | injectionDecl )
             int alt6=5;
             switch ( input.LA(1) ) {
             case 127:
@@ -1866,7 +1887,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt6) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:415:9: fcnDefinition
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:436:9: fcnDefinition
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -1881,7 +1902,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:416:9: enumDefinition
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:437:9: enumDefinition
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -1896,7 +1917,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:417:9: fieldDeclaration
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:438:9: fieldDeclaration
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -1911,7 +1932,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:418:9: classDefinition
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:439:9: classDefinition
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -1926,7 +1947,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:419:9: injectionDecl
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:440:9: injectionDecl
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -1975,7 +1996,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "moduleDefinition"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:421:1: moduleDefinition : 'module' IDENT extendsClause implementsClause braceOpen moduleFeatureList[name] -> ^( D_MODULE[\"D_MODULE\", ti.getUnitFlags(), qual] IDENT moduleFeatureList extendsClause implementsClause ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:442:1: moduleDefinition : 'module' IDENT extendsClause implementsClause braceOpen moduleFeatureList[name] -> ^( D_MODULE[\"D_MODULE\", ti.getUnitFlags(), qual] IDENT moduleFeatureList extendsClause implementsClause ) ;
     public final pollenParser.moduleDefinition_return moduleDefinition() throws RecognitionException {
         pollenParser.moduleDefinition_return retval = new pollenParser.moduleDefinition_return();
         retval.start = input.LT(1);
@@ -2014,8 +2035,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 11) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:435:2: ( 'module' IDENT extendsClause implementsClause braceOpen moduleFeatureList[name] -> ^( D_MODULE[\"D_MODULE\", ti.getUnitFlags(), qual] IDENT moduleFeatureList extendsClause implementsClause ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:435:7: 'module' IDENT extendsClause implementsClause braceOpen moduleFeatureList[name]
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:456:2: ( 'module' IDENT extendsClause implementsClause braceOpen moduleFeatureList[name] -> ^( D_MODULE[\"D_MODULE\", ti.getUnitFlags(), qual] IDENT moduleFeatureList extendsClause implementsClause ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:456:7: 'module' IDENT extendsClause implementsClause braceOpen moduleFeatureList[name]
             {
             string_literal31=(Atom)match(input,171,FOLLOW_171_in_moduleDefinition1177); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_171.add(string_literal31);
@@ -2063,7 +2084,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_moduleFeatureList.add(moduleFeatureList36.getTree());
 
             // AST REWRITE
-            // elements: implementsClause, IDENT, moduleFeatureList, extendsClause
+            // elements: moduleFeatureList, implementsClause, extendsClause, IDENT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2075,9 +2096,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 447:4: -> ^( D_MODULE[\"D_MODULE\", ti.getUnitFlags(), qual] IDENT moduleFeatureList extendsClause implementsClause )
+            // 468:4: -> ^( D_MODULE[\"D_MODULE\", ti.getUnitFlags(), qual] IDENT moduleFeatureList extendsClause implementsClause )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:447:7: ^( D_MODULE[\"D_MODULE\", ti.getUnitFlags(), qual] IDENT moduleFeatureList extendsClause implementsClause )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:468:7: ^( D_MODULE[\"D_MODULE\", ti.getUnitFlags(), qual] IDENT moduleFeatureList extendsClause implementsClause )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -2145,7 +2166,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "moduleFeatureList"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:450:1: moduleFeatureList[String n] : ( moduleFeature )* intrinsicVarsBraceClose[n] -> ^( LIST[\"LIST\"] ( moduleFeature )* intrinsicVarsBraceClose ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:471:1: moduleFeatureList[String n] : ( moduleFeature )* intrinsicVarsBraceClose[n] -> ^( LIST[\"LIST\"] ( moduleFeature )* intrinsicVarsBraceClose ) ;
     public final pollenParser.moduleFeatureList_return moduleFeatureList(String n) throws RecognitionException {
         pollenParser.moduleFeatureList_return retval = new pollenParser.moduleFeatureList_return();
         retval.start = input.LT(1);
@@ -2164,10 +2185,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 12) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:451:2: ( ( moduleFeature )* intrinsicVarsBraceClose[n] -> ^( LIST[\"LIST\"] ( moduleFeature )* intrinsicVarsBraceClose ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:451:4: ( moduleFeature )* intrinsicVarsBraceClose[n]
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:472:2: ( ( moduleFeature )* intrinsicVarsBraceClose[n] -> ^( LIST[\"LIST\"] ( moduleFeature )* intrinsicVarsBraceClose ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:472:4: ( moduleFeature )* intrinsicVarsBraceClose[n]
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:451:4: ( moduleFeature )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:472:4: ( moduleFeature )*
             loop7:
             do {
                 int alt7=2;
@@ -2180,7 +2201,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt7) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:451:4: moduleFeature
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:472:4: moduleFeature
             	    {
             	    pushFollow(FOLLOW_moduleFeature_in_moduleFeatureList1255);
             	    moduleFeature37=moduleFeature();
@@ -2206,7 +2227,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_intrinsicVarsBraceClose.add(intrinsicVarsBraceClose38.getTree());
 
             // AST REWRITE
-            // elements: moduleFeature, intrinsicVarsBraceClose
+            // elements: intrinsicVarsBraceClose, moduleFeature
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2218,16 +2239,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 451:46: -> ^( LIST[\"LIST\"] ( moduleFeature )* intrinsicVarsBraceClose )
+            // 472:46: -> ^( LIST[\"LIST\"] ( moduleFeature )* intrinsicVarsBraceClose )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:451:49: ^( LIST[\"LIST\"] ( moduleFeature )* intrinsicVarsBraceClose )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:472:49: ^( LIST[\"LIST\"] ( moduleFeature )* intrinsicVarsBraceClose )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ListNode(LIST, "LIST")
                 , root_1);
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:452:10: ( moduleFeature )*
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:473:10: ( moduleFeature )*
                 while ( stream_moduleFeature.hasNext() ) {
                     adaptor.addChild(root_1, stream_moduleFeature.nextTree());
 
@@ -2280,7 +2301,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "intrinsicVarsBraceClose"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:461:1: intrinsicVarsBraceClose[String n] : ( NL )* '}' ( NL )* -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR)] ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] ) IDENT[\"__unit_name\"] ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] ) ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:482:1: intrinsicVarsBraceClose[String n] : ( NL )* '}' ( NL )* -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR)] ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] ) IDENT[\"__unit_name\"] ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] ) ) ;
     public final pollenParser.intrinsicVarsBraceClose_return intrinsicVarsBraceClose(String n) throws RecognitionException {
         pollenParser.intrinsicVarsBraceClose_return retval = new pollenParser.intrinsicVarsBraceClose_return();
         retval.start = input.LT(1);
@@ -2302,10 +2323,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 13) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:462:2: ( ( NL )* '}' ( NL )* -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR)] ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] ) IDENT[\"__unit_name\"] ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] ) ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:462:4: ( NL )* '}' ( NL )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:483:2: ( ( NL )* '}' ( NL )* -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR)] ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] ) IDENT[\"__unit_name\"] ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] ) ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:483:4: ( NL )* '}' ( NL )*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:462:4: ( NL )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:483:4: ( NL )*
             loop8:
             do {
                 int alt8=2;
@@ -2318,7 +2339,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt8) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:462:5: NL
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:483:5: NL
             	    {
             	    NL39=(Atom)match(input,NL,FOLLOW_NL_in_intrinsicVarsBraceClose1321); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_NL.add(NL39);
@@ -2337,7 +2358,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_193.add(char_literal40);
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:462:14: ( NL )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:483:14: ( NL )*
             loop9:
             do {
                 int alt9=2;
@@ -2356,7 +2377,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt9) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:462:15: NL
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:483:15: NL
             	    {
             	    NL41=(Atom)match(input,NL,FOLLOW_NL_in_intrinsicVarsBraceClose1328); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_NL.add(NL41);
@@ -2384,16 +2405,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 462:20: -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR)] ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] ) IDENT[\"__unit_name\"] ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] ) )
+            // 483:20: -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR)] ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] ) IDENT[\"__unit_name\"] ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] ) )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:462:23: ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR)] ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] ) IDENT[\"__unit_name\"] ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] ) )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:483:23: ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR)] ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] ) IDENT[\"__unit_name\"] ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new DeclNode.Var(D_VAR, "D_VAR", EnumSet.of(Flags.INTRINSIC_VAR))
                 , root_1);
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:463:10: ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:484:10: ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
@@ -2411,7 +2432,7 @@ public TreeAdaptor getTreeAdaptor() {
                 (BaseNode)adaptor.create(IDENT, "__unit_name")
                 );
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:465:11: ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:486:11: ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
@@ -2469,7 +2490,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "moduleFeature"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:467:1: moduleFeature : ( fcnDefinition | varDeclaration | enumDefinition | classDefinition | injectionDecl );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:488:1: moduleFeature : ( fcnDefinition | varDeclaration | enumDefinition | classDefinition | injectionDecl );
     public final pollenParser.moduleFeature_return moduleFeature() throws RecognitionException {
         pollenParser.moduleFeature_return retval = new pollenParser.moduleFeature_return();
         retval.start = input.LT(1);
@@ -2496,7 +2517,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 14) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:471:2: ( fcnDefinition | varDeclaration | enumDefinition | classDefinition | injectionDecl )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:492:2: ( fcnDefinition | varDeclaration | enumDefinition | classDefinition | injectionDecl )
             int alt10=5;
             switch ( input.LA(1) ) {
             case 127:
@@ -2758,7 +2779,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt10) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:471:6: fcnDefinition
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:492:6: fcnDefinition
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -2773,7 +2794,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:472:8: varDeclaration
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:493:8: varDeclaration
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -2788,7 +2809,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:473:6: enumDefinition
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:494:6: enumDefinition
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -2803,7 +2824,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:474:6: classDefinition
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:495:6: classDefinition
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -2818,7 +2839,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:475:5: injectionDecl
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:496:5: injectionDecl
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -2867,7 +2888,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "enumDefinition"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:477:1: enumDefinition : 'enum' ( IDENT braceOpen enumList braceClose ) -> ^( D_ENUM[\"D_ENUM\", ti.getUnitFlags(), qual] IDENT enumList ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:498:1: enumDefinition : 'enum' ( IDENT braceOpen enumList braceClose ) -> ^( D_ENUM[\"D_ENUM\", ti.getUnitFlags(), qual] IDENT enumList ) ;
     public final pollenParser.enumDefinition_return enumDefinition() throws RecognitionException {
         pollenParser.enumDefinition_return retval = new pollenParser.enumDefinition_return();
         retval.start = input.LT(1);
@@ -2902,15 +2923,15 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 15) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:490:2: ( 'enum' ( IDENT braceOpen enumList braceClose ) -> ^( D_ENUM[\"D_ENUM\", ti.getUnitFlags(), qual] IDENT enumList ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:490:5: 'enum' ( IDENT braceOpen enumList braceClose )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:511:2: ( 'enum' ( IDENT braceOpen enumList braceClose ) -> ^( D_ENUM[\"D_ENUM\", ti.getUnitFlags(), qual] IDENT enumList ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:511:5: 'enum' ( IDENT braceOpen enumList braceClose )
             {
             string_literal47=(Atom)match(input,155,FOLLOW_155_in_enumDefinition1472); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_155.add(string_literal47);
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:490:11: ( IDENT braceOpen enumList braceClose )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:490:12: IDENT braceOpen enumList braceClose
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:511:11: ( IDENT braceOpen enumList braceClose )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:511:12: IDENT braceOpen enumList braceClose
             {
             IDENT48=(Atom)match(input,IDENT,FOLLOW_IDENT_in_enumDefinition1474); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_IDENT.add(IDENT48);
@@ -2948,7 +2969,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: IDENT, enumList
+            // elements: enumList, IDENT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2960,9 +2981,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 498:3: -> ^( D_ENUM[\"D_ENUM\", ti.getUnitFlags(), qual] IDENT enumList )
+            // 519:3: -> ^( D_ENUM[\"D_ENUM\", ti.getUnitFlags(), qual] IDENT enumList )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:498:6: ^( D_ENUM[\"D_ENUM\", ti.getUnitFlags(), qual] IDENT enumList )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:519:6: ^( D_ENUM[\"D_ENUM\", ti.getUnitFlags(), qual] IDENT enumList )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -3026,7 +3047,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "enumList"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:501:1: enumList : enumElement ( ',' ( delim )? enumElement )* -> ^( LIST[\"LIST\"] ( enumElement )+ ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:522:1: enumList : enumElement ( ',' ( delim )? enumElement )* -> ^( LIST[\"LIST\"] ( enumElement )+ ) ;
     public final pollenParser.enumList_return enumList() throws RecognitionException {
         pollenParser.enumList_return retval = new pollenParser.enumList_return();
         retval.start = input.LT(1);
@@ -3050,8 +3071,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 16) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:502:2: ( enumElement ( ',' ( delim )? enumElement )* -> ^( LIST[\"LIST\"] ( enumElement )+ ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:502:4: enumElement ( ',' ( delim )? enumElement )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:523:2: ( enumElement ( ',' ( delim )? enumElement )* -> ^( LIST[\"LIST\"] ( enumElement )+ ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:523:4: enumElement ( ',' ( delim )? enumElement )*
             {
             pushFollow(FOLLOW_enumElement_in_enumList1523);
             enumElement52=enumElement();
@@ -3060,7 +3081,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_enumElement.add(enumElement52.getTree());
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:502:16: ( ',' ( delim )? enumElement )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:523:16: ( ',' ( delim )? enumElement )*
             loop12:
             do {
                 int alt12=2;
@@ -3073,13 +3094,13 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt12) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:502:17: ',' ( delim )? enumElement
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:523:17: ',' ( delim )? enumElement
             	    {
             	    char_literal53=(Atom)match(input,130,FOLLOW_130_in_enumList1526); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_130.add(char_literal53);
 
 
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:502:21: ( delim )?
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:523:21: ( delim )?
             	    int alt11=2;
             	    int LA11_0 = input.LA(1);
 
@@ -3095,7 +3116,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    switch (alt11) {
             	        case 1 :
-            	            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:502:22: delim
+            	            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:523:22: delim
             	            {
             	            pushFollow(FOLLOW_delim_in_enumList1529);
             	            delim54=delim();
@@ -3139,9 +3160,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 502:44: -> ^( LIST[\"LIST\"] ( enumElement )+ )
+            // 523:44: -> ^( LIST[\"LIST\"] ( enumElement )+ )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:502:47: ^( LIST[\"LIST\"] ( enumElement )+ )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:523:47: ^( LIST[\"LIST\"] ( enumElement )+ )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -3201,7 +3222,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "enumElement"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:504:1: enumElement : ( IDENT ASSIGN INT_LIT -> ^( D_ENUMVAL[\"D_ENUMVAL\", ti.getUnitFlags()] ^( IDENT INT_LIT ) ) | IDENT -> ^( D_ENUMVAL IDENT ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:525:1: enumElement : ( IDENT ASSIGN INT_LIT -> ^( D_ENUMVAL[\"D_ENUMVAL\", ti.getUnitFlags()] ^( IDENT INT_LIT ) ) | IDENT -> ^( D_ENUMVAL IDENT ) );
     public final pollenParser.enumElement_return enumElement() throws RecognitionException {
         pollenParser.enumElement_return retval = new pollenParser.enumElement_return();
         retval.start = input.LT(1);
@@ -3226,7 +3247,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 17) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:505:2: ( IDENT ASSIGN INT_LIT -> ^( D_ENUMVAL[\"D_ENUMVAL\", ti.getUnitFlags()] ^( IDENT INT_LIT ) ) | IDENT -> ^( D_ENUMVAL IDENT ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:526:2: ( IDENT ASSIGN INT_LIT -> ^( D_ENUMVAL[\"D_ENUMVAL\", ti.getUnitFlags()] ^( IDENT INT_LIT ) ) | IDENT -> ^( D_ENUMVAL IDENT ) )
             int alt13=2;
             int LA13_0 = input.LA(1);
 
@@ -3258,7 +3279,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt13) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:505:4: IDENT ASSIGN INT_LIT
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:526:4: IDENT ASSIGN INT_LIT
                     {
                     IDENT56=(Atom)match(input,IDENT,FOLLOW_IDENT_in_enumElement1558); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT56);
@@ -3273,7 +3294,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: IDENT, INT_LIT
+                    // elements: INT_LIT, IDENT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -3285,16 +3306,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 505:26: -> ^( D_ENUMVAL[\"D_ENUMVAL\", ti.getUnitFlags()] ^( IDENT INT_LIT ) )
+                    // 526:26: -> ^( D_ENUMVAL[\"D_ENUMVAL\", ti.getUnitFlags()] ^( IDENT INT_LIT ) )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:505:29: ^( D_ENUMVAL[\"D_ENUMVAL\", ti.getUnitFlags()] ^( IDENT INT_LIT ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:526:29: ^( D_ENUMVAL[\"D_ENUMVAL\", ti.getUnitFlags()] ^( IDENT INT_LIT ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.EnumVal(D_ENUMVAL, "D_ENUMVAL", ti.getUnitFlags())
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:505:91: ^( IDENT INT_LIT )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:526:91: ^( IDENT INT_LIT )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -3320,7 +3341,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:506:4: IDENT
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:527:4: IDENT
                     {
                     IDENT59=(Atom)match(input,IDENT,FOLLOW_IDENT_in_enumElement1586); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT59);
@@ -3339,9 +3360,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 506:10: -> ^( D_ENUMVAL IDENT )
+                    // 527:10: -> ^( D_ENUMVAL IDENT )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:506:13: ^( D_ENUMVAL IDENT )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:527:13: ^( D_ENUMVAL IDENT )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -3398,7 +3419,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "protocolDefinition"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:508:1: protocolDefinition : 'protocol' IDENT extendsClause implementsClause braceOpen protocolFeatureList braceClose -> ^( D_PROTOCOL[\"D_PROTOCOL\", ti.getUnitFlags(), qual] IDENT protocolFeatureList extendsClause implementsClause ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:529:1: protocolDefinition : 'protocol' IDENT extendsClause implementsClause braceOpen protocolFeatureList braceClose -> ^( D_PROTOCOL[\"D_PROTOCOL\", ti.getUnitFlags(), qual] IDENT protocolFeatureList extendsClause implementsClause ) ;
     public final pollenParser.protocolDefinition_return protocolDefinition() throws RecognitionException {
         pollenParser.protocolDefinition_return retval = new pollenParser.protocolDefinition_return();
         retval.start = input.LT(1);
@@ -3439,8 +3460,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 18) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:521:2: ( 'protocol' IDENT extendsClause implementsClause braceOpen protocolFeatureList braceClose -> ^( D_PROTOCOL[\"D_PROTOCOL\", ti.getUnitFlags(), qual] IDENT protocolFeatureList extendsClause implementsClause ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:521:4: 'protocol' IDENT extendsClause implementsClause braceOpen protocolFeatureList braceClose
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:542:2: ( 'protocol' IDENT extendsClause implementsClause braceOpen protocolFeatureList braceClose -> ^( D_PROTOCOL[\"D_PROTOCOL\", ti.getUnitFlags(), qual] IDENT protocolFeatureList extendsClause implementsClause ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:542:4: 'protocol' IDENT extendsClause implementsClause braceOpen protocolFeatureList braceClose
             {
             string_literal60=(Atom)match(input,177,FOLLOW_177_in_protocolDefinition1612); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_177.add(string_literal60);
@@ -3493,7 +3514,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceClose.add(braceClose66.getTree());
 
             // AST REWRITE
-            // elements: IDENT, implementsClause, protocolFeatureList, extendsClause
+            // elements: implementsClause, protocolFeatureList, extendsClause, IDENT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3505,9 +3526,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 531:3: -> ^( D_PROTOCOL[\"D_PROTOCOL\", ti.getUnitFlags(), qual] IDENT protocolFeatureList extendsClause implementsClause )
+            // 552:3: -> ^( D_PROTOCOL[\"D_PROTOCOL\", ti.getUnitFlags(), qual] IDENT protocolFeatureList extendsClause implementsClause )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:531:6: ^( D_PROTOCOL[\"D_PROTOCOL\", ti.getUnitFlags(), qual] IDENT protocolFeatureList extendsClause implementsClause )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:552:6: ^( D_PROTOCOL[\"D_PROTOCOL\", ti.getUnitFlags(), qual] IDENT protocolFeatureList extendsClause implementsClause )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -3575,7 +3596,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "protocolFeatureList"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:534:1: protocolFeatureList : ( protocolFeature )* -> ^( LIST[\"LIST\"] ( protocolFeature )* ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:555:1: protocolFeatureList : ( protocolFeature )* -> ^( LIST[\"LIST\"] ( protocolFeature )* ) ;
     public final pollenParser.protocolFeatureList_return protocolFeatureList() throws RecognitionException {
         pollenParser.protocolFeatureList_return retval = new pollenParser.protocolFeatureList_return();
         retval.start = input.LT(1);
@@ -3591,10 +3612,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 19) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:535:2: ( ( protocolFeature )* -> ^( LIST[\"LIST\"] ( protocolFeature )* ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:535:4: ( protocolFeature )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:556:2: ( ( protocolFeature )* -> ^( LIST[\"LIST\"] ( protocolFeature )* ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:556:4: ( protocolFeature )*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:535:4: ( protocolFeature )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:556:4: ( protocolFeature )*
             loop14:
             do {
                 int alt14=2;
@@ -3607,7 +3628,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt14) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:535:4: protocolFeature
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:556:4: protocolFeature
             	    {
             	    pushFollow(FOLLOW_protocolFeature_in_protocolFeatureList1674);
             	    protocolFeature67=protocolFeature();
@@ -3638,16 +3659,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 535:21: -> ^( LIST[\"LIST\"] ( protocolFeature )* )
+            // 556:21: -> ^( LIST[\"LIST\"] ( protocolFeature )* )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:535:24: ^( LIST[\"LIST\"] ( protocolFeature )* )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:556:24: ^( LIST[\"LIST\"] ( protocolFeature )* )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ListNode(LIST, "LIST")
                 , root_1);
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:535:49: ( protocolFeature )*
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:556:49: ( protocolFeature )*
                 while ( stream_protocolFeature.hasNext() ) {
                     adaptor.addChild(root_1, stream_protocolFeature.nextTree());
 
@@ -3698,7 +3719,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "protocolFeature"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:537:1: protocolFeature : ( enumDefinition | fcnDeclaration | injectionDecl );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:558:1: protocolFeature : ( enumDefinition | fcnDeclaration | injectionDecl );
     public final pollenParser.protocolFeature_return protocolFeature() throws RecognitionException {
         pollenParser.protocolFeature_return retval = new pollenParser.protocolFeature_return();
         retval.start = input.LT(1);
@@ -3721,7 +3742,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 20) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:541:5: ( enumDefinition | fcnDeclaration | injectionDecl )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:562:5: ( enumDefinition | fcnDeclaration | injectionDecl )
             int alt15=3;
             switch ( input.LA(1) ) {
             case 155:
@@ -3762,7 +3783,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt15) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:541:9: enumDefinition
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:562:9: enumDefinition
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -3777,7 +3798,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:542:9: fcnDeclaration
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:563:9: fcnDeclaration
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -3792,7 +3813,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:543:9: injectionDecl
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:564:9: injectionDecl
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -3841,7 +3862,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "compositionDefinition"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:545:1: compositionDefinition : 'composition' IDENT extendsClause implementsClause braceOpen compositionFeatureList braceClose -> ^( D_COMPOSITION[\"D_COMPOSITION\", ti.getUnitFlags(), qual] IDENT compositionFeatureList extendsClause implementsClause ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:566:1: compositionDefinition : 'composition' IDENT extendsClause implementsClause braceOpen compositionFeatureList braceClose -> ^( D_COMPOSITION[\"D_COMPOSITION\", ti.getUnitFlags(), qual] IDENT compositionFeatureList extendsClause implementsClause ) ;
     public final pollenParser.compositionDefinition_return compositionDefinition() throws RecognitionException {
         pollenParser.compositionDefinition_return retval = new pollenParser.compositionDefinition_return();
         retval.start = input.LT(1);
@@ -3882,8 +3903,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 21) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:558:2: ( 'composition' IDENT extendsClause implementsClause braceOpen compositionFeatureList braceClose -> ^( D_COMPOSITION[\"D_COMPOSITION\", ti.getUnitFlags(), qual] IDENT compositionFeatureList extendsClause implementsClause ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:558:4: 'composition' IDENT extendsClause implementsClause braceOpen compositionFeatureList braceClose
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:579:2: ( 'composition' IDENT extendsClause implementsClause braceOpen compositionFeatureList braceClose -> ^( D_COMPOSITION[\"D_COMPOSITION\", ti.getUnitFlags(), qual] IDENT compositionFeatureList extendsClause implementsClause ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:579:4: 'composition' IDENT extendsClause implementsClause braceOpen compositionFeatureList braceClose
             {
             string_literal71=(Atom)match(input,148,FOLLOW_148_in_compositionDefinition1750); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_148.add(string_literal71);
@@ -3938,7 +3959,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceClose.add(braceClose77.getTree());
 
             // AST REWRITE
-            // elements: implementsClause, compositionFeatureList, extendsClause, IDENT
+            // elements: implementsClause, compositionFeatureList, IDENT, extendsClause
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3950,9 +3971,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 570:4: -> ^( D_COMPOSITION[\"D_COMPOSITION\", ti.getUnitFlags(), qual] IDENT compositionFeatureList extendsClause implementsClause )
+            // 591:4: -> ^( D_COMPOSITION[\"D_COMPOSITION\", ti.getUnitFlags(), qual] IDENT compositionFeatureList extendsClause implementsClause )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:570:7: ^( D_COMPOSITION[\"D_COMPOSITION\", ti.getUnitFlags(), qual] IDENT compositionFeatureList extendsClause implementsClause )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:591:7: ^( D_COMPOSITION[\"D_COMPOSITION\", ti.getUnitFlags(), qual] IDENT compositionFeatureList extendsClause implementsClause )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -4020,7 +4041,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "compositionFeatureList"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:573:1: compositionFeatureList : ( compositionFeature )* -> ^( LIST[\"LIST\"] ( compositionFeature )* ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:594:1: compositionFeatureList : ( compositionFeature )* -> ^( LIST[\"LIST\"] ( compositionFeature )* ) ;
     public final pollenParser.compositionFeatureList_return compositionFeatureList() throws RecognitionException {
         pollenParser.compositionFeatureList_return retval = new pollenParser.compositionFeatureList_return();
         retval.start = input.LT(1);
@@ -4036,10 +4057,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 22) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:574:2: ( ( compositionFeature )* -> ^( LIST[\"LIST\"] ( compositionFeature )* ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:574:4: ( compositionFeature )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:595:2: ( ( compositionFeature )* -> ^( LIST[\"LIST\"] ( compositionFeature )* ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:595:4: ( compositionFeature )*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:574:4: ( compositionFeature )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:595:4: ( compositionFeature )*
             loop16:
             do {
                 int alt16=2;
@@ -4052,7 +4073,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt16) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:574:4: compositionFeature
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:595:4: compositionFeature
             	    {
             	    pushFollow(FOLLOW_compositionFeature_in_compositionFeatureList1820);
             	    compositionFeature78=compositionFeature();
@@ -4083,16 +4104,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 574:24: -> ^( LIST[\"LIST\"] ( compositionFeature )* )
+            // 595:24: -> ^( LIST[\"LIST\"] ( compositionFeature )* )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:574:27: ^( LIST[\"LIST\"] ( compositionFeature )* )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:595:27: ^( LIST[\"LIST\"] ( compositionFeature )* )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ListNode(LIST, "LIST")
                 , root_1);
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:574:52: ( compositionFeature )*
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:595:52: ( compositionFeature )*
                 while ( stream_compositionFeature.hasNext() ) {
                     adaptor.addChild(root_1, stream_compositionFeature.nextTree());
 
@@ -4143,7 +4164,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "compositionFeature"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:576:1: compositionFeature : ( stmtExport | fcnDefinitionHost | enumDefinition | varDeclaration | injectionDecl );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:597:1: compositionFeature : ( stmtExport | fcnDefinitionHost | enumDefinition | varDeclaration | injectionDecl );
     public final pollenParser.compositionFeature_return compositionFeature() throws RecognitionException {
         pollenParser.compositionFeature_return retval = new pollenParser.compositionFeature_return();
         retval.start = input.LT(1);
@@ -4170,7 +4191,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 23) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:580:3: ( stmtExport | fcnDefinitionHost | enumDefinition | varDeclaration | injectionDecl )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:601:3: ( stmtExport | fcnDefinitionHost | enumDefinition | varDeclaration | injectionDecl )
             int alt17=5;
             switch ( input.LA(1) ) {
             case 157:
@@ -4432,7 +4453,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt17) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:580:6: stmtExport
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:601:6: stmtExport
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -4447,7 +4468,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:581:7: fcnDefinitionHost
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:602:7: fcnDefinitionHost
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -4462,7 +4483,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:582:7: enumDefinition
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:603:7: enumDefinition
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -4477,7 +4498,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:583:7: varDeclaration
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:604:7: varDeclaration
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -4492,7 +4513,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:584:6: injectionDecl
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:605:6: injectionDecl
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -4548,7 +4569,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtImport"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:586:1: stmtImport : ( 'from' ! importFrom | ( 'import' qualName ( metaArguments )? importAs delim ) -> ^( IMPORT[\"IMPORT\"] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:607:1: stmtImport : ( 'from' ! importFrom | ( 'import' qualName ( metaArguments )? importAs delim ) -> ^( IMPORT[\"IMPORT\"] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? ) );
     public final pollenParser.stmtImport_return stmtImport() throws RecognitionException {
         stmtImport_stack.push(new stmtImport_scope());
         pollenParser.stmtImport_return retval = new pollenParser.stmtImport_return();
@@ -4590,7 +4611,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 24) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:600:6: ( 'from' ! importFrom | ( 'import' qualName ( metaArguments )? importAs delim ) -> ^( IMPORT[\"IMPORT\"] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:621:6: ( 'from' ! importFrom | ( 'import' qualName ( metaArguments )? importAs delim ) -> ^( IMPORT[\"IMPORT\"] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? ) )
             int alt19=2;
             int LA19_0 = input.LA(1);
 
@@ -4610,7 +4631,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt19) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:600:11: 'from' ! importFrom
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:621:11: 'from' ! importFrom
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -4627,10 +4648,10 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:602:8: ( 'import' qualName ( metaArguments )? importAs delim )
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:623:8: ( 'import' qualName ( metaArguments )? importAs delim )
                     {
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:602:8: ( 'import' qualName ( metaArguments )? importAs delim )
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:602:9: 'import' qualName ( metaArguments )? importAs delim
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:623:8: ( 'import' qualName ( metaArguments )? importAs delim )
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:623:9: 'import' qualName ( metaArguments )? importAs delim
                     {
                     string_literal86=(Atom)match(input,165,FOLLOW_165_in_stmtImport1925); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_165.add(string_literal86);
@@ -4655,7 +4676,7 @@ public TreeAdaptor getTreeAdaptor() {
                         			}
                         		}
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:614:10: ( metaArguments )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:635:10: ( metaArguments )?
                     int alt18=2;
                     int LA18_0 = input.LA(1);
 
@@ -4668,7 +4689,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt18) {
                         case 1 :
-                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:614:11: metaArguments
+                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:635:11: metaArguments
                             {
                             pushFollow(FOLLOW_metaArguments_in_stmtImport1950);
                             metaArguments88=metaArguments();
@@ -4713,9 +4734,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 617:10: -> ^( IMPORT[\"IMPORT\"] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? )
+                    // 638:10: -> ^( IMPORT[\"IMPORT\"] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:617:13: ^( IMPORT[\"IMPORT\"] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:638:13: ^( IMPORT[\"IMPORT\"] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -4732,7 +4753,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         adaptor.addChild(root_1, stream_importAs.nextTree());
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:617:96: ( metaArguments )?
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:638:96: ( metaArguments )?
                         if ( stream_metaArguments.hasNext() ) {
                             adaptor.addChild(root_1, stream_metaArguments.nextTree());
 
@@ -4787,7 +4808,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "importFrom"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:625:1: importFrom : (q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim ) -> ^( IMPORT[\"IMPORT\"] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:646:1: importFrom : (q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim ) -> ^( IMPORT[\"IMPORT\"] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? ) ;
     public final pollenParser.importFrom_return importFrom() throws RecognitionException {
         pollenParser.importFrom_return retval = new pollenParser.importFrom_return();
         retval.start = input.LT(1);
@@ -4819,11 +4840,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 25) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:628:5: ( (q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim ) -> ^( IMPORT[\"IMPORT\"] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:628:10: (q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:649:5: ( (q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim ) -> ^( IMPORT[\"IMPORT\"] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:649:10: (q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim )
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:628:10: (q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:628:11: q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:649:10: (q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:649:11: q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim
             {
             pushFollow(FOLLOW_qualName_in_importFrom2040);
             q1=qualName();
@@ -4855,7 +4876,7 @@ public TreeAdaptor getTreeAdaptor() {
                 				throw new PollenException("Missing module specification for pollen.environment", input);
                 		}
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:641:10: ( metaArguments )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:662:10: ( metaArguments )?
             int alt20=2;
             int LA20_0 = input.LA(1);
 
@@ -4868,7 +4889,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt20) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:641:11: metaArguments
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:662:11: metaArguments
                     {
                     pushFollow(FOLLOW_metaArguments_in_importFrom2092);
                     metaArguments92=metaArguments();
@@ -4901,7 +4922,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: importAs, metaArguments
+            // elements: metaArguments, importAs
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -4913,9 +4934,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 642:26: -> ^( IMPORT[\"IMPORT\"] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? )
+            // 663:26: -> ^( IMPORT[\"IMPORT\"] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:642:29: ^( IMPORT[\"IMPORT\"] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:663:29: ^( IMPORT[\"IMPORT\"] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -4932,7 +4953,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_importAs.nextTree());
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:642:119: ( metaArguments )?
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:663:119: ( metaArguments )?
                 if ( stream_metaArguments.hasNext() ) {
                     adaptor.addChild(root_1, stream_metaArguments.nextTree());
 
@@ -4983,7 +5004,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "importAs"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:645:1: importAs : ( 'as' qualName -> qualName | -> NIL );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:666:1: importAs : ( 'as' qualName -> qualName | -> NIL );
     public final pollenParser.importAs_return importAs() throws RecognitionException {
         pollenParser.importAs_return retval = new pollenParser.importAs_return();
         retval.start = input.LT(1);
@@ -5002,7 +5023,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 26) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:646:2: ( 'as' qualName -> qualName | -> NIL )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:667:2: ( 'as' qualName -> qualName | -> NIL )
             int alt21=2;
             int LA21_0 = input.LA(1);
 
@@ -5022,7 +5043,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt21) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:646:4: 'as' qualName
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:667:4: 'as' qualName
                     {
                     string_literal95=(Atom)match(input,141,FOLLOW_141_in_importAs2148); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_141.add(string_literal95);
@@ -5048,7 +5069,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 646:18: -> qualName
+                    // 667:18: -> qualName
                     {
                         adaptor.addChild(root_0, stream_qualName.nextTree());
 
@@ -5061,7 +5082,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:647:4: 
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:668:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -5076,7 +5097,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 647:4: -> NIL
+                    // 668:4: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -5125,7 +5146,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "importList"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:650:1: importList : stmtImports ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:671:1: importList : stmtImports ;
     public final pollenParser.importList_return importList() throws RecognitionException {
         pollenParser.importList_return retval = new pollenParser.importList_return();
         retval.start = input.LT(1);
@@ -5141,8 +5162,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 27) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:651:2: ( stmtImports )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:651:5: stmtImports
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:672:2: ( stmtImports )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:672:5: stmtImports
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -5189,7 +5210,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtImports"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:653:1: stmtImports : ( ( stmtImport )+ -> ^( LIST[\"LIST\"] ( stmtImport )+ ) | -> ^( LIST[\"LIST\"] ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:674:1: stmtImports : ( ( stmtImport )+ -> ^( LIST[\"LIST\"] ( stmtImport )+ ) | -> ^( LIST[\"LIST\"] ) );
     public final pollenParser.stmtImports_return stmtImports() throws RecognitionException {
         pollenParser.stmtImports_return retval = new pollenParser.stmtImports_return();
         retval.start = input.LT(1);
@@ -5205,7 +5226,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 28) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:654:2: ( ( stmtImport )+ -> ^( LIST[\"LIST\"] ( stmtImport )+ ) | -> ^( LIST[\"LIST\"] ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:675:2: ( ( stmtImport )+ -> ^( LIST[\"LIST\"] ( stmtImport )+ ) | -> ^( LIST[\"LIST\"] ) )
             int alt23=2;
             int LA23_0 = input.LA(1);
 
@@ -5225,9 +5246,9 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt23) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:654:4: ( stmtImport )+
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:675:4: ( stmtImport )+
                     {
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:654:4: ( stmtImport )+
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:675:4: ( stmtImport )+
                     int cnt22=0;
                     loop22:
                     do {
@@ -5241,7 +5262,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt22) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:654:4: stmtImport
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:675:4: stmtImport
                     	    {
                     	    pushFollow(FOLLOW_stmtImport_in_stmtImports2183);
                     	    stmtImport98=stmtImport();
@@ -5277,9 +5298,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 654:16: -> ^( LIST[\"LIST\"] ( stmtImport )+ )
+                    // 675:16: -> ^( LIST[\"LIST\"] ( stmtImport )+ )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:654:19: ^( LIST[\"LIST\"] ( stmtImport )+ )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:675:19: ^( LIST[\"LIST\"] ( stmtImport )+ )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -5307,7 +5328,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:655:4: 
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:676:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -5322,9 +5343,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 655:4: -> ^( LIST[\"LIST\"] )
+                    // 676:4: -> ^( LIST[\"LIST\"] )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:655:7: ^( LIST[\"LIST\"] )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:676:7: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -5377,7 +5398,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "meta"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:657:1: meta : ({...}? 'meta' ! ( braceOpen metaParmsGen braceClose ) | -> LIST[\"LIST\"] );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:678:1: meta : ({...}? 'meta' ! ( braceOpen metaParmsGen braceClose ) | -> LIST[\"LIST\"] );
     public final pollenParser.meta_return meta() throws RecognitionException {
         pollenParser.meta_return retval = new pollenParser.meta_return();
         retval.start = input.LT(1);
@@ -5401,7 +5422,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 29) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:663:2: ({...}? 'meta' ! ( braceOpen metaParmsGen braceClose ) | -> LIST[\"LIST\"] )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:684:2: ({...}? 'meta' ! ( braceOpen metaParmsGen braceClose ) | -> LIST[\"LIST\"] )
             int alt24=2;
             int LA24_0 = input.LA(1);
 
@@ -5421,7 +5442,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt24) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:663:4: {...}? 'meta' ! ( braceOpen metaParmsGen braceClose )
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:684:4: {...}? 'meta' ! ( braceOpen metaParmsGen braceClose )
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -5435,8 +5456,8 @@ public TreeAdaptor getTreeAdaptor() {
 
                     if ( state.backtracking==0 ) { metaFlags.add(Flags.META);}
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:666:4: ( braceOpen metaParmsGen braceClose )
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:666:5: braceOpen metaParmsGen braceClose
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:687:4: ( braceOpen metaParmsGen braceClose )
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:687:5: braceOpen metaParmsGen braceClose
                     {
                     pushFollow(FOLLOW_braceOpen_in_meta2254);
                     braceOpen100=braceOpen();
@@ -5465,7 +5486,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:677:5: 
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:698:5: 
                     {
                     if ( state.backtracking==0 ) { isMetaInstance = false;}
 
@@ -5482,7 +5503,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 677:32: -> LIST[\"LIST\"]
+                    // 698:32: -> LIST[\"LIST\"]
                     {
                         adaptor.addChild(root_0, 
                         new ListNode(LIST, "LIST")
@@ -5538,7 +5559,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "metaParmsGen"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:681:1: metaParmsGen : m1= metaParmGen ( NL )* ( ',' ( NL )* m2= metaParmGen )* -> ^( LIST[\"LIST\"] ( metaParmGen )+ ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:702:1: metaParmsGen : m1= metaParmGen ( NL )* ( ',' ( NL )* m2= metaParmGen )* -> ^( LIST[\"LIST\"] ( metaParmGen )+ ) ;
     public final pollenParser.metaParmsGen_return metaParmsGen() throws RecognitionException {
         metaParmsGen_stack.push(new metaParmsGen_scope());
         pollenParser.metaParmsGen_return retval = new pollenParser.metaParmsGen_return();
@@ -5569,8 +5590,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 30) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:698:2: (m1= metaParmGen ( NL )* ( ',' ( NL )* m2= metaParmGen )* -> ^( LIST[\"LIST\"] ( metaParmGen )+ ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:698:4: m1= metaParmGen ( NL )* ( ',' ( NL )* m2= metaParmGen )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:719:2: (m1= metaParmGen ( NL )* ( ',' ( NL )* m2= metaParmGen )* -> ^( LIST[\"LIST\"] ( metaParmGen )+ ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:719:4: m1= metaParmGen ( NL )* ( ',' ( NL )* m2= metaParmGen )*
             {
             pushFollow(FOLLOW_metaParmGen_in_metaParmsGen2342);
             m1=metaParmGen();
@@ -5581,7 +5602,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             if ( state.backtracking==0 ) { ((metaParmsGen_scope)metaParmsGen_stack.peek()).l.add((m1!=null?((BaseNode)m1.tree):null)); }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:698:55: ( NL )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:719:55: ( NL )*
             loop25:
             do {
                 int alt25=2;
@@ -5600,7 +5621,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt25) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:698:55: NL
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:719:55: NL
             	    {
             	    NL103=(Atom)match(input,NL,FOLLOW_NL_in_metaParmsGen2346); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_NL.add(NL103);
@@ -5615,7 +5636,7 @@ public TreeAdaptor getTreeAdaptor() {
             } while (true);
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:699:3: ( ',' ( NL )* m2= metaParmGen )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:720:3: ( ',' ( NL )* m2= metaParmGen )*
             loop27:
             do {
                 int alt27=2;
@@ -5628,13 +5649,13 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt27) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:699:5: ',' ( NL )* m2= metaParmGen
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:720:5: ',' ( NL )* m2= metaParmGen
             	    {
             	    char_literal104=(Atom)match(input,130,FOLLOW_130_in_metaParmsGen2353); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_130.add(char_literal104);
 
 
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:699:9: ( NL )*
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:720:9: ( NL )*
             	    loop26:
             	    do {
             	        int alt26=2;
@@ -5647,7 +5668,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             	        switch (alt26) {
             	    	case 1 :
-            	    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:699:9: NL
+            	    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:720:9: NL
             	    	    {
             	    	    NL105=(Atom)match(input,NL,FOLLOW_NL_in_metaParmsGen2355); if (state.failed) return retval; 
             	    	    if ( state.backtracking==0 ) stream_NL.add(NL105);
@@ -5693,9 +5714,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 702:3: -> ^( LIST[\"LIST\"] ( metaParmGen )+ )
+            // 723:3: -> ^( LIST[\"LIST\"] ( metaParmGen )+ )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:702:6: ^( LIST[\"LIST\"] ( metaParmGen )+ )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:723:6: ^( LIST[\"LIST\"] ( metaParmGen )+ )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -5764,7 +5785,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "metaParmGen"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:720:1: metaParmGen : ( 'type' IDENT ( '=' typeName )? -> ^( IMPORT[\"IMPORT\", flags] IDENT[from] IDENT[name] IDENT[as] ) | builtinType id= IDENT ( '=' primitiveLit )? -> ^( D_FORMAL[\"D_FORMAL\", flags] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType ) IDENT ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] ) ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:741:1: metaParmGen : ( 'type' IDENT ( '=' typeName )? -> ^( IMPORT[\"IMPORT\", flags] IDENT[from] IDENT[name] IDENT[as] ) | builtinType id= IDENT ( '=' primitiveLit )? -> ^( D_FORMAL[\"D_FORMAL\", flags] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType ) IDENT ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] ) ) );
     public final pollenParser.metaParmGen_return metaParmGen() throws RecognitionException {
         pollenParser.metaParmGen_return retval = new pollenParser.metaParmGen_return();
         retval.start = input.LT(1);
@@ -5816,7 +5837,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 31) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:741:2: ( 'type' IDENT ( '=' typeName )? -> ^( IMPORT[\"IMPORT\", flags] IDENT[from] IDENT[name] IDENT[as] ) | builtinType id= IDENT ( '=' primitiveLit )? -> ^( D_FORMAL[\"D_FORMAL\", flags] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType ) IDENT ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] ) ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:762:2: ( 'type' IDENT ( '=' typeName )? -> ^( IMPORT[\"IMPORT\", flags] IDENT[from] IDENT[name] IDENT[as] ) | builtinType id= IDENT ( '=' primitiveLit )? -> ^( D_FORMAL[\"D_FORMAL\", flags] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType ) IDENT ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] ) ) )
             int alt30=2;
             int LA30_0 = input.LA(1);
 
@@ -5836,7 +5857,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt30) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:741:4: 'type' IDENT ( '=' typeName )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:762:4: 'type' IDENT ( '=' typeName )?
                     {
                     string_literal106=(Atom)match(input,184,FOLLOW_184_in_metaParmGen2410); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_184.add(string_literal106);
@@ -5846,7 +5867,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT107);
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:741:17: ( '=' typeName )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:762:17: ( '=' typeName )?
                     int alt28=2;
                     int LA28_0 = input.LA(1);
 
@@ -5855,7 +5876,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt28) {
                         case 1 :
-                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:741:19: '=' typeName
+                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:762:19: '=' typeName
                             {
                             char_literal108=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_metaParmGen2416); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_ASSIGN.add(char_literal108);
@@ -5938,9 +5959,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 790:4: -> ^( IMPORT[\"IMPORT\", flags] IDENT[from] IDENT[name] IDENT[as] )
+                    // 811:4: -> ^( IMPORT[\"IMPORT\", flags] IDENT[from] IDENT[name] IDENT[as] )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:790:7: ^( IMPORT[\"IMPORT\", flags] IDENT[from] IDENT[name] IDENT[as] )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:811:7: ^( IMPORT[\"IMPORT\", flags] IDENT[from] IDENT[name] IDENT[as] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -5971,7 +5992,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:792:7: builtinType id= IDENT ( '=' primitiveLit )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:813:7: builtinType id= IDENT ( '=' primitiveLit )?
                     {
                     pushFollow(FOLLOW_builtinType_in_metaParmGen2462);
                     builtinType110=builtinType();
@@ -5984,7 +6005,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_IDENT.add(id);
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:792:28: ( '=' primitiveLit )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:813:28: ( '=' primitiveLit )?
                     int alt29=2;
                     int LA29_0 = input.LA(1);
 
@@ -5993,7 +6014,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt29) {
                         case 1 :
-                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:792:29: '=' primitiveLit
+                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:813:29: '=' primitiveLit
                             {
                             char_literal111=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_metaParmGen2469); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_ASSIGN.add(char_literal111);
@@ -6056,7 +6077,7 @@ public TreeAdaptor getTreeAdaptor() {
                     	 		}
 
                     // AST REWRITE
-                    // elements: builtinType, IDENT, IDENT
+                    // elements: IDENT, IDENT, builtinType
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -6068,16 +6089,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 833:3: -> ^( D_FORMAL[\"D_FORMAL\", flags] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType ) IDENT ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] ) )
+                    // 854:3: -> ^( D_FORMAL[\"D_FORMAL\", flags] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType ) IDENT ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] ) )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:833:6: ^( D_FORMAL[\"D_FORMAL\", flags] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType ) IDENT ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:854:6: ^( D_FORMAL[\"D_FORMAL\", flags] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType ) IDENT ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.Formal(D_FORMAL, "D_FORMAL", flags)
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:833:54: ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:854:54: ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -6093,7 +6114,7 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_IDENT.nextNode()
                         );
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:833:133: ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:854:133: ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -6155,7 +6176,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "metaArguments"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:838:1: metaArguments : ( '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}' -> ^( LIST[\"LIST\"] ( metaArgument )+ ) | '{' '}' -> LIST[\"LIST\"] );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:859:1: metaArguments : ( '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}' -> ^( LIST[\"LIST\"] ( metaArgument )+ ) | '{' '}' -> LIST[\"LIST\"] );
     public final pollenParser.metaArguments_return metaArguments() throws RecognitionException {
         pollenParser.metaArguments_return retval = new pollenParser.metaArguments_return();
         retval.start = input.LT(1);
@@ -6193,7 +6214,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 32) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:4: ( '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}' -> ^( LIST[\"LIST\"] ( metaArgument )+ ) | '{' '}' -> LIST[\"LIST\"] )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:4: ( '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}' -> ^( LIST[\"LIST\"] ( metaArgument )+ ) | '{' '}' -> LIST[\"LIST\"] )
             int alt35=2;
             int LA35_0 = input.LA(1);
 
@@ -6225,7 +6246,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt35) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:7: '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:7: '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}'
                     {
                     char_literal113=(Atom)match(input,190,FOLLOW_190_in_metaArguments2544); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_190.add(char_literal113);
@@ -6238,7 +6259,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_metaArgument.add(metaArgument114.getTree());
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:24: ( NL )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:24: ( NL )*
                     loop31:
                     do {
                         int alt31=2;
@@ -6251,7 +6272,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt31) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:25: NL
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:25: NL
                     	    {
                     	    NL115=(Atom)match(input,NL,FOLLOW_NL_in_metaArguments2549); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_NL.add(NL115);
@@ -6266,7 +6287,7 @@ public TreeAdaptor getTreeAdaptor() {
                     } while (true);
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:30: ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:30: ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )*
                     loop34:
                     do {
                         int alt34=2;
@@ -6279,16 +6300,16 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt34) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:31: ',' ( ( NL )* ) metaArgument ( ( NL )* )
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:31: ',' ( ( NL )* ) metaArgument ( ( NL )* )
                     	    {
                     	    char_literal116=(Atom)match(input,130,FOLLOW_130_in_metaArguments2554); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_130.add(char_literal116);
 
 
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:35: ( ( NL )* )
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:36: ( NL )*
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:35: ( ( NL )* )
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:36: ( NL )*
                     	    {
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:36: ( NL )*
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:36: ( NL )*
                     	    loop32:
                     	    do {
                     	        int alt32=2;
@@ -6307,7 +6328,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                     	        switch (alt32) {
                     	    	case 1 :
-                    	    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:36: NL
+                    	    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:36: NL
                     	    	    {
                     	    	    NL117=(Atom)match(input,NL,FOLLOW_NL_in_metaArguments2557); if (state.failed) return retval; 
                     	    	    if ( state.backtracking==0 ) stream_NL.add(NL117);
@@ -6332,10 +6353,10 @@ public TreeAdaptor getTreeAdaptor() {
                     	    if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) stream_metaArgument.add(metaArgument118.getTree());
 
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:54: ( ( NL )* )
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:55: ( NL )*
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:54: ( ( NL )* )
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:55: ( NL )*
                     	    {
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:55: ( NL )*
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:55: ( NL )*
                     	    loop33:
                     	    do {
                     	        int alt33=2;
@@ -6348,7 +6369,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                     	        switch (alt33) {
                     	    	case 1 :
-                    	    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:55: NL
+                    	    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:55: NL
                     	    	    {
                     	    	    NL119=(Atom)match(input,NL,FOLLOW_NL_in_metaArguments2564); if (state.failed) return retval; 
                     	    	    if ( state.backtracking==0 ) stream_NL.add(NL119);
@@ -6392,9 +6413,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 839:67: -> ^( LIST[\"LIST\"] ( metaArgument )+ )
+                    // 860:67: -> ^( LIST[\"LIST\"] ( metaArgument )+ )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:70: ^( LIST[\"LIST\"] ( metaArgument )+ )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:70: ^( LIST[\"LIST\"] ( metaArgument )+ )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -6422,7 +6443,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:840:6: '{' '}'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:861:6: '{' '}'
                     {
                     char_literal121=(Atom)match(input,190,FOLLOW_190_in_metaArguments2591); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_190.add(char_literal121);
@@ -6445,7 +6466,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 840:19: -> LIST[\"LIST\"]
+                    // 861:19: -> LIST[\"LIST\"]
                     {
                         adaptor.addChild(root_0, 
                         new ListNode(LIST, "LIST")
@@ -6494,7 +6515,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "metaArgument"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:843:1: metaArgument : ( primitiveLit | typeNameScalar | -> NIL );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:864:1: metaArgument : ( primitiveLit | typeNameScalar | -> NIL );
     public final pollenParser.metaArgument_return metaArgument() throws RecognitionException {
         pollenParser.metaArgument_return retval = new pollenParser.metaArgument_return();
         retval.start = input.LT(1);
@@ -6512,7 +6533,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 33) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:844:2: ( primitiveLit | typeNameScalar | -> NIL )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:865:2: ( primitiveLit | typeNameScalar | -> NIL )
             int alt36=3;
             switch ( input.LA(1) ) {
             case CHAR:
@@ -6561,7 +6582,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt36) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:844:4: primitiveLit
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:865:4: primitiveLit
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -6576,7 +6597,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:845:4: typeNameScalar
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:866:4: typeNameScalar
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -6591,7 +6612,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:846:5: 
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:867:5: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -6606,7 +6627,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 846:5: -> NIL
+                    // 867:5: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -6655,7 +6676,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "typeName"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:848:1: typeName : typeNameScalar ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:869:1: typeName : typeNameScalar ;
     public final pollenParser.typeName_return typeName() throws RecognitionException {
         pollenParser.typeName_return retval = new pollenParser.typeName_return();
         retval.start = input.LT(1);
@@ -6671,8 +6692,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 34) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:849:2: ( typeNameScalar )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:849:4: typeNameScalar
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:870:2: ( typeNameScalar )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:870:4: typeNameScalar
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -6719,7 +6740,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "typeNameScalar"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:851:1: typeNameScalar : ( builtinType -> ^( T_STD[\"T_STD\", typeMods] builtinType ) | userTypeName );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:872:1: typeNameScalar : ( builtinType -> ^( T_STD[\"T_STD\", typeMods] builtinType ) | userTypeName );
     public final pollenParser.typeNameScalar_return typeNameScalar() throws RecognitionException {
         pollenParser.typeNameScalar_return retval = new pollenParser.typeNameScalar_return();
         retval.start = input.LT(1);
@@ -6737,7 +6758,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 35) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:852:2: ( builtinType -> ^( T_STD[\"T_STD\", typeMods] builtinType ) | userTypeName )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:873:2: ( builtinType -> ^( T_STD[\"T_STD\", typeMods] builtinType ) | userTypeName )
             int alt37=2;
             int LA37_0 = input.LA(1);
 
@@ -6757,7 +6778,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt37) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:852:4: builtinType
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:873:4: builtinType
                     {
                     pushFollow(FOLLOW_builtinType_in_typeNameScalar2659);
                     builtinType126=builtinType();
@@ -6779,9 +6800,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 852:16: -> ^( T_STD[\"T_STD\", typeMods] builtinType )
+                    // 873:16: -> ^( T_STD[\"T_STD\", typeMods] builtinType )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:852:19: ^( T_STD[\"T_STD\", typeMods] builtinType )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:873:19: ^( T_STD[\"T_STD\", typeMods] builtinType )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -6802,7 +6823,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:853:4: userTypeName
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:874:4: userTypeName
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -6851,7 +6872,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "userTypeName"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:855:1: userTypeName : qualName -> ^( T_USR[\"T_USR\", typeMods] qualName ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:876:1: userTypeName : qualName -> ^( T_USR[\"T_USR\", typeMods] qualName ) ;
     public final pollenParser.userTypeName_return userTypeName() throws RecognitionException {
         pollenParser.userTypeName_return retval = new pollenParser.userTypeName_return();
         retval.start = input.LT(1);
@@ -6867,8 +6888,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 36) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:858:2: ( qualName -> ^( T_USR[\"T_USR\", typeMods] qualName ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:858:4: qualName
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:879:2: ( qualName -> ^( T_USR[\"T_USR\", typeMods] qualName ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:879:4: qualName
             {
             pushFollow(FOLLOW_qualName_in_userTypeName2692);
             qualName128=qualName();
@@ -6890,9 +6911,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 858:14: -> ^( T_USR[\"T_USR\", typeMods] qualName )
+            // 879:14: -> ^( T_USR[\"T_USR\", typeMods] qualName )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:858:17: ^( T_USR[\"T_USR\", typeMods] qualName )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:879:17: ^( T_USR[\"T_USR\", typeMods] qualName )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -6945,7 +6966,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "typeNameArray"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:1: typeNameArray : ( builtinType -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_STD[\"T_STD\", typeMods] builtinType ) ) | userTypeNameArr );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:881:1: typeNameArray : ( builtinType -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_STD[\"T_STD\", typeMods] builtinType ) ) | userTypeNameArr );
     public final pollenParser.typeNameArray_return typeNameArray() throws RecognitionException {
         pollenParser.typeNameArray_return retval = new pollenParser.typeNameArray_return();
         retval.start = input.LT(1);
@@ -6963,7 +6984,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 37) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:861:2: ( builtinType -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_STD[\"T_STD\", typeMods] builtinType ) ) | userTypeNameArr )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:882:2: ( builtinType -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_STD[\"T_STD\", typeMods] builtinType ) ) | userTypeNameArr )
             int alt38=2;
             int LA38_0 = input.LA(1);
 
@@ -6983,7 +7004,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt38) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:861:4: builtinType
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:882:4: builtinType
                     {
                     pushFollow(FOLLOW_builtinType_in_typeNameArray2719);
                     builtinType129=builtinType();
@@ -7005,16 +7026,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 861:16: -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_STD[\"T_STD\", typeMods] builtinType ) )
+                    // 882:16: -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_STD[\"T_STD\", typeMods] builtinType ) )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:861:19: ^( T_ARR[\"T_ARR\", typeMods] ^( T_STD[\"T_STD\", typeMods] builtinType ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:882:19: ^( T_ARR[\"T_ARR\", typeMods] ^( T_STD[\"T_STD\", typeMods] builtinType ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new TypeNode.Arr(T_ARR, "T_ARR", typeMods)
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:861:60: ^( T_STD[\"T_STD\", typeMods] builtinType )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:882:60: ^( T_STD[\"T_STD\", typeMods] builtinType )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -7038,7 +7059,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:862:4: userTypeNameArr
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:883:4: userTypeNameArr
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -7087,7 +7108,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "userTypeNameArr"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:864:1: userTypeNameArr : qualName -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_USR[\"T_USR\", typeMods] qualName ) ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:885:1: userTypeNameArr : qualName -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_USR[\"T_USR\", typeMods] qualName ) ) ;
     public final pollenParser.userTypeNameArr_return userTypeNameArr() throws RecognitionException {
         pollenParser.userTypeNameArr_return retval = new pollenParser.userTypeNameArr_return();
         retval.start = input.LT(1);
@@ -7103,8 +7124,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 38) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:865:2: ( qualName -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_USR[\"T_USR\", typeMods] qualName ) ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:865:4: qualName
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:886:2: ( qualName -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_USR[\"T_USR\", typeMods] qualName ) ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:886:4: qualName
             {
             pushFollow(FOLLOW_qualName_in_userTypeNameArr2758);
             qualName131=qualName();
@@ -7126,16 +7147,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 865:14: -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_USR[\"T_USR\", typeMods] qualName ) )
+            // 886:14: -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_USR[\"T_USR\", typeMods] qualName ) )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:865:17: ^( T_ARR[\"T_ARR\", typeMods] ^( T_USR[\"T_USR\", typeMods] qualName ) )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:886:17: ^( T_ARR[\"T_ARR\", typeMods] ^( T_USR[\"T_USR\", typeMods] qualName ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new TypeNode.Arr(T_ARR, "T_ARR", typeMods)
                 , root_1);
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:865:58: ^( T_USR[\"T_USR\", typeMods] qualName )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:886:58: ^( T_USR[\"T_USR\", typeMods] qualName )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
@@ -7197,7 +7218,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "unitTypeDefinition"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:868:1: unitTypeDefinition : ( meta !) ( ( 'module' )=> moduleDefinition | ( 'class' )=> classDefinition | ( 'protocol' )=> protocolDefinition | ( 'composition' )=> compositionDefinition | ( 'enum' )=> enumDefinition ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:889:1: unitTypeDefinition : ( meta !) ( ( 'module' )=> moduleDefinition | ( 'class' )=> classDefinition | ( 'protocol' )=> protocolDefinition | ( 'composition' )=> compositionDefinition | ( 'enum' )=> enumDefinition ) ;
     public final pollenParser.unitTypeDefinition_return unitTypeDefinition() throws RecognitionException {
         unitTypeDefinition_stack.push(new unitTypeDefinition_scope());
         pollenParser.unitTypeDefinition_return retval = new pollenParser.unitTypeDefinition_return();
@@ -7224,14 +7245,14 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 39) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:877:4: ( ( meta !) ( ( 'module' )=> moduleDefinition | ( 'class' )=> classDefinition | ( 'protocol' )=> protocolDefinition | ( 'composition' )=> compositionDefinition | ( 'enum' )=> enumDefinition ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:877:8: ( meta !) ( ( 'module' )=> moduleDefinition | ( 'class' )=> classDefinition | ( 'protocol' )=> protocolDefinition | ( 'composition' )=> compositionDefinition | ( 'enum' )=> enumDefinition )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:898:4: ( ( meta !) ( ( 'module' )=> moduleDefinition | ( 'class' )=> classDefinition | ( 'protocol' )=> protocolDefinition | ( 'composition' )=> compositionDefinition | ( 'enum' )=> enumDefinition ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:898:8: ( meta !) ( ( 'module' )=> moduleDefinition | ( 'class' )=> classDefinition | ( 'protocol' )=> protocolDefinition | ( 'composition' )=> compositionDefinition | ( 'enum' )=> enumDefinition )
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:877:8: ( meta !)
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:877:9: meta !
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:898:8: ( meta !)
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:898:9: meta !
             {
             pushFollow(FOLLOW_meta_in_unitTypeDefinition2807);
             meta132=meta();
@@ -7244,7 +7265,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:878:6: ( ( 'module' )=> moduleDefinition | ( 'class' )=> classDefinition | ( 'protocol' )=> protocolDefinition | ( 'composition' )=> compositionDefinition | ( 'enum' )=> enumDefinition )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:899:6: ( ( 'module' )=> moduleDefinition | ( 'class' )=> classDefinition | ( 'protocol' )=> protocolDefinition | ( 'composition' )=> compositionDefinition | ( 'enum' )=> enumDefinition )
             int alt39=5;
             int LA39_0 = input.LA(1);
 
@@ -7273,7 +7294,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt39) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:879:10: ( 'module' )=> moduleDefinition
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:900:10: ( 'module' )=> moduleDefinition
                     {
                     pushFollow(FOLLOW_moduleDefinition_in_unitTypeDefinition2837);
                     moduleDefinition133=moduleDefinition();
@@ -7285,7 +7306,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:880:8: ( 'class' )=> classDefinition
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:901:8: ( 'class' )=> classDefinition
                     {
                     pushFollow(FOLLOW_classDefinition_in_unitTypeDefinition2858);
                     classDefinition134=classDefinition();
@@ -7297,7 +7318,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:881:10: ( 'protocol' )=> protocolDefinition
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:902:10: ( 'protocol' )=> protocolDefinition
                     {
                     pushFollow(FOLLOW_protocolDefinition_in_unitTypeDefinition2875);
                     protocolDefinition135=protocolDefinition();
@@ -7309,7 +7330,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:882:10: ( 'composition' )=> compositionDefinition
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:903:10: ( 'composition' )=> compositionDefinition
                     {
                     pushFollow(FOLLOW_compositionDefinition_in_unitTypeDefinition2893);
                     compositionDefinition136=compositionDefinition();
@@ -7321,7 +7342,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:883:10: ( 'enum' )=> enumDefinition
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:904:10: ( 'enum' )=> enumDefinition
                     {
                     pushFollow(FOLLOW_enumDefinition_in_unitTypeDefinition2911);
                     enumDefinition137=enumDefinition();
@@ -7377,7 +7398,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "extendsClause"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:886:1: extendsClause : ( 'extends' qualName -> qualName | -> NIL );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:907:1: extendsClause : ( 'extends' qualName -> qualName | -> NIL );
     public final pollenParser.extendsClause_return extendsClause() throws RecognitionException {
         pollenParser.extendsClause_return retval = new pollenParser.extendsClause_return();
         retval.start = input.LT(1);
@@ -7396,7 +7417,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 40) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:887:5: ( 'extends' qualName -> qualName | -> NIL )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:908:5: ( 'extends' qualName -> qualName | -> NIL )
             int alt40=2;
             int LA40_0 = input.LA(1);
 
@@ -7416,7 +7437,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt40) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:887:9: 'extends' qualName
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:908:9: 'extends' qualName
                     {
                     string_literal138=(Atom)match(input,158,FOLLOW_158_in_extendsClause2936); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_158.add(string_literal138);
@@ -7447,7 +7468,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 892:6: -> qualName
+                    // 913:6: -> qualName
                     {
                         adaptor.addChild(root_0, stream_qualName.nextTree());
 
@@ -7460,7 +7481,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:893:8: 
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:914:8: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -7475,7 +7496,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 893:8: -> NIL
+                    // 914:8: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -7524,7 +7545,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "implementsClause"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:896:1: implementsClause : ( 'implements' qualName -> qualName | -> NIL );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:917:1: implementsClause : ( 'implements' qualName -> qualName | -> NIL );
     public final pollenParser.implementsClause_return implementsClause() throws RecognitionException {
         pollenParser.implementsClause_return retval = new pollenParser.implementsClause_return();
         retval.start = input.LT(1);
@@ -7543,7 +7564,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 41) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:897:5: ( 'implements' qualName -> qualName | -> NIL )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:918:5: ( 'implements' qualName -> qualName | -> NIL )
             int alt41=2;
             int LA41_0 = input.LA(1);
 
@@ -7563,7 +7584,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt41) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:897:9: 'implements' qualName
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:918:9: 'implements' qualName
                     {
                     string_literal140=(Atom)match(input,164,FOLLOW_164_in_implementsClause2983); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_164.add(string_literal140);
@@ -7594,7 +7615,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 902:5: -> qualName
+                    // 923:5: -> qualName
                     {
                         adaptor.addChild(root_0, stream_qualName.nextTree());
 
@@ -7607,7 +7628,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:903:7: 
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:924:7: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -7622,7 +7643,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 903:7: -> NIL
+                    // 924:7: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -7671,7 +7692,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "braceClose"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:905:1: braceClose : ( NL !)* '}' ! ( NL !)* ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:926:1: braceClose : ( NL !)* '}' ! ( NL !)* ;
     public final pollenParser.braceClose_return braceClose() throws RecognitionException {
         pollenParser.braceClose_return retval = new pollenParser.braceClose_return();
         retval.start = input.LT(1);
@@ -7691,13 +7712,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 42) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:906:5: ( ( NL !)* '}' ! ( NL !)* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:906:10: ( NL !)* '}' ! ( NL !)*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:927:5: ( ( NL !)* '}' ! ( NL !)* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:927:10: ( NL !)* '}' ! ( NL !)*
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:906:10: ( NL !)*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:927:10: ( NL !)*
             loop42:
             do {
                 int alt42=2;
@@ -7710,7 +7731,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt42) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:906:11: NL !
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:927:11: NL !
             	    {
             	    NL142=(Atom)match(input,NL,FOLLOW_NL_in_braceClose3030); if (state.failed) return retval;
 
@@ -7725,7 +7746,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             char_literal143=(Atom)match(input,193,FOLLOW_193_in_braceClose3035); if (state.failed) return retval;
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:906:22: ( NL !)*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:927:22: ( NL !)*
             loop43:
             do {
                 int alt43=2;
@@ -7744,7 +7765,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt43) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:906:23: NL !
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:927:23: NL !
             	    {
             	    NL144=(Atom)match(input,NL,FOLLOW_NL_in_braceClose3039); if (state.failed) return retval;
 
@@ -7792,7 +7813,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "braceCloseAtEOF"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:908:1: braceCloseAtEOF : ( ( NL !)* ) '}' ! ( NL !)* ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:929:1: braceCloseAtEOF : ( ( NL !)* ) '}' ! ( NL !)* ;
     public final pollenParser.braceCloseAtEOF_return braceCloseAtEOF() throws RecognitionException {
         pollenParser.braceCloseAtEOF_return retval = new pollenParser.braceCloseAtEOF_return();
         retval.start = input.LT(1);
@@ -7812,16 +7833,16 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 43) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:911:5: ( ( ( NL !)* ) '}' ! ( NL !)* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:911:9: ( ( NL !)* ) '}' ! ( NL !)*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:932:5: ( ( ( NL !)* ) '}' ! ( NL !)* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:932:9: ( ( NL !)* ) '}' ! ( NL !)*
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:911:9: ( ( NL !)* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:911:10: ( NL !)*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:932:9: ( ( NL !)* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:932:10: ( NL !)*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:911:12: ( NL !)*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:932:12: ( NL !)*
             loop44:
             do {
                 int alt44=2;
@@ -7834,7 +7855,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt44) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:911:12: NL !
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:932:12: NL !
             	    {
             	    NL145=(Atom)match(input,NL,FOLLOW_NL_in_braceCloseAtEOF3063); if (state.failed) return retval;
 
@@ -7852,7 +7873,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             char_literal146=(Atom)match(input,193,FOLLOW_193_in_braceCloseAtEOF3068); if (state.failed) return retval;
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:911:21: ( NL !)*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:932:21: ( NL !)*
             loop45:
             do {
                 int alt45=2;
@@ -7865,7 +7886,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt45) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:911:22: NL !
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:932:22: NL !
             	    {
             	    NL147=(Atom)match(input,NL,FOLLOW_NL_in_braceCloseAtEOF3072); if (state.failed) return retval;
 
@@ -7913,7 +7934,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "braceOpen"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:914:1: braceOpen : ( NL !)* '{' ! ( NL !)* ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:935:1: braceOpen : ( NL !)* '{' ! ( NL !)* ;
     public final pollenParser.braceOpen_return braceOpen() throws RecognitionException {
         pollenParser.braceOpen_return retval = new pollenParser.braceOpen_return();
         retval.start = input.LT(1);
@@ -7933,13 +7954,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 44) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:915:5: ( ( NL !)* '{' ! ( NL !)* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:915:10: ( NL !)* '{' ! ( NL !)*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:936:5: ( ( NL !)* '{' ! ( NL !)* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:936:10: ( NL !)* '{' ! ( NL !)*
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:915:10: ( NL !)*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:936:10: ( NL !)*
             loop46:
             do {
                 int alt46=2;
@@ -7952,7 +7973,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt46) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:915:11: NL !
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:936:11: NL !
             	    {
             	    NL148=(Atom)match(input,NL,FOLLOW_NL_in_braceOpen3097); if (state.failed) return retval;
 
@@ -7967,7 +7988,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             char_literal149=(Atom)match(input,190,FOLLOW_190_in_braceOpen3102); if (state.failed) return retval;
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:915:22: ( NL !)*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:936:22: ( NL !)*
             loop47:
             do {
                 int alt47=2;
@@ -7986,7 +8007,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt47) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:915:23: NL !
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:936:23: NL !
             	    {
             	    NL150=(Atom)match(input,NL,FOLLOW_NL_in_braceOpen3106); if (state.failed) return retval;
 
@@ -8034,7 +8055,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "equalityOp"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:917:1: equalityOp : ( EQ | NOT_EQ );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:938:1: equalityOp : ( EQ | NOT_EQ );
     public final pollenParser.equalityOp_return equalityOp() throws RecognitionException {
         pollenParser.equalityOp_return retval = new pollenParser.equalityOp_return();
         retval.start = input.LT(1);
@@ -8050,7 +8071,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 45) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:918:2: ( EQ | NOT_EQ )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:939:2: ( EQ | NOT_EQ )
             // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             root_0 = (BaseNode)adaptor.nil();
@@ -8108,7 +8129,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "relationalOp"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:920:1: relationalOp : ( LT | GT | LT_EQ | GT_EQ );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:941:1: relationalOp : ( LT | GT | LT_EQ | GT_EQ );
     public final pollenParser.relationalOp_return relationalOp() throws RecognitionException {
         pollenParser.relationalOp_return retval = new pollenParser.relationalOp_return();
         retval.start = input.LT(1);
@@ -8124,7 +8145,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 46) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:921:2: ( LT | GT | LT_EQ | GT_EQ )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:942:2: ( LT | GT | LT_EQ | GT_EQ )
             // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             root_0 = (BaseNode)adaptor.nil();
@@ -8182,7 +8203,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "shiftOp"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:923:1: shiftOp : ( '<<' | '>>' );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:944:1: shiftOp : ( '<<' | '>>' );
     public final pollenParser.shiftOp_return shiftOp() throws RecognitionException {
         pollenParser.shiftOp_return retval = new pollenParser.shiftOp_return();
         retval.start = input.LT(1);
@@ -8198,7 +8219,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 47) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:924:2: ( '<<' | '>>' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:945:2: ( '<<' | '>>' )
             // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             root_0 = (BaseNode)adaptor.nil();
@@ -8256,7 +8277,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "incDecOp"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:926:1: incDecOp : ( INC | DEC );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:947:1: incDecOp : ( INC | DEC );
     public final pollenParser.incDecOp_return incDecOp() throws RecognitionException {
         pollenParser.incDecOp_return retval = new pollenParser.incDecOp_return();
         retval.start = input.LT(1);
@@ -8272,7 +8293,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 48) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:927:2: ( INC | DEC )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:948:2: ( INC | DEC )
             // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             root_0 = (BaseNode)adaptor.nil();
@@ -8330,7 +8351,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "addSubOp"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:929:1: addSubOp : ( PLUS | MINUS );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:950:1: addSubOp : ( PLUS | MINUS );
     public final pollenParser.addSubOp_return addSubOp() throws RecognitionException {
         pollenParser.addSubOp_return retval = new pollenParser.addSubOp_return();
         retval.start = input.LT(1);
@@ -8346,7 +8367,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 49) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:930:2: ( PLUS | MINUS )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:951:2: ( PLUS | MINUS )
             // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             root_0 = (BaseNode)adaptor.nil();
@@ -8404,7 +8425,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "assignOp"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:932:1: assignOp : ( ADD_EQ | SUB_EQ | MUL_EQ | DIV_EQ | MOD_EQ | LSHFT_EQ | RSHFT_EQ | BITAND_EQ | BITXOR_EQ | BITOR_EQ );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:953:1: assignOp : ( ADD_EQ | SUB_EQ | MUL_EQ | DIV_EQ | MOD_EQ | LSHFT_EQ | RSHFT_EQ | BITAND_EQ | BITXOR_EQ | BITOR_EQ );
     public final pollenParser.assignOp_return assignOp() throws RecognitionException {
         pollenParser.assignOp_return retval = new pollenParser.assignOp_return();
         retval.start = input.LT(1);
@@ -8420,7 +8441,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 50) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:933:2: ( ADD_EQ | SUB_EQ | MUL_EQ | DIV_EQ | MOD_EQ | LSHFT_EQ | RSHFT_EQ | BITAND_EQ | BITXOR_EQ | BITOR_EQ )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:954:2: ( ADD_EQ | SUB_EQ | MUL_EQ | DIV_EQ | MOD_EQ | LSHFT_EQ | RSHFT_EQ | BITAND_EQ | BITXOR_EQ | BITOR_EQ )
             // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             root_0 = (BaseNode)adaptor.nil();
@@ -8478,7 +8499,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "multDivModOp"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:935:1: multDivModOp : ( '*' | '/' | '%' );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:956:1: multDivModOp : ( '*' | '/' | '%' );
     public final pollenParser.multDivModOp_return multDivModOp() throws RecognitionException {
         pollenParser.multDivModOp_return retval = new pollenParser.multDivModOp_return();
         retval.start = input.LT(1);
@@ -8494,7 +8515,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 51) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:936:2: ( '*' | '/' | '%' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:957:2: ( '*' | '/' | '%' )
             // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             root_0 = (BaseNode)adaptor.nil();
@@ -8552,7 +8573,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "logicalNotOp"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:938:1: logicalNotOp : LOG_NOT ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:959:1: logicalNotOp : LOG_NOT ;
     public final pollenParser.logicalNotOp_return logicalNotOp() throws RecognitionException {
         pollenParser.logicalNotOp_return retval = new pollenParser.logicalNotOp_return();
         retval.start = input.LT(1);
@@ -8568,8 +8589,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 52) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:939:2: ( LOG_NOT )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:939:4: LOG_NOT
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:960:2: ( LOG_NOT )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:960:4: LOG_NOT
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -8617,7 +8638,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "bitwiseNotOp"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:941:1: bitwiseNotOp : BIT_NOT ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:962:1: bitwiseNotOp : BIT_NOT ;
     public final pollenParser.bitwiseNotOp_return bitwiseNotOp() throws RecognitionException {
         pollenParser.bitwiseNotOp_return retval = new pollenParser.bitwiseNotOp_return();
         retval.start = input.LT(1);
@@ -8633,8 +8654,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 53) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:942:2: ( BIT_NOT )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:942:4: BIT_NOT
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:963:2: ( BIT_NOT )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:963:4: BIT_NOT
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -8682,7 +8703,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprList"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:944:1: exprList : ( expr ( ',' expr )* -> ^( LIST[\"LIST\"] ( expr )+ ) | -> LIST[\"LIST\"] );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:965:1: exprList : ( expr ( ',' expr )* -> ^( LIST[\"LIST\"] ( expr )+ ) | -> LIST[\"LIST\"] );
     public final pollenParser.exprList_return exprList() throws RecognitionException {
         pollenParser.exprList_return retval = new pollenParser.exprList_return();
         retval.start = input.LT(1);
@@ -8703,7 +8724,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 54) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:945:2: ( expr ( ',' expr )* -> ^( LIST[\"LIST\"] ( expr )+ ) | -> LIST[\"LIST\"] )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:966:2: ( expr ( ',' expr )* -> ^( LIST[\"LIST\"] ( expr )+ ) | -> LIST[\"LIST\"] )
             int alt49=2;
             int LA49_0 = input.LA(1);
 
@@ -8738,7 +8759,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt49) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:945:4: expr ( ',' expr )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:966:4: expr ( ',' expr )*
                     {
                     pushFollow(FOLLOW_expr_in_exprList3305);
                     expr160=expr();
@@ -8747,7 +8768,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_expr.add(expr160.getTree());
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:945:9: ( ',' expr )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:966:9: ( ',' expr )*
                     loop48:
                     do {
                         int alt48=2;
@@ -8760,7 +8781,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt48) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:945:10: ',' expr
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:966:10: ',' expr
                     	    {
                     	    char_literal161=(Atom)match(input,130,FOLLOW_130_in_exprList3308); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_130.add(char_literal161);
@@ -8795,9 +8816,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 946:3: -> ^( LIST[\"LIST\"] ( expr )+ )
+                    // 967:3: -> ^( LIST[\"LIST\"] ( expr )+ )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:946:6: ^( LIST[\"LIST\"] ( expr )+ )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:967:6: ^( LIST[\"LIST\"] ( expr )+ )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -8825,7 +8846,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:947:4: 
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:968:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -8840,7 +8861,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 947:4: -> LIST[\"LIST\"]
+                    // 968:4: -> LIST[\"LIST\"]
                     {
                         adaptor.addChild(root_0, 
                         new ListNode(LIST, "LIST")
@@ -8889,7 +8910,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "expr"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:949:1: expr : ( exprLogicalOr '?' expr ':' expr -> ^( E_QUEST[\"E_QUEST\"] exprLogicalOr expr expr ) | exprLogicalOr );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:970:1: expr : ( exprLogicalOr '?' expr ':' expr -> ^( E_QUEST[\"E_QUEST\"] exprLogicalOr expr expr ) | exprLogicalOr );
     public final pollenParser.expr_return expr() throws RecognitionException {
         pollenParser.expr_return retval = new pollenParser.expr_return();
         retval.start = input.LT(1);
@@ -8918,7 +8939,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 55) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:950:2: ( exprLogicalOr '?' expr ':' expr -> ^( E_QUEST[\"E_QUEST\"] exprLogicalOr expr expr ) | exprLogicalOr )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:971:2: ( exprLogicalOr '?' expr ':' expr -> ^( E_QUEST[\"E_QUEST\"] exprLogicalOr expr expr ) | exprLogicalOr )
             int alt50=2;
             int LA50_0 = input.LA(1);
 
@@ -8950,7 +8971,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt50) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:950:4: exprLogicalOr '?' expr ':' expr
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:971:4: exprLogicalOr '?' expr ':' expr
                     {
                     pushFollow(FOLLOW_exprLogicalOr_in_expr3349);
                     exprLogicalOr163=exprLogicalOr();
@@ -8982,7 +9003,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_expr.add(expr167.getTree());
 
                     // AST REWRITE
-                    // elements: exprLogicalOr, expr, expr
+                    // elements: expr, expr, exprLogicalOr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -8994,9 +9015,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 950:36: -> ^( E_QUEST[\"E_QUEST\"] exprLogicalOr expr expr )
+                    // 971:36: -> ^( E_QUEST[\"E_QUEST\"] exprLogicalOr expr expr )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:950:39: ^( E_QUEST[\"E_QUEST\"] exprLogicalOr expr expr )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:971:39: ^( E_QUEST[\"E_QUEST\"] exprLogicalOr expr expr )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -9021,7 +9042,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:951:4: exprLogicalOr
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:972:4: exprLogicalOr
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -9070,7 +9091,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprLogicalOr"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:953:1: exprLogicalOr : ( exprLogicalAnd -> exprLogicalAnd ) ( '||' exprLogicalAnd -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd ) )* ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:974:1: exprLogicalOr : ( exprLogicalAnd -> exprLogicalAnd ) ( '||' exprLogicalAnd -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd ) )* ;
     public final pollenParser.exprLogicalOr_return exprLogicalOr() throws RecognitionException {
         pollenParser.exprLogicalOr_return retval = new pollenParser.exprLogicalOr_return();
         retval.start = input.LT(1);
@@ -9091,11 +9112,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 56) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:954:2: ( ( exprLogicalAnd -> exprLogicalAnd ) ( '||' exprLogicalAnd -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd ) )* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:954:4: ( exprLogicalAnd -> exprLogicalAnd ) ( '||' exprLogicalAnd -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:975:2: ( ( exprLogicalAnd -> exprLogicalAnd ) ( '||' exprLogicalAnd -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd ) )* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:975:4: ( exprLogicalAnd -> exprLogicalAnd ) ( '||' exprLogicalAnd -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd ) )*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:954:4: ( exprLogicalAnd -> exprLogicalAnd )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:954:5: exprLogicalAnd
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:975:4: ( exprLogicalAnd -> exprLogicalAnd )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:975:5: exprLogicalAnd
             {
             pushFollow(FOLLOW_exprLogicalAnd_in_exprLogicalOr3398);
             exprLogicalAnd169=exprLogicalAnd();
@@ -9117,7 +9138,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 954:20: -> exprLogicalAnd
+            // 975:20: -> exprLogicalAnd
             {
                 adaptor.addChild(root_0, stream_exprLogicalAnd.nextTree());
 
@@ -9130,7 +9151,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:955:3: ( '||' exprLogicalAnd -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:976:3: ( '||' exprLogicalAnd -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd ) )*
             loop51:
             do {
                 int alt51=2;
@@ -9149,7 +9170,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt51) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:956:4: '||' exprLogicalAnd
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:977:4: '||' exprLogicalAnd
             	    {
             	    string_literal170=(Atom)match(input,192,FOLLOW_192_in_exprLogicalOr3412); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_192.add(string_literal170);
@@ -9163,7 +9184,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprLogicalAnd.add(exprLogicalAnd171.getTree());
 
             	    // AST REWRITE
-            	    // elements: 192, exprLogicalAnd, exprLogicalOr
+            	    // elements: exprLogicalAnd, 192, exprLogicalOr
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -9175,9 +9196,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 957:5: -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd )
+            	    // 978:5: -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd )
             	    {
-            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:957:8: ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd )
+            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:978:8: ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -9245,7 +9266,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprLogicalAnd"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:960:1: exprLogicalAnd : ( exprBitwiseOr -> exprBitwiseOr ) ( '&&' exprBitwiseOr -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr ) )* ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:981:1: exprLogicalAnd : ( exprBitwiseOr -> exprBitwiseOr ) ( '&&' exprBitwiseOr -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr ) )* ;
     public final pollenParser.exprLogicalAnd_return exprLogicalAnd() throws RecognitionException {
         pollenParser.exprLogicalAnd_return retval = new pollenParser.exprLogicalAnd_return();
         retval.start = input.LT(1);
@@ -9266,11 +9287,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 57) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:961:2: ( ( exprBitwiseOr -> exprBitwiseOr ) ( '&&' exprBitwiseOr -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr ) )* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:961:4: ( exprBitwiseOr -> exprBitwiseOr ) ( '&&' exprBitwiseOr -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:982:2: ( ( exprBitwiseOr -> exprBitwiseOr ) ( '&&' exprBitwiseOr -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr ) )* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:982:4: ( exprBitwiseOr -> exprBitwiseOr ) ( '&&' exprBitwiseOr -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr ) )*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:961:4: ( exprBitwiseOr -> exprBitwiseOr )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:961:5: exprBitwiseOr
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:982:4: ( exprBitwiseOr -> exprBitwiseOr )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:982:5: exprBitwiseOr
             {
             pushFollow(FOLLOW_exprBitwiseOr_in_exprLogicalAnd3453);
             exprBitwiseOr172=exprBitwiseOr();
@@ -9292,7 +9313,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 961:19: -> exprBitwiseOr
+            // 982:19: -> exprBitwiseOr
             {
                 adaptor.addChild(root_0, stream_exprBitwiseOr.nextTree());
 
@@ -9305,7 +9326,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:962:2: ( '&&' exprBitwiseOr -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:983:2: ( '&&' exprBitwiseOr -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr ) )*
             loop52:
             do {
                 int alt52=2;
@@ -9324,7 +9345,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt52) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:963:3: '&&' exprBitwiseOr
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:984:3: '&&' exprBitwiseOr
             	    {
             	    string_literal173=(Atom)match(input,125,FOLLOW_125_in_exprLogicalAnd3465); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_125.add(string_literal173);
@@ -9338,7 +9359,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprBitwiseOr.add(exprBitwiseOr174.getTree());
 
             	    // AST REWRITE
-            	    // elements: exprLogicalAnd, 125, exprBitwiseOr
+            	    // elements: exprBitwiseOr, exprLogicalAnd, 125
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -9350,9 +9371,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 964:4: -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr )
+            	    // 985:4: -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr )
             	    {
-            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:964:7: ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr )
+            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:985:7: ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -9420,7 +9441,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprBitwiseOr"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:967:1: exprBitwiseOr : ( exprBitwiseXor -> exprBitwiseXor ) ( '|' exprBitwiseXor -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor ) )* ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:988:1: exprBitwiseOr : ( exprBitwiseXor -> exprBitwiseXor ) ( '|' exprBitwiseXor -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor ) )* ;
     public final pollenParser.exprBitwiseOr_return exprBitwiseOr() throws RecognitionException {
         pollenParser.exprBitwiseOr_return retval = new pollenParser.exprBitwiseOr_return();
         retval.start = input.LT(1);
@@ -9441,11 +9462,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 58) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:968:2: ( ( exprBitwiseXor -> exprBitwiseXor ) ( '|' exprBitwiseXor -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor ) )* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:968:4: ( exprBitwiseXor -> exprBitwiseXor ) ( '|' exprBitwiseXor -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:989:2: ( ( exprBitwiseXor -> exprBitwiseXor ) ( '|' exprBitwiseXor -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor ) )* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:989:4: ( exprBitwiseXor -> exprBitwiseXor ) ( '|' exprBitwiseXor -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor ) )*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:968:4: ( exprBitwiseXor -> exprBitwiseXor )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:968:5: exprBitwiseXor
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:989:4: ( exprBitwiseXor -> exprBitwiseXor )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:989:5: exprBitwiseXor
             {
             pushFollow(FOLLOW_exprBitwiseXor_in_exprBitwiseOr3504);
             exprBitwiseXor175=exprBitwiseXor();
@@ -9467,7 +9488,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 968:20: -> exprBitwiseXor
+            // 989:20: -> exprBitwiseXor
             {
                 adaptor.addChild(root_0, stream_exprBitwiseXor.nextTree());
 
@@ -9480,7 +9501,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:969:2: ( '|' exprBitwiseXor -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:990:2: ( '|' exprBitwiseXor -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor ) )*
             loop53:
             do {
                 int alt53=2;
@@ -9499,7 +9520,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt53) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:970:3: '|' exprBitwiseXor
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:991:3: '|' exprBitwiseXor
             	    {
             	    char_literal176=(Atom)match(input,191,FOLLOW_191_in_exprBitwiseOr3516); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_191.add(char_literal176);
@@ -9513,7 +9534,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprBitwiseXor.add(exprBitwiseXor177.getTree());
 
             	    // AST REWRITE
-            	    // elements: 191, exprBitwiseOr, exprBitwiseXor
+            	    // elements: exprBitwiseXor, 191, exprBitwiseOr
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -9525,9 +9546,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 971:3: -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor )
+            	    // 992:3: -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor )
             	    {
-            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:971:6: ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor )
+            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:992:6: ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -9595,7 +9616,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprBitwiseXor"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:974:1: exprBitwiseXor : ( exprBitwiseAnd -> exprBitwiseAnd ) ( '^' exprBitwiseAnd -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd ) )* ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:995:1: exprBitwiseXor : ( exprBitwiseAnd -> exprBitwiseAnd ) ( '^' exprBitwiseAnd -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd ) )* ;
     public final pollenParser.exprBitwiseXor_return exprBitwiseXor() throws RecognitionException {
         pollenParser.exprBitwiseXor_return retval = new pollenParser.exprBitwiseXor_return();
         retval.start = input.LT(1);
@@ -9616,11 +9637,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 59) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:975:2: ( ( exprBitwiseAnd -> exprBitwiseAnd ) ( '^' exprBitwiseAnd -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd ) )* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:975:4: ( exprBitwiseAnd -> exprBitwiseAnd ) ( '^' exprBitwiseAnd -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:996:2: ( ( exprBitwiseAnd -> exprBitwiseAnd ) ( '^' exprBitwiseAnd -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd ) )* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:996:4: ( exprBitwiseAnd -> exprBitwiseAnd ) ( '^' exprBitwiseAnd -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd ) )*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:975:4: ( exprBitwiseAnd -> exprBitwiseAnd )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:975:5: exprBitwiseAnd
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:996:4: ( exprBitwiseAnd -> exprBitwiseAnd )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:996:5: exprBitwiseAnd
             {
             pushFollow(FOLLOW_exprBitwiseAnd_in_exprBitwiseXor3554);
             exprBitwiseAnd178=exprBitwiseAnd();
@@ -9642,7 +9663,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 975:20: -> exprBitwiseAnd
+            // 996:20: -> exprBitwiseAnd
             {
                 adaptor.addChild(root_0, stream_exprBitwiseAnd.nextTree());
 
@@ -9655,7 +9676,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:976:2: ( '^' exprBitwiseAnd -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:997:2: ( '^' exprBitwiseAnd -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd ) )*
             loop54:
             do {
                 int alt54=2;
@@ -9674,7 +9695,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt54) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:977:3: '^' exprBitwiseAnd
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:998:3: '^' exprBitwiseAnd
             	    {
             	    char_literal179=(Atom)match(input,140,FOLLOW_140_in_exprBitwiseXor3566); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_140.add(char_literal179);
@@ -9688,7 +9709,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprBitwiseAnd.add(exprBitwiseAnd180.getTree());
 
             	    // AST REWRITE
-            	    // elements: exprBitwiseXor, exprBitwiseAnd, 140
+            	    // elements: exprBitwiseXor, 140, exprBitwiseAnd
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -9700,9 +9721,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 978:3: -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd )
+            	    // 999:3: -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd )
             	    {
-            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:978:6: ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd )
+            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:999:6: ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -9770,7 +9791,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprBitwiseAnd"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:981:1: exprBitwiseAnd : ( exprEquality -> exprEquality ) ( '&' exprEquality -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality ) )* ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1002:1: exprBitwiseAnd : ( exprEquality -> exprEquality ) ( '&' exprEquality -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality ) )* ;
     public final pollenParser.exprBitwiseAnd_return exprBitwiseAnd() throws RecognitionException {
         pollenParser.exprBitwiseAnd_return retval = new pollenParser.exprBitwiseAnd_return();
         retval.start = input.LT(1);
@@ -9791,11 +9812,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 60) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:982:2: ( ( exprEquality -> exprEquality ) ( '&' exprEquality -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality ) )* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:982:4: ( exprEquality -> exprEquality ) ( '&' exprEquality -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1003:2: ( ( exprEquality -> exprEquality ) ( '&' exprEquality -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality ) )* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1003:4: ( exprEquality -> exprEquality ) ( '&' exprEquality -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality ) )*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:982:4: ( exprEquality -> exprEquality )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:982:5: exprEquality
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1003:4: ( exprEquality -> exprEquality )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1003:5: exprEquality
             {
             pushFollow(FOLLOW_exprEquality_in_exprBitwiseAnd3604);
             exprEquality181=exprEquality();
@@ -9817,7 +9838,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 982:18: -> exprEquality
+            // 1003:18: -> exprEquality
             {
                 adaptor.addChild(root_0, stream_exprEquality.nextTree());
 
@@ -9830,7 +9851,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:983:2: ( '&' exprEquality -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1004:2: ( '&' exprEquality -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality ) )*
             loop55:
             do {
                 int alt55=2;
@@ -9849,7 +9870,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt55) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:984:3: '&' exprEquality
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1005:3: '&' exprEquality
             	    {
             	    char_literal182=(Atom)match(input,126,FOLLOW_126_in_exprBitwiseAnd3616); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_126.add(char_literal182);
@@ -9863,7 +9884,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprEquality.add(exprEquality183.getTree());
 
             	    // AST REWRITE
-            	    // elements: 126, exprBitwiseAnd, exprEquality
+            	    // elements: exprBitwiseAnd, 126, exprEquality
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -9875,9 +9896,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 985:3: -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality )
+            	    // 1006:3: -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality )
             	    {
-            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:985:6: ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality )
+            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1006:6: ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -9945,7 +9966,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprEquality"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:988:1: exprEquality : ( exprRelational -> exprRelational ) ( equalityOp exprRelational -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational ) )* ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1009:1: exprEquality : ( exprRelational -> exprRelational ) ( equalityOp exprRelational -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational ) )* ;
     public final pollenParser.exprEquality_return exprEquality() throws RecognitionException {
         pollenParser.exprEquality_return retval = new pollenParser.exprEquality_return();
         retval.start = input.LT(1);
@@ -9966,11 +9987,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 61) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:989:2: ( ( exprRelational -> exprRelational ) ( equalityOp exprRelational -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational ) )* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:989:4: ( exprRelational -> exprRelational ) ( equalityOp exprRelational -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1010:2: ( ( exprRelational -> exprRelational ) ( equalityOp exprRelational -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational ) )* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1010:4: ( exprRelational -> exprRelational ) ( equalityOp exprRelational -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational ) )*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:989:4: ( exprRelational -> exprRelational )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:989:5: exprRelational
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1010:4: ( exprRelational -> exprRelational )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1010:5: exprRelational
             {
             pushFollow(FOLLOW_exprRelational_in_exprEquality3654);
             exprRelational184=exprRelational();
@@ -9992,7 +10013,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 989:20: -> exprRelational
+            // 1010:20: -> exprRelational
             {
                 adaptor.addChild(root_0, stream_exprRelational.nextTree());
 
@@ -10005,7 +10026,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:990:2: ( equalityOp exprRelational -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1011:2: ( equalityOp exprRelational -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational ) )*
             loop56:
             do {
                 int alt56=2;
@@ -10024,7 +10045,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt56) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:991:3: equalityOp exprRelational
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1012:3: equalityOp exprRelational
             	    {
             	    pushFollow(FOLLOW_equalityOp_in_exprEquality3667);
             	    equalityOp185=equalityOp();
@@ -10041,7 +10062,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprRelational.add(exprRelational186.getTree());
 
             	    // AST REWRITE
-            	    // elements: exprEquality, exprRelational, equalityOp
+            	    // elements: equalityOp, exprRelational, exprEquality
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -10053,9 +10074,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 992:3: -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational )
+            	    // 1013:3: -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational )
             	    {
-            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:992:6: ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational )
+            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1013:6: ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -10121,7 +10142,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprRelational"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:995:1: exprRelational : ( exprShift -> exprShift ) ( relationalOp exprShift -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift ) )* ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1016:1: exprRelational : ( exprShift -> exprShift ) ( relationalOp exprShift -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift ) )* ;
     public final pollenParser.exprRelational_return exprRelational() throws RecognitionException {
         pollenParser.exprRelational_return retval = new pollenParser.exprRelational_return();
         retval.start = input.LT(1);
@@ -10142,11 +10163,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 62) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:996:2: ( ( exprShift -> exprShift ) ( relationalOp exprShift -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift ) )* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:996:4: ( exprShift -> exprShift ) ( relationalOp exprShift -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1017:2: ( ( exprShift -> exprShift ) ( relationalOp exprShift -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift ) )* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1017:4: ( exprShift -> exprShift ) ( relationalOp exprShift -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift ) )*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:996:4: ( exprShift -> exprShift )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:996:5: exprShift
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1017:4: ( exprShift -> exprShift )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1017:5: exprShift
             {
             pushFollow(FOLLOW_exprShift_in_exprRelational3705);
             exprShift187=exprShift();
@@ -10168,7 +10189,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 996:15: -> exprShift
+            // 1017:15: -> exprShift
             {
                 adaptor.addChild(root_0, stream_exprShift.nextTree());
 
@@ -10181,7 +10202,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:997:2: ( relationalOp exprShift -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1018:2: ( relationalOp exprShift -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift ) )*
             loop57:
             do {
                 int alt57=2;
@@ -10200,7 +10221,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt57) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:998:3: relationalOp exprShift
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1019:3: relationalOp exprShift
             	    {
             	    pushFollow(FOLLOW_relationalOp_in_exprRelational3718);
             	    relationalOp188=relationalOp();
@@ -10217,7 +10238,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprShift.add(exprShift189.getTree());
 
             	    // AST REWRITE
-            	    // elements: exprRelational, relationalOp, exprShift
+            	    // elements: relationalOp, exprRelational, exprShift
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -10229,9 +10250,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 999:3: -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift )
+            	    // 1020:3: -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift )
             	    {
-            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:999:6: ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift )
+            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1020:6: ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -10297,7 +10318,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprShift"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1002:1: exprShift : ( exprAddSub -> exprAddSub ) ( shiftOp exprAddSub -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub ) )* ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1023:1: exprShift : ( exprAddSub -> exprAddSub ) ( shiftOp exprAddSub -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub ) )* ;
     public final pollenParser.exprShift_return exprShift() throws RecognitionException {
         pollenParser.exprShift_return retval = new pollenParser.exprShift_return();
         retval.start = input.LT(1);
@@ -10318,11 +10339,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 63) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1003:2: ( ( exprAddSub -> exprAddSub ) ( shiftOp exprAddSub -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub ) )* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1003:4: ( exprAddSub -> exprAddSub ) ( shiftOp exprAddSub -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1024:2: ( ( exprAddSub -> exprAddSub ) ( shiftOp exprAddSub -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub ) )* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1024:4: ( exprAddSub -> exprAddSub ) ( shiftOp exprAddSub -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub ) )*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1003:4: ( exprAddSub -> exprAddSub )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1003:5: exprAddSub
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1024:4: ( exprAddSub -> exprAddSub )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1024:5: exprAddSub
             {
             pushFollow(FOLLOW_exprAddSub_in_exprShift3757);
             exprAddSub190=exprAddSub();
@@ -10344,7 +10365,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1003:16: -> exprAddSub
+            // 1024:16: -> exprAddSub
             {
                 adaptor.addChild(root_0, stream_exprAddSub.nextTree());
 
@@ -10357,7 +10378,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1004:2: ( shiftOp exprAddSub -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1025:2: ( shiftOp exprAddSub -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub ) )*
             loop58:
             do {
                 int alt58=2;
@@ -10376,7 +10397,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt58) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1005:3: shiftOp exprAddSub
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1026:3: shiftOp exprAddSub
             	    {
             	    pushFollow(FOLLOW_shiftOp_in_exprShift3770);
             	    shiftOp191=shiftOp();
@@ -10393,7 +10414,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprAddSub.add(exprAddSub192.getTree());
 
             	    // AST REWRITE
-            	    // elements: shiftOp, exprShift, exprAddSub
+            	    // elements: shiftOp, exprAddSub, exprShift
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -10405,9 +10426,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 1006:3: -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub )
+            	    // 1027:3: -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub )
             	    {
-            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1006:6: ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub )
+            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1027:6: ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -10473,7 +10494,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprAddSub"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1009:1: exprAddSub : ( exprMultDiv -> exprMultDiv ) ( addSubOp exprMultDiv -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv ) )* ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1030:1: exprAddSub : ( exprMultDiv -> exprMultDiv ) ( addSubOp exprMultDiv -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv ) )* ;
     public final pollenParser.exprAddSub_return exprAddSub() throws RecognitionException {
         pollenParser.exprAddSub_return retval = new pollenParser.exprAddSub_return();
         retval.start = input.LT(1);
@@ -10494,11 +10515,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 64) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1010:2: ( ( exprMultDiv -> exprMultDiv ) ( addSubOp exprMultDiv -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv ) )* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1010:4: ( exprMultDiv -> exprMultDiv ) ( addSubOp exprMultDiv -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1031:2: ( ( exprMultDiv -> exprMultDiv ) ( addSubOp exprMultDiv -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv ) )* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1031:4: ( exprMultDiv -> exprMultDiv ) ( addSubOp exprMultDiv -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv ) )*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1010:4: ( exprMultDiv -> exprMultDiv )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1010:5: exprMultDiv
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1031:4: ( exprMultDiv -> exprMultDiv )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1031:5: exprMultDiv
             {
             pushFollow(FOLLOW_exprMultDiv_in_exprAddSub3810);
             exprMultDiv193=exprMultDiv();
@@ -10520,7 +10541,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1010:17: -> exprMultDiv
+            // 1031:17: -> exprMultDiv
             {
                 adaptor.addChild(root_0, stream_exprMultDiv.nextTree());
 
@@ -10533,7 +10554,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1011:2: ( addSubOp exprMultDiv -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1032:2: ( addSubOp exprMultDiv -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv ) )*
             loop59:
             do {
                 int alt59=2;
@@ -10552,7 +10573,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt59) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1012:3: addSubOp exprMultDiv
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1033:3: addSubOp exprMultDiv
             	    {
             	    pushFollow(FOLLOW_addSubOp_in_exprAddSub3822);
             	    addSubOp194=addSubOp();
@@ -10569,7 +10590,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprMultDiv.add(exprMultDiv195.getTree());
 
             	    // AST REWRITE
-            	    // elements: exprAddSub, exprMultDiv, addSubOp
+            	    // elements: exprAddSub, addSubOp, exprMultDiv
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -10581,9 +10602,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 1013:3: -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv )
+            	    // 1034:3: -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv )
             	    {
-            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1013:6: ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv )
+            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1034:6: ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -10649,7 +10670,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprMultDiv"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1016:1: exprMultDiv : ( exprUnary -> exprUnary ) ( multDivModOp exprUnary -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary ) )* ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1037:1: exprMultDiv : ( exprUnary -> exprUnary ) ( multDivModOp exprUnary -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary ) )* ;
     public final pollenParser.exprMultDiv_return exprMultDiv() throws RecognitionException {
         pollenParser.exprMultDiv_return retval = new pollenParser.exprMultDiv_return();
         retval.start = input.LT(1);
@@ -10670,11 +10691,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 65) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1017:2: ( ( exprUnary -> exprUnary ) ( multDivModOp exprUnary -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary ) )* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1017:4: ( exprUnary -> exprUnary ) ( multDivModOp exprUnary -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1038:2: ( ( exprUnary -> exprUnary ) ( multDivModOp exprUnary -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary ) )* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1038:4: ( exprUnary -> exprUnary ) ( multDivModOp exprUnary -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary ) )*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1017:4: ( exprUnary -> exprUnary )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1017:5: exprUnary
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1038:4: ( exprUnary -> exprUnary )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1038:5: exprUnary
             {
             pushFollow(FOLLOW_exprUnary_in_exprMultDiv3867);
             exprUnary196=exprUnary();
@@ -10696,7 +10717,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1017:15: -> exprUnary
+            // 1038:15: -> exprUnary
             {
                 adaptor.addChild(root_0, stream_exprUnary.nextTree());
 
@@ -10709,7 +10730,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1018:2: ( multDivModOp exprUnary -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary ) )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1039:2: ( multDivModOp exprUnary -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary ) )*
             loop60:
             do {
                 int alt60=2;
@@ -10728,7 +10749,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt60) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1019:3: multDivModOp exprUnary
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1040:3: multDivModOp exprUnary
             	    {
             	    pushFollow(FOLLOW_multDivModOp_in_exprMultDiv3879);
             	    multDivModOp197=multDivModOp();
@@ -10745,7 +10766,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprUnary.add(exprUnary198.getTree());
 
             	    // AST REWRITE
-            	    // elements: exprUnary, multDivModOp, exprMultDiv
+            	    // elements: exprMultDiv, exprUnary, multDivModOp
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -10757,9 +10778,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 1020:3: -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary )
+            	    // 1041:3: -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary )
             	    {
-            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1020:6: ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary )
+            	        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1041:6: ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -10825,7 +10846,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprNew"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1023:1: exprNew : 'new' typeName fcnArgumentList -> ^( E_NEW[\"E_NEW\"] typeName fcnArgumentList ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1044:1: exprNew : 'new' typeName fcnArgumentList -> ^( E_NEW[\"E_NEW\"] typeName fcnArgumentList ) ;
     public final pollenParser.exprNew_return exprNew() throws RecognitionException {
         pollenParser.exprNew_return retval = new pollenParser.exprNew_return();
         retval.start = input.LT(1);
@@ -10847,8 +10868,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 66) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1024:2: ( 'new' typeName fcnArgumentList -> ^( E_NEW[\"E_NEW\"] typeName fcnArgumentList ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1024:4: 'new' typeName fcnArgumentList
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1045:2: ( 'new' typeName fcnArgumentList -> ^( E_NEW[\"E_NEW\"] typeName fcnArgumentList ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1045:4: 'new' typeName fcnArgumentList
             {
             string_literal199=(Atom)match(input,172,FOLLOW_172_in_exprNew3916); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_172.add(string_literal199);
@@ -10869,7 +10890,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_fcnArgumentList.add(fcnArgumentList201.getTree());
 
             // AST REWRITE
-            // elements: typeName, fcnArgumentList
+            // elements: fcnArgumentList, typeName
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -10881,9 +10902,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1024:35: -> ^( E_NEW[\"E_NEW\"] typeName fcnArgumentList )
+            // 1045:35: -> ^( E_NEW[\"E_NEW\"] typeName fcnArgumentList )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1024:38: ^( E_NEW[\"E_NEW\"] typeName fcnArgumentList )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1045:38: ^( E_NEW[\"E_NEW\"] typeName fcnArgumentList )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -10938,7 +10959,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprUnary"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1026:1: exprUnary : ( primitiveLit | injectionCode | arrayLit -> ^( E_VEC[\"E_VEC\"] arrayLit ) | logicalNotOp expr -> ^( E_UNARY[\"E_UNARY\"] expr logicalNotOp ) | bitwiseNotOp expr -> ^( E_UNARY[\"E_UNARY\"] expr bitwiseNotOp ) | '(' expr ')' -> ^( E_PAREN[\"E_PAREN\"] expr ) | MINUS expr -> ^( E_UNARY[\"E_UNARY\"] expr MINUS ) | varOrFcnOrArray incDecOp -> ^( E_UNARY[\"E_UNARY\", true] varOrFcnOrArray incDecOp ) | varOrFcnOrArray | incDecOp varOrFcnOrArray -> ^( E_UNARY[\"E_UNARY\"] varOrFcnOrArray incDecOp ) | exprNew );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1047:1: exprUnary : ( primitiveLit | injectionCode | arrayLit -> ^( E_VEC[\"E_VEC\"] arrayLit ) | logicalNotOp expr -> ^( E_UNARY[\"E_UNARY\"] expr logicalNotOp ) | bitwiseNotOp expr -> ^( E_UNARY[\"E_UNARY\"] expr bitwiseNotOp ) | '(' expr ')' -> ^( E_PAREN[\"E_PAREN\"] expr ) | MINUS expr -> ^( E_UNARY[\"E_UNARY\"] expr MINUS ) | varOrFcnOrArray incDecOp -> ^( E_UNARY[\"E_UNARY\", true] varOrFcnOrArray incDecOp ) | varOrFcnOrArray | incDecOp varOrFcnOrArray -> ^( E_UNARY[\"E_UNARY\"] varOrFcnOrArray incDecOp ) | exprNew );
     public final pollenParser.exprUnary_return exprUnary() throws RecognitionException {
         pollenParser.exprUnary_return retval = new pollenParser.exprUnary_return();
         retval.start = input.LT(1);
@@ -10996,7 +11017,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 67) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1027:2: ( primitiveLit | injectionCode | arrayLit -> ^( E_VEC[\"E_VEC\"] arrayLit ) | logicalNotOp expr -> ^( E_UNARY[\"E_UNARY\"] expr logicalNotOp ) | bitwiseNotOp expr -> ^( E_UNARY[\"E_UNARY\"] expr bitwiseNotOp ) | '(' expr ')' -> ^( E_PAREN[\"E_PAREN\"] expr ) | MINUS expr -> ^( E_UNARY[\"E_UNARY\"] expr MINUS ) | varOrFcnOrArray incDecOp -> ^( E_UNARY[\"E_UNARY\", true] varOrFcnOrArray incDecOp ) | varOrFcnOrArray | incDecOp varOrFcnOrArray -> ^( E_UNARY[\"E_UNARY\"] varOrFcnOrArray incDecOp ) | exprNew )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1048:2: ( primitiveLit | injectionCode | arrayLit -> ^( E_VEC[\"E_VEC\"] arrayLit ) | logicalNotOp expr -> ^( E_UNARY[\"E_UNARY\"] expr logicalNotOp ) | bitwiseNotOp expr -> ^( E_UNARY[\"E_UNARY\"] expr bitwiseNotOp ) | '(' expr ')' -> ^( E_PAREN[\"E_PAREN\"] expr ) | MINUS expr -> ^( E_UNARY[\"E_UNARY\"] expr MINUS ) | varOrFcnOrArray incDecOp -> ^( E_UNARY[\"E_UNARY\", true] varOrFcnOrArray incDecOp ) | varOrFcnOrArray | incDecOp varOrFcnOrArray -> ^( E_UNARY[\"E_UNARY\"] varOrFcnOrArray incDecOp ) | exprNew )
             int alt61=11;
             switch ( input.LA(1) ) {
             case CHAR:
@@ -11103,7 +11124,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt61) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1027:4: primitiveLit
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1048:4: primitiveLit
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -11118,7 +11139,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1028:4: injectionCode
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1049:4: injectionCode
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -11133,7 +11154,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1029:4: arrayLit
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1050:4: arrayLit
                     {
                     pushFollow(FOLLOW_arrayLit_in_exprUnary3956);
                     arrayLit204=arrayLit();
@@ -11155,9 +11176,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1029:18: -> ^( E_VEC[\"E_VEC\"] arrayLit )
+                    // 1050:18: -> ^( E_VEC[\"E_VEC\"] arrayLit )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1029:21: ^( E_VEC[\"E_VEC\"] arrayLit )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1050:21: ^( E_VEC[\"E_VEC\"] arrayLit )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -11178,7 +11199,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1030:4: logicalNotOp expr
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1051:4: logicalNotOp expr
                     {
                     pushFollow(FOLLOW_logicalNotOp_in_exprUnary3980);
                     logicalNotOp205=logicalNotOp();
@@ -11207,9 +11228,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1030:25: -> ^( E_UNARY[\"E_UNARY\"] expr logicalNotOp )
+                    // 1051:25: -> ^( E_UNARY[\"E_UNARY\"] expr logicalNotOp )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1030:28: ^( E_UNARY[\"E_UNARY\"] expr logicalNotOp )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1051:28: ^( E_UNARY[\"E_UNARY\"] expr logicalNotOp )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -11232,7 +11253,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1031:4: bitwiseNotOp expr
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1052:4: bitwiseNotOp expr
                     {
                     pushFollow(FOLLOW_bitwiseNotOp_in_exprUnary4007);
                     bitwiseNotOp207=bitwiseNotOp();
@@ -11261,9 +11282,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1031:25: -> ^( E_UNARY[\"E_UNARY\"] expr bitwiseNotOp )
+                    // 1052:25: -> ^( E_UNARY[\"E_UNARY\"] expr bitwiseNotOp )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1031:28: ^( E_UNARY[\"E_UNARY\"] expr bitwiseNotOp )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1052:28: ^( E_UNARY[\"E_UNARY\"] expr bitwiseNotOp )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -11286,7 +11307,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 6 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1032:4: '(' expr ')'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1053:4: '(' expr ')'
                     {
                     char_literal209=(Atom)match(input,127,FOLLOW_127_in_exprUnary4034); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_127.add(char_literal209);
@@ -11316,9 +11337,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1032:20: -> ^( E_PAREN[\"E_PAREN\"] expr )
+                    // 1053:20: -> ^( E_PAREN[\"E_PAREN\"] expr )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1032:23: ^( E_PAREN[\"E_PAREN\"] expr )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1053:23: ^( E_PAREN[\"E_PAREN\"] expr )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -11339,7 +11360,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 7 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1033:4: MINUS expr
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1054:4: MINUS expr
                     {
                     MINUS212=(Atom)match(input,MINUS,FOLLOW_MINUS_in_exprUnary4060); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_MINUS.add(MINUS212);
@@ -11365,9 +11386,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1033:19: -> ^( E_UNARY[\"E_UNARY\"] expr MINUS )
+                    // 1054:19: -> ^( E_UNARY[\"E_UNARY\"] expr MINUS )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1033:22: ^( E_UNARY[\"E_UNARY\"] expr MINUS )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1054:22: ^( E_UNARY[\"E_UNARY\"] expr MINUS )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -11392,7 +11413,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 8 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1034:4: varOrFcnOrArray incDecOp
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1055:4: varOrFcnOrArray incDecOp
                     {
                     pushFollow(FOLLOW_varOrFcnOrArray_in_exprUnary4088);
                     varOrFcnOrArray214=varOrFcnOrArray();
@@ -11421,9 +11442,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1034:29: -> ^( E_UNARY[\"E_UNARY\", true] varOrFcnOrArray incDecOp )
+                    // 1055:29: -> ^( E_UNARY[\"E_UNARY\", true] varOrFcnOrArray incDecOp )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1034:32: ^( E_UNARY[\"E_UNARY\", true] varOrFcnOrArray incDecOp )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1055:32: ^( E_UNARY[\"E_UNARY\", true] varOrFcnOrArray incDecOp )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -11446,7 +11467,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 9 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1035:4: varOrFcnOrArray
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1056:4: varOrFcnOrArray
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -11461,7 +11482,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 10 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1036:4: incDecOp varOrFcnOrArray
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1057:4: incDecOp varOrFcnOrArray
                     {
                     pushFollow(FOLLOW_incDecOp_in_exprUnary4116);
                     incDecOp217=incDecOp();
@@ -11490,9 +11511,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1036:29: -> ^( E_UNARY[\"E_UNARY\"] varOrFcnOrArray incDecOp )
+                    // 1057:29: -> ^( E_UNARY[\"E_UNARY\"] varOrFcnOrArray incDecOp )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1036:32: ^( E_UNARY[\"E_UNARY\"] varOrFcnOrArray incDecOp )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1057:32: ^( E_UNARY[\"E_UNARY\"] varOrFcnOrArray incDecOp )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -11515,7 +11536,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 11 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1037:4: exprNew
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1058:4: exprNew
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -11564,7 +11585,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnDefinition"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1039:1: fcnDefinition : ( 'public' )? ( 'host' )? fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) fcnBody ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1060:1: fcnDefinition : ( 'public' )? ( 'host' )? fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) fcnBody ) ;
     public final pollenParser.fcnDefinition_return fcnDefinition() throws RecognitionException {
         pollenParser.fcnDefinition_return retval = new pollenParser.fcnDefinition_return();
         retval.start = input.LT(1);
@@ -11592,10 +11613,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 68) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1040:2: ( ( 'public' )? ( 'host' )? fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) fcnBody ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1040:4: ( 'public' )? ( 'host' )? fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree]
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1061:2: ( ( 'public' )? ( 'host' )? fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) fcnBody ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1061:4: ( 'public' )? ( 'host' )? fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree]
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1040:4: ( 'public' )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1061:4: ( 'public' )?
             int alt62=2;
             int LA62_0 = input.LA(1);
 
@@ -11604,7 +11625,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt62) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1040:5: 'public'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1061:5: 'public'
                     {
                     string_literal220=(Atom)match(input,179,FOLLOW_179_in_fcnDefinition4150); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_179.add(string_literal220);
@@ -11618,7 +11639,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1041:3: ( 'host' )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1062:3: ( 'host' )?
             int alt63=2;
             int LA63_0 = input.LA(1);
 
@@ -11627,7 +11648,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt63) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1041:4: 'host'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1062:4: 'host'
                     {
                     string_literal221=(Atom)match(input,162,FOLLOW_162_in_fcnDefinition4161); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_162.add(string_literal221);
@@ -11663,7 +11684,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_fcnBody.add(fcnBody224.getTree());
 
             // AST REWRITE
-            // elements: fcnBody, fcnType_fcnName, formalParameterList
+            // elements: fcnBody, formalParameterList, fcnType_fcnName
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -11675,9 +11696,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1043:3: -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) fcnBody )
+            // 1064:3: -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) fcnBody )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1043:6: ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) fcnBody )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1064:6: ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) fcnBody )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -11688,14 +11709,14 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_formalParameterList.nextTree());
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1046:4: ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1067:4: ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
                 new DeclNode.Formal(D_FORMAL, "D_FORMAL", featureFlags)
                 , root_2);
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1047:5: ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1068:5: ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] )
                 {
                 BaseNode root_3 = (BaseNode)adaptor.nil();
                 root_3 = (BaseNode)adaptor.becomeRoot(
@@ -11762,7 +11783,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnDefinitionHost"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1051:1: fcnDefinitionHost : ( 'public' )? ( 'host' )? fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) fcnBody ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1072:1: fcnDefinitionHost : ( 'public' )? ( 'host' )? fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) fcnBody ) ;
     public final pollenParser.fcnDefinitionHost_return fcnDefinitionHost() throws RecognitionException {
         pollenParser.fcnDefinitionHost_return retval = new pollenParser.fcnDefinitionHost_return();
         retval.start = input.LT(1);
@@ -11790,10 +11811,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 69) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1053:2: ( ( 'public' )? ( 'host' )? fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) fcnBody ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1053:4: ( 'public' )? ( 'host' )? fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree]
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1074:2: ( ( 'public' )? ( 'host' )? fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) fcnBody ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1074:4: ( 'public' )? ( 'host' )? fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree]
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1053:4: ( 'public' )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1074:4: ( 'public' )?
             int alt64=2;
             int LA64_0 = input.LA(1);
 
@@ -11802,7 +11823,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt64) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1053:5: 'public'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1074:5: 'public'
                     {
                     string_literal225=(Atom)match(input,179,FOLLOW_179_in_fcnDefinitionHost4258); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_179.add(string_literal225);
@@ -11814,7 +11835,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1053:16: ( 'host' )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1074:16: ( 'host' )?
             int alt65=2;
             int LA65_0 = input.LA(1);
 
@@ -11823,7 +11844,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt65) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1053:17: 'host'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1074:17: 'host'
                     {
                     string_literal226=(Atom)match(input,162,FOLLOW_162_in_fcnDefinitionHost4263); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_162.add(string_literal226);
@@ -11876,9 +11897,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1059:3: -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) fcnBody )
+            // 1080:3: -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) fcnBody )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1059:6: ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) fcnBody )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1080:6: ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) fcnBody )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -11889,14 +11910,14 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_formalParameterList.nextTree());
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1062:5: ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1083:5: ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
                 new DeclNode.Formal(D_FORMAL, "D_FORMAL", featureFlags)
                 , root_2);
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1063:6: ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1084:6: ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] )
                 {
                 BaseNode root_3 = (BaseNode)adaptor.nil();
                 root_3 = (BaseNode)adaptor.becomeRoot(
@@ -11964,7 +11985,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnAttr"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1071:1: fcnAttr : ( 'public' )? ( 'host' )? ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1092:1: fcnAttr : ( 'public' )? ( 'host' )? ;
     public final pollenParser.fcnAttr_return fcnAttr() throws RecognitionException {
         pollenParser.fcnAttr_return retval = new pollenParser.fcnAttr_return();
         retval.start = input.LT(1);
@@ -11982,13 +12003,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 70) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1072:2: ( ( 'public' )? ( 'host' )? )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1072:4: ( 'public' )? ( 'host' )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1093:2: ( ( 'public' )? ( 'host' )? )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1093:4: ( 'public' )? ( 'host' )?
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1072:4: ( 'public' )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1093:4: ( 'public' )?
             int alt66=2;
             int LA66_0 = input.LA(1);
 
@@ -11997,7 +12018,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt66) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1072:5: 'public'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1093:5: 'public'
                     {
                     string_literal230=(Atom)match(input,179,FOLLOW_179_in_fcnAttr4374); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
@@ -12015,7 +12036,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1073:3: ( 'host' )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1094:3: ( 'host' )?
             int alt67=2;
             int LA67_0 = input.LA(1);
 
@@ -12024,7 +12045,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt67) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1073:4: 'host'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1094:4: 'host'
                     {
                     string_literal231=(Atom)match(input,162,FOLLOW_162_in_fcnAttr4385); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
@@ -12077,7 +12098,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnBody"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1075:1: fcnBody[CommonTree formals] : braceOpen ( stmts ) braceClose -> ^( FCNBODY[\"FCNBODY\"] stmts ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1096:1: fcnBody[CommonTree formals] : braceOpen ( stmts ) braceClose -> ^( FCNBODY[\"FCNBODY\"] stmts ) ;
     public final pollenParser.fcnBody_return fcnBody(CommonTree formals) throws RecognitionException {
         pollenParser.fcnBody_return retval = new pollenParser.fcnBody_return();
         retval.start = input.LT(1);
@@ -12099,8 +12120,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 71) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1076:3: ( braceOpen ( stmts ) braceClose -> ^( FCNBODY[\"FCNBODY\"] stmts ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1076:5: braceOpen ( stmts ) braceClose
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1097:3: ( braceOpen ( stmts ) braceClose -> ^( FCNBODY[\"FCNBODY\"] stmts ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1097:5: braceOpen ( stmts ) braceClose
             {
             pushFollow(FOLLOW_braceOpen_in_fcnBody4402);
             braceOpen232=braceOpen();
@@ -12109,8 +12130,8 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_braceOpen.add(braceOpen232.getTree());
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1076:15: ( stmts )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1076:16: stmts
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1097:15: ( stmts )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1097:16: stmts
             {
             pushFollow(FOLLOW_stmts_in_fcnBody4405);
             stmts233=stmts();
@@ -12142,9 +12163,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1076:36: -> ^( FCNBODY[\"FCNBODY\"] stmts )
+            // 1097:36: -> ^( FCNBODY[\"FCNBODY\"] stmts )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1076:39: ^( FCNBODY[\"FCNBODY\"] stmts )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1097:39: ^( FCNBODY[\"FCNBODY\"] stmts )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -12199,7 +12220,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnDeclaration"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1078:1: fcnDeclaration : ( 'public' )? ( 'host' )? fcnType_fcnName ( formalParameterList ) delim -> ^( D_FCN_DCL[\"D_FCN_DCL\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1099:1: fcnDeclaration : ( 'public' )? ( 'host' )? fcnType_fcnName ( formalParameterList ) delim -> ^( D_FCN_DCL[\"D_FCN_DCL\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) ) ;
     public final pollenParser.fcnDeclaration_return fcnDeclaration() throws RecognitionException {
         pollenParser.fcnDeclaration_return retval = new pollenParser.fcnDeclaration_return();
         retval.start = input.LT(1);
@@ -12227,10 +12248,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 72) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1079:4: ( ( 'public' )? ( 'host' )? fcnType_fcnName ( formalParameterList ) delim -> ^( D_FCN_DCL[\"D_FCN_DCL\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1079:6: ( 'public' )? ( 'host' )? fcnType_fcnName ( formalParameterList ) delim
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1100:4: ( ( 'public' )? ( 'host' )? fcnType_fcnName ( formalParameterList ) delim -> ^( D_FCN_DCL[\"D_FCN_DCL\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1100:6: ( 'public' )? ( 'host' )? fcnType_fcnName ( formalParameterList ) delim
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1079:6: ( 'public' )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1100:6: ( 'public' )?
             int alt68=2;
             int LA68_0 = input.LA(1);
 
@@ -12239,7 +12260,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt68) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1079:7: 'public'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1100:7: 'public'
                     {
                     string_literal235=(Atom)match(input,179,FOLLOW_179_in_fcnDeclaration4439); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_179.add(string_literal235);
@@ -12253,7 +12274,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1080:3: ( 'host' )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1101:3: ( 'host' )?
             int alt69=2;
             int LA69_0 = input.LA(1);
 
@@ -12262,7 +12283,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt69) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1080:4: 'host'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1101:4: 'host'
                     {
                     string_literal236=(Atom)match(input,162,FOLLOW_162_in_fcnDeclaration4450); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_162.add(string_literal236);
@@ -12283,8 +12304,8 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_fcnType_fcnName.add(fcnType_fcnName237.getTree());
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1081:19: ( formalParameterList )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1081:20: formalParameterList
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1102:19: ( formalParameterList )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1102:20: formalParameterList
             {
             pushFollow(FOLLOW_formalParameterList_in_fcnDeclaration4463);
             formalParameterList238=formalParameterList();
@@ -12309,7 +12330,7 @@ public TreeAdaptor getTreeAdaptor() {
             		}
 
             // AST REWRITE
-            // elements: formalParameterList, fcnType_fcnName
+            // elements: fcnType_fcnName, formalParameterList
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -12321,9 +12342,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1086:4: -> ^( D_FCN_DCL[\"D_FCN_DCL\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) )
+            // 1107:4: -> ^( D_FCN_DCL[\"D_FCN_DCL\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1086:7: ^( D_FCN_DCL[\"D_FCN_DCL\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1107:7: ^( D_FCN_DCL[\"D_FCN_DCL\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -12334,14 +12355,14 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_formalParameterList.nextTree());
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1089:4: ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1110:4: ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] ) IDENT[\"this\"] )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
                 new DeclNode.Formal(D_FORMAL, "D_FORMAL", featureFlags)
                 , root_2);
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1090:4: ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1111:4: ^( T_USR[\"T_USR\", featureFlags] IDENT[ti.getTypeName()] )
                 {
                 BaseNode root_3 = (BaseNode)adaptor.nil();
                 root_3 = (BaseNode)adaptor.becomeRoot(
@@ -12406,7 +12427,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnType_fcnName"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1094:1: fcnType_fcnName : ( typeName qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) qualName ) |{...}? typeName -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[modCtor] ) |{...}? typeName -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) IDENT[\"new_\"] ) | qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) qualName ) | ( '(' typeName ( ',' typeName )* ')' qualName )=> fcnTypes_fcnName );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1115:1: fcnType_fcnName : ( typeName qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) qualName ) |{...}? typeName -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[modCtor] ) |{...}? typeName -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) IDENT[\"new_\"] ) | qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) qualName ) | ( '(' typeName ( ',' typeName )* ')' qualName )=> fcnTypes_fcnName );
     public final pollenParser.fcnType_fcnName_return fcnType_fcnName() throws RecognitionException {
         pollenParser.fcnType_fcnName_return retval = new pollenParser.fcnType_fcnName_return();
         retval.start = input.LT(1);
@@ -12436,7 +12457,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 73) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1101:2: ( typeName qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) qualName ) |{...}? typeName -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[modCtor] ) |{...}? typeName -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) IDENT[\"new_\"] ) | qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) qualName ) | ( '(' typeName ( ',' typeName )* ')' qualName )=> fcnTypes_fcnName )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1122:2: ( typeName qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) qualName ) |{...}? typeName -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[modCtor] ) |{...}? typeName -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) IDENT[\"new_\"] ) | qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) qualName ) | ( '(' typeName ( ',' typeName )* ')' qualName )=> fcnTypes_fcnName )
             int alt70=5;
             int LA70_0 = input.LA(1);
 
@@ -12666,7 +12687,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt70) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1101:4: typeName qualName
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1122:4: typeName qualName
                     {
                     pushFollow(FOLLOW_typeName_in_fcnType_fcnName4560);
                     typeName240=typeName();
@@ -12683,7 +12704,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_qualName.add(qualName241.getTree());
 
                     // AST REWRITE
-                    // elements: qualName, typeName
+                    // elements: typeName, qualName
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -12695,23 +12716,23 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1102:3: -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) qualName )
+                    // 1123:3: -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) qualName )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1102:6: ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) qualName )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1123:6: ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) qualName )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.FcnTyp(D_FCN_TYP_NM, "D_FCN_TYP_NM")
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1102:55: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1123:55: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new TypeNode.Lst(T_LST, "T_LST", featureFlags)
                         , root_2);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1102:100: ^( LIST[\"LIST\"] typeName )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1123:100: ^( LIST[\"LIST\"] typeName )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -12740,7 +12761,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1103:4: {...}? typeName
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1124:4: {...}? typeName
                     {
                     if ( !((input.LT(1).getText().equals(ti.getTypeName()) && !(ti.getUnitFlags().contains(Flags.CLASS)) )) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -12772,30 +12793,30 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1109:3: -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[modCtor] )
+                    // 1130:3: -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[modCtor] )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1109:6: ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[modCtor] )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1130:6: ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[modCtor] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.FcnTyp(D_FCN_CTOR, "D_FCN_CTOR")
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1110:4: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1131:4: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new TypeNode.Lst(T_LST, "T_LST", featureFlags)
                         , root_2);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1111:4: ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1132:4: ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
                         new ListNode(LIST, "LIST")
                         , root_3);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1111:29: ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1132:29: ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] )
                         {
                         BaseNode root_4 = (BaseNode)adaptor.nil();
                         root_4 = (BaseNode)adaptor.becomeRoot(
@@ -12831,7 +12852,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1113:4: {...}? typeName
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1134:4: {...}? typeName
                     {
                     if ( !((input.LT(1).getText().equals(ti.getTypeName()) )) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -12862,23 +12883,23 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1118:3: -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) IDENT[\"new_\"] )
+                    // 1139:3: -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) IDENT[\"new_\"] )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1118:6: ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) IDENT[\"new_\"] )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1139:6: ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) IDENT[\"new_\"] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.FcnTyp(D_FCN_CTOR, "D_FCN_CTOR")
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1118:50: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1139:50: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new TypeNode.Lst(T_LST, "T_LST", featureFlags)
                         , root_2);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1118:95: ^( LIST[\"LIST\"] typeName )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1139:95: ^( LIST[\"LIST\"] typeName )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -12909,7 +12930,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1119:4: qualName
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1140:4: qualName
                     {
                     pushFollow(FOLLOW_qualName_in_fcnType_fcnName4759);
                     qualName244=qualName();
@@ -12933,30 +12954,30 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1121:3: -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) qualName )
+                    // 1142:3: -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) qualName )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1121:6: ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) qualName )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1142:6: ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) qualName )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.FcnTyp(D_FCN_TYP_NM, "D_FCN_TYP_NM")
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1121:54: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1142:54: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new TypeNode.Lst(T_LST, "T_LST", featureFlags)
                         , root_2);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1122:5: ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1143:5: ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
                         new ListNode(LIST, "LIST")
                         , root_3);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1122:30: ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1143:30: ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] )
                         {
                         BaseNode root_4 = (BaseNode)adaptor.nil();
                         root_4 = (BaseNode)adaptor.becomeRoot(
@@ -12990,7 +13011,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1123:4: ( '(' typeName ( ',' typeName )* ')' qualName )=> fcnTypes_fcnName
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1144:4: ( '(' typeName ( ',' typeName )* ')' qualName )=> fcnTypes_fcnName
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -13039,7 +13060,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnTypes_fcnName"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1125:1: fcnTypes_fcnName : '(' fcnTypes ')' qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] fcnTypes qualName ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1146:1: fcnTypes_fcnName : '(' fcnTypes ')' qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] fcnTypes qualName ) ;
     public final pollenParser.fcnTypes_fcnName_return fcnTypes_fcnName() throws RecognitionException {
         pollenParser.fcnTypes_fcnName_return retval = new pollenParser.fcnTypes_fcnName_return();
         retval.start = input.LT(1);
@@ -13064,8 +13085,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 74) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1126:2: ( '(' fcnTypes ')' qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] fcnTypes qualName ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1126:4: '(' fcnTypes ')' qualName
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1147:2: ( '(' fcnTypes ')' qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] fcnTypes qualName ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1147:4: '(' fcnTypes ')' qualName
             {
             char_literal246=(Atom)match(input,127,FOLLOW_127_in_fcnTypes_fcnName4858); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_127.add(char_literal246);
@@ -13090,7 +13111,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_qualName.add(qualName249.getTree());
 
             // AST REWRITE
-            // elements: qualName, fcnTypes
+            // elements: fcnTypes, qualName
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -13102,9 +13123,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1126:30: -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] fcnTypes qualName )
+            // 1147:30: -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] fcnTypes qualName )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1126:33: ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] fcnTypes qualName )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1147:33: ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] fcnTypes qualName )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -13159,7 +13180,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnTypes"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1128:1: fcnTypes : typeName ( ',' typeName )* -> ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ( typeName )+ ) ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1149:1: fcnTypes : typeName ( ',' typeName )* -> ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ( typeName )+ ) ) ;
     public final pollenParser.fcnTypes_return fcnTypes() throws RecognitionException {
         pollenParser.fcnTypes_return retval = new pollenParser.fcnTypes_return();
         retval.start = input.LT(1);
@@ -13180,8 +13201,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 75) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1129:2: ( typeName ( ',' typeName )* -> ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ( typeName )+ ) ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1129:4: typeName ( ',' typeName )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1150:2: ( typeName ( ',' typeName )* -> ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ( typeName )+ ) ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1150:4: typeName ( ',' typeName )*
             {
             pushFollow(FOLLOW_typeName_in_fcnTypes4891);
             typeName250=typeName();
@@ -13190,7 +13211,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_typeName.add(typeName250.getTree());
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1129:13: ( ',' typeName )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1150:13: ( ',' typeName )*
             loop71:
             do {
                 int alt71=2;
@@ -13203,7 +13224,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt71) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1129:14: ',' typeName
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1150:14: ',' typeName
             	    {
             	    char_literal251=(Atom)match(input,130,FOLLOW_130_in_fcnTypes4894); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_130.add(char_literal251);
@@ -13238,16 +13259,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1129:29: -> ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ( typeName )+ ) )
+            // 1150:29: -> ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ( typeName )+ ) )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1129:32: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ( typeName )+ ) )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1150:32: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ( typeName )+ ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new TypeNode.Lst(T_LST, "T_LST", featureFlags)
                 , root_1);
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1129:77: ^( LIST[\"LIST\"] ( typeName )+ )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1150:77: ^( LIST[\"LIST\"] ( typeName )+ )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
@@ -13310,7 +13331,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "formalParameterList"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1131:1: formalParameterList : '(' formalParameters ')' -> formalParameters ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1152:1: formalParameterList : '(' formalParameters ')' -> formalParameters ;
     public final pollenParser.formalParameterList_return formalParameterList() throws RecognitionException {
         pollenParser.formalParameterList_return retval = new pollenParser.formalParameterList_return();
         retval.start = input.LT(1);
@@ -13332,8 +13353,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 76) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1132:2: ( '(' formalParameters ')' -> formalParameters )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1132:4: '(' formalParameters ')'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1153:2: ( '(' formalParameters ')' -> formalParameters )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1153:4: '(' formalParameters ')'
             {
             char_literal253=(Atom)match(input,127,FOLLOW_127_in_formalParameterList4931); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_127.add(char_literal253);
@@ -13363,7 +13384,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1132:29: -> formalParameters
+            // 1153:29: -> formalParameters
             {
                 adaptor.addChild(root_0, stream_formalParameters.nextTree());
 
@@ -13408,7 +13429,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "methodParameters"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1134:1: methodParameters : ( formalParameter ( ',' formalParameter )* -> ^( LIST[\"LIST\"] ( formalParameter )+ ) | -> ^( LIST[\"LIST\"] ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1155:1: methodParameters : ( formalParameter ( ',' formalParameter )* -> ^( LIST[\"LIST\"] ( formalParameter )+ ) | -> ^( LIST[\"LIST\"] ) );
     public final pollenParser.methodParameters_return methodParameters() throws RecognitionException {
         pollenParser.methodParameters_return retval = new pollenParser.methodParameters_return();
         retval.start = input.LT(1);
@@ -13432,7 +13453,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 77) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1141:2: ( formalParameter ( ',' formalParameter )* -> ^( LIST[\"LIST\"] ( formalParameter )+ ) | -> ^( LIST[\"LIST\"] ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1162:2: ( formalParameter ( ',' formalParameter )* -> ^( LIST[\"LIST\"] ( formalParameter )+ ) | -> ^( LIST[\"LIST\"] ) )
             int alt73=2;
             int LA73_0 = input.LA(1);
 
@@ -13452,7 +13473,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt73) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1141:4: formalParameter ( ',' formalParameter )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1162:4: formalParameter ( ',' formalParameter )*
                     {
                     pushFollow(FOLLOW_formalParameter_in_methodParameters4957);
                     formalParameter256=formalParameter();
@@ -13461,7 +13482,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_formalParameter.add(formalParameter256.getTree());
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1141:20: ( ',' formalParameter )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1162:20: ( ',' formalParameter )*
                     loop72:
                     do {
                         int alt72=2;
@@ -13474,7 +13495,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt72) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1141:21: ',' formalParameter
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1162:21: ',' formalParameter
                     	    {
                     	    char_literal257=(Atom)match(input,130,FOLLOW_130_in_methodParameters4960); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_130.add(char_literal257);
@@ -13509,9 +13530,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1142:5: -> ^( LIST[\"LIST\"] ( formalParameter )+ )
+                    // 1163:5: -> ^( LIST[\"LIST\"] ( formalParameter )+ )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1142:8: ^( LIST[\"LIST\"] ( formalParameter )+ )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1163:8: ^( LIST[\"LIST\"] ( formalParameter )+ )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -13539,7 +13560,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1143:4: 
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1164:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -13554,9 +13575,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1143:4: -> ^( LIST[\"LIST\"] )
+                    // 1164:4: -> ^( LIST[\"LIST\"] )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1143:7: ^( LIST[\"LIST\"] )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1164:7: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -13609,7 +13630,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "formalParameters"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1153:1: formalParameters : ({...}? methodParameters | formalParameter ( ',' formalParameter )* -> ^( LIST[\"LIST\"] ( formalParameter )+ ) | -> ^( LIST[\"LIST\"] ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1174:1: formalParameters : ({...}? methodParameters | formalParameter ( ',' formalParameter )* -> ^( LIST[\"LIST\"] ( formalParameter )+ ) | -> ^( LIST[\"LIST\"] ) );
     public final pollenParser.formalParameters_return formalParameters() throws RecognitionException {
         pollenParser.formalParameters_return retval = new pollenParser.formalParameters_return();
         retval.start = input.LT(1);
@@ -13632,7 +13653,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 78) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1154:2: ({...}? methodParameters | formalParameter ( ',' formalParameter )* -> ^( LIST[\"LIST\"] ( formalParameter )+ ) | -> ^( LIST[\"LIST\"] ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1175:2: ({...}? methodParameters | formalParameter ( ',' formalParameter )* -> ^( LIST[\"LIST\"] ( formalParameter )+ ) | -> ^( LIST[\"LIST\"] ) )
             int alt75=3;
             switch ( input.LA(1) ) {
             case 184:
@@ -13910,7 +13931,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt75) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1154:4: {...}? methodParameters
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1175:4: {...}? methodParameters
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -13932,7 +13953,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1159:4: formalParameter ( ',' formalParameter )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1180:4: formalParameter ( ',' formalParameter )*
                     {
                     pushFollow(FOLLOW_formalParameter_in_formalParameters5029);
                     formalParameter260=formalParameter();
@@ -13941,7 +13962,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_formalParameter.add(formalParameter260.getTree());
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1159:20: ( ',' formalParameter )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1180:20: ( ',' formalParameter )*
                     loop74:
                     do {
                         int alt74=2;
@@ -13954,7 +13975,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt74) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1159:21: ',' formalParameter
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1180:21: ',' formalParameter
                     	    {
                     	    char_literal261=(Atom)match(input,130,FOLLOW_130_in_formalParameters5032); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_130.add(char_literal261);
@@ -13989,9 +14010,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1160:3: -> ^( LIST[\"LIST\"] ( formalParameter )+ )
+                    // 1181:3: -> ^( LIST[\"LIST\"] ( formalParameter )+ )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1160:6: ^( LIST[\"LIST\"] ( formalParameter )+ )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1181:6: ^( LIST[\"LIST\"] ( formalParameter )+ )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -14019,7 +14040,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1161:4: 
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1182:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -14034,9 +14055,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1161:4: -> ^( LIST[\"LIST\"] )
+                    // 1182:4: -> ^( LIST[\"LIST\"] )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1161:7: ^( LIST[\"LIST\"] )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1182:7: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -14089,7 +14110,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "formalParameter"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1163:1: formalParameter : ( 'type' IDENT ( '=' t= typeName )? -> ^( D_FORMAL[\"D_FORMAL\", pFlags] ^( T_USR[\"T_USR\", pFlags] IDENT ) IDENT ( ^( E_TYP[\"E_TYP\"] typeName ) )? ) | typeName IDENT ( '=' expr )? -> ^( D_FORMAL[\"D_FORMAL\"] typeName IDENT ( expr )? ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1184:1: formalParameter : ( 'type' IDENT ( '=' t= typeName )? -> ^( D_FORMAL[\"D_FORMAL\", pFlags] ^( T_USR[\"T_USR\", pFlags] IDENT ) IDENT ( ^( E_TYP[\"E_TYP\"] typeName ) )? ) | typeName IDENT ( '=' expr )? -> ^( D_FORMAL[\"D_FORMAL\"] typeName IDENT ( expr )? ) );
     public final pollenParser.formalParameter_return formalParameter() throws RecognitionException {
         pollenParser.formalParameter_return retval = new pollenParser.formalParameter_return();
         retval.start = input.LT(1);
@@ -14126,7 +14147,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 79) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1167:2: ( 'type' IDENT ( '=' t= typeName )? -> ^( D_FORMAL[\"D_FORMAL\", pFlags] ^( T_USR[\"T_USR\", pFlags] IDENT ) IDENT ( ^( E_TYP[\"E_TYP\"] typeName ) )? ) | typeName IDENT ( '=' expr )? -> ^( D_FORMAL[\"D_FORMAL\"] typeName IDENT ( expr )? ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1188:2: ( 'type' IDENT ( '=' t= typeName )? -> ^( D_FORMAL[\"D_FORMAL\", pFlags] ^( T_USR[\"T_USR\", pFlags] IDENT ) IDENT ( ^( E_TYP[\"E_TYP\"] typeName ) )? ) | typeName IDENT ( '=' expr )? -> ^( D_FORMAL[\"D_FORMAL\"] typeName IDENT ( expr )? ) )
             int alt78=2;
             int LA78_0 = input.LA(1);
 
@@ -14146,7 +14167,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt78) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1167:6: 'type' IDENT ( '=' t= typeName )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1188:6: 'type' IDENT ( '=' t= typeName )?
                     {
                     string_literal263=(Atom)match(input,184,FOLLOW_184_in_formalParameter5082); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_184.add(string_literal263);
@@ -14156,7 +14177,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT264);
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1167:19: ( '=' t= typeName )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1188:19: ( '=' t= typeName )?
                     int alt76=2;
                     int LA76_0 = input.LA(1);
 
@@ -14165,7 +14186,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt76) {
                         case 1 :
-                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1167:21: '=' t= typeName
+                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1188:21: '=' t= typeName
                             {
                             char_literal265=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_formalParameter5088); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_ASSIGN.add(char_literal265);
@@ -14187,7 +14208,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) { pFlags.add(Flags.TYPE_META_ARG); }
 
                     // AST REWRITE
-                    // elements: typeName, IDENT, IDENT
+                    // elements: IDENT, typeName, IDENT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -14199,16 +14220,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1169:3: -> ^( D_FORMAL[\"D_FORMAL\", pFlags] ^( T_USR[\"T_USR\", pFlags] IDENT ) IDENT ( ^( E_TYP[\"E_TYP\"] typeName ) )? )
+                    // 1190:3: -> ^( D_FORMAL[\"D_FORMAL\", pFlags] ^( T_USR[\"T_USR\", pFlags] IDENT ) IDENT ( ^( E_TYP[\"E_TYP\"] typeName ) )? )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1169:6: ^( D_FORMAL[\"D_FORMAL\", pFlags] ^( T_USR[\"T_USR\", pFlags] IDENT ) IDENT ( ^( E_TYP[\"E_TYP\"] typeName ) )? )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1190:6: ^( D_FORMAL[\"D_FORMAL\", pFlags] ^( T_USR[\"T_USR\", pFlags] IDENT ) IDENT ( ^( E_TYP[\"E_TYP\"] typeName ) )? )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.Formal(D_FORMAL, "D_FORMAL", pFlags)
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1170:4: ^( T_USR[\"T_USR\", pFlags] IDENT )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1191:4: ^( T_USR[\"T_USR\", pFlags] IDENT )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -14226,9 +14247,9 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_IDENT.nextNode()
                         );
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1171:10: ( ^( E_TYP[\"E_TYP\"] typeName ) )?
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1192:10: ( ^( E_TYP[\"E_TYP\"] typeName ) )?
                         if ( stream_typeName.hasNext() ) {
-                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1171:10: ^( E_TYP[\"E_TYP\"] typeName )
+                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1192:10: ^( E_TYP[\"E_TYP\"] typeName )
                             {
                             BaseNode root_2 = (BaseNode)adaptor.nil();
                             root_2 = (BaseNode)adaptor.becomeRoot(
@@ -14255,7 +14276,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1172:6: typeName IDENT ( '=' expr )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1193:6: typeName IDENT ( '=' expr )?
                     {
                     pushFollow(FOLLOW_typeName_in_formalParameter5156);
                     typeName266=typeName();
@@ -14268,7 +14289,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT267);
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1172:21: ( '=' expr )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1193:21: ( '=' expr )?
                     int alt77=2;
                     int LA77_0 = input.LA(1);
 
@@ -14277,7 +14298,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt77) {
                         case 1 :
-                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1172:23: '=' expr
+                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1193:23: '=' expr
                             {
                             char_literal268=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_formalParameter5162); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_ASSIGN.add(char_literal268);
@@ -14297,7 +14318,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: IDENT, expr, typeName
+                    // elements: expr, typeName, IDENT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -14309,9 +14330,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1173:3: -> ^( D_FORMAL[\"D_FORMAL\"] typeName IDENT ( expr )? )
+                    // 1194:3: -> ^( D_FORMAL[\"D_FORMAL\"] typeName IDENT ( expr )? )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1173:6: ^( D_FORMAL[\"D_FORMAL\"] typeName IDENT ( expr )? )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1194:6: ^( D_FORMAL[\"D_FORMAL\"] typeName IDENT ( expr )? )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -14324,7 +14345,7 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_IDENT.nextNode()
                         );
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1173:61: ( expr )?
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1194:61: ( expr )?
                         if ( stream_expr.hasNext() ) {
                             adaptor.addChild(root_1, stream_expr.nextTree());
 
@@ -14377,7 +14398,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnArgumentList"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1176:1: fcnArgumentList : '(' fcnArguments ')' -> fcnArguments ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1197:1: fcnArgumentList : '(' fcnArguments ')' -> fcnArguments ;
     public final pollenParser.fcnArgumentList_return fcnArgumentList() throws RecognitionException {
         pollenParser.fcnArgumentList_return retval = new pollenParser.fcnArgumentList_return();
         retval.start = input.LT(1);
@@ -14399,8 +14420,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 80) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1177:2: ( '(' fcnArguments ')' -> fcnArguments )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1177:4: '(' fcnArguments ')'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1198:2: ( '(' fcnArguments ')' -> fcnArguments )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1198:4: '(' fcnArguments ')'
             {
             char_literal270=(Atom)match(input,127,FOLLOW_127_in_fcnArgumentList5200); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_127.add(char_literal270);
@@ -14430,7 +14451,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1177:25: -> fcnArguments
+            // 1198:25: -> fcnArguments
             {
                 adaptor.addChild(root_0, stream_fcnArguments.nextTree());
 
@@ -14475,7 +14496,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnArguments"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1179:1: fcnArguments : exprList ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1200:1: fcnArguments : exprList ;
     public final pollenParser.fcnArguments_return fcnArguments() throws RecognitionException {
         pollenParser.fcnArguments_return retval = new pollenParser.fcnArguments_return();
         retval.start = input.LT(1);
@@ -14491,8 +14512,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 81) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1180:2: ( exprList )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1180:4: exprList
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1201:2: ( exprList )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1201:4: exprList
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -14539,7 +14560,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varOrFcnOrArray"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1182:1: varOrFcnOrArray : ( 'new' typeName fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_NEW[\"E_NEW\"] typeName fcnArgumentList ( fieldOrArrayAccess )? ) | '@' IDENT fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_SELF[\"E_SELF\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? ) ) | '@' IDENT ( fieldOrArrayAccess )? -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? ) ) | '@' -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] ) ) | qualName fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] qualName ) fcnArgumentList ( fieldOrArrayAccess )? ) | qualName ( fieldOrArrayAccess )? -> ^( E_IDENT[\"E_IDENT\"] qualName ( fieldOrArrayAccess )? ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1203:1: varOrFcnOrArray : ( 'new' typeName fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_NEW[\"E_NEW\"] typeName fcnArgumentList ( fieldOrArrayAccess )? ) | '@' IDENT fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_SELF[\"E_SELF\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? ) ) | '@' IDENT ( fieldOrArrayAccess )? -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? ) ) | '@' -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] ) ) | qualName fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] qualName ) fcnArgumentList ( fieldOrArrayAccess )? ) | qualName ( fieldOrArrayAccess )? -> ^( E_IDENT[\"E_IDENT\"] qualName ( fieldOrArrayAccess )? ) );
     public final pollenParser.varOrFcnOrArray_return varOrFcnOrArray() throws RecognitionException {
         pollenParser.varOrFcnOrArray_return retval = new pollenParser.varOrFcnOrArray_return();
         retval.start = input.LT(1);
@@ -14593,7 +14614,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 82) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1183:2: ( 'new' typeName fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_NEW[\"E_NEW\"] typeName fcnArgumentList ( fieldOrArrayAccess )? ) | '@' IDENT fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_SELF[\"E_SELF\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? ) ) | '@' IDENT ( fieldOrArrayAccess )? -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? ) ) | '@' -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] ) ) | qualName fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] qualName ) fcnArgumentList ( fieldOrArrayAccess )? ) | qualName ( fieldOrArrayAccess )? -> ^( E_IDENT[\"E_IDENT\"] qualName ( fieldOrArrayAccess )? ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1204:2: ( 'new' typeName fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_NEW[\"E_NEW\"] typeName fcnArgumentList ( fieldOrArrayAccess )? ) | '@' IDENT fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_SELF[\"E_SELF\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? ) ) | '@' IDENT ( fieldOrArrayAccess )? -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? ) ) | '@' -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] ) ) | qualName fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] qualName ) fcnArgumentList ( fieldOrArrayAccess )? ) | qualName ( fieldOrArrayAccess )? -> ^( E_IDENT[\"E_IDENT\"] qualName ( fieldOrArrayAccess )? ) )
             int alt84=6;
             switch ( input.LA(1) ) {
             case 172:
@@ -14655,7 +14676,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt84) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1183:4: 'new' typeName fcnArgumentList ( fieldOrArrayAccess )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1204:4: 'new' typeName fcnArgumentList ( fieldOrArrayAccess )?
                     {
                     string_literal274=(Atom)match(input,172,FOLLOW_172_in_varOrFcnOrArray5229); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_172.add(string_literal274);
@@ -14675,7 +14696,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_fcnArgumentList.add(fcnArgumentList276.getTree());
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1183:35: ( fieldOrArrayAccess )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1204:35: ( fieldOrArrayAccess )?
                     int alt79=2;
                     int LA79_0 = input.LA(1);
 
@@ -14691,7 +14712,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt79) {
                         case 1 :
-                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1183:35: fieldOrArrayAccess
+                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1204:35: fieldOrArrayAccess
                             {
                             pushFollow(FOLLOW_fieldOrArrayAccess_in_varOrFcnOrArray5235);
                             fieldOrArrayAccess277=fieldOrArrayAccess();
@@ -14707,7 +14728,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: fieldOrArrayAccess, fcnArgumentList, typeName
+                    // elements: typeName, fcnArgumentList, fieldOrArrayAccess
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -14719,9 +14740,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1184:3: -> ^( E_NEW[\"E_NEW\"] typeName fcnArgumentList ( fieldOrArrayAccess )? )
+                    // 1205:3: -> ^( E_NEW[\"E_NEW\"] typeName fcnArgumentList ( fieldOrArrayAccess )? )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1184:6: ^( E_NEW[\"E_NEW\"] typeName fcnArgumentList ( fieldOrArrayAccess )? )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1205:6: ^( E_NEW[\"E_NEW\"] typeName fcnArgumentList ( fieldOrArrayAccess )? )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -14732,7 +14753,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         adaptor.addChild(root_1, stream_fcnArgumentList.nextTree());
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1184:62: ( fieldOrArrayAccess )?
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1205:62: ( fieldOrArrayAccess )?
                         if ( stream_fieldOrArrayAccess.hasNext() ) {
                             adaptor.addChild(root_1, stream_fieldOrArrayAccess.nextTree());
 
@@ -14751,7 +14772,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1185:4: '@' IDENT fcnArgumentList ( fieldOrArrayAccess )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1206:4: '@' IDENT fcnArgumentList ( fieldOrArrayAccess )?
                     {
                     char_literal278=(Atom)match(input,137,FOLLOW_137_in_varOrFcnOrArray5262); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_137.add(char_literal278);
@@ -14768,7 +14789,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_fcnArgumentList.add(fcnArgumentList280.getTree());
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1185:30: ( fieldOrArrayAccess )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1206:30: ( fieldOrArrayAccess )?
                     int alt80=2;
                     int LA80_0 = input.LA(1);
 
@@ -14784,7 +14805,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt80) {
                         case 1 :
-                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1185:30: fieldOrArrayAccess
+                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1206:30: fieldOrArrayAccess
                             {
                             pushFollow(FOLLOW_fieldOrArrayAccess_in_varOrFcnOrArray5268);
                             fieldOrArrayAccess281=fieldOrArrayAccess();
@@ -14800,7 +14821,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: fcnArgumentList, fieldOrArrayAccess, IDENT
+                    // elements: fieldOrArrayAccess, fcnArgumentList, IDENT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -14812,23 +14833,23 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1186:3: -> ^( E_SELF[\"E_SELF\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? ) )
+                    // 1207:3: -> ^( E_SELF[\"E_SELF\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? ) )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1186:6: ^( E_SELF[\"E_SELF\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1207:6: ^( E_SELF[\"E_SELF\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Self(E_SELF, "E_SELF")
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1187:4: ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1208:4: ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Call(E_CALL, "E_CALL")
                         , root_2);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1187:38: ^( E_IDENT[\"E_IDENT\"] IDENT )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1208:38: ^( E_IDENT[\"E_IDENT\"] IDENT )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -14844,7 +14865,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         adaptor.addChild(root_2, stream_fcnArgumentList.nextTree());
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1187:98: ( fieldOrArrayAccess )?
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1208:98: ( fieldOrArrayAccess )?
                         if ( stream_fieldOrArrayAccess.hasNext() ) {
                             adaptor.addChild(root_2, stream_fieldOrArrayAccess.nextTree());
 
@@ -14866,7 +14887,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1188:4: '@' IDENT ( fieldOrArrayAccess )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1209:4: '@' IDENT ( fieldOrArrayAccess )?
                     {
                     char_literal282=(Atom)match(input,137,FOLLOW_137_in_varOrFcnOrArray5320); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_137.add(char_literal282);
@@ -14876,7 +14897,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT283);
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1188:14: ( fieldOrArrayAccess )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1209:14: ( fieldOrArrayAccess )?
                     int alt81=2;
                     int LA81_0 = input.LA(1);
 
@@ -14892,7 +14913,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt81) {
                         case 1 :
-                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1188:14: fieldOrArrayAccess
+                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1209:14: fieldOrArrayAccess
                             {
                             pushFollow(FOLLOW_fieldOrArrayAccess_in_varOrFcnOrArray5324);
                             fieldOrArrayAccess284=fieldOrArrayAccess();
@@ -14908,7 +14929,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: fieldOrArrayAccess, IDENT
+                    // elements: IDENT, fieldOrArrayAccess
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -14920,16 +14941,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1189:3: -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? ) )
+                    // 1210:3: -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? ) )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1189:6: ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1210:6: ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Self(E_SELF, "E_SELF")
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1189:40: ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1210:40: ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -14940,7 +14961,7 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_IDENT.nextNode()
                         );
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1189:83: ( fieldOrArrayAccess )?
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1210:83: ( fieldOrArrayAccess )?
                         if ( stream_fieldOrArrayAccess.hasNext() ) {
                             adaptor.addChild(root_2, stream_fieldOrArrayAccess.nextTree());
 
@@ -14962,7 +14983,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1190:4: '@'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1211:4: '@'
                     {
                     char_literal285=(Atom)match(input,137,FOLLOW_137_in_varOrFcnOrArray5363); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_137.add(char_literal285);
@@ -14981,16 +15002,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1191:3: -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] ) )
+                    // 1212:3: -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] ) )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1191:6: ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1212:6: ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Self(E_SELF, "E_SELF")
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1191:41: ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1212:41: ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -15016,7 +15037,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1192:4: qualName fcnArgumentList ( fieldOrArrayAccess )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1213:4: qualName fcnArgumentList ( fieldOrArrayAccess )?
                     {
                     pushFollow(FOLLOW_qualName_in_varOrFcnOrArray5398);
                     qualName286=qualName();
@@ -15032,7 +15053,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_fcnArgumentList.add(fcnArgumentList287.getTree());
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1192:29: ( fieldOrArrayAccess )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1213:29: ( fieldOrArrayAccess )?
                     int alt82=2;
                     int LA82_0 = input.LA(1);
 
@@ -15048,7 +15069,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt82) {
                         case 1 :
-                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1192:29: fieldOrArrayAccess
+                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1213:29: fieldOrArrayAccess
                             {
                             pushFollow(FOLLOW_fieldOrArrayAccess_in_varOrFcnOrArray5402);
                             fieldOrArrayAccess288=fieldOrArrayAccess();
@@ -15064,7 +15085,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: fieldOrArrayAccess, fcnArgumentList, qualName
+                    // elements: fcnArgumentList, fieldOrArrayAccess, qualName
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -15076,16 +15097,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1193:3: -> ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] qualName ) fcnArgumentList ( fieldOrArrayAccess )? )
+                    // 1214:3: -> ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] qualName ) fcnArgumentList ( fieldOrArrayAccess )? )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1193:6: ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] qualName ) fcnArgumentList ( fieldOrArrayAccess )? )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1214:6: ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] qualName ) fcnArgumentList ( fieldOrArrayAccess )? )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Call(E_CALL, "E_CALL")
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1193:40: ^( E_IDENT[\"E_IDENT\"] qualName )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1214:40: ^( E_IDENT[\"E_IDENT\"] qualName )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -15099,7 +15120,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         adaptor.addChild(root_1, stream_fcnArgumentList.nextTree());
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1193:103: ( fieldOrArrayAccess )?
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1214:103: ( fieldOrArrayAccess )?
                         if ( stream_fieldOrArrayAccess.hasNext() ) {
                             adaptor.addChild(root_1, stream_fieldOrArrayAccess.nextTree());
 
@@ -15118,7 +15139,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 6 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1194:4: qualName ( fieldOrArrayAccess )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1215:4: qualName ( fieldOrArrayAccess )?
                     {
                     pushFollow(FOLLOW_qualName_in_varOrFcnOrArray5440);
                     qualName289=qualName();
@@ -15127,7 +15148,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_qualName.add(qualName289.getTree());
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1194:13: ( fieldOrArrayAccess )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1215:13: ( fieldOrArrayAccess )?
                     int alt83=2;
                     int LA83_0 = input.LA(1);
 
@@ -15143,7 +15164,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt83) {
                         case 1 :
-                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1194:13: fieldOrArrayAccess
+                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1215:13: fieldOrArrayAccess
                             {
                             pushFollow(FOLLOW_fieldOrArrayAccess_in_varOrFcnOrArray5442);
                             fieldOrArrayAccess290=fieldOrArrayAccess();
@@ -15171,9 +15192,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1194:33: -> ^( E_IDENT[\"E_IDENT\"] qualName ( fieldOrArrayAccess )? )
+                    // 1215:33: -> ^( E_IDENT[\"E_IDENT\"] qualName ( fieldOrArrayAccess )? )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1194:36: ^( E_IDENT[\"E_IDENT\"] qualName ( fieldOrArrayAccess )? )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1215:36: ^( E_IDENT[\"E_IDENT\"] qualName ( fieldOrArrayAccess )? )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -15182,7 +15203,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         adaptor.addChild(root_1, stream_qualName.nextTree());
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1194:82: ( fieldOrArrayAccess )?
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1215:82: ( fieldOrArrayAccess )?
                         if ( stream_fieldOrArrayAccess.hasNext() ) {
                             adaptor.addChild(root_1, stream_fieldOrArrayAccess.nextTree());
 
@@ -15235,7 +15256,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fieldOrArrayAccess"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1196:1: fieldOrArrayAccess : ( fieldAccess | arrayAccess )+ ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1217:1: fieldOrArrayAccess : ( fieldAccess | arrayAccess )+ ;
     public final pollenParser.fieldOrArrayAccess_return fieldOrArrayAccess() throws RecognitionException {
         pollenParser.fieldOrArrayAccess_return retval = new pollenParser.fieldOrArrayAccess_return();
         retval.start = input.LT(1);
@@ -15253,13 +15274,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 83) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1197:2: ( ( fieldAccess | arrayAccess )+ )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1197:5: ( fieldAccess | arrayAccess )+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1218:2: ( ( fieldAccess | arrayAccess )+ )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1218:5: ( fieldAccess | arrayAccess )+
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1197:5: ( fieldAccess | arrayAccess )+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1218:5: ( fieldAccess | arrayAccess )+
             int cnt85=0;
             loop85:
             do {
@@ -15282,7 +15303,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt85) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1197:6: fieldAccess
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1218:6: fieldAccess
             	    {
             	    pushFollow(FOLLOW_fieldAccess_in_fieldOrArrayAccess5472);
             	    fieldAccess291=fieldAccess();
@@ -15294,7 +15315,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    break;
             	case 2 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1197:20: arrayAccess
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1218:20: arrayAccess
             	    {
             	    pushFollow(FOLLOW_arrayAccess_in_fieldOrArrayAccess5476);
             	    arrayAccess292=arrayAccess();
@@ -15352,7 +15373,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fieldAccess"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1199:1: fieldAccess : ( '.' IDENT fcnArgumentList -> ^( E_CALL[\"E_CALL\", true] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ) | '.' IDENT -> ^( E_IDENT[\"E_IDENT\", true] IDENT ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1220:1: fieldAccess : ( '.' IDENT fcnArgumentList -> ^( E_CALL[\"E_CALL\", true] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ) | '.' IDENT -> ^( E_IDENT[\"E_IDENT\", true] IDENT ) );
     public final pollenParser.fieldAccess_return fieldAccess() throws RecognitionException {
         pollenParser.fieldAccess_return retval = new pollenParser.fieldAccess_return();
         retval.start = input.LT(1);
@@ -15378,7 +15399,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 84) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1200:2: ( '.' IDENT fcnArgumentList -> ^( E_CALL[\"E_CALL\", true] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ) | '.' IDENT -> ^( E_IDENT[\"E_IDENT\", true] IDENT ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1221:2: ( '.' IDENT fcnArgumentList -> ^( E_CALL[\"E_CALL\", true] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ) | '.' IDENT -> ^( E_IDENT[\"E_IDENT\", true] IDENT ) )
             int alt86=2;
             int LA86_0 = input.LA(1);
 
@@ -15410,7 +15431,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt86) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1200:4: '.' IDENT fcnArgumentList
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1221:4: '.' IDENT fcnArgumentList
                     {
                     char_literal293=(Atom)match(input,131,FOLLOW_131_in_fieldAccess5488); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_131.add(char_literal293);
@@ -15428,7 +15449,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_fcnArgumentList.add(fcnArgumentList295.getTree());
 
                     // AST REWRITE
-                    // elements: fcnArgumentList, IDENT
+                    // elements: IDENT, fcnArgumentList
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -15440,16 +15461,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1201:4: -> ^( E_CALL[\"E_CALL\", true] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList )
+                    // 1222:4: -> ^( E_CALL[\"E_CALL\", true] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1201:7: ^( E_CALL[\"E_CALL\", true] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1222:7: ^( E_CALL[\"E_CALL\", true] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Call(E_CALL, "E_CALL", true)
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1202:5: ^( E_IDENT[\"E_IDENT\"] IDENT )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1223:5: ^( E_IDENT[\"E_IDENT\"] IDENT )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -15477,7 +15498,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1203:4: '.' IDENT
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:4: '.' IDENT
                     {
                     char_literal296=(Atom)match(input,131,FOLLOW_131_in_fieldAccess5533); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_131.add(char_literal296);
@@ -15500,9 +15521,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1203:15: -> ^( E_IDENT[\"E_IDENT\", true] IDENT )
+                    // 1224:15: -> ^( E_IDENT[\"E_IDENT\", true] IDENT )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1203:18: ^( E_IDENT[\"E_IDENT\", true] IDENT )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:18: ^( E_IDENT[\"E_IDENT\", true] IDENT )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -15559,7 +15580,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "arrayAccess"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1205:1: arrayAccess : '[' ( exprList )? ']' -> ^( E_INDEX[\"E_INDEX\"] ( exprList )? ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:1: arrayAccess : '[' ( exprList )? ']' -> ^( E_INDEX[\"E_INDEX\"] ( exprList )? ) ;
     public final pollenParser.arrayAccess_return arrayAccess() throws RecognitionException {
         pollenParser.arrayAccess_return retval = new pollenParser.arrayAccess_return();
         retval.start = input.LT(1);
@@ -15581,14 +15602,14 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 85) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1206:2: ( '[' ( exprList )? ']' -> ^( E_INDEX[\"E_INDEX\"] ( exprList )? ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1206:4: '[' ( exprList )? ']'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1227:2: ( '[' ( exprList )? ']' -> ^( E_INDEX[\"E_INDEX\"] ( exprList )? ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1227:4: '[' ( exprList )? ']'
             {
             char_literal298=(Atom)match(input,138,FOLLOW_138_in_arrayAccess5560); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_138.add(char_literal298);
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1206:8: ( exprList )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1227:8: ( exprList )?
             int alt87=2;
             int LA87_0 = input.LA(1);
 
@@ -15604,7 +15625,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt87) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1206:9: exprList
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1227:9: exprList
                     {
                     pushFollow(FOLLOW_exprList_in_arrayAccess5563);
                     exprList299=exprList();
@@ -15636,16 +15657,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1206:24: -> ^( E_INDEX[\"E_INDEX\"] ( exprList )? )
+            // 1227:24: -> ^( E_INDEX[\"E_INDEX\"] ( exprList )? )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1206:27: ^( E_INDEX[\"E_INDEX\"] ( exprList )? )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1227:27: ^( E_INDEX[\"E_INDEX\"] ( exprList )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ExprNode.Index(E_INDEX, "E_INDEX")
                 , root_1);
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1206:64: ( exprList )?
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1227:64: ( exprList )?
                 if ( stream_exprList.hasNext() ) {
                     adaptor.addChild(root_1, stream_exprList.nextTree());
 
@@ -15696,7 +15717,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtBlock"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1210:1: stmtBlock : braceOpen stmts braceClose -> ^( S_BLOCK[\"S_BLOCK\"] stmts ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1231:1: stmtBlock : braceOpen stmts braceClose -> ^( S_BLOCK[\"S_BLOCK\"] stmts ) ;
     public final pollenParser.stmtBlock_return stmtBlock() throws RecognitionException {
         pollenParser.stmtBlock_return retval = new pollenParser.stmtBlock_return();
         retval.start = input.LT(1);
@@ -15718,8 +15739,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 86) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1211:2: ( braceOpen stmts braceClose -> ^( S_BLOCK[\"S_BLOCK\"] stmts ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1211:4: braceOpen stmts braceClose
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1232:2: ( braceOpen stmts braceClose -> ^( S_BLOCK[\"S_BLOCK\"] stmts ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1232:4: braceOpen stmts braceClose
             {
             pushFollow(FOLLOW_braceOpen_in_stmtBlock5596);
             braceOpen301=braceOpen();
@@ -15755,9 +15776,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1211:32: -> ^( S_BLOCK[\"S_BLOCK\"] stmts )
+            // 1232:32: -> ^( S_BLOCK[\"S_BLOCK\"] stmts )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1211:35: ^( S_BLOCK[\"S_BLOCK\"] stmts )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1232:35: ^( S_BLOCK[\"S_BLOCK\"] stmts )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -15810,7 +15831,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmts"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1213:1: stmts : ( ( stmt )+ -> ^( LIST[\"LIST\"] ( stmt )+ ) | ( ( NL )* ) -> LIST[\"LIST\"] );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1234:1: stmts : ( ( stmt )+ -> ^( LIST[\"LIST\"] ( stmt )+ ) | ( ( NL )* ) -> LIST[\"LIST\"] );
     public final pollenParser.stmts_return stmts() throws RecognitionException {
         pollenParser.stmts_return retval = new pollenParser.stmts_return();
         retval.start = input.LT(1);
@@ -15829,7 +15850,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 87) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1214:2: ( ( stmt )+ -> ^( LIST[\"LIST\"] ( stmt )+ ) | ( ( NL )* ) -> LIST[\"LIST\"] )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1235:2: ( ( stmt )+ -> ^( LIST[\"LIST\"] ( stmt )+ ) | ( ( NL )* ) -> LIST[\"LIST\"] )
             int alt90=2;
             switch ( input.LA(1) ) {
             case NL:
@@ -15918,9 +15939,9 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt90) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1214:4: ( stmt )+
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1235:4: ( stmt )+
                     {
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1214:4: ( stmt )+
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1235:4: ( stmt )+
                     int cnt88=0;
                     loop88:
                     do {
@@ -15943,7 +15964,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt88) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1214:5: stmt
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1235:5: stmt
                     	    {
                     	    pushFollow(FOLLOW_stmt_in_stmts5626);
                     	    stmt304=stmt();
@@ -15979,9 +16000,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1214:12: -> ^( LIST[\"LIST\"] ( stmt )+ )
+                    // 1235:12: -> ^( LIST[\"LIST\"] ( stmt )+ )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1214:15: ^( LIST[\"LIST\"] ( stmt )+ )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1235:15: ^( LIST[\"LIST\"] ( stmt )+ )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -16009,12 +16030,12 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1215:4: ( ( NL )* )
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1236:4: ( ( NL )* )
                     {
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1215:4: ( ( NL )* )
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1215:5: ( NL )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1236:4: ( ( NL )* )
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1236:5: ( NL )*
                     {
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1215:5: ( NL )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1236:5: ( NL )*
                     loop89:
                     do {
                         int alt89=2;
@@ -16033,7 +16054,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt89) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1215:5: NL
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1236:5: NL
                     	    {
                     	    NL305=(Atom)match(input,NL,FOLLOW_NL_in_stmts5648); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_NL.add(NL305);
@@ -16064,7 +16085,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1215:10: -> LIST[\"LIST\"]
+                    // 1236:10: -> LIST[\"LIST\"]
                     {
                         adaptor.addChild(root_0, 
                         new ListNode(LIST, "LIST")
@@ -16113,7 +16134,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmt"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1217:1: stmt : ( stmtDecl | stmtAssign | stmtAssert | stmtBind | stmtBlock | stmtPrint | stmtReturn | stmtBreak | stmtContinue | stmtFor | stmtSwitch | stmtDoWhile | stmtIf | stmtProvided | stmtWhile | stmtInjection | expr delim -> ^( S_EXPR[\"S_EXPR\"] expr ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1238:1: stmt : ( stmtDecl | stmtAssign | stmtAssert | stmtBind | stmtBlock | stmtPrint | stmtReturn | stmtBreak | stmtContinue | stmtFor | stmtSwitch | stmtDoWhile | stmtIf | stmtProvided | stmtWhile | stmtInjection | expr delim -> ^( S_EXPR[\"S_EXPR\"] expr ) );
     public final pollenParser.stmt_return stmt() throws RecognitionException {
         pollenParser.stmt_return retval = new pollenParser.stmt_return();
         retval.start = input.LT(1);
@@ -16167,7 +16188,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 88) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1221:2: ( stmtDecl | stmtAssign | stmtAssert | stmtBind | stmtBlock | stmtPrint | stmtReturn | stmtBreak | stmtContinue | stmtFor | stmtSwitch | stmtDoWhile | stmtIf | stmtProvided | stmtWhile | stmtInjection | expr delim -> ^( S_EXPR[\"S_EXPR\"] expr ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1242:2: ( stmtDecl | stmtAssign | stmtAssert | stmtBind | stmtBlock | stmtPrint | stmtReturn | stmtBreak | stmtContinue | stmtFor | stmtSwitch | stmtDoWhile | stmtIf | stmtProvided | stmtWhile | stmtInjection | expr delim -> ^( S_EXPR[\"S_EXPR\"] expr ) )
             int alt91=17;
             switch ( input.LA(1) ) {
             case IDENT:
@@ -16351,7 +16372,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt91) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1221:5: stmtDecl
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1242:5: stmtDecl
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16366,7 +16387,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1222:5: stmtAssign
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1243:5: stmtAssign
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16381,7 +16402,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1223:4: stmtAssert
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1244:4: stmtAssert
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16396,7 +16417,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:4: stmtBind
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1245:4: stmtBind
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16411,7 +16432,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1225:4: stmtBlock
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1246:4: stmtBlock
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16426,7 +16447,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 6 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:4: stmtPrint
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1247:4: stmtPrint
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16441,7 +16462,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 7 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1227:4: stmtReturn
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1248:4: stmtReturn
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16456,7 +16477,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 8 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1228:4: stmtBreak
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1249:4: stmtBreak
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16471,7 +16492,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 9 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1229:5: stmtContinue
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1250:5: stmtContinue
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16486,7 +16507,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 10 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1230:5: stmtFor
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1251:5: stmtFor
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16501,7 +16522,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 11 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1231:4: stmtSwitch
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1252:4: stmtSwitch
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16516,7 +16537,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 12 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1232:5: stmtDoWhile
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1253:5: stmtDoWhile
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16531,7 +16552,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 13 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1233:4: stmtIf
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1254:4: stmtIf
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16546,7 +16567,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 14 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1234:4: stmtProvided
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1255:4: stmtProvided
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16561,7 +16582,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 15 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1235:4: stmtWhile
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1256:4: stmtWhile
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16576,7 +16597,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 16 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1236:4: stmtInjection
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1257:4: stmtInjection
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16591,7 +16612,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 17 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1237:4: expr delim
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1258:4: expr delim
                     {
                     pushFollow(FOLLOW_expr_in_stmt5759);
                     expr322=expr();
@@ -16620,9 +16641,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1237:15: -> ^( S_EXPR[\"S_EXPR\"] expr )
+                    // 1258:15: -> ^( S_EXPR[\"S_EXPR\"] expr )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1237:18: ^( S_EXPR[\"S_EXPR\"] expr )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1258:18: ^( S_EXPR[\"S_EXPR\"] expr )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -16677,7 +16698,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprAssign"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1240:1: exprAssign : ( ( exprUnary ASSIGN )=> exprChainedAssign | expr );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1261:1: exprAssign : ( ( exprUnary ASSIGN )=> exprChainedAssign | expr );
     public final pollenParser.exprAssign_return exprAssign() throws RecognitionException {
         pollenParser.exprAssign_return retval = new pollenParser.exprAssign_return();
         retval.start = input.LT(1);
@@ -16695,7 +16716,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 89) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1241:2: ( ( exprUnary ASSIGN )=> exprChainedAssign | expr )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1262:2: ( ( exprUnary ASSIGN )=> exprChainedAssign | expr )
             int alt92=2;
             switch ( input.LA(1) ) {
             case 159:
@@ -17071,7 +17092,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt92) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1242:2: ( exprUnary ASSIGN )=> exprChainedAssign
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1263:2: ( exprUnary ASSIGN )=> exprChainedAssign
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -17086,7 +17107,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1244:4: expr
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1265:4: expr
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -17135,7 +17156,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprChainedAssign"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1246:1: exprChainedAssign : ( exprUnary ASSIGN exprAssign -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign ) ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1267:1: exprChainedAssign : ( exprUnary ASSIGN exprAssign -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign ) ) ;
     public final pollenParser.exprChainedAssign_return exprChainedAssign() throws RecognitionException {
         pollenParser.exprChainedAssign_return retval = new pollenParser.exprChainedAssign_return();
         retval.start = input.LT(1);
@@ -17157,11 +17178,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 90) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1247:2: ( ( exprUnary ASSIGN exprAssign -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign ) ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1247:4: ( exprUnary ASSIGN exprAssign -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1268:2: ( ( exprUnary ASSIGN exprAssign -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign ) ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1268:4: ( exprUnary ASSIGN exprAssign -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign ) )
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1247:4: ( exprUnary ASSIGN exprAssign -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1247:6: exprUnary ASSIGN exprAssign
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1268:4: ( exprUnary ASSIGN exprAssign -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1268:6: exprUnary ASSIGN exprAssign
             {
             pushFollow(FOLLOW_exprUnary_in_exprChainedAssign5816);
             exprUnary326=exprUnary();
@@ -17194,9 +17215,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1248:3: -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign )
+            // 1269:3: -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1248:6: ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1269:6: ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -17258,7 +17279,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtAssign"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1252:1: stmtAssign : ( varOrFcnOrArray ASSIGN exprAssign delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign ) ) | injectionCode ASSIGN expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr ) ) | varOrFcnOrArray assignOp expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr ) ) | injectionCode assignOp expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr ) ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1273:1: stmtAssign : ( varOrFcnOrArray ASSIGN exprAssign delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign ) ) | injectionCode ASSIGN expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr ) ) | varOrFcnOrArray assignOp expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr ) ) | injectionCode assignOp expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr ) ) );
     public final pollenParser.stmtAssign_return stmtAssign() throws RecognitionException {
         pollenParser.stmtAssign_return retval = new pollenParser.stmtAssign_return();
         retval.start = input.LT(1);
@@ -17310,7 +17331,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 91) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1253:2: ( varOrFcnOrArray ASSIGN exprAssign delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign ) ) | injectionCode ASSIGN expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr ) ) | varOrFcnOrArray assignOp expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr ) ) | injectionCode assignOp expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr ) ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1274:2: ( varOrFcnOrArray ASSIGN exprAssign delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign ) ) | injectionCode ASSIGN expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr ) ) | varOrFcnOrArray assignOp expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr ) ) | injectionCode assignOp expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr ) ) )
             int alt93=4;
             int LA93_0 = input.LA(1);
 
@@ -17360,7 +17381,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt93) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1253:4: varOrFcnOrArray ASSIGN exprAssign delim
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1274:4: varOrFcnOrArray ASSIGN exprAssign delim
                     {
                     pushFollow(FOLLOW_varOrFcnOrArray_in_stmtAssign5858);
                     varOrFcnOrArray329=varOrFcnOrArray();
@@ -17400,16 +17421,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1254:3: -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign ) )
+                    // 1275:3: -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign ) )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1254:6: ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1275:6: ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new StmtNode.Assign(S_ASSIGN, "S_ASSIGN")
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1254:46: ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1275:46: ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -17439,7 +17460,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1255:4: injectionCode ASSIGN expr delim
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1276:4: injectionCode ASSIGN expr delim
                     {
                     pushFollow(FOLLOW_injectionCode_in_stmtAssign5899);
                     injectionCode333=injectionCode();
@@ -17467,7 +17488,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_delim.add(delim336.getTree());
 
                     // AST REWRITE
-                    // elements: expr, injectionCode, ASSIGN
+                    // elements: injectionCode, ASSIGN, expr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -17479,16 +17500,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1256:3: -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr ) )
+                    // 1277:3: -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr ) )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1256:6: ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1277:6: ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new StmtNode.Assign(S_ASSIGN, "S_ASSIGN")
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1256:46: ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1277:46: ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -17518,7 +17539,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1257:4: varOrFcnOrArray assignOp expr delim
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1278:4: varOrFcnOrArray assignOp expr delim
                     {
                     pushFollow(FOLLOW_varOrFcnOrArray_in_stmtAssign5940);
                     varOrFcnOrArray337=varOrFcnOrArray();
@@ -17549,7 +17570,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_delim.add(delim340.getTree());
 
                     // AST REWRITE
-                    // elements: varOrFcnOrArray, expr, assignOp
+                    // elements: expr, assignOp, varOrFcnOrArray
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -17561,16 +17582,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1258:3: -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr ) )
+                    // 1279:3: -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr ) )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1258:6: ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1279:6: ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new StmtNode.Assign(S_ASSIGN, "S_ASSIGN")
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1258:46: ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1279:46: ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -17598,7 +17619,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1259:4: injectionCode assignOp expr delim
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1280:4: injectionCode assignOp expr delim
                     {
                     pushFollow(FOLLOW_injectionCode_in_stmtAssign5982);
                     injectionCode341=injectionCode();
@@ -17641,16 +17662,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1260:3: -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr ) )
+                    // 1281:3: -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr ) )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1260:6: ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1281:6: ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new StmtNode.Assign(S_ASSIGN, "S_ASSIGN")
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1260:46: ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1281:46: ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -17712,7 +17733,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtAssert"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1262:1: stmtAssert : 'assert' exprList delim -> ^( S_ASSERT exprList ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1283:1: stmtAssert : 'assert' exprList delim -> ^( S_ASSERT exprList ) ;
     public final pollenParser.stmtAssert_return stmtAssert() throws RecognitionException {
         pollenParser.stmtAssert_return retval = new pollenParser.stmtAssert_return();
         retval.start = input.LT(1);
@@ -17734,8 +17755,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 92) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1263:2: ( 'assert' exprList delim -> ^( S_ASSERT exprList ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1263:4: 'assert' exprList delim
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1284:2: ( 'assert' exprList delim -> ^( S_ASSERT exprList ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1284:4: 'assert' exprList delim
             {
             string_literal345=(Atom)match(input,142,FOLLOW_142_in_stmtAssert6028); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_142.add(string_literal345);
@@ -17768,9 +17789,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1263:28: -> ^( S_ASSERT exprList )
+            // 1284:28: -> ^( S_ASSERT exprList )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1263:31: ^( S_ASSERT exprList )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1284:31: ^( S_ASSERT exprList )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -17823,7 +17844,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtBind"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1265:1: stmtBind : varOrFcnOrArray BIND userTypeName delim -> ^( S_BIND[\"S_BIND\"] varOrFcnOrArray userTypeName ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1286:1: stmtBind : varOrFcnOrArray BIND userTypeName delim -> ^( S_BIND[\"S_BIND\"] varOrFcnOrArray userTypeName ) ;
     public final pollenParser.stmtBind_return stmtBind() throws RecognitionException {
         pollenParser.stmtBind_return retval = new pollenParser.stmtBind_return();
         retval.start = input.LT(1);
@@ -17848,8 +17869,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 93) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1266:2: ( varOrFcnOrArray BIND userTypeName delim -> ^( S_BIND[\"S_BIND\"] varOrFcnOrArray userTypeName ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1266:4: varOrFcnOrArray BIND userTypeName delim
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1287:2: ( varOrFcnOrArray BIND userTypeName delim -> ^( S_BIND[\"S_BIND\"] varOrFcnOrArray userTypeName ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1287:4: varOrFcnOrArray BIND userTypeName delim
             {
             pushFollow(FOLLOW_varOrFcnOrArray_in_stmtBind6050);
             varOrFcnOrArray348=varOrFcnOrArray();
@@ -17889,9 +17910,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1266:46: -> ^( S_BIND[\"S_BIND\"] varOrFcnOrArray userTypeName )
+            // 1287:46: -> ^( S_BIND[\"S_BIND\"] varOrFcnOrArray userTypeName )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1266:49: ^( S_BIND[\"S_BIND\"] varOrFcnOrArray userTypeName )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1287:49: ^( S_BIND[\"S_BIND\"] varOrFcnOrArray userTypeName )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -17946,7 +17967,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "printList"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1268:1: printList : printItemList -> ^( LIST[\"LIST\"] printItemList ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1289:1: printList : printItemList -> ^( LIST[\"LIST\"] printItemList ) ;
     public final pollenParser.printList_return printList() throws RecognitionException {
         pollenParser.printList_return retval = new pollenParser.printList_return();
         retval.start = input.LT(1);
@@ -17962,8 +17983,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 94) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1269:2: ( printItemList -> ^( LIST[\"LIST\"] printItemList ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1269:5: printItemList
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1290:2: ( printItemList -> ^( LIST[\"LIST\"] printItemList ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1290:5: printItemList
             {
             pushFollow(FOLLOW_printItemList_in_printList6088);
             printItemList352=printItemList();
@@ -17985,9 +18006,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1269:19: -> ^( LIST[\"LIST\"] printItemList )
+            // 1290:19: -> ^( LIST[\"LIST\"] printItemList )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1269:22: ^( LIST[\"LIST\"] printItemList )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1290:22: ^( LIST[\"LIST\"] printItemList )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -18040,7 +18061,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "printItemList"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1271:1: printItemList : ( printItem ( ',' printItem )* -> ( printItem )+ | -> NIL );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1292:1: printItemList : ( printItem ( ',' printItem )* -> ( printItem )+ | -> NIL );
     public final pollenParser.printItemList_return printItemList() throws RecognitionException {
         pollenParser.printItemList_return retval = new pollenParser.printItemList_return();
         retval.start = input.LT(1);
@@ -18061,7 +18082,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 95) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1272:2: ( printItem ( ',' printItem )* -> ( printItem )+ | -> NIL )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1293:2: ( printItem ( ',' printItem )* -> ( printItem )+ | -> NIL )
             int alt95=2;
             int LA95_0 = input.LA(1);
 
@@ -18096,7 +18117,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt95) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1272:4: printItem ( ',' printItem )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1293:4: printItem ( ',' printItem )*
                     {
                     pushFollow(FOLLOW_printItem_in_printItemList6110);
                     printItem353=printItem();
@@ -18105,7 +18126,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_printItem.add(printItem353.getTree());
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1272:14: ( ',' printItem )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1293:14: ( ',' printItem )*
                     loop94:
                     do {
                         int alt94=2;
@@ -18118,7 +18139,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt94) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1272:16: ',' printItem
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1293:16: ',' printItem
                     	    {
                     	    char_literal354=(Atom)match(input,130,FOLLOW_130_in_printItemList6114); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_130.add(char_literal354);
@@ -18153,7 +18174,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1272:33: -> ( printItem )+
+                    // 1293:33: -> ( printItem )+
                     {
                         if ( !(stream_printItem.hasNext()) ) {
                             throw new RewriteEarlyExitException();
@@ -18173,7 +18194,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1273:4: 
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1294:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -18188,7 +18209,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1273:4: -> NIL
+                    // 1294:4: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -18237,7 +18258,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "printItem"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1275:1: printItem : ( primitiveLit | qualName -> ^( E_IDENT[\"E_IDENT\"] qualName ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1296:1: printItem : ( primitiveLit | qualName -> ^( E_IDENT[\"E_IDENT\"] qualName ) );
     public final pollenParser.printItem_return printItem() throws RecognitionException {
         pollenParser.printItem_return retval = new pollenParser.printItem_return();
         retval.start = input.LT(1);
@@ -18255,7 +18276,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 96) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1276:2: ( primitiveLit | qualName -> ^( E_IDENT[\"E_IDENT\"] qualName ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1297:2: ( primitiveLit | qualName -> ^( E_IDENT[\"E_IDENT\"] qualName ) )
             int alt96=2;
             int LA96_0 = input.LA(1);
 
@@ -18275,7 +18296,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt96) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1276:4: primitiveLit
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1297:4: primitiveLit
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -18290,7 +18311,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1277:4: qualName
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1298:4: qualName
                     {
                     pushFollow(FOLLOW_qualName_in_printItem6147);
                     qualName357=qualName();
@@ -18312,9 +18333,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1277:13: -> ^( E_IDENT[\"E_IDENT\"] qualName )
+                    // 1298:13: -> ^( E_IDENT[\"E_IDENT\"] qualName )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1277:16: ^( E_IDENT[\"E_IDENT\"] qualName )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1298:16: ^( E_IDENT[\"E_IDENT\"] qualName )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -18369,7 +18390,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtPrint"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1279:1: stmtPrint : ( 'print' printList delim -> ^( S_PRINT[\"S_PRINT\", flags] printList ) | 'print' ( stmtPrintTarget[flags] ) printList delim -> ^( S_PRINT[\"S_PRINT\", flags] printList ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1300:1: stmtPrint : ( 'print' printList delim -> ^( S_PRINT[\"S_PRINT\", flags] printList ) | 'print' ( stmtPrintTarget[flags] ) printList delim -> ^( S_PRINT[\"S_PRINT\", flags] printList ) );
     public final pollenParser.stmtPrint_return stmtPrint() throws RecognitionException {
         pollenParser.stmtPrint_return retval = new pollenParser.stmtPrint_return();
         retval.start = input.LT(1);
@@ -18403,7 +18424,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 97) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1283:2: ( 'print' printList delim -> ^( S_PRINT[\"S_PRINT\", flags] printList ) | 'print' ( stmtPrintTarget[flags] ) printList delim -> ^( S_PRINT[\"S_PRINT\", flags] printList ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1304:2: ( 'print' printList delim -> ^( S_PRINT[\"S_PRINT\", flags] printList ) | 'print' ( stmtPrintTarget[flags] ) printList delim -> ^( S_PRINT[\"S_PRINT\", flags] printList ) )
             int alt97=2;
             int LA97_0 = input.LA(1);
 
@@ -18435,7 +18456,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt97) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1283:4: 'print' printList delim
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1304:4: 'print' printList delim
                     {
                     string_literal358=(Atom)match(input,176,FOLLOW_176_in_stmtPrint6176); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_176.add(string_literal358);
@@ -18470,9 +18491,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1284:3: -> ^( S_PRINT[\"S_PRINT\", flags] printList )
+                    // 1305:3: -> ^( S_PRINT[\"S_PRINT\", flags] printList )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1284:6: ^( S_PRINT[\"S_PRINT\", flags] printList )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1305:6: ^( S_PRINT[\"S_PRINT\", flags] printList )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -18493,14 +18514,14 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1285:4: 'print' ( stmtPrintTarget[flags] ) printList delim
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1306:4: 'print' ( stmtPrintTarget[flags] ) printList delim
                     {
                     string_literal361=(Atom)match(input,176,FOLLOW_176_in_stmtPrint6204); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_176.add(string_literal361);
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1285:12: ( stmtPrintTarget[flags] )
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1285:13: stmtPrintTarget[flags]
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1306:12: ( stmtPrintTarget[flags] )
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1306:13: stmtPrintTarget[flags]
                     {
                     pushFollow(FOLLOW_stmtPrintTarget_in_stmtPrint6207);
                     stmtPrintTarget362=stmtPrintTarget(flags);
@@ -18539,9 +18560,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1286:3: -> ^( S_PRINT[\"S_PRINT\", flags] printList )
+                    // 1307:3: -> ^( S_PRINT[\"S_PRINT\", flags] printList )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1286:6: ^( S_PRINT[\"S_PRINT\", flags] printList )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1307:6: ^( S_PRINT[\"S_PRINT\", flags] printList )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -18596,7 +18617,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtPrintTarget"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1288:1: stmtPrintTarget[EnumSet<Flags> f] : ( 'log' | 'err' | 'out' ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1309:1: stmtPrintTarget[EnumSet<Flags> f] : ( 'log' | 'err' | 'out' ) ;
     public final pollenParser.stmtPrintTarget_return stmtPrintTarget(EnumSet<Flags> f) throws RecognitionException {
         pollenParser.stmtPrintTarget_return retval = new pollenParser.stmtPrintTarget_return();
         retval.start = input.LT(1);
@@ -18616,13 +18637,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 98) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1289:2: ( ( 'log' | 'err' | 'out' ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1290:3: ( 'log' | 'err' | 'out' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1310:2: ( ( 'log' | 'err' | 'out' ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1311:3: ( 'log' | 'err' | 'out' )
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1290:3: ( 'log' | 'err' | 'out' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1311:3: ( 'log' | 'err' | 'out' )
             int alt98=3;
             switch ( input.LA(1) ) {
             case 169:
@@ -18651,7 +18672,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt98) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1290:7: 'log'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1311:7: 'log'
                     {
                     string_literal365=(Atom)match(input,169,FOLLOW_169_in_stmtPrintTarget6248); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
@@ -18666,7 +18687,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1291:6: 'err'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1312:6: 'err'
                     {
                     string_literal366=(Atom)match(input,156,FOLLOW_156_in_stmtPrintTarget6258); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
@@ -18681,7 +18702,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1292:6: 'out'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1313:6: 'out'
                     {
                     string_literal367=(Atom)match(input,174,FOLLOW_174_in_stmtPrintTarget6267); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
@@ -18734,7 +18755,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtReturn"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1295:1: stmtReturn : ( 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) ) ) | 'return' ( expr ) delim -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) ) ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1316:1: stmtReturn : ( 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) ) ) | 'return' ( expr ) delim -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) ) ) );
     public final pollenParser.stmtReturn_return stmtReturn() throws RecognitionException {
         pollenParser.stmtReturn_return retval = new pollenParser.stmtReturn_return();
         retval.start = input.LT(1);
@@ -18773,7 +18794,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 99) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:2: ( 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) ) ) | 'return' ( expr ) delim -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) ) ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:2: ( 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) ) ) | 'return' ( expr ) delim -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) ) ) )
             int alt100=2;
             int LA100_0 = input.LA(1);
 
@@ -18805,14 +18826,14 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt100) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:4: 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:4: 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim
                     {
                     string_literal368=(Atom)match(input,180,FOLLOW_180_in_stmtReturn6287); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_180.add(string_literal368);
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:13: ( '(' )
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:14: '('
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:13: ( '(' )
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:14: '('
                     {
                     char_literal369=(Atom)match(input,127,FOLLOW_127_in_stmtReturn6290); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_127.add(char_literal369);
@@ -18821,8 +18842,8 @@ public TreeAdaptor getTreeAdaptor() {
                     }
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:19: ( expr ( ',' expr )+ )
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:20: expr ( ',' expr )+
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:19: ( expr ( ',' expr )+ )
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:20: expr ( ',' expr )+
                     {
                     pushFollow(FOLLOW_expr_in_stmtReturn6294);
                     expr370=expr();
@@ -18831,7 +18852,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_expr.add(expr370.getTree());
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:25: ( ',' expr )+
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:25: ( ',' expr )+
                     int cnt99=0;
                     loop99:
                     do {
@@ -18845,7 +18866,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt99) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:26: ',' expr
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:26: ',' expr
                     	    {
                     	    char_literal371=(Atom)match(input,130,FOLLOW_130_in_stmtReturn6297); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_130.add(char_literal371);
@@ -18875,8 +18896,8 @@ public TreeAdaptor getTreeAdaptor() {
                     }
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:38: ( ')' )
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:39: ')'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:38: ( ')' )
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:39: ')'
                     {
                     char_literal373=(Atom)match(input,128,FOLLOW_128_in_stmtReturn6305); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_128.add(char_literal373);
@@ -18905,23 +18926,23 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1300:3: -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) ) )
+                    // 1321:3: -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) ) )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1300:6: ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1321:6: ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new StmtNode.Return(S_RETURN, "S_RETURN")
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1300:46: ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1321:46: ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Vec(E_VEC, "E_VEC")
                         , root_2);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1300:77: ^( LIST[\"LIST\"] ( expr )+ )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1321:77: ^( LIST[\"LIST\"] ( expr )+ )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -18955,14 +18976,14 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1301:4: 'return' ( expr ) delim
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1322:4: 'return' ( expr ) delim
                     {
                     string_literal375=(Atom)match(input,180,FOLLOW_180_in_stmtReturn6349); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_180.add(string_literal375);
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1301:14: ( expr )
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1301:15: expr
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1322:14: ( expr )
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1322:15: expr
                     {
                     pushFollow(FOLLOW_expr_in_stmtReturn6353);
                     expr376=expr();
@@ -18994,23 +19015,23 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1302:3: -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) ) )
+                    // 1323:3: -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) ) )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1302:6: ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1323:6: ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new StmtNode.Return(S_RETURN, "S_RETURN")
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1302:46: ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1323:46: ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Vec(E_VEC, "E_VEC")
                         , root_2);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1302:77: ^( LIST[\"LIST\"] expr )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1323:77: ^( LIST[\"LIST\"] expr )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -19071,7 +19092,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtBreak"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1304:1: stmtBreak : 'break' delim -> ^( S_BREAK[\"S_BREAK\"] ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1325:1: stmtBreak : 'break' delim -> ^( S_BREAK[\"S_BREAK\"] ) ;
     public final pollenParser.stmtBreak_return stmtBreak() throws RecognitionException {
         pollenParser.stmtBreak_return retval = new pollenParser.stmtBreak_return();
         retval.start = input.LT(1);
@@ -19090,8 +19111,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 100) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1305:2: ( 'break' delim -> ^( S_BREAK[\"S_BREAK\"] ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1305:4: 'break' delim
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1326:2: ( 'break' delim -> ^( S_BREAK[\"S_BREAK\"] ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1326:4: 'break' delim
             {
             string_literal378=(Atom)match(input,144,FOLLOW_144_in_stmtBreak6402); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_144.add(string_literal378);
@@ -19117,9 +19138,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1305:18: -> ^( S_BREAK[\"S_BREAK\"] )
+            // 1326:18: -> ^( S_BREAK[\"S_BREAK\"] )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1305:21: ^( S_BREAK[\"S_BREAK\"] )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1326:21: ^( S_BREAK[\"S_BREAK\"] )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -19170,7 +19191,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtContinue"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1307:1: stmtContinue : 'continue' delim -> ^( S_CONTINUE[\"S_CONTINUE\"] ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1328:1: stmtContinue : 'continue' delim -> ^( S_CONTINUE[\"S_CONTINUE\"] ) ;
     public final pollenParser.stmtContinue_return stmtContinue() throws RecognitionException {
         pollenParser.stmtContinue_return retval = new pollenParser.stmtContinue_return();
         retval.start = input.LT(1);
@@ -19189,8 +19210,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 101) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1308:2: ( 'continue' delim -> ^( S_CONTINUE[\"S_CONTINUE\"] ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1308:4: 'continue' delim
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1329:2: ( 'continue' delim -> ^( S_CONTINUE[\"S_CONTINUE\"] ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1329:4: 'continue' delim
             {
             string_literal380=(Atom)match(input,150,FOLLOW_150_in_stmtContinue6426); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_150.add(string_literal380);
@@ -19216,9 +19237,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1308:21: -> ^( S_CONTINUE[\"S_CONTINUE\"] )
+            // 1329:21: -> ^( S_CONTINUE[\"S_CONTINUE\"] )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1308:24: ^( S_CONTINUE[\"S_CONTINUE\"] )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1329:24: ^( S_CONTINUE[\"S_CONTINUE\"] )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -19269,7 +19290,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtFor"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1310:1: stmtFor : 'for' '(' stmtForInit stmtForCond stmtForNext ')' stmtBlock -> ^( S_FOR[\"S_FOR\"] stmtForInit stmtForCond stmtForNext stmtBlock ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1331:1: stmtFor : 'for' '(' stmtForInit stmtForCond stmtForNext ')' stmtBlock -> ^( S_FOR[\"S_FOR\"] stmtForInit stmtForCond stmtForNext stmtBlock ) ;
     public final pollenParser.stmtFor_return stmtFor() throws RecognitionException {
         pollenParser.stmtFor_return retval = new pollenParser.stmtFor_return();
         retval.start = input.LT(1);
@@ -19303,8 +19324,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 102) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1311:5: ( 'for' '(' stmtForInit stmtForCond stmtForNext ')' stmtBlock -> ^( S_FOR[\"S_FOR\"] stmtForInit stmtForCond stmtForNext stmtBlock ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1311:9: 'for' '(' stmtForInit stmtForCond stmtForNext ')' stmtBlock
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1332:5: ( 'for' '(' stmtForInit stmtForCond stmtForNext ')' stmtBlock -> ^( S_FOR[\"S_FOR\"] stmtForInit stmtForCond stmtForNext stmtBlock ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1332:9: 'for' '(' stmtForInit stmtForCond stmtForNext ')' stmtBlock
             {
             string_literal382=(Atom)match(input,160,FOLLOW_160_in_stmtFor6455); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_160.add(string_literal382);
@@ -19347,7 +19368,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_stmtBlock.add(stmtBlock388.getTree());
 
             // AST REWRITE
-            // elements: stmtBlock, stmtForNext, stmtForInit, stmtForCond
+            // elements: stmtForCond, stmtForNext, stmtForInit, stmtBlock
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -19359,9 +19380,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1312:13: -> ^( S_FOR[\"S_FOR\"] stmtForInit stmtForCond stmtForNext stmtBlock )
+            // 1333:13: -> ^( S_FOR[\"S_FOR\"] stmtForInit stmtForCond stmtForNext stmtBlock )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1312:16: ^( S_FOR[\"S_FOR\"] stmtForInit stmtForCond stmtForNext stmtBlock )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1333:16: ^( S_FOR[\"S_FOR\"] stmtForInit stmtForCond stmtForNext stmtBlock )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -19420,7 +19441,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtForCond"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1314:1: stmtForCond : ( SEMI -> NIL | expr SEMI -> expr );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1335:1: stmtForCond : ( SEMI -> NIL | expr SEMI -> expr );
     public final pollenParser.stmtForCond_return stmtForCond() throws RecognitionException {
         pollenParser.stmtForCond_return retval = new pollenParser.stmtForCond_return();
         retval.start = input.LT(1);
@@ -19441,7 +19462,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 103) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1315:5: ( SEMI -> NIL | expr SEMI -> expr )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1336:5: ( SEMI -> NIL | expr SEMI -> expr )
             int alt101=2;
             int LA101_0 = input.LA(1);
 
@@ -19461,7 +19482,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt101) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1315:9: SEMI
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1336:9: SEMI
                     {
                     SEMI389=(Atom)match(input,SEMI,FOLLOW_SEMI_in_stmtForCond6517); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_SEMI.add(SEMI389);
@@ -19480,7 +19501,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1316:12: -> NIL
+                    // 1337:12: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -19495,7 +19516,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1317:9: expr SEMI
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1338:9: expr SEMI
                     {
                     pushFollow(FOLLOW_expr_in_stmtForCond6542);
                     expr390=expr();
@@ -19521,7 +19542,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1317:19: -> expr
+                    // 1338:19: -> expr
                     {
                         adaptor.addChild(root_0, stream_expr.nextTree());
 
@@ -19568,7 +19589,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtForInit"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:1: stmtForInit : ( SEMI -> NIL | typeName IDENT '=' expr SEMI -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr ) ) | stmtAssign );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1341:1: stmtForInit : ( SEMI -> NIL | typeName IDENT '=' expr SEMI -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr ) ) | stmtAssign );
     public final pollenParser.stmtForInit_return stmtForInit() throws RecognitionException {
         pollenParser.stmtForInit_return retval = new pollenParser.stmtForInit_return();
         retval.start = input.LT(1);
@@ -19600,7 +19621,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 104) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1321:5: ( SEMI -> NIL | typeName IDENT '=' expr SEMI -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr ) ) | stmtAssign )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1342:5: ( SEMI -> NIL | typeName IDENT '=' expr SEMI -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr ) ) | stmtAssign )
             int alt102=3;
             switch ( input.LA(1) ) {
             case SEMI:
@@ -19659,7 +19680,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt102) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1321:9: SEMI
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1342:9: SEMI
                     {
                     SEMI392=(Atom)match(input,SEMI,FOLLOW_SEMI_in_stmtForInit6567); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_SEMI.add(SEMI392);
@@ -19678,7 +19699,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1322:13: -> NIL
+                    // 1343:13: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -19693,7 +19714,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1323:9: typeName IDENT '=' expr SEMI
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1344:9: typeName IDENT '=' expr SEMI
                     {
                     pushFollow(FOLLOW_typeName_in_stmtForInit6593);
                     typeName393=typeName();
@@ -19734,16 +19755,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1324:13: -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr ) )
+                    // 1345:13: -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr ) )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1324:16: ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1345:16: ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new StmtNode.Decl(S_DECL, "S_DECL")
                         , root_1);
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1325:12: ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1346:12: ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -19773,7 +19794,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1326:9: stmtAssign
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1347:9: stmtAssign
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -19822,7 +19843,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtForNext"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1328:1: stmtForNext : ( -> NIL | expr );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1349:1: stmtForNext : ( -> NIL | expr );
     public final pollenParser.stmtForNext_return stmtForNext() throws RecognitionException {
         pollenParser.stmtForNext_return retval = new pollenParser.stmtForNext_return();
         retval.start = input.LT(1);
@@ -19838,7 +19859,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 105) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1329:5: ( -> NIL | expr )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1350:5: ( -> NIL | expr )
             int alt103=2;
             int LA103_0 = input.LA(1);
 
@@ -19858,7 +19879,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt103) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1330:13: 
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1351:13: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -19873,7 +19894,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1330:13: -> NIL
+                    // 1351:13: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -19888,7 +19909,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1331:9: expr
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1352:9: expr
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -19937,7 +19958,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtSwitch"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1339:1: stmtSwitch : 'switch' '(' expr ')' braceOpen stmtsCase ( stmtDefault )? braceClose -> ^( S_SWITCH[\"S_SWITCH\"] expr stmtsCase ( stmtDefault )? ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1360:1: stmtSwitch : 'switch' '(' expr ')' braceOpen stmtsCase ( stmtDefault )? braceClose -> ^( S_SWITCH[\"S_SWITCH\"] expr stmtsCase ( stmtDefault )? ) ;
     public final pollenParser.stmtSwitch_return stmtSwitch() throws RecognitionException {
         pollenParser.stmtSwitch_return retval = new pollenParser.stmtSwitch_return();
         retval.start = input.LT(1);
@@ -19974,8 +19995,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 106) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1340:2: ( 'switch' '(' expr ')' braceOpen stmtsCase ( stmtDefault )? braceClose -> ^( S_SWITCH[\"S_SWITCH\"] expr stmtsCase ( stmtDefault )? ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1340:4: 'switch' '(' expr ')' braceOpen stmtsCase ( stmtDefault )? braceClose
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1361:2: ( 'switch' '(' expr ')' braceOpen stmtsCase ( stmtDefault )? braceClose -> ^( S_SWITCH[\"S_SWITCH\"] expr stmtsCase ( stmtDefault )? ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1361:4: 'switch' '(' expr ')' braceOpen stmtsCase ( stmtDefault )? braceClose
             {
             string_literal400=(Atom)match(input,182,FOLLOW_182_in_stmtSwitch6725); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_182.add(string_literal400);
@@ -20010,7 +20031,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_stmtsCase.add(stmtsCase405.getTree());
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1340:46: ( stmtDefault )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1361:46: ( stmtDefault )?
             int alt104=2;
             int LA104_0 = input.LA(1);
 
@@ -20019,7 +20040,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt104) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1340:46: stmtDefault
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1361:46: stmtDefault
                     {
                     pushFollow(FOLLOW_stmtDefault_in_stmtSwitch6737);
                     stmtDefault406=stmtDefault();
@@ -20042,7 +20063,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceClose.add(braceClose407.getTree());
 
             // AST REWRITE
-            // elements: stmtDefault, expr, stmtsCase
+            // elements: stmtsCase, stmtDefault, expr
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -20054,9 +20075,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1340:70: -> ^( S_SWITCH[\"S_SWITCH\"] expr stmtsCase ( stmtDefault )? )
+            // 1361:70: -> ^( S_SWITCH[\"S_SWITCH\"] expr stmtsCase ( stmtDefault )? )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1340:73: ^( S_SWITCH[\"S_SWITCH\"] expr stmtsCase ( stmtDefault )? )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1361:73: ^( S_SWITCH[\"S_SWITCH\"] expr stmtsCase ( stmtDefault )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -20067,7 +20088,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_stmtsCase.nextTree());
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1340:129: ( stmtDefault )?
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1361:129: ( stmtDefault )?
                 if ( stream_stmtDefault.hasNext() ) {
                     adaptor.addChild(root_1, stream_stmtDefault.nextTree());
 
@@ -20118,7 +20139,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtsCase"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1342:1: stmtsCase : ( stmtCase )* -> ^( LIST[\"LIST\"] ( stmtCase )* ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1363:1: stmtsCase : ( stmtCase )* -> ^( LIST[\"LIST\"] ( stmtCase )* ) ;
     public final pollenParser.stmtsCase_return stmtsCase() throws RecognitionException {
         pollenParser.stmtsCase_return retval = new pollenParser.stmtsCase_return();
         retval.start = input.LT(1);
@@ -20134,10 +20155,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 107) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1343:2: ( ( stmtCase )* -> ^( LIST[\"LIST\"] ( stmtCase )* ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1343:4: ( stmtCase )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1364:2: ( ( stmtCase )* -> ^( LIST[\"LIST\"] ( stmtCase )* ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1364:4: ( stmtCase )*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1343:4: ( stmtCase )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1364:4: ( stmtCase )*
             loop105:
             do {
                 int alt105=2;
@@ -20150,7 +20171,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt105) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1343:4: stmtCase
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1364:4: stmtCase
             	    {
             	    pushFollow(FOLLOW_stmtCase_in_stmtsCase6770);
             	    stmtCase408=stmtCase();
@@ -20181,16 +20202,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1343:14: -> ^( LIST[\"LIST\"] ( stmtCase )* )
+            // 1364:14: -> ^( LIST[\"LIST\"] ( stmtCase )* )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1343:17: ^( LIST[\"LIST\"] ( stmtCase )* )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1364:17: ^( LIST[\"LIST\"] ( stmtCase )* )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ListNode(LIST, "LIST")
                 , root_1);
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1343:42: ( stmtCase )*
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1364:42: ( stmtCase )*
                 while ( stream_stmtCase.hasNext() ) {
                     adaptor.addChild(root_1, stream_stmtCase.nextTree());
 
@@ -20241,7 +20262,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtDefault"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1345:1: stmtDefault : 'default' ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1366:1: stmtDefault : 'default' ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts ) ;
     public final pollenParser.stmtDefault_return stmtDefault() throws RecognitionException {
         pollenParser.stmtDefault_return retval = new pollenParser.stmtDefault_return();
         retval.start = input.LT(1);
@@ -20266,8 +20287,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 108) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1346:2: ( 'default' ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1346:4: 'default' ':' ( NL )* stmts
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1367:2: ( 'default' ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1367:4: 'default' ':' ( NL )* stmts
             {
             string_literal409=(Atom)match(input,151,FOLLOW_151_in_stmtDefault6794); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_151.add(string_literal409);
@@ -20277,7 +20298,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_133.add(char_literal410);
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1346:18: ( NL )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1367:18: ( NL )*
             loop106:
             do {
                 int alt106=2;
@@ -20296,7 +20317,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt106) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1346:18: NL
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1367:18: NL
             	    {
             	    NL411=(Atom)match(input,NL,FOLLOW_NL_in_stmtDefault6798); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_NL.add(NL411);
@@ -20331,9 +20352,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1346:28: -> ^( S_CASE[\"S_CASE\"] stmts )
+            // 1367:28: -> ^( S_CASE[\"S_CASE\"] stmts )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1346:31: ^( S_CASE[\"S_CASE\"] stmts )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1367:31: ^( S_CASE[\"S_CASE\"] stmts )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -20386,7 +20407,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtCase"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1348:1: stmtCase : 'case' ( INT_LIT ) ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts INT_LIT ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1369:1: stmtCase : 'case' ( INT_LIT ) ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts INT_LIT ) ;
     public final pollenParser.stmtCase_return stmtCase() throws RecognitionException {
         pollenParser.stmtCase_return retval = new pollenParser.stmtCase_return();
         retval.start = input.LT(1);
@@ -20414,15 +20435,15 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 109) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1349:2: ( 'case' ( INT_LIT ) ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts INT_LIT ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1349:4: 'case' ( INT_LIT ) ':' ( NL )* stmts
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1370:2: ( 'case' ( INT_LIT ) ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts INT_LIT ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1370:4: 'case' ( INT_LIT ) ':' ( NL )* stmts
             {
             string_literal413=(Atom)match(input,146,FOLLOW_146_in_stmtCase6825); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_146.add(string_literal413);
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1349:11: ( INT_LIT )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1349:12: INT_LIT
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1370:11: ( INT_LIT )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1370:12: INT_LIT
             {
             INT_LIT414=(Atom)match(input,INT_LIT,FOLLOW_INT_LIT_in_stmtCase6828); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_INT_LIT.add(INT_LIT414);
@@ -20435,7 +20456,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_133.add(char_literal415);
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1349:25: ( NL )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1370:25: ( NL )*
             loop107:
             do {
                 int alt107=2;
@@ -20454,7 +20475,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt107) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1349:25: NL
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1370:25: NL
             	    {
             	    NL416=(Atom)match(input,NL,FOLLOW_NL_in_stmtCase6833); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_NL.add(NL416);
@@ -20477,7 +20498,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_stmts.add(stmts417.getTree());
 
             // AST REWRITE
-            // elements: INT_LIT, stmts
+            // elements: stmts, INT_LIT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -20489,9 +20510,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1349:35: -> ^( S_CASE[\"S_CASE\"] stmts INT_LIT )
+            // 1370:35: -> ^( S_CASE[\"S_CASE\"] stmts INT_LIT )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1349:38: ^( S_CASE[\"S_CASE\"] stmts INT_LIT )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1370:38: ^( S_CASE[\"S_CASE\"] stmts INT_LIT )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -20548,7 +20569,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtDoWhile"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1351:1: stmtDoWhile : 'do' stmtBlock 'while' '(' expr ')' delim -> ^( S_WHILE[\"S_WHILE\", true] expr stmtBlock ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1372:1: stmtDoWhile : 'do' stmtBlock 'while' '(' expr ')' delim -> ^( S_WHILE[\"S_WHILE\", true] expr stmtBlock ) ;
     public final pollenParser.stmtDoWhile_return stmtDoWhile() throws RecognitionException {
         pollenParser.stmtDoWhile_return retval = new pollenParser.stmtDoWhile_return();
         retval.start = input.LT(1);
@@ -20582,8 +20603,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 110) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1352:2: ( 'do' stmtBlock 'while' '(' expr ')' delim -> ^( S_WHILE[\"S_WHILE\", true] expr stmtBlock ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1352:4: 'do' stmtBlock 'while' '(' expr ')' delim
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1373:2: ( 'do' stmtBlock 'while' '(' expr ')' delim -> ^( S_WHILE[\"S_WHILE\", true] expr stmtBlock ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1373:4: 'do' stmtBlock 'while' '(' expr ')' delim
             {
             string_literal418=(Atom)match(input,152,FOLLOW_152_in_stmtDoWhile6862); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_152.add(string_literal418);
@@ -20635,9 +20656,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1352:47: -> ^( S_WHILE[\"S_WHILE\", true] expr stmtBlock )
+            // 1373:47: -> ^( S_WHILE[\"S_WHILE\", true] expr stmtBlock )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1352:50: ^( S_WHILE[\"S_WHILE\", true] expr stmtBlock )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1373:50: ^( S_WHILE[\"S_WHILE\", true] expr stmtBlock )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -20692,7 +20713,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtIf"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1354:1: stmtIf : 'if' stmtIfBlock stmtsElif ( stmtElse )? -> ^( S_IF[\"S_IF\"] stmtIfBlock stmtsElif ( stmtElse )? ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1375:1: stmtIf : 'if' stmtIfBlock stmtsElif ( stmtElse )? -> ^( S_IF[\"S_IF\"] stmtIfBlock stmtsElif ( stmtElse )? ) ;
     public final pollenParser.stmtIf_return stmtIf() throws RecognitionException {
         pollenParser.stmtIf_return retval = new pollenParser.stmtIf_return();
         retval.start = input.LT(1);
@@ -20717,8 +20738,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 111) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1355:2: ( 'if' stmtIfBlock stmtsElif ( stmtElse )? -> ^( S_IF[\"S_IF\"] stmtIfBlock stmtsElif ( stmtElse )? ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1355:4: 'if' stmtIfBlock stmtsElif ( stmtElse )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1376:2: ( 'if' stmtIfBlock stmtsElif ( stmtElse )? -> ^( S_IF[\"S_IF\"] stmtIfBlock stmtsElif ( stmtElse )? ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1376:4: 'if' stmtIfBlock stmtsElif ( stmtElse )?
             {
             string_literal425=(Atom)match(input,163,FOLLOW_163_in_stmtIf6901); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_163.add(string_literal425);
@@ -20738,7 +20759,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_stmtsElif.add(stmtsElif427.getTree());
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1355:31: ( stmtElse )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1376:31: ( stmtElse )?
             int alt108=2;
             int LA108_0 = input.LA(1);
 
@@ -20747,7 +20768,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt108) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1355:31: stmtElse
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1376:31: stmtElse
                     {
                     pushFollow(FOLLOW_stmtElse_in_stmtIf6907);
                     stmtElse428=stmtElse();
@@ -20763,7 +20784,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: stmtElse, stmtsElif, stmtIfBlock
+            // elements: stmtIfBlock, stmtsElif, stmtElse
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -20775,9 +20796,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1355:41: -> ^( S_IF[\"S_IF\"] stmtIfBlock stmtsElif ( stmtElse )? )
+            // 1376:41: -> ^( S_IF[\"S_IF\"] stmtIfBlock stmtsElif ( stmtElse )? )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1355:44: ^( S_IF[\"S_IF\"] stmtIfBlock stmtsElif ( stmtElse )? )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1376:44: ^( S_IF[\"S_IF\"] stmtIfBlock stmtsElif ( stmtElse )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -20788,7 +20809,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_stmtsElif.nextTree());
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1355:94: ( stmtElse )?
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1376:94: ( stmtElse )?
                 if ( stream_stmtElse.hasNext() ) {
                     adaptor.addChild(root_1, stream_stmtElse.nextTree());
 
@@ -20839,7 +20860,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtIfBlock"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1357:1: stmtIfBlock : '(' expr ')' stmtBlock -> expr stmtBlock ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1378:1: stmtIfBlock : '(' expr ')' stmtBlock -> expr stmtBlock ;
     public final pollenParser.stmtIfBlock_return stmtIfBlock() throws RecognitionException {
         pollenParser.stmtIfBlock_return retval = new pollenParser.stmtIfBlock_return();
         retval.start = input.LT(1);
@@ -20864,8 +20885,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 112) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1358:2: ( '(' expr ')' stmtBlock -> expr stmtBlock )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1358:4: '(' expr ')' stmtBlock
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1379:2: ( '(' expr ')' stmtBlock -> expr stmtBlock )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1379:4: '(' expr ')' stmtBlock
             {
             char_literal429=(Atom)match(input,127,FOLLOW_127_in_stmtIfBlock6937); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_127.add(char_literal429);
@@ -20890,7 +20911,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_stmtBlock.add(stmtBlock432.getTree());
 
             // AST REWRITE
-            // elements: expr, stmtBlock
+            // elements: stmtBlock, expr
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -20902,7 +20923,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1358:27: -> expr stmtBlock
+            // 1379:27: -> expr stmtBlock
             {
                 adaptor.addChild(root_0, stream_expr.nextTree());
 
@@ -20949,7 +20970,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtsElif"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1360:1: stmtsElif : ( stmtElif )* -> ^( LIST[\"LIST\"] ( stmtElif )* ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1381:1: stmtsElif : ( stmtElif )* -> ^( LIST[\"LIST\"] ( stmtElif )* ) ;
     public final pollenParser.stmtsElif_return stmtsElif() throws RecognitionException {
         pollenParser.stmtsElif_return retval = new pollenParser.stmtsElif_return();
         retval.start = input.LT(1);
@@ -20965,10 +20986,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 113) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1361:2: ( ( stmtElif )* -> ^( LIST[\"LIST\"] ( stmtElif )* ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1361:4: ( stmtElif )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1382:2: ( ( stmtElif )* -> ^( LIST[\"LIST\"] ( stmtElif )* ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1382:4: ( stmtElif )*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1361:4: ( stmtElif )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1382:4: ( stmtElif )*
             loop109:
             do {
                 int alt109=2;
@@ -20981,7 +21002,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt109) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1361:4: stmtElif
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1382:4: stmtElif
             	    {
             	    pushFollow(FOLLOW_stmtElif_in_stmtsElif6959);
             	    stmtElif433=stmtElif();
@@ -21012,16 +21033,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1361:14: -> ^( LIST[\"LIST\"] ( stmtElif )* )
+            // 1382:14: -> ^( LIST[\"LIST\"] ( stmtElif )* )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1361:17: ^( LIST[\"LIST\"] ( stmtElif )* )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1382:17: ^( LIST[\"LIST\"] ( stmtElif )* )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ListNode(LIST, "LIST")
                 , root_1);
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1361:42: ( stmtElif )*
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1382:42: ( stmtElif )*
                 while ( stream_stmtElif.hasNext() ) {
                     adaptor.addChild(root_1, stream_stmtElif.nextTree());
 
@@ -21072,7 +21093,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtElif"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1363:1: stmtElif : 'elif' stmtIfBlock -> ^( S_ELIF[\"S_ELIF\"] stmtIfBlock ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1384:1: stmtElif : 'elif' stmtIfBlock -> ^( S_ELIF[\"S_ELIF\"] stmtIfBlock ) ;
     public final pollenParser.stmtElif_return stmtElif() throws RecognitionException {
         pollenParser.stmtElif_return retval = new pollenParser.stmtElif_return();
         retval.start = input.LT(1);
@@ -21091,8 +21112,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 114) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1364:2: ( 'elif' stmtIfBlock -> ^( S_ELIF[\"S_ELIF\"] stmtIfBlock ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1364:4: 'elif' stmtIfBlock
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1385:2: ( 'elif' stmtIfBlock -> ^( S_ELIF[\"S_ELIF\"] stmtIfBlock ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1385:4: 'elif' stmtIfBlock
             {
             string_literal434=(Atom)match(input,153,FOLLOW_153_in_stmtElif6983); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_153.add(string_literal434);
@@ -21118,9 +21139,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1364:23: -> ^( S_ELIF[\"S_ELIF\"] stmtIfBlock )
+            // 1385:23: -> ^( S_ELIF[\"S_ELIF\"] stmtIfBlock )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1364:26: ^( S_ELIF[\"S_ELIF\"] stmtIfBlock )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1385:26: ^( S_ELIF[\"S_ELIF\"] stmtIfBlock )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -21173,7 +21194,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtElse"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1366:1: stmtElse : 'else' stmtBlock -> stmtBlock ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1387:1: stmtElse : 'else' stmtBlock -> stmtBlock ;
     public final pollenParser.stmtElse_return stmtElse() throws RecognitionException {
         pollenParser.stmtElse_return retval = new pollenParser.stmtElse_return();
         retval.start = input.LT(1);
@@ -21192,8 +21213,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 115) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1367:2: ( 'else' stmtBlock -> stmtBlock )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1367:4: 'else' stmtBlock
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1388:2: ( 'else' stmtBlock -> stmtBlock )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1388:4: 'else' stmtBlock
             {
             string_literal436=(Atom)match(input,154,FOLLOW_154_in_stmtElse7009); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_154.add(string_literal436);
@@ -21219,7 +21240,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1367:21: -> stmtBlock
+            // 1388:21: -> stmtBlock
             {
                 adaptor.addChild(root_0, stream_stmtBlock.nextTree());
 
@@ -21264,7 +21285,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtProvided"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1369:1: stmtProvided : 'provided' '(' expr ')' stmtBlock ( stmtElse )? -> ^( S_PROVIDED[\"S_PROVIDED\"] expr stmtBlock ( stmtElse )? ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1390:1: stmtProvided : 'provided' '(' expr ')' stmtBlock ( stmtElse )? -> ^( S_PROVIDED[\"S_PROVIDED\"] expr stmtBlock ( stmtElse )? ) ;
     public final pollenParser.stmtProvided_return stmtProvided() throws RecognitionException {
         pollenParser.stmtProvided_return retval = new pollenParser.stmtProvided_return();
         retval.start = input.LT(1);
@@ -21295,8 +21316,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 116) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1370:2: ( 'provided' '(' expr ')' stmtBlock ( stmtElse )? -> ^( S_PROVIDED[\"S_PROVIDED\"] expr stmtBlock ( stmtElse )? ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1370:4: 'provided' '(' expr ')' stmtBlock ( stmtElse )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1391:2: ( 'provided' '(' expr ')' stmtBlock ( stmtElse )? -> ^( S_PROVIDED[\"S_PROVIDED\"] expr stmtBlock ( stmtElse )? ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1391:4: 'provided' '(' expr ')' stmtBlock ( stmtElse )?
             {
             string_literal438=(Atom)match(input,178,FOLLOW_178_in_stmtProvided7025); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_178.add(string_literal438);
@@ -21324,7 +21345,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_stmtBlock.add(stmtBlock442.getTree());
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1370:38: ( stmtElse )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1391:38: ( stmtElse )?
             int alt110=2;
             int LA110_0 = input.LA(1);
 
@@ -21333,7 +21354,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt110) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1370:39: stmtElse
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1391:39: stmtElse
                     {
                     pushFollow(FOLLOW_stmtElse_in_stmtProvided7036);
                     stmtElse443=stmtElse();
@@ -21349,7 +21370,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: expr, stmtElse, stmtBlock
+            // elements: stmtBlock, expr, stmtElse
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -21361,9 +21382,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1371:3: -> ^( S_PROVIDED[\"S_PROVIDED\"] expr stmtBlock ( stmtElse )? )
+            // 1392:3: -> ^( S_PROVIDED[\"S_PROVIDED\"] expr stmtBlock ( stmtElse )? )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1371:6: ^( S_PROVIDED[\"S_PROVIDED\"] expr stmtBlock ( stmtElse )? )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1392:6: ^( S_PROVIDED[\"S_PROVIDED\"] expr stmtBlock ( stmtElse )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -21374,7 +21395,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_stmtBlock.nextTree());
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1371:67: ( stmtElse )?
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1392:67: ( stmtElse )?
                 if ( stream_stmtElse.hasNext() ) {
                     adaptor.addChild(root_1, stream_stmtElse.nextTree());
 
@@ -21425,7 +21446,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtWhile"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1373:1: stmtWhile : 'while' '(' expr ')' stmtBlock -> ^( S_WHILE[\"S_WHILE\"] expr stmtBlock ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1394:1: stmtWhile : 'while' '(' expr ')' stmtBlock -> ^( S_WHILE[\"S_WHILE\"] expr stmtBlock ) ;
     public final pollenParser.stmtWhile_return stmtWhile() throws RecognitionException {
         pollenParser.stmtWhile_return retval = new pollenParser.stmtWhile_return();
         retval.start = input.LT(1);
@@ -21453,8 +21474,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 117) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1374:2: ( 'while' '(' expr ')' stmtBlock -> ^( S_WHILE[\"S_WHILE\"] expr stmtBlock ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1374:4: 'while' '(' expr ')' stmtBlock
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1395:2: ( 'while' '(' expr ')' stmtBlock -> ^( S_WHILE[\"S_WHILE\"] expr stmtBlock ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1395:4: 'while' '(' expr ')' stmtBlock
             {
             string_literal444=(Atom)match(input,189,FOLLOW_189_in_stmtWhile7069); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_189.add(string_literal444);
@@ -21483,7 +21504,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_stmtBlock.add(stmtBlock448.getTree());
 
             // AST REWRITE
-            // elements: stmtBlock, expr
+            // elements: expr, stmtBlock
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -21495,9 +21516,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1374:34: -> ^( S_WHILE[\"S_WHILE\"] expr stmtBlock )
+            // 1395:34: -> ^( S_WHILE[\"S_WHILE\"] expr stmtBlock )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1374:37: ^( S_WHILE[\"S_WHILE\"] expr stmtBlock )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1395:37: ^( S_WHILE[\"S_WHILE\"] expr stmtBlock )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -21552,7 +21573,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtDecl"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1376:1: stmtDecl : varAttr varDecl delim -> ^( S_DECL[\"S_DECL\"] varDecl ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1397:1: stmtDecl : varAttr varDecl delim -> ^( S_DECL[\"S_DECL\"] varDecl ) ;
     public final pollenParser.stmtDecl_return stmtDecl() throws RecognitionException {
         pollenParser.stmtDecl_return retval = new pollenParser.stmtDecl_return();
         retval.start = input.LT(1);
@@ -21574,8 +21595,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 118) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1377:4: ( varAttr varDecl delim -> ^( S_DECL[\"S_DECL\"] varDecl ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1377:7: varAttr varDecl delim
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1398:4: ( varAttr varDecl delim -> ^( S_DECL[\"S_DECL\"] varDecl ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1398:7: varAttr varDecl delim
             {
             pushFollow(FOLLOW_varAttr_in_stmtDecl7105);
             varAttr449=varAttr();
@@ -21611,9 +21632,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1377:29: -> ^( S_DECL[\"S_DECL\"] varDecl )
+            // 1398:29: -> ^( S_DECL[\"S_DECL\"] varDecl )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1377:32: ^( S_DECL[\"S_DECL\"] varDecl )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1398:32: ^( S_DECL[\"S_DECL\"] varDecl )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -21666,7 +21687,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fieldDeclaration"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1379:1: fieldDeclaration : varAttr varDecl delim -> varDecl ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1400:1: fieldDeclaration : varAttr varDecl delim -> varDecl ;
     public final pollenParser.fieldDeclaration_return fieldDeclaration() throws RecognitionException {
         pollenParser.fieldDeclaration_return retval = new pollenParser.fieldDeclaration_return();
         retval.start = input.LT(1);
@@ -21692,8 +21713,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 119) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1384:4: ( varAttr varDecl delim -> varDecl )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1384:7: varAttr varDecl delim
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1405:4: ( varAttr varDecl delim -> varDecl )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1405:7: varAttr varDecl delim
             {
             pushFollow(FOLLOW_varAttr_in_fieldDeclaration7147);
             varAttr452=varAttr();
@@ -21729,7 +21750,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1384:29: -> varDecl
+            // 1405:29: -> varDecl
             {
                 adaptor.addChild(root_0, stream_varDecl.nextTree());
 
@@ -21774,7 +21795,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varDeclaration"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1386:1: varDeclaration : varAttr varDecl delim -> varDecl ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1407:1: varDeclaration : varAttr varDecl delim -> varDecl ;
     public final pollenParser.varDeclaration_return varDeclaration() throws RecognitionException {
         pollenParser.varDeclaration_return retval = new pollenParser.varDeclaration_return();
         retval.start = input.LT(1);
@@ -21800,8 +21821,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 120) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1394:4: ( varAttr varDecl delim -> varDecl )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1394:7: varAttr varDecl delim
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1415:4: ( varAttr varDecl delim -> varDecl )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1415:7: varAttr varDecl delim
             {
             pushFollow(FOLLOW_varAttr_in_varDeclaration7183);
             varAttr455=varAttr();
@@ -21837,7 +21858,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1394:29: -> varDecl
+            // 1415:29: -> varDecl
             {
                 adaptor.addChild(root_0, stream_varDecl.nextTree());
 
@@ -21885,7 +21906,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varAttr"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1396:1: varAttr : ( 'const' | 'volatile' | 'host' )* ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1417:1: varAttr : ( 'const' | 'volatile' | 'host' )* ;
     public final pollenParser.varAttr_return varAttr() throws RecognitionException {
         pollenParser.varAttr_return retval = new pollenParser.varAttr_return();
         retval.start = input.LT(1);
@@ -21905,13 +21926,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 121) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1397:2: ( ( 'const' | 'volatile' | 'host' )* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1397:4: ( 'const' | 'volatile' | 'host' )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1418:2: ( ( 'const' | 'volatile' | 'host' )* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1418:4: ( 'const' | 'volatile' | 'host' )*
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1397:4: ( 'const' | 'volatile' | 'host' )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1418:4: ( 'const' | 'volatile' | 'host' )*
             loop111:
             do {
                 int alt111=4;
@@ -21936,7 +21957,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt111) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1397:7: 'const'
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1418:7: 'const'
             	    {
             	    string_literal458=(Atom)match(input,149,FOLLOW_149_in_varAttr7206); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
@@ -21951,7 +21972,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    break;
             	case 2 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1398:6: 'volatile'
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1419:6: 'volatile'
             	    {
             	    string_literal459=(Atom)match(input,188,FOLLOW_188_in_varAttr7215); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
@@ -21966,7 +21987,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    break;
             	case 3 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1399:7: 'host'
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1420:7: 'host'
             	    {
             	    string_literal460=(Atom)match(input,162,FOLLOW_162_in_varAttr7225); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
@@ -22028,7 +22049,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varDecl"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1402:1: varDecl : ( ( typeName IDENT ( ASSIGN expr )? ',' )=> varDeclList | ( typeName IDENT '[' )=> varArray | ( typeName '(' )=> varFcnRef | ( typeName varInit )=> varDeclList | 'new' t= typeName IDENT fcnArgumentList -> ^( D_VAR[\"D_VAR\", stmtFlags] $t IDENT ^( E_NEW[\"E_NEW\"] $t fcnArgumentList ) ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1423:1: varDecl : ( ( typeName IDENT ( ASSIGN expr )? ',' )=> varDeclList | ( typeName IDENT '[' )=> varArray | ( typeName '(' )=> varFcnRef | ( typeName varInit )=> varDeclList | 'new' t= typeName IDENT fcnArgumentList -> ^( D_VAR[\"D_VAR\", stmtFlags] $t IDENT ^( E_NEW[\"E_NEW\"] $t fcnArgumentList ) ) );
     public final pollenParser.varDecl_return varDecl() throws RecognitionException {
         varDecl_stack.push(new varDecl_scope());
         pollenParser.varDecl_return retval = new pollenParser.varDecl_return();
@@ -22066,7 +22087,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 122) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1412:2: ( ( typeName IDENT ( ASSIGN expr )? ',' )=> varDeclList | ( typeName IDENT '[' )=> varArray | ( typeName '(' )=> varFcnRef | ( typeName varInit )=> varDeclList | 'new' t= typeName IDENT fcnArgumentList -> ^( D_VAR[\"D_VAR\", stmtFlags] $t IDENT ^( E_NEW[\"E_NEW\"] $t fcnArgumentList ) ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1433:2: ( ( typeName IDENT ( ASSIGN expr )? ',' )=> varDeclList | ( typeName IDENT '[' )=> varArray | ( typeName '(' )=> varFcnRef | ( typeName varInit )=> varDeclList | 'new' t= typeName IDENT fcnArgumentList -> ^( D_VAR[\"D_VAR\", stmtFlags] $t IDENT ^( E_NEW[\"E_NEW\"] $t fcnArgumentList ) ) )
             int alt112=5;
             switch ( input.LA(1) ) {
             case 143:
@@ -22345,7 +22366,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt112) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1412:4: ( typeName IDENT ( ASSIGN expr )? ',' )=> varDeclList
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1433:4: ( typeName IDENT ( ASSIGN expr )? ',' )=> varDeclList
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -22360,7 +22381,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1413:5: ( typeName IDENT '[' )=> varArray
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1434:5: ( typeName IDENT '[' )=> varArray
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -22375,7 +22396,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1414:5: ( typeName '(' )=> varFcnRef
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1435:5: ( typeName '(' )=> varFcnRef
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -22390,7 +22411,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1415:6: ( typeName varInit )=> varDeclList
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1436:6: ( typeName varInit )=> varDeclList
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -22405,7 +22426,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1416:5: 'new' t= typeName IDENT fcnArgumentList
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1437:5: 'new' t= typeName IDENT fcnArgumentList
                     {
                     string_literal465=(Atom)match(input,172,FOLLOW_172_in_varDecl7324); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_172.add(string_literal465);
@@ -22432,7 +22453,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) { stmtFlags.add(Flags.NEW); }
 
                     // AST REWRITE
-                    // elements: t, fcnArgumentList, IDENT, t
+                    // elements: IDENT, fcnArgumentList, t, t
                     // token labels: 
                     // rule labels: retval, t
                     // token list labels: 
@@ -22445,9 +22466,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_t=new RewriteRuleSubtreeStream(adaptor,"rule t",t!=null?t.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1418:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] $t IDENT ^( E_NEW[\"E_NEW\"] $t fcnArgumentList ) )
+                    // 1439:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] $t IDENT ^( E_NEW[\"E_NEW\"] $t fcnArgumentList ) )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1418:6: ^( D_VAR[\"D_VAR\", stmtFlags] $t IDENT ^( E_NEW[\"E_NEW\"] $t fcnArgumentList ) )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1439:6: ^( D_VAR[\"D_VAR\", stmtFlags] $t IDENT ^( E_NEW[\"E_NEW\"] $t fcnArgumentList ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -22460,7 +22481,7 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_IDENT.nextNode()
                         );
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1419:14: ^( E_NEW[\"E_NEW\"] $t fcnArgumentList )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1440:14: ^( E_NEW[\"E_NEW\"] $t fcnArgumentList )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -22521,7 +22542,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varFcnRef"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1421:1: varFcnRef : typeName fcnRefTypeList IDENT -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1442:1: varFcnRef : typeName fcnRefTypeList IDENT -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ) ;
     public final pollenParser.varFcnRef_return varFcnRef() throws RecognitionException {
         pollenParser.varFcnRef_return retval = new pollenParser.varFcnRef_return();
         retval.start = input.LT(1);
@@ -22543,8 +22564,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 123) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1422:2: ( typeName fcnRefTypeList IDENT -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1422:4: typeName fcnRefTypeList IDENT
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1443:2: ( typeName fcnRefTypeList IDENT -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1443:4: typeName fcnRefTypeList IDENT
             {
             pushFollow(FOLLOW_typeName_in_varFcnRef7391);
             typeName468=typeName();
@@ -22565,7 +22586,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: typeName, IDENT, fcnRefTypeList
+            // elements: IDENT, fcnRefTypeList, typeName
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -22577,9 +22598,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1423:3: -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT )
+            // 1444:3: -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1423:6: ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1444:6: ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -22638,7 +22659,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnRefTypeList"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1425:1: fcnRefTypeList : '(' fcnRefTypes ')' -> fcnRefTypes ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1446:1: fcnRefTypeList : '(' fcnRefTypes ')' -> fcnRefTypes ;
     public final pollenParser.fcnRefTypeList_return fcnRefTypeList() throws RecognitionException {
         pollenParser.fcnRefTypeList_return retval = new pollenParser.fcnRefTypeList_return();
         retval.start = input.LT(1);
@@ -22660,8 +22681,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 124) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1426:2: ( '(' fcnRefTypes ')' -> fcnRefTypes )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1426:4: '(' fcnRefTypes ')'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1447:2: ( '(' fcnRefTypes ')' -> fcnRefTypes )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1447:4: '(' fcnRefTypes ')'
             {
             char_literal471=(Atom)match(input,127,FOLLOW_127_in_fcnRefTypeList7427); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_127.add(char_literal471);
@@ -22691,7 +22712,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1426:24: -> fcnRefTypes
+            // 1447:24: -> fcnRefTypes
             {
                 adaptor.addChild(root_0, stream_fcnRefTypes.nextTree());
 
@@ -22736,7 +22757,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnRefTypes"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1428:1: fcnRefTypes : ( typeName ( ',' typeName )* -> ^( LIST[\"LIST\"] ( typeName )+ ) | -> ^( LIST[\"LIST\"] ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1449:1: fcnRefTypes : ( typeName ( ',' typeName )* -> ^( LIST[\"LIST\"] ( typeName )+ ) | -> ^( LIST[\"LIST\"] ) );
     public final pollenParser.fcnRefTypes_return fcnRefTypes() throws RecognitionException {
         pollenParser.fcnRefTypes_return retval = new pollenParser.fcnRefTypes_return();
         retval.start = input.LT(1);
@@ -22757,7 +22778,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 125) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1429:2: ( typeName ( ',' typeName )* -> ^( LIST[\"LIST\"] ( typeName )+ ) | -> ^( LIST[\"LIST\"] ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1450:2: ( typeName ( ',' typeName )* -> ^( LIST[\"LIST\"] ( typeName )+ ) | -> ^( LIST[\"LIST\"] ) )
             int alt114=2;
             int LA114_0 = input.LA(1);
 
@@ -22777,7 +22798,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt114) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1429:4: typeName ( ',' typeName )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1450:4: typeName ( ',' typeName )*
                     {
                     pushFollow(FOLLOW_typeName_in_fcnRefTypes7445);
                     typeName474=typeName();
@@ -22786,7 +22807,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_typeName.add(typeName474.getTree());
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1429:13: ( ',' typeName )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1450:13: ( ',' typeName )*
                     loop113:
                     do {
                         int alt113=2;
@@ -22799,7 +22820,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt113) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1429:14: ',' typeName
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1450:14: ',' typeName
                     	    {
                     	    char_literal475=(Atom)match(input,130,FOLLOW_130_in_fcnRefTypes7448); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_130.add(char_literal475);
@@ -22834,9 +22855,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1430:3: -> ^( LIST[\"LIST\"] ( typeName )+ )
+                    // 1451:3: -> ^( LIST[\"LIST\"] ( typeName )+ )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1430:6: ^( LIST[\"LIST\"] ( typeName )+ )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1451:6: ^( LIST[\"LIST\"] ( typeName )+ )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -22864,7 +22885,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1431:4: 
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1452:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -22879,9 +22900,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1431:4: -> ^( LIST[\"LIST\"] )
+                    // 1452:4: -> ^( LIST[\"LIST\"] )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1431:7: ^( LIST[\"LIST\"] )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1452:7: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -22941,7 +22962,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varArray"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1433:1: varArray : typeNameArray IDENT varArraySpec ( '=' initializer )? -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( initializer )? ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1454:1: varArray : typeNameArray IDENT varArraySpec ( '=' initializer )? -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( initializer )? ) ;
     public final pollenParser.varArray_return varArray() throws RecognitionException {
         varArray_stack.push(new varArray_scope());
         pollenParser.varArray_return retval = new pollenParser.varArray_return();
@@ -22970,8 +22991,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 126) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1441:2: ( typeNameArray IDENT varArraySpec ( '=' initializer )? -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( initializer )? ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1441:4: typeNameArray IDENT varArraySpec ( '=' initializer )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1462:2: ( typeNameArray IDENT varArraySpec ( '=' initializer )? -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( initializer )? ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1462:4: typeNameArray IDENT varArraySpec ( '=' initializer )?
             {
             pushFollow(FOLLOW_typeNameArray_in_varArray7499);
             typeNameArray477=typeNameArray();
@@ -22995,7 +23016,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             if ( state.backtracking==0 ) { ((varArray_scope)varArray_stack.peek()).varArrSpec = (varArraySpec479!=null?((BaseNode)varArraySpec479.tree):null); }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1444:3: ( '=' initializer )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1465:3: ( '=' initializer )?
             int alt115=2;
             int LA115_0 = input.LA(1);
 
@@ -23004,7 +23025,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt115) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1444:4: '=' initializer
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1465:4: '=' initializer
                     {
                     char_literal480=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varArray7518); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ASSIGN.add(char_literal480);
@@ -23024,7 +23045,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: typeNameArray, initializer, varArraySpec, IDENT
+            // elements: initializer, typeNameArray, varArraySpec, IDENT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -23036,9 +23057,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1445:2: -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( initializer )? )
+            // 1466:2: -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( initializer )? )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1445:6: ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( initializer )? )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1466:6: ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( initializer )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -23053,7 +23074,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_varArraySpec.nextTree());
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1447:22: ( initializer )?
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1468:22: ( initializer )?
                 if ( stream_initializer.hasNext() ) {
                     adaptor.addChild(root_1, stream_initializer.nextTree());
 
@@ -23108,7 +23129,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varArraySpec"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1450:1: varArraySpec : ( '[' varDim ']' )+ -> ^( LIST[\"LIST\"] ( varDim )+ ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1471:1: varArraySpec : ( '[' varDim ']' )+ -> ^( LIST[\"LIST\"] ( varDim )+ ) ;
     public final pollenParser.varArraySpec_return varArraySpec() throws RecognitionException {
         pollenParser.varArraySpec_return retval = new pollenParser.varArraySpec_return();
         retval.start = input.LT(1);
@@ -23130,10 +23151,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 127) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1451:2: ( ( '[' varDim ']' )+ -> ^( LIST[\"LIST\"] ( varDim )+ ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1451:4: ( '[' varDim ']' )+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1472:2: ( ( '[' varDim ']' )+ -> ^( LIST[\"LIST\"] ( varDim )+ ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1472:4: ( '[' varDim ']' )+
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1451:4: ( '[' varDim ']' )+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1472:4: ( '[' varDim ']' )+
             int cnt116=0;
             loop116:
             do {
@@ -23153,7 +23174,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt116) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1451:5: '[' varDim ']'
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1472:5: '[' varDim ']'
             	    {
             	    char_literal482=(Atom)match(input,138,FOLLOW_138_in_varArraySpec7565); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_138.add(char_literal482);
@@ -23197,9 +23218,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1451:22: -> ^( LIST[\"LIST\"] ( varDim )+ )
+            // 1472:22: -> ^( LIST[\"LIST\"] ( varDim )+ )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1451:27: ^( LIST[\"LIST\"] ( varDim )+ )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1472:27: ^( LIST[\"LIST\"] ( varDim )+ )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -23259,7 +23280,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varDim"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1453:1: varDim : ( expr | -> NIL );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1474:1: varDim : ( expr | -> NIL );
     public final pollenParser.varDim_return varDim() throws RecognitionException {
         pollenParser.varDim_return retval = new pollenParser.varDim_return();
         retval.start = input.LT(1);
@@ -23275,7 +23296,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 128) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1454:2: ( expr | -> NIL )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1475:2: ( expr | -> NIL )
             int alt117=2;
             int LA117_0 = input.LA(1);
 
@@ -23295,7 +23316,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt117) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1454:5: expr
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1475:5: expr
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -23310,7 +23331,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1455:4: 
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1476:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -23325,7 +23346,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1455:4: -> NIL
+                    // 1476:4: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -23374,7 +23395,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "initializer"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1457:1: initializer : ( expr | '{' initializer_list ( ',' )? '}' -> initializer_list );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1478:1: initializer : ( expr | '{' initializer_list ( ',' )? '}' -> initializer_list );
     public final pollenParser.initializer_return initializer() throws RecognitionException {
         pollenParser.initializer_return retval = new pollenParser.initializer_return();
         retval.start = input.LT(1);
@@ -23401,7 +23422,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 129) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1458:2: ( expr | '{' initializer_list ( ',' )? '}' -> initializer_list )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1479:2: ( expr | '{' initializer_list ( ',' )? '}' -> initializer_list )
             int alt119=2;
             int LA119_0 = input.LA(1);
 
@@ -23421,7 +23442,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt119) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1458:4: expr
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1479:4: expr
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -23436,7 +23457,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1459:4: '{' initializer_list ( ',' )? '}'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1480:4: '{' initializer_list ( ',' )? '}'
                     {
                     char_literal487=(Atom)match(input,190,FOLLOW_190_in_initializer7623); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_190.add(char_literal487);
@@ -23449,7 +23470,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_initializer_list.add(initializer_list488.getTree());
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1459:25: ( ',' )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1480:25: ( ',' )?
                     int alt118=2;
                     int LA118_0 = input.LA(1);
 
@@ -23458,7 +23479,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt118) {
                         case 1 :
-                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1459:25: ','
+                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1480:25: ','
                             {
                             char_literal489=(Atom)match(input,130,FOLLOW_130_in_initializer7627); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_130.add(char_literal489);
@@ -23487,7 +23508,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1459:34: -> initializer_list
+                    // 1480:34: -> initializer_list
                     {
                         adaptor.addChild(root_0, stream_initializer_list.nextTree());
 
@@ -23534,7 +23555,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "initializer_list"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1461:1: initializer_list : initializer ( ',' initializer )* -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1482:1: initializer_list : initializer ( ',' initializer )* -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) ) ;
     public final pollenParser.initializer_list_return initializer_list() throws RecognitionException {
         pollenParser.initializer_list_return retval = new pollenParser.initializer_list_return();
         retval.start = input.LT(1);
@@ -23555,8 +23576,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 130) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1462:2: ( initializer ( ',' initializer )* -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1462:4: initializer ( ',' initializer )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1483:2: ( initializer ( ',' initializer )* -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1483:4: initializer ( ',' initializer )*
             {
             pushFollow(FOLLOW_initializer_in_initializer_list7644);
             initializer491=initializer();
@@ -23565,7 +23586,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_initializer.add(initializer491.getTree());
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1462:16: ( ',' initializer )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1483:16: ( ',' initializer )*
             loop120:
             do {
                 int alt120=2;
@@ -23584,7 +23605,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt120) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1462:17: ',' initializer
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1483:17: ',' initializer
             	    {
             	    char_literal492=(Atom)match(input,130,FOLLOW_130_in_initializer_list7647); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_130.add(char_literal492);
@@ -23619,16 +23640,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1462:35: -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) )
+            // 1483:35: -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1462:39: ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1483:39: ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ExprNode.Vec(E_VEC, "E_VEC")
                 , root_1);
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1462:71: ^( LIST[\"LIST\"] ( initializer )+ )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1483:71: ^( LIST[\"LIST\"] ( initializer )+ )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
@@ -23691,7 +23712,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varDeclList"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1464:1: varDeclList : ( varBuiltInType ! varListBuiltInType | userTypeName ! varListUserDefType );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1485:1: varDeclList : ( varBuiltInType ! varListBuiltInType | userTypeName ! varListUserDefType );
     public final pollenParser.varDeclList_return varDeclList() throws RecognitionException {
         pollenParser.varDeclList_return retval = new pollenParser.varDeclList_return();
         retval.start = input.LT(1);
@@ -23716,7 +23737,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 131) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1468:2: ( varBuiltInType ! varListBuiltInType | userTypeName ! varListUserDefType )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1489:2: ( varBuiltInType ! varListBuiltInType | userTypeName ! varListUserDefType )
             int alt121=2;
             int LA121_0 = input.LA(1);
 
@@ -23736,7 +23757,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt121) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1468:4: varBuiltInType ! varListBuiltInType
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1489:4: varBuiltInType ! varListBuiltInType
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -23759,7 +23780,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1469:4: userTypeName ! varListUserDefType
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1490:4: userTypeName ! varListUserDefType
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -23816,7 +23837,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varBuiltInType"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1471:1: varBuiltInType : builtinType -> ^( T_STD[\"T_STD\", stmtFlags] builtinType ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1492:1: varBuiltInType : builtinType -> ^( T_STD[\"T_STD\", stmtFlags] builtinType ) ;
     public final pollenParser.varBuiltInType_return varBuiltInType() throws RecognitionException {
         pollenParser.varBuiltInType_return retval = new pollenParser.varBuiltInType_return();
         retval.start = input.LT(1);
@@ -23832,8 +23853,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 132) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1472:2: ( builtinType -> ^( T_STD[\"T_STD\", stmtFlags] builtinType ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1472:4: builtinType
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1493:2: ( builtinType -> ^( T_STD[\"T_STD\", stmtFlags] builtinType ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1493:4: builtinType
             {
             pushFollow(FOLLOW_builtinType_in_varBuiltInType7721);
             builtinType498=builtinType();
@@ -23855,9 +23876,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1472:16: -> ^( T_STD[\"T_STD\", stmtFlags] builtinType )
+            // 1493:16: -> ^( T_STD[\"T_STD\", stmtFlags] builtinType )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1472:19: ^( T_STD[\"T_STD\", stmtFlags] builtinType )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1493:19: ^( T_STD[\"T_STD\", stmtFlags] builtinType )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -23910,7 +23931,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varListBuiltInType"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1474:1: varListBuiltInType : varInit2 ( ',' ! varInit2 )* ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1495:1: varListBuiltInType : varInit2 ( ',' ! varInit2 )* ;
     public final pollenParser.varListBuiltInType_return varListBuiltInType() throws RecognitionException {
         pollenParser.varListBuiltInType_return retval = new pollenParser.varListBuiltInType_return();
         retval.start = input.LT(1);
@@ -23930,8 +23951,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 133) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1475:2: ( varInit2 ( ',' ! varInit2 )* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1475:4: varInit2 ( ',' ! varInit2 )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1496:2: ( varInit2 ( ',' ! varInit2 )* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1496:4: varInit2 ( ',' ! varInit2 )*
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -23943,7 +23964,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, varInit2499.getTree());
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1475:13: ( ',' ! varInit2 )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1496:13: ( ',' ! varInit2 )*
             loop122:
             do {
                 int alt122=2;
@@ -23956,7 +23977,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt122) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1475:14: ',' ! varInit2
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1496:14: ',' ! varInit2
             	    {
             	    char_literal500=(Atom)match(input,130,FOLLOW_130_in_varListBuiltInType7748); if (state.failed) return retval;
 
@@ -24011,7 +24032,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varListUserDefType"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1477:1: varListUserDefType : varInit ( ',' ! varInit )* ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1498:1: varListUserDefType : varInit ( ',' ! varInit )* ;
     public final pollenParser.varListUserDefType_return varListUserDefType() throws RecognitionException {
         pollenParser.varListUserDefType_return retval = new pollenParser.varListUserDefType_return();
         retval.start = input.LT(1);
@@ -24031,8 +24052,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 134) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1478:2: ( varInit ( ',' ! varInit )* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1478:4: varInit ( ',' ! varInit )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1499:2: ( varInit ( ',' ! varInit )* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1499:4: varInit ( ',' ! varInit )*
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -24044,7 +24065,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, varInit502.getTree());
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1478:12: ( ',' ! varInit )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1499:12: ( ',' ! varInit )*
             loop123:
             do {
                 int alt123=2;
@@ -24057,7 +24078,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt123) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1478:13: ',' ! varInit
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1499:13: ',' ! varInit
             	    {
             	    char_literal503=(Atom)match(input,130,FOLLOW_130_in_varListUserDefType7768); if (state.failed) return retval;
 
@@ -24112,7 +24133,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varInit2"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1480:1: varInit2 : ( IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1501:1: varInit2 : ( IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) );
     public final pollenParser.varInit2_return varInit2() throws RecognitionException {
         pollenParser.varInit2_return retval = new pollenParser.varInit2_return();
         retval.start = input.LT(1);
@@ -24136,7 +24157,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 135) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1481:2: ( IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1502:2: ( IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) )
             int alt124=2;
             int LA124_0 = input.LA(1);
 
@@ -24168,7 +24189,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt124) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1481:4: IDENT ASSIGN expr
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1502:4: IDENT ASSIGN expr
                     {
                     IDENT505=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit27787); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT505);
@@ -24198,9 +24219,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1482:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
+                    // 1503:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1482:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1503:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -24227,7 +24248,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1484:4: IDENT
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1505:4: IDENT
                     {
                     IDENT508=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit27820); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT508);
@@ -24246,9 +24267,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1485:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
+                    // 1506:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1485:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1506:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -24307,7 +24328,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varInit"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1487:1: varInit : ( IDENT BIND expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? ) | IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1508:1: varInit : ( IDENT BIND expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? ) | IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) );
     public final pollenParser.varInit_return varInit() throws RecognitionException {
         pollenParser.varInit_return retval = new pollenParser.varInit_return();
         retval.start = input.LT(1);
@@ -24338,7 +24359,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 136) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1488:2: ( IDENT BIND expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? ) | IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1509:2: ( IDENT BIND expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? ) | IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) )
             int alt125=3;
             int LA125_0 = input.LA(1);
 
@@ -24373,7 +24394,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt125) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1488:5: IDENT BIND expr
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1509:5: IDENT BIND expr
                     {
                     IDENT509=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit7850); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT509);
@@ -24405,9 +24426,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1489:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? )
+                    // 1510:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1489:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1510:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -24420,7 +24441,7 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_IDENT.nextNode()
                         );
 
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1489:78: ( expr )?
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1510:78: ( expr )?
                         if ( stream_expr.hasNext() ) {
                             adaptor.addChild(root_1, stream_expr.nextTree());
 
@@ -24439,7 +24460,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1490:4: IDENT ASSIGN expr
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1511:4: IDENT ASSIGN expr
                     {
                     IDENT512=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit7883); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT512);
@@ -24457,7 +24478,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_expr.add(expr514.getTree());
 
                     // AST REWRITE
-                    // elements: IDENT, expr
+                    // elements: expr, IDENT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -24469,9 +24490,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1491:2: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
+                    // 1512:2: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1491:5: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1512:5: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -24498,7 +24519,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1493:4: IDENT
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1514:4: IDENT
                     {
                     IDENT515=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit7914); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT515);
@@ -24517,9 +24538,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1494:2: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
+                    // 1515:2: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1494:5: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1515:5: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -24579,7 +24600,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "builtinType"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1497:1: builtinType returns [EnumSet<LitFlags> f] : ( 'bool' | 'byte' | 'int8' | 'int16' | 'int32' | 'string' | 'uint8' | 'uint16' | 'uint32' );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1518:1: builtinType returns [EnumSet<LitFlags> f] : ( 'bool' | 'byte' | 'int8' | 'int16' | 'int32' | 'string' | 'uint8' | 'uint16' | 'uint32' );
     public final pollenParser.builtinType_return builtinType() throws RecognitionException {
         pollenParser.builtinType_return retval = new pollenParser.builtinType_return();
         retval.start = input.LT(1);
@@ -24611,7 +24632,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 137) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1498:5: ( 'bool' | 'byte' | 'int8' | 'int16' | 'int32' | 'string' | 'uint8' | 'uint16' | 'uint32' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1519:5: ( 'bool' | 'byte' | 'int8' | 'int16' | 'int32' | 'string' | 'uint8' | 'uint16' | 'uint32' )
             int alt126=9;
             switch ( input.LA(1) ) {
             case 143:
@@ -24670,7 +24691,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt126) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1498:9: 'bool'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1519:9: 'bool'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -24688,7 +24709,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1499:9: 'byte'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1520:9: 'byte'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -24706,7 +24727,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1500:9: 'int8'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1521:9: 'int8'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -24724,7 +24745,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1501:9: 'int16'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1522:9: 'int16'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -24742,7 +24763,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1502:9: 'int32'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1523:9: 'int32'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -24760,7 +24781,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 6 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1503:9: 'string'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1524:9: 'string'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -24778,7 +24799,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 7 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1504:9: 'uint8'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1525:9: 'uint8'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -24796,7 +24817,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 8 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1505:9: 'uint16'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1526:9: 'uint16'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -24814,7 +24835,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 9 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1506:9: 'uint32'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1527:9: 'uint32'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -24873,7 +24894,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "qualName"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1509:1: qualName : qualNameConcat ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1530:1: qualName : qualNameConcat ;
     public final pollenParser.qualName_return qualName() throws RecognitionException {
         qualName_stack.push(new qualName_scope());
         pollenParser.qualName_return retval = new pollenParser.qualName_return();
@@ -24894,8 +24915,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 138) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1522:5: ( qualNameConcat )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1522:10: qualNameConcat
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1542:5: ( qualNameConcat )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1542:10: qualNameConcat
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -24920,8 +24941,7 @@ public TreeAdaptor getTreeAdaptor() {
             adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
             }
             if ( state.backtracking==0 ) {
-                if (((CommonTree) ((qualName_scope)qualName_stack.peek()).qtree).getText().equals("unit.name"))
-                		((CommonTree) ((qualName_scope)qualName_stack.peek()).qtree).getToken().setText("__unit_name");
+            	handleIntrinsics((CommonTree) ((qualName_scope)qualName_stack.peek()).qtree);
             }
         }
         catch (RecognitionException re) {
@@ -24949,7 +24969,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "qualNameConcat"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1525:1: qualNameConcat : IDENT ( ( qualNameList )? ) -> IDENT[$IDENT.text + $qualName::s] ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1545:1: qualNameConcat : IDENT ( ( qualNameList )? ) -> IDENT[$IDENT.text + $qualName::s] ;
     public final pollenParser.qualNameConcat_return qualNameConcat() throws RecognitionException {
         pollenParser.qualNameConcat_return retval = new pollenParser.qualNameConcat_return();
         retval.start = input.LT(1);
@@ -24968,17 +24988,17 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 139) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1526:2: ( IDENT ( ( qualNameList )? ) -> IDENT[$IDENT.text + $qualName::s] )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1526:4: IDENT ( ( qualNameList )? )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1546:2: ( IDENT ( ( qualNameList )? ) -> IDENT[$IDENT.text + $qualName::s] )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1546:4: IDENT ( ( qualNameList )? )
             {
             IDENT526=(Atom)match(input,IDENT,FOLLOW_IDENT_in_qualNameConcat8121); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_IDENT.add(IDENT526);
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1526:10: ( ( qualNameList )? )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1526:11: ( qualNameList )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1546:10: ( ( qualNameList )? )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1546:11: ( qualNameList )?
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1526:11: ( qualNameList )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1546:11: ( qualNameList )?
             int alt127=2;
             int LA127_0 = input.LA(1);
 
@@ -24991,7 +25011,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt127) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1526:11: qualNameList
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1546:11: qualNameList
                     {
                     pushFollow(FOLLOW_qualNameList_in_qualNameConcat8124);
                     qualNameList527=qualNameList();
@@ -25022,7 +25042,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1526:27: -> IDENT[$IDENT.text + $qualName::s]
+            // 1546:27: -> IDENT[$IDENT.text + $qualName::s]
             {
                 adaptor.addChild(root_0, 
                 (BaseNode)adaptor.create(IDENT, (IDENT526!=null?IDENT526.getText():null) + ((qualName_scope)qualName_stack.peek()).s)
@@ -25069,7 +25089,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "qualNameList"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1529:1: qualNameList : ( '.' ! IDENT !)+ ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1549:1: qualNameList : ( '.' ! IDENT !)+ ;
     public final pollenParser.qualNameList_return qualNameList() throws RecognitionException {
         pollenParser.qualNameList_return retval = new pollenParser.qualNameList_return();
         retval.start = input.LT(1);
@@ -25087,13 +25107,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 140) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1530:2: ( ( '.' ! IDENT !)+ )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1531:2: ( '.' ! IDENT !)+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1550:2: ( ( '.' ! IDENT !)+ )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1551:2: ( '.' ! IDENT !)+
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1531:2: ( '.' ! IDENT !)+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1551:2: ( '.' ! IDENT !)+
             int cnt128=0;
             loop128:
             do {
@@ -25113,7 +25133,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt128) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1531:6: '.' ! IDENT !
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1551:6: '.' ! IDENT !
             	    {
             	    char_literal528=(Atom)match(input,131,FOLLOW_131_in_qualNameList8153); if (state.failed) return retval;
 
@@ -25170,7 +25190,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "arrayLit"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1536:1: arrayLit : '[' arrayLitList ']' -> ^( LIST[\"LIST\"] arrayLitList ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1556:1: arrayLit : '[' arrayLitList ']' -> ^( LIST[\"LIST\"] arrayLitList ) ;
     public final pollenParser.arrayLit_return arrayLit() throws RecognitionException {
         pollenParser.arrayLit_return retval = new pollenParser.arrayLit_return();
         retval.start = input.LT(1);
@@ -25192,8 +25212,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 141) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1537:2: ( '[' arrayLitList ']' -> ^( LIST[\"LIST\"] arrayLitList ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1537:4: '[' arrayLitList ']'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1557:2: ( '[' arrayLitList ']' -> ^( LIST[\"LIST\"] arrayLitList ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1557:4: '[' arrayLitList ']'
             {
             char_literal530=(Atom)match(input,138,FOLLOW_138_in_arrayLit8201); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_138.add(char_literal530);
@@ -25223,9 +25243,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1537:25: -> ^( LIST[\"LIST\"] arrayLitList )
+            // 1557:25: -> ^( LIST[\"LIST\"] arrayLitList )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1537:28: ^( LIST[\"LIST\"] arrayLitList )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1557:28: ^( LIST[\"LIST\"] arrayLitList )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -25278,7 +25298,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "arrayLitList"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1539:1: arrayLitList : ( arrayLitElem ( ',' arrayLitElem )* -> ( arrayLitElem )+ | -> NIL );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1559:1: arrayLitList : ( arrayLitElem ( ',' arrayLitElem )* -> ( arrayLitElem )+ | -> NIL );
     public final pollenParser.arrayLitList_return arrayLitList() throws RecognitionException {
         pollenParser.arrayLitList_return retval = new pollenParser.arrayLitList_return();
         retval.start = input.LT(1);
@@ -25299,7 +25319,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 142) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1540:2: ( arrayLitElem ( ',' arrayLitElem )* -> ( arrayLitElem )+ | -> NIL )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1560:2: ( arrayLitElem ( ',' arrayLitElem )* -> ( arrayLitElem )+ | -> NIL )
             int alt130=2;
             int LA130_0 = input.LA(1);
 
@@ -25319,7 +25339,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt130) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1540:4: arrayLitElem ( ',' arrayLitElem )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1560:4: arrayLitElem ( ',' arrayLitElem )*
                     {
                     pushFollow(FOLLOW_arrayLitElem_in_arrayLitList8227);
                     arrayLitElem533=arrayLitElem();
@@ -25328,7 +25348,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_arrayLitElem.add(arrayLitElem533.getTree());
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1540:17: ( ',' arrayLitElem )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1560:17: ( ',' arrayLitElem )*
                     loop129:
                     do {
                         int alt129=2;
@@ -25341,7 +25361,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt129) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1540:18: ',' arrayLitElem
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1560:18: ',' arrayLitElem
                     	    {
                     	    char_literal534=(Atom)match(input,130,FOLLOW_130_in_arrayLitList8230); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_130.add(char_literal534);
@@ -25376,7 +25396,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1540:37: -> ( arrayLitElem )+
+                    // 1560:37: -> ( arrayLitElem )+
                     {
                         if ( !(stream_arrayLitElem.hasNext()) ) {
                             throw new RewriteEarlyExitException();
@@ -25396,7 +25416,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1541:4: 
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1561:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -25411,7 +25431,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1541:4: -> NIL
+                    // 1561:4: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -25460,7 +25480,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "arrayLitElem"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1543:1: arrayLitElem : ( primitiveLit | namedConstant );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1563:1: arrayLitElem : ( primitiveLit | namedConstant );
     public final pollenParser.arrayLitElem_return arrayLitElem() throws RecognitionException {
         pollenParser.arrayLitElem_return retval = new pollenParser.arrayLitElem_return();
         retval.start = input.LT(1);
@@ -25478,7 +25498,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 143) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1544:2: ( primitiveLit | namedConstant )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1564:2: ( primitiveLit | namedConstant )
             int alt131=2;
             int LA131_0 = input.LA(1);
 
@@ -25498,7 +25518,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt131) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1544:4: primitiveLit
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1564:4: primitiveLit
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -25513,7 +25533,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1544:19: namedConstant
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1564:19: namedConstant
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -25562,7 +25582,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "namedConstant"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1546:1: namedConstant : qualName ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1566:1: namedConstant : qualName ;
     public final pollenParser.namedConstant_return namedConstant() throws RecognitionException {
         pollenParser.namedConstant_return retval = new pollenParser.namedConstant_return();
         retval.start = input.LT(1);
@@ -25578,8 +25598,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 144) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1547:2: ( qualName )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1547:4: qualName
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1567:2: ( qualName )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1567:4: qualName
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -25626,7 +25646,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "boolLit"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1549:1: boolLit : ( 'true' | 'false' ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1569:1: boolLit : ( 'true' | 'false' ) ;
     public final pollenParser.boolLit_return boolLit() throws RecognitionException {
         pollenParser.boolLit_return retval = new pollenParser.boolLit_return();
         retval.start = input.LT(1);
@@ -25642,8 +25662,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 145) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1550:2: ( ( 'true' | 'false' ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1550:4: ( 'true' | 'false' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1570:2: ( ( 'true' | 'false' ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1570:4: ( 'true' | 'false' )
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -25702,7 +25722,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "nullLit"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1552:1: nullLit : 'null' ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1572:1: nullLit : 'null' ;
     public final pollenParser.nullLit_return nullLit() throws RecognitionException {
         pollenParser.nullLit_return retval = new pollenParser.nullLit_return();
         retval.start = input.LT(1);
@@ -25718,8 +25738,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 146) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1553:2: ( 'null' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1553:4: 'null'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1573:2: ( 'null' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1573:4: 'null'
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -25769,7 +25789,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "numLit"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1555:1: numLit : ( INT_LIT | OCT_LIT | REAL_LIT | HEX_LIT );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1575:1: numLit : ( INT_LIT | OCT_LIT | REAL_LIT | HEX_LIT );
     public final pollenParser.numLit_return numLit() throws RecognitionException {
         pollenParser.numLit_return retval = new pollenParser.numLit_return();
         retval.start = input.LT(1);
@@ -25791,7 +25811,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 147) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1559:2: ( INT_LIT | OCT_LIT | REAL_LIT | HEX_LIT )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1579:2: ( INT_LIT | OCT_LIT | REAL_LIT | HEX_LIT )
             int alt132=4;
             switch ( input.LA(1) ) {
             case INT_LIT:
@@ -25825,7 +25845,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt132) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1559:4: INT_LIT
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1579:4: INT_LIT
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -25843,7 +25863,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1560:5: OCT_LIT
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1580:5: OCT_LIT
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -25861,7 +25881,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1561:5: REAL_LIT
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1581:5: REAL_LIT
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -25879,7 +25899,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1562:5: HEX_LIT
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1582:5: HEX_LIT
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -25940,7 +25960,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "primitiveLit"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1565:1: primitiveLit : ( boolLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit ) | numLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit ) | nullLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit ) | STRING -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING ) | CHAR -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR ) );
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1585:1: primitiveLit : ( boolLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit ) | numLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit ) | nullLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit ) | STRING -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING ) | CHAR -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR ) );
     public final pollenParser.primitiveLit_return primitiveLit() throws RecognitionException {
         primitiveLit_stack.push(new primitiveLit_scope());
         pollenParser.primitiveLit_return retval = new pollenParser.primitiveLit_return();
@@ -25972,7 +25992,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 148) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1572:2: ( boolLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit ) | numLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit ) | nullLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit ) | STRING -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING ) | CHAR -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1592:2: ( boolLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit ) | numLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit ) | nullLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit ) | STRING -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING ) | CHAR -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR ) )
             int alt133=5;
             switch ( input.LA(1) ) {
             case 159:
@@ -26015,7 +26035,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt133) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1572:4: boolLit
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1592:4: boolLit
                     {
                     pushFollow(FOLLOW_boolLit_in_primitiveLit8369);
                     boolLit545=boolLit();
@@ -26037,9 +26057,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1572:12: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit )
+                    // 1592:12: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1572:15: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1592:15: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -26060,7 +26080,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1573:4: numLit
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1593:4: numLit
                     {
                     pushFollow(FOLLOW_numLit_in_primitiveLit8388);
                     numLit546=numLit();
@@ -26082,9 +26102,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1573:12: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit )
+                    // 1593:12: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1573:15: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1593:15: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -26105,7 +26125,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1574:4: nullLit
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1594:4: nullLit
                     {
                     pushFollow(FOLLOW_nullLit_in_primitiveLit8408);
                     nullLit547=nullLit();
@@ -26127,9 +26147,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1574:12: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit )
+                    // 1594:12: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1574:15: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1594:15: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -26150,7 +26170,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1575:4: STRING
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1595:4: STRING
                     {
                     STRING548=(Atom)match(input,STRING,FOLLOW_STRING_in_primitiveLit8427); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_STRING.add(STRING548);
@@ -26171,9 +26191,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1576:5: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING )
+                    // 1596:5: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1576:8: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1596:8: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -26196,7 +26216,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1577:4: CHAR
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1597:4: CHAR
                     {
                     CHAR549=(Atom)match(input,CHAR,FOLLOW_CHAR_in_primitiveLit8455); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_CHAR.add(CHAR549);
@@ -26217,9 +26237,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1578:6: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR )
+                    // 1598:6: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR )
                     {
-                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1578:9: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR )
+                        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1598:9: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -26277,7 +26297,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtInjection"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1580:1: stmtInjection : inject ( NL )+ -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1600:1: stmtInjection : inject ( NL )+ -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) ;
     public final pollenParser.stmtInjection_return stmtInjection() throws RecognitionException {
         pollenParser.stmtInjection_return retval = new pollenParser.stmtInjection_return();
         retval.start = input.LT(1);
@@ -26296,8 +26316,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 149) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1581:2: ( inject ( NL )+ -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1581:4: inject ( NL )+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1601:2: ( inject ( NL )+ -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1601:4: inject ( NL )+
             {
             pushFollow(FOLLOW_inject_in_stmtInjection8488);
             inject550=inject();
@@ -26306,7 +26326,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_inject.add(inject550.getTree());
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1582:2: ( NL )+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1602:2: ( NL )+
             int cnt134=0;
             loop134:
             do {
@@ -26326,7 +26346,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt134) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1582:2: NL
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1602:2: NL
             	    {
             	    NL551=(Atom)match(input,NL,FOLLOW_NL_in_stmtInjection8491); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_NL.add(NL551);
@@ -26359,16 +26379,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1583:2: -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
+            // 1603:2: -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1583:5: ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1603:5: ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new StmtNode.Inject(S_INJ, "S_INJ")
                 , root_1);
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1583:40: ^( E_INJ[\"E_INJ\"] inject )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1603:40: ^( E_INJ[\"E_INJ\"] inject )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
@@ -26424,7 +26444,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "inject"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1587:1: inject : c= INJECT -> ^( LIST[\"LIST\"] ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1607:1: inject : c= INJECT -> ^( LIST[\"LIST\"] ) ;
     public final pollenParser.inject_return inject() throws RecognitionException {
         pollenParser.inject_return retval = new pollenParser.inject_return();
         retval.start = input.LT(1);
@@ -26444,8 +26464,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 150) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1591:2: (c= INJECT -> ^( LIST[\"LIST\"] ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1591:4: c= INJECT
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1611:2: (c= INJECT -> ^( LIST[\"LIST\"] ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1611:4: c= INJECT
             {
             c=(Atom)match(input,INJECT,FOLLOW_INJECT_in_inject8538); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_INJECT.add(c);
@@ -26469,9 +26489,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1595:2: -> ^( LIST[\"LIST\"] )
+            // 1615:2: -> ^( LIST[\"LIST\"] )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1595:5: ^( LIST[\"LIST\"] )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1615:5: ^( LIST[\"LIST\"] )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -26524,7 +26544,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "injectionCode"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1597:1: injectionCode : inject -> ^( E_INJ[\"E_INJ\"] inject ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1617:1: injectionCode : inject -> ^( E_INJ[\"E_INJ\"] inject ) ;
     public final pollenParser.injectionCode_return injectionCode() throws RecognitionException {
         pollenParser.injectionCode_return retval = new pollenParser.injectionCode_return();
         retval.start = input.LT(1);
@@ -26540,8 +26560,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 151) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1598:2: ( inject -> ^( E_INJ[\"E_INJ\"] inject ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1598:4: inject
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1618:2: ( inject -> ^( E_INJ[\"E_INJ\"] inject ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1618:4: inject
             {
             pushFollow(FOLLOW_inject_in_injectionCode8564);
             inject552=inject();
@@ -26563,9 +26583,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1599:2: -> ^( E_INJ[\"E_INJ\"] inject )
+            // 1619:2: -> ^( E_INJ[\"E_INJ\"] inject )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1599:5: ^( E_INJ[\"E_INJ\"] inject )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1619:5: ^( E_INJ[\"E_INJ\"] inject )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -26618,7 +26638,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "injectionDecl"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1601:1: injectionDecl : inject ( NL )+ -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) ;
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1621:1: injectionDecl : inject ( NL )+ -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) ;
     public final pollenParser.injectionDecl_return injectionDecl() throws RecognitionException {
         pollenParser.injectionDecl_return retval = new pollenParser.injectionDecl_return();
         retval.start = input.LT(1);
@@ -26637,8 +26657,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 152) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1602:2: ( inject ( NL )+ -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1602:4: inject ( NL )+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1622:2: ( inject ( NL )+ -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1622:4: inject ( NL )+
             {
             pushFollow(FOLLOW_inject_in_injectionDecl8591);
             inject553=inject();
@@ -26647,7 +26667,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_inject.add(inject553.getTree());
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1603:9: ( NL )+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1623:9: ( NL )+
             int cnt135=0;
             loop135:
             do {
@@ -26667,7 +26687,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt135) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1603:9: NL
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1623:9: NL
             	    {
             	    NL554=(Atom)match(input,NL,FOLLOW_NL_in_injectionDecl8601); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_NL.add(NL554);
@@ -26700,16 +26720,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1604:10: -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
+            // 1624:10: -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
             {
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1604:13: ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1624:13: ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new DeclNode.Inject(D_INJ, "D_INJ")
                 , root_1);
 
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1604:47: ^( E_INJ[\"E_INJ\"] inject )
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1624:47: ^( E_INJ[\"E_INJ\"] inject )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
@@ -26765,7 +26785,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "delim"
-    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1631:1: delim : ( ( SEMI ) ( NL )* ->| ( NL )+ ->| ( ( NL )* '}' )=> ( NL )* ->);
+    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1651:1: delim : ( ( SEMI ) ( NL )* ->| ( NL )+ ->| ( ( NL )* '}' )=> ( NL )* ->);
     public final pollenParser.delim_return delim() throws RecognitionException {
         pollenParser.delim_return retval = new pollenParser.delim_return();
         retval.start = input.LT(1);
@@ -26789,15 +26809,15 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 153) ) { return retval; }
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1632:2: ( ( SEMI ) ( NL )* ->| ( NL )+ ->| ( ( NL )* '}' )=> ( NL )* ->)
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:2: ( ( SEMI ) ( NL )* ->| ( NL )+ ->| ( ( NL )* '}' )=> ( NL )* ->)
             int alt139=3;
             alt139 = dfa139.predict(input);
             switch (alt139) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1632:4: ( SEMI ) ( NL )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:4: ( SEMI ) ( NL )*
                     {
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1632:4: ( SEMI )
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1632:5: SEMI
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:4: ( SEMI )
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:5: SEMI
                     {
                     SEMI555=(Atom)match(input,SEMI,FOLLOW_SEMI_in_delim8649); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_SEMI.add(SEMI555);
@@ -26806,7 +26826,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1632:11: ( NL )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:11: ( NL )*
                     loop136:
                     do {
                         int alt136=2;
@@ -26825,7 +26845,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt136) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1632:12: NL
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:12: NL
                     	    {
                     	    NL556=(Atom)match(input,NL,FOLLOW_NL_in_delim8653); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_NL.add(NL556);
@@ -26853,7 +26873,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1632:17: ->
+                    // 1652:17: ->
                     {
                         root_0 = null;
                     }
@@ -26865,9 +26885,9 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1633:4: ( NL )+
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1653:4: ( NL )+
                     {
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1633:4: ( NL )+
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1653:4: ( NL )+
                     int cnt137=0;
                     loop137:
                     do {
@@ -26887,7 +26907,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt137) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1633:5: NL
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1653:5: NL
                     	    {
                     	    NL557=(Atom)match(input,NL,FOLLOW_NL_in_delim8664); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_NL.add(NL557);
@@ -26920,7 +26940,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1633:10: ->
+                    // 1653:10: ->
                     {
                         root_0 = null;
                     }
@@ -26932,9 +26952,9 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1635:4: ( ( NL )* '}' )=> ( NL )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1655:4: ( ( NL )* '}' )=> ( NL )*
                     {
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1635:20: ( NL )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1655:20: ( NL )*
                     loop138:
                     do {
                         int alt138=2;
@@ -26953,7 +26973,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt138) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1635:20: NL
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1655:20: NL
                     	    {
                     	    NL558=(Atom)match(input,NL,FOLLOW_NL_in_delim8688); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_NL.add(NL558);
@@ -26981,7 +27001,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1635:24: ->
+                    // 1655:24: ->
                     {
                         root_0 = null;
                     }
@@ -27021,8 +27041,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred6_pollen
     public final void synpred6_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:415:9: ( fcnDefinition )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:415:9: fcnDefinition
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:436:9: ( fcnDefinition )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:436:9: fcnDefinition
         {
         pushFollow(FOLLOW_fcnDefinition_in_synpred6_pollen1110);
         fcnDefinition();
@@ -27037,8 +27057,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred8_pollen
     public final void synpred8_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:417:9: ( fieldDeclaration )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:417:9: fieldDeclaration
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:438:9: ( fieldDeclaration )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:438:9: fieldDeclaration
         {
         pushFollow(FOLLOW_fieldDeclaration_in_synpred8_pollen1131);
         fieldDeclaration();
@@ -27053,8 +27073,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred12_pollen
     public final void synpred12_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:462:15: ( NL )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:462:15: NL
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:483:15: ( NL )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:483:15: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred12_pollen1328); if (state.failed) return ;
 
@@ -27065,8 +27085,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred13_pollen
     public final void synpred13_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:471:6: ( fcnDefinition )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:471:6: fcnDefinition
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:492:6: ( fcnDefinition )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:492:6: fcnDefinition
         {
         pushFollow(FOLLOW_fcnDefinition_in_synpred13_pollen1420);
         fcnDefinition();
@@ -27081,8 +27101,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred14_pollen
     public final void synpred14_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:472:8: ( varDeclaration )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:472:8: varDeclaration
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:493:8: ( varDeclaration )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:493:8: varDeclaration
         {
         pushFollow(FOLLOW_varDeclaration_in_synpred14_pollen1429);
         varDeclaration();
@@ -27097,8 +27117,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred17_pollen
     public final void synpred17_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:502:22: ( delim )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:502:22: delim
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:523:22: ( delim )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:523:22: delim
         {
         pushFollow(FOLLOW_delim_in_synpred17_pollen1529);
         delim();
@@ -27113,8 +27133,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred19_pollen
     public final void synpred19_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:505:4: ( IDENT ASSIGN INT_LIT )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:505:4: IDENT ASSIGN INT_LIT
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:526:4: ( IDENT ASSIGN INT_LIT )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:526:4: IDENT ASSIGN INT_LIT
         {
         match(input,IDENT,FOLLOW_IDENT_in_synpred19_pollen1558); if (state.failed) return ;
 
@@ -27129,8 +27149,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred25_pollen
     public final void synpred25_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:581:7: ( fcnDefinitionHost )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:581:7: fcnDefinitionHost
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:602:7: ( fcnDefinitionHost )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:602:7: fcnDefinitionHost
         {
         pushFollow(FOLLOW_fcnDefinitionHost_in_synpred25_pollen1859);
         fcnDefinitionHost();
@@ -27145,8 +27165,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred27_pollen
     public final void synpred27_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:583:7: ( varDeclaration )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:583:7: varDeclaration
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:604:7: ( varDeclaration )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:604:7: varDeclaration
         {
         pushFollow(FOLLOW_varDeclaration_in_synpred27_pollen1875);
         varDeclaration();
@@ -27161,8 +27181,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred29_pollen
     public final void synpred29_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:614:11: ( metaArguments )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:614:11: metaArguments
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:635:11: ( metaArguments )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:635:11: metaArguments
         {
         pushFollow(FOLLOW_metaArguments_in_synpred29_pollen1950);
         metaArguments();
@@ -27177,8 +27197,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred30_pollen
     public final void synpred30_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:641:11: ( metaArguments )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:641:11: metaArguments
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:662:11: ( metaArguments )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:662:11: metaArguments
         {
         pushFollow(FOLLOW_metaArguments_in_synpred30_pollen2092);
         metaArguments();
@@ -27193,8 +27213,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred35_pollen
     public final void synpred35_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:698:55: ( NL )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:698:55: NL
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:719:55: ( NL )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:719:55: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred35_pollen2346); if (state.failed) return ;
 
@@ -27205,8 +27225,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred42_pollen
     public final void synpred42_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:36: ( NL )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:36: NL
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:36: ( NL )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:36: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred42_pollen2557); if (state.failed) return ;
 
@@ -27217,8 +27237,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred45_pollen
     public final void synpred45_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:7: ( '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}' )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:7: '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}'
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:7: ( '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}' )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:7: '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}'
         {
         match(input,190,FOLLOW_190_in_synpred45_pollen2544); if (state.failed) return ;
 
@@ -27228,7 +27248,7 @@ public TreeAdaptor getTreeAdaptor() {
         state._fsp--;
         if (state.failed) return ;
 
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:24: ( NL )*
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:24: ( NL )*
         loop146:
         do {
             int alt146=2;
@@ -27241,7 +27261,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt146) {
         	case 1 :
-        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:25: NL
+        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:25: NL
         	    {
         	    match(input,NL,FOLLOW_NL_in_synpred45_pollen2549); if (state.failed) return ;
 
@@ -27254,7 +27274,7 @@ public TreeAdaptor getTreeAdaptor() {
         } while (true);
 
 
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:30: ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )*
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:30: ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )*
         loop149:
         do {
             int alt149=2;
@@ -27267,14 +27287,14 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt149) {
         	case 1 :
-        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:31: ',' ( ( NL )* ) metaArgument ( ( NL )* )
+        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:31: ',' ( ( NL )* ) metaArgument ( ( NL )* )
         	    {
         	    match(input,130,FOLLOW_130_in_synpred45_pollen2554); if (state.failed) return ;
 
-        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:35: ( ( NL )* )
-        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:36: ( NL )*
+        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:35: ( ( NL )* )
+        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:36: ( NL )*
         	    {
-        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:36: ( NL )*
+        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:36: ( NL )*
         	    loop147:
         	    do {
         	        int alt147=2;
@@ -27293,7 +27313,7 @@ public TreeAdaptor getTreeAdaptor() {
 
         	        switch (alt147) {
         	    	case 1 :
-        	    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:36: NL
+        	    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:36: NL
         	    	    {
         	    	    match(input,NL,FOLLOW_NL_in_synpred45_pollen2557); if (state.failed) return ;
 
@@ -27315,10 +27335,10 @@ public TreeAdaptor getTreeAdaptor() {
         	    state._fsp--;
         	    if (state.failed) return ;
 
-        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:54: ( ( NL )* )
-        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:55: ( NL )*
+        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:54: ( ( NL )* )
+        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:55: ( NL )*
         	    {
-        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:55: ( NL )*
+        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:55: ( NL )*
         	    loop148:
         	    do {
         	        int alt148=2;
@@ -27331,7 +27351,7 @@ public TreeAdaptor getTreeAdaptor() {
 
         	        switch (alt148) {
         	    	case 1 :
-        	    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:55: NL
+        	    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:860:55: NL
         	    	    {
         	    	    match(input,NL,FOLLOW_NL_in_synpred45_pollen2564); if (state.failed) return ;
 
@@ -27365,8 +27385,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred50_pollen
     public final void synpred50_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:879:10: ( 'module' )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:879:11: 'module'
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:900:10: ( 'module' )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:900:11: 'module'
         {
         match(input,171,FOLLOW_171_in_synpred50_pollen2832); if (state.failed) return ;
 
@@ -27377,8 +27397,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred51_pollen
     public final void synpred51_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:880:8: ( 'class' )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:880:9: 'class'
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:901:8: ( 'class' )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:901:9: 'class'
         {
         match(input,147,FOLLOW_147_in_synpred51_pollen2852); if (state.failed) return ;
 
@@ -27389,8 +27409,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred52_pollen
     public final void synpred52_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:881:10: ( 'protocol' )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:881:11: 'protocol'
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:902:10: ( 'protocol' )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:902:11: 'protocol'
         {
         match(input,177,FOLLOW_177_in_synpred52_pollen2870); if (state.failed) return ;
 
@@ -27401,8 +27421,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred53_pollen
     public final void synpred53_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:882:10: ( 'composition' )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:882:11: 'composition'
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:903:10: ( 'composition' )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:903:11: 'composition'
         {
         match(input,148,FOLLOW_148_in_synpred53_pollen2888); if (state.failed) return ;
 
@@ -27413,8 +27433,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred54_pollen
     public final void synpred54_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:883:10: ( 'enum' )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:883:11: 'enum'
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:904:10: ( 'enum' )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:904:11: 'enum'
         {
         match(input,155,FOLLOW_155_in_synpred54_pollen2906); if (state.failed) return ;
 
@@ -27425,8 +27445,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred58_pollen
     public final void synpred58_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:906:23: ( NL )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:906:23: NL
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:927:23: ( NL )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:927:23: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred58_pollen3039); if (state.failed) return ;
 
@@ -27437,8 +27457,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred62_pollen
     public final void synpred62_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:915:23: ( NL )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:915:23: NL
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:936:23: ( NL )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:936:23: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred62_pollen3106); if (state.failed) return ;
 
@@ -27449,8 +27469,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred82_pollen
     public final void synpred82_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:945:4: ( expr ( ',' expr )* )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:945:4: expr ( ',' expr )*
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:966:4: ( expr ( ',' expr )* )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:966:4: expr ( ',' expr )*
         {
         pushFollow(FOLLOW_expr_in_synpred82_pollen3305);
         expr();
@@ -27458,7 +27478,7 @@ public TreeAdaptor getTreeAdaptor() {
         state._fsp--;
         if (state.failed) return ;
 
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:945:9: ( ',' expr )*
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:966:9: ( ',' expr )*
         loop150:
         do {
             int alt150=2;
@@ -27471,7 +27491,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt150) {
         	case 1 :
-        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:945:10: ',' expr
+        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:966:10: ',' expr
         	    {
         	    match(input,130,FOLLOW_130_in_synpred82_pollen3308); if (state.failed) return ;
 
@@ -27497,8 +27517,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred83_pollen
     public final void synpred83_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:950:4: ( exprLogicalOr '?' expr ':' expr )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:950:4: exprLogicalOr '?' expr ':' expr
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:971:4: ( exprLogicalOr '?' expr ':' expr )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:971:4: exprLogicalOr '?' expr ':' expr
         {
         pushFollow(FOLLOW_exprLogicalOr_in_synpred83_pollen3349);
         exprLogicalOr();
@@ -27529,8 +27549,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred84_pollen
     public final void synpred84_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:956:4: ( '||' exprLogicalAnd )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:956:4: '||' exprLogicalAnd
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:977:4: ( '||' exprLogicalAnd )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:977:4: '||' exprLogicalAnd
         {
         match(input,192,FOLLOW_192_in_synpred84_pollen3412); if (state.failed) return ;
 
@@ -27547,8 +27567,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred85_pollen
     public final void synpred85_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:963:3: ( '&&' exprBitwiseOr )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:963:3: '&&' exprBitwiseOr
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:984:3: ( '&&' exprBitwiseOr )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:984:3: '&&' exprBitwiseOr
         {
         match(input,125,FOLLOW_125_in_synpred85_pollen3465); if (state.failed) return ;
 
@@ -27565,8 +27585,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred86_pollen
     public final void synpred86_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:970:3: ( '|' exprBitwiseXor )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:970:3: '|' exprBitwiseXor
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:991:3: ( '|' exprBitwiseXor )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:991:3: '|' exprBitwiseXor
         {
         match(input,191,FOLLOW_191_in_synpred86_pollen3516); if (state.failed) return ;
 
@@ -27583,8 +27603,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred87_pollen
     public final void synpred87_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:977:3: ( '^' exprBitwiseAnd )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:977:3: '^' exprBitwiseAnd
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:998:3: ( '^' exprBitwiseAnd )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:998:3: '^' exprBitwiseAnd
         {
         match(input,140,FOLLOW_140_in_synpred87_pollen3566); if (state.failed) return ;
 
@@ -27601,8 +27621,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred88_pollen
     public final void synpred88_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:984:3: ( '&' exprEquality )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:984:3: '&' exprEquality
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1005:3: ( '&' exprEquality )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1005:3: '&' exprEquality
         {
         match(input,126,FOLLOW_126_in_synpred88_pollen3616); if (state.failed) return ;
 
@@ -27619,8 +27639,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred89_pollen
     public final void synpred89_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:991:3: ( equalityOp exprRelational )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:991:3: equalityOp exprRelational
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1012:3: ( equalityOp exprRelational )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1012:3: equalityOp exprRelational
         {
         pushFollow(FOLLOW_equalityOp_in_synpred89_pollen3667);
         equalityOp();
@@ -27641,8 +27661,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred90_pollen
     public final void synpred90_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:998:3: ( relationalOp exprShift )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:998:3: relationalOp exprShift
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1019:3: ( relationalOp exprShift )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1019:3: relationalOp exprShift
         {
         pushFollow(FOLLOW_relationalOp_in_synpred90_pollen3718);
         relationalOp();
@@ -27663,8 +27683,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred91_pollen
     public final void synpred91_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1005:3: ( shiftOp exprAddSub )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1005:3: shiftOp exprAddSub
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1026:3: ( shiftOp exprAddSub )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1026:3: shiftOp exprAddSub
         {
         pushFollow(FOLLOW_shiftOp_in_synpred91_pollen3770);
         shiftOp();
@@ -27685,8 +27705,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred92_pollen
     public final void synpred92_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1012:3: ( addSubOp exprMultDiv )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1012:3: addSubOp exprMultDiv
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1033:3: ( addSubOp exprMultDiv )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1033:3: addSubOp exprMultDiv
         {
         pushFollow(FOLLOW_addSubOp_in_synpred92_pollen3822);
         addSubOp();
@@ -27707,8 +27727,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred93_pollen
     public final void synpred93_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1019:3: ( multDivModOp exprUnary )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1019:3: multDivModOp exprUnary
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1040:3: ( multDivModOp exprUnary )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1040:3: multDivModOp exprUnary
         {
         pushFollow(FOLLOW_multDivModOp_in_synpred93_pollen3879);
         multDivModOp();
@@ -27729,8 +27749,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred101_pollen
     public final void synpred101_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1034:4: ( varOrFcnOrArray incDecOp )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1034:4: varOrFcnOrArray incDecOp
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1055:4: ( varOrFcnOrArray incDecOp )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1055:4: varOrFcnOrArray incDecOp
         {
         pushFollow(FOLLOW_varOrFcnOrArray_in_synpred101_pollen4088);
         varOrFcnOrArray();
@@ -27751,8 +27771,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred102_pollen
     public final void synpred102_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1035:4: ( varOrFcnOrArray )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1035:4: varOrFcnOrArray
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1056:4: ( varOrFcnOrArray )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1056:4: varOrFcnOrArray
         {
         pushFollow(FOLLOW_varOrFcnOrArray_in_synpred102_pollen4111);
         varOrFcnOrArray();
@@ -27767,8 +27787,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred112_pollen
     public final void synpred112_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1101:4: ( typeName qualName )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1101:4: typeName qualName
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1122:4: ( typeName qualName )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1122:4: typeName qualName
         {
         pushFollow(FOLLOW_typeName_in_synpred112_pollen4560);
         typeName();
@@ -27789,8 +27809,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred113_pollen
     public final void synpred113_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1103:4: ({...}? typeName )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1103:4: {...}? typeName
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1124:4: ({...}? typeName )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1124:4: {...}? typeName
         {
         if ( !((input.LT(1).getText().equals(ti.getTypeName()) && !(ti.getUnitFlags().contains(Flags.CLASS)) )) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -27810,8 +27830,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred114_pollen
     public final void synpred114_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1113:4: ({...}? typeName )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1113:4: {...}? typeName
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1134:4: ({...}? typeName )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1134:4: {...}? typeName
         {
         if ( !((input.LT(1).getText().equals(ti.getTypeName()) )) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -27831,8 +27851,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred115_pollen
     public final void synpred115_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1119:4: ( qualName )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1119:4: qualName
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1140:4: ( qualName )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1140:4: qualName
         {
         pushFollow(FOLLOW_qualName_in_synpred115_pollen4759);
         qualName();
@@ -27847,8 +27867,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred117_pollen
     public final void synpred117_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1123:4: ( '(' typeName ( ',' typeName )* ')' qualName )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1123:5: '(' typeName ( ',' typeName )* ')' qualName
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1144:4: ( '(' typeName ( ',' typeName )* ')' qualName )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1144:5: '(' typeName ( ',' typeName )* ')' qualName
         {
         match(input,127,FOLLOW_127_in_synpred117_pollen4829); if (state.failed) return ;
 
@@ -27858,7 +27878,7 @@ public TreeAdaptor getTreeAdaptor() {
         state._fsp--;
         if (state.failed) return ;
 
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1123:18: ( ',' typeName )*
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1144:18: ( ',' typeName )*
         loop151:
         do {
             int alt151=2;
@@ -27871,7 +27891,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt151) {
         	case 1 :
-        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1123:19: ',' typeName
+        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1144:19: ',' typeName
         	    {
         	    match(input,130,FOLLOW_130_in_synpred117_pollen4834); if (state.failed) return ;
 
@@ -27905,8 +27925,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred121_pollen
     public final void synpred121_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1154:4: ({...}? methodParameters )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1154:4: {...}? methodParameters
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1175:4: ({...}? methodParameters )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1175:4: {...}? methodParameters
         {
         if ( !(((ti.getUnitFlags().contains(Flags.CLASS) && 
         			!(featureFlags.contains(Flags.CONSTRUCTOR)) &&
@@ -27928,8 +27948,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred123_pollen
     public final void synpred123_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1159:4: ( formalParameter ( ',' formalParameter )* )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1159:4: formalParameter ( ',' formalParameter )*
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1180:4: ( formalParameter ( ',' formalParameter )* )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1180:4: formalParameter ( ',' formalParameter )*
         {
         pushFollow(FOLLOW_formalParameter_in_synpred123_pollen5029);
         formalParameter();
@@ -27937,7 +27957,7 @@ public TreeAdaptor getTreeAdaptor() {
         state._fsp--;
         if (state.failed) return ;
 
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1159:20: ( ',' formalParameter )*
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1180:20: ( ',' formalParameter )*
         loop153:
         do {
             int alt153=2;
@@ -27950,7 +27970,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt153) {
         	case 1 :
-        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1159:21: ',' formalParameter
+        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1180:21: ',' formalParameter
         	    {
         	    match(input,130,FOLLOW_130_in_synpred123_pollen5032); if (state.failed) return ;
 
@@ -27976,8 +27996,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred127_pollen
     public final void synpred127_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1183:35: ( fieldOrArrayAccess )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1183:35: fieldOrArrayAccess
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1204:35: ( fieldOrArrayAccess )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1204:35: fieldOrArrayAccess
         {
         pushFollow(FOLLOW_fieldOrArrayAccess_in_synpred127_pollen5235);
         fieldOrArrayAccess();
@@ -27992,8 +28012,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred129_pollen
     public final void synpred129_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1185:30: ( fieldOrArrayAccess )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1185:30: fieldOrArrayAccess
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1206:30: ( fieldOrArrayAccess )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1206:30: fieldOrArrayAccess
         {
         pushFollow(FOLLOW_fieldOrArrayAccess_in_synpred129_pollen5268);
         fieldOrArrayAccess();
@@ -28008,8 +28028,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred130_pollen
     public final void synpred130_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1185:4: ( '@' IDENT fcnArgumentList ( fieldOrArrayAccess )? )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1185:4: '@' IDENT fcnArgumentList ( fieldOrArrayAccess )?
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1206:4: ( '@' IDENT fcnArgumentList ( fieldOrArrayAccess )? )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1206:4: '@' IDENT fcnArgumentList ( fieldOrArrayAccess )?
         {
         match(input,137,FOLLOW_137_in_synpred130_pollen5262); if (state.failed) return ;
 
@@ -28021,7 +28041,7 @@ public TreeAdaptor getTreeAdaptor() {
         state._fsp--;
         if (state.failed) return ;
 
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1185:30: ( fieldOrArrayAccess )?
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1206:30: ( fieldOrArrayAccess )?
         int alt156=2;
         int LA156_0 = input.LA(1);
 
@@ -28030,7 +28050,7 @@ public TreeAdaptor getTreeAdaptor() {
         }
         switch (alt156) {
             case 1 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1185:30: fieldOrArrayAccess
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1206:30: fieldOrArrayAccess
                 {
                 pushFollow(FOLLOW_fieldOrArrayAccess_in_synpred130_pollen5268);
                 fieldOrArrayAccess();
@@ -28051,8 +28071,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred131_pollen
     public final void synpred131_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1188:14: ( fieldOrArrayAccess )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1188:14: fieldOrArrayAccess
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1209:14: ( fieldOrArrayAccess )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1209:14: fieldOrArrayAccess
         {
         pushFollow(FOLLOW_fieldOrArrayAccess_in_synpred131_pollen5324);
         fieldOrArrayAccess();
@@ -28067,14 +28087,14 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred132_pollen
     public final void synpred132_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1188:4: ( '@' IDENT ( fieldOrArrayAccess )? )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1188:4: '@' IDENT ( fieldOrArrayAccess )?
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1209:4: ( '@' IDENT ( fieldOrArrayAccess )? )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1209:4: '@' IDENT ( fieldOrArrayAccess )?
         {
         match(input,137,FOLLOW_137_in_synpred132_pollen5320); if (state.failed) return ;
 
         match(input,IDENT,FOLLOW_IDENT_in_synpred132_pollen5322); if (state.failed) return ;
 
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1188:14: ( fieldOrArrayAccess )?
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1209:14: ( fieldOrArrayAccess )?
         int alt157=2;
         int LA157_0 = input.LA(1);
 
@@ -28083,7 +28103,7 @@ public TreeAdaptor getTreeAdaptor() {
         }
         switch (alt157) {
             case 1 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1188:14: fieldOrArrayAccess
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1209:14: fieldOrArrayAccess
                 {
                 pushFollow(FOLLOW_fieldOrArrayAccess_in_synpred132_pollen5324);
                 fieldOrArrayAccess();
@@ -28104,8 +28124,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred133_pollen
     public final void synpred133_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1190:4: ( '@' )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1190:4: '@'
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1211:4: ( '@' )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1211:4: '@'
         {
         match(input,137,FOLLOW_137_in_synpred133_pollen5363); if (state.failed) return ;
 
@@ -28116,8 +28136,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred134_pollen
     public final void synpred134_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1192:29: ( fieldOrArrayAccess )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1192:29: fieldOrArrayAccess
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1213:29: ( fieldOrArrayAccess )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1213:29: fieldOrArrayAccess
         {
         pushFollow(FOLLOW_fieldOrArrayAccess_in_synpred134_pollen5402);
         fieldOrArrayAccess();
@@ -28132,8 +28152,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred135_pollen
     public final void synpred135_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1192:4: ( qualName fcnArgumentList ( fieldOrArrayAccess )? )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1192:4: qualName fcnArgumentList ( fieldOrArrayAccess )?
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1213:4: ( qualName fcnArgumentList ( fieldOrArrayAccess )? )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1213:4: qualName fcnArgumentList ( fieldOrArrayAccess )?
         {
         pushFollow(FOLLOW_qualName_in_synpred135_pollen5398);
         qualName();
@@ -28147,7 +28167,7 @@ public TreeAdaptor getTreeAdaptor() {
         state._fsp--;
         if (state.failed) return ;
 
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1192:29: ( fieldOrArrayAccess )?
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1213:29: ( fieldOrArrayAccess )?
         int alt158=2;
         int LA158_0 = input.LA(1);
 
@@ -28156,7 +28176,7 @@ public TreeAdaptor getTreeAdaptor() {
         }
         switch (alt158) {
             case 1 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1192:29: fieldOrArrayAccess
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1213:29: fieldOrArrayAccess
                 {
                 pushFollow(FOLLOW_fieldOrArrayAccess_in_synpred135_pollen5402);
                 fieldOrArrayAccess();
@@ -28177,8 +28197,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred136_pollen
     public final void synpred136_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1194:13: ( fieldOrArrayAccess )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1194:13: fieldOrArrayAccess
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1215:13: ( fieldOrArrayAccess )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1215:13: fieldOrArrayAccess
         {
         pushFollow(FOLLOW_fieldOrArrayAccess_in_synpred136_pollen5442);
         fieldOrArrayAccess();
@@ -28193,8 +28213,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred138_pollen
     public final void synpred138_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1197:20: ( arrayAccess )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1197:20: arrayAccess
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1218:20: ( arrayAccess )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1218:20: arrayAccess
         {
         pushFollow(FOLLOW_arrayAccess_in_synpred138_pollen5476);
         arrayAccess();
@@ -28209,8 +28229,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred139_pollen
     public final void synpred139_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1200:4: ( '.' IDENT fcnArgumentList )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1200:4: '.' IDENT fcnArgumentList
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1221:4: ( '.' IDENT fcnArgumentList )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1221:4: '.' IDENT fcnArgumentList
         {
         match(input,131,FOLLOW_131_in_synpred139_pollen5488); if (state.failed) return ;
 
@@ -28229,8 +28249,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred140_pollen
     public final void synpred140_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1206:9: ( exprList )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1206:9: exprList
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1227:9: ( exprList )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1227:9: exprList
         {
         pushFollow(FOLLOW_exprList_in_synpred140_pollen5563);
         exprList();
@@ -28245,8 +28265,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred141_pollen
     public final void synpred141_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1214:5: ( stmt )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1214:5: stmt
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1235:5: ( stmt )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1235:5: stmt
         {
         pushFollow(FOLLOW_stmt_in_synpred141_pollen5626);
         stmt();
@@ -28261,10 +28281,10 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred142_pollen
     public final void synpred142_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1214:4: ( ( stmt )+ )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1214:4: ( stmt )+
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1235:4: ( ( stmt )+ )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1235:4: ( stmt )+
         {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1214:4: ( stmt )+
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1235:4: ( stmt )+
         int cnt159=0;
         loop159:
         do {
@@ -28278,7 +28298,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt159) {
         	case 1 :
-        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1214:5: stmt
+        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1235:5: stmt
         	    {
         	    pushFollow(FOLLOW_stmt_in_synpred142_pollen5626);
         	    stmt();
@@ -28307,8 +28327,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred143_pollen
     public final void synpred143_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1215:5: ( NL )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1215:5: NL
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1236:5: ( NL )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1236:5: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred143_pollen5648); if (state.failed) return ;
 
@@ -28319,8 +28339,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred144_pollen
     public final void synpred144_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1221:5: ( stmtDecl )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1221:5: stmtDecl
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1242:5: ( stmtDecl )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1242:5: stmtDecl
         {
         pushFollow(FOLLOW_stmtDecl_in_synpred144_pollen5674);
         stmtDecl();
@@ -28335,8 +28355,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred145_pollen
     public final void synpred145_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1222:5: ( stmtAssign )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1222:5: stmtAssign
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1243:5: ( stmtAssign )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1243:5: stmtAssign
         {
         pushFollow(FOLLOW_stmtAssign_in_synpred145_pollen5680);
         stmtAssign();
@@ -28351,8 +28371,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred147_pollen
     public final void synpred147_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:4: ( stmtBind )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:4: stmtBind
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1245:4: ( stmtBind )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1245:4: stmtBind
         {
         pushFollow(FOLLOW_stmtBind_in_synpred147_pollen5690);
         stmtBind();
@@ -28367,8 +28387,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred159_pollen
     public final void synpred159_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1236:4: ( stmtInjection )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1236:4: stmtInjection
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1257:4: ( stmtInjection )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1257:4: stmtInjection
         {
         pushFollow(FOLLOW_stmtInjection_in_synpred159_pollen5754);
         stmtInjection();
@@ -28383,8 +28403,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred160_pollen
     public final void synpred160_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1242:2: ( exprUnary ASSIGN )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1242:3: exprUnary ASSIGN
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1263:2: ( exprUnary ASSIGN )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1263:3: exprUnary ASSIGN
         {
         pushFollow(FOLLOW_exprUnary_in_synpred160_pollen5790);
         exprUnary();
@@ -28401,8 +28421,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred161_pollen
     public final void synpred161_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1253:4: ( varOrFcnOrArray ASSIGN exprAssign delim )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1253:4: varOrFcnOrArray ASSIGN exprAssign delim
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1274:4: ( varOrFcnOrArray ASSIGN exprAssign delim )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1274:4: varOrFcnOrArray ASSIGN exprAssign delim
         {
         pushFollow(FOLLOW_varOrFcnOrArray_in_synpred161_pollen5858);
         varOrFcnOrArray();
@@ -28431,8 +28451,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred162_pollen
     public final void synpred162_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1255:4: ( injectionCode ASSIGN expr delim )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1255:4: injectionCode ASSIGN expr delim
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1276:4: ( injectionCode ASSIGN expr delim )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1276:4: injectionCode ASSIGN expr delim
         {
         pushFollow(FOLLOW_injectionCode_in_synpred162_pollen5899);
         injectionCode();
@@ -28461,8 +28481,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred163_pollen
     public final void synpred163_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1257:4: ( varOrFcnOrArray assignOp expr delim )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1257:4: varOrFcnOrArray assignOp expr delim
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1278:4: ( varOrFcnOrArray assignOp expr delim )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1278:4: varOrFcnOrArray assignOp expr delim
         {
         pushFollow(FOLLOW_varOrFcnOrArray_in_synpred163_pollen5940);
         varOrFcnOrArray();
@@ -28495,8 +28515,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred165_pollen
     public final void synpred165_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1272:4: ( printItem ( ',' printItem )* )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1272:4: printItem ( ',' printItem )*
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1293:4: ( printItem ( ',' printItem )* )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1293:4: printItem ( ',' printItem )*
         {
         pushFollow(FOLLOW_printItem_in_synpred165_pollen6110);
         printItem();
@@ -28504,7 +28524,7 @@ public TreeAdaptor getTreeAdaptor() {
         state._fsp--;
         if (state.failed) return ;
 
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1272:14: ( ',' printItem )*
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1293:14: ( ',' printItem )*
         loop160:
         do {
             int alt160=2;
@@ -28517,7 +28537,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt160) {
         	case 1 :
-        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1272:16: ',' printItem
+        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1293:16: ',' printItem
         	    {
         	    match(input,130,FOLLOW_130_in_synpred165_pollen6114); if (state.failed) return ;
 
@@ -28543,8 +28563,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred167_pollen
     public final void synpred167_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1283:4: ( 'print' printList delim )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1283:4: 'print' printList delim
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1304:4: ( 'print' printList delim )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1304:4: 'print' printList delim
         {
         match(input,176,FOLLOW_176_in_synpred167_pollen6176); if (state.failed) return ;
 
@@ -28567,21 +28587,21 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred171_pollen
     public final void synpred171_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:4: ( 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:4: 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:4: ( 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:4: 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim
         {
         match(input,180,FOLLOW_180_in_synpred171_pollen6287); if (state.failed) return ;
 
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:13: ( '(' )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:14: '('
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:13: ( '(' )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:14: '('
         {
         match(input,127,FOLLOW_127_in_synpred171_pollen6290); if (state.failed) return ;
 
         }
 
 
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:19: ( expr ( ',' expr )+ )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:20: expr ( ',' expr )+
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:19: ( expr ( ',' expr )+ )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:20: expr ( ',' expr )+
         {
         pushFollow(FOLLOW_expr_in_synpred171_pollen6294);
         expr();
@@ -28589,7 +28609,7 @@ public TreeAdaptor getTreeAdaptor() {
         state._fsp--;
         if (state.failed) return ;
 
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:25: ( ',' expr )+
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:25: ( ',' expr )+
         int cnt161=0;
         loop161:
         do {
@@ -28603,7 +28623,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt161) {
         	case 1 :
-        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:26: ',' expr
+        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:26: ',' expr
         	    {
         	    match(input,130,FOLLOW_130_in_synpred171_pollen6297); if (state.failed) return ;
 
@@ -28630,8 +28650,8 @@ public TreeAdaptor getTreeAdaptor() {
         }
 
 
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:38: ( ')' )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:39: ')'
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:38: ( ')' )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:39: ')'
         {
         match(input,128,FOLLOW_128_in_synpred171_pollen6305); if (state.failed) return ;
 
@@ -28651,8 +28671,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred174_pollen
     public final void synpred174_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1323:9: ( typeName IDENT '=' expr SEMI )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1323:9: typeName IDENT '=' expr SEMI
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1344:9: ( typeName IDENT '=' expr SEMI )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1344:9: typeName IDENT '=' expr SEMI
         {
         pushFollow(FOLLOW_typeName_in_synpred174_pollen6593);
         typeName();
@@ -28679,8 +28699,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred178_pollen
     public final void synpred178_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1346:18: ( NL )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1346:18: NL
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1367:18: ( NL )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1367:18: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred178_pollen6798); if (state.failed) return ;
 
@@ -28691,8 +28711,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred179_pollen
     public final void synpred179_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1349:25: ( NL )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1349:25: NL
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1370:25: ( NL )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1370:25: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred179_pollen6833); if (state.failed) return ;
 
@@ -28703,8 +28723,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred187_pollen
     public final void synpred187_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1412:4: ( typeName IDENT ( ASSIGN expr )? ',' )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1412:5: typeName IDENT ( ASSIGN expr )? ','
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1433:4: ( typeName IDENT ( ASSIGN expr )? ',' )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1433:5: typeName IDENT ( ASSIGN expr )? ','
         {
         pushFollow(FOLLOW_typeName_in_synpred187_pollen7253);
         typeName();
@@ -28714,7 +28734,7 @@ public TreeAdaptor getTreeAdaptor() {
 
         match(input,IDENT,FOLLOW_IDENT_in_synpred187_pollen7255); if (state.failed) return ;
 
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1412:20: ( ASSIGN expr )?
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1433:20: ( ASSIGN expr )?
         int alt162=2;
         int LA162_0 = input.LA(1);
 
@@ -28723,7 +28743,7 @@ public TreeAdaptor getTreeAdaptor() {
         }
         switch (alt162) {
             case 1 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1412:21: ASSIGN expr
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1433:21: ASSIGN expr
                 {
                 match(input,ASSIGN,FOLLOW_ASSIGN_in_synpred187_pollen7258); if (state.failed) return ;
 
@@ -28748,8 +28768,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred188_pollen
     public final void synpred188_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1413:5: ( typeName IDENT '[' )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1413:6: typeName IDENT '['
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1434:5: ( typeName IDENT '[' )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1434:6: typeName IDENT '['
         {
         pushFollow(FOLLOW_typeName_in_synpred188_pollen7277);
         typeName();
@@ -28768,8 +28788,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred189_pollen
     public final void synpred189_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1414:5: ( typeName '(' )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1414:6: typeName '('
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1435:5: ( typeName '(' )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1435:6: typeName '('
         {
         pushFollow(FOLLOW_typeName_in_synpred189_pollen7294);
         typeName();
@@ -28786,8 +28806,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred190_pollen
     public final void synpred190_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1415:6: ( typeName varInit )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1415:7: typeName varInit
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1436:6: ( typeName varInit )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1436:7: typeName varInit
         {
         pushFollow(FOLLOW_typeName_in_synpred190_pollen7311);
         typeName();
@@ -28808,8 +28828,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred194_pollen
     public final void synpred194_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1451:5: ( '[' varDim ']' )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1451:5: '[' varDim ']'
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1472:5: ( '[' varDim ']' )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1472:5: '[' varDim ']'
         {
         match(input,138,FOLLOW_138_in_synpred194_pollen7565); if (state.failed) return ;
 
@@ -28828,8 +28848,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred198_pollen
     public final void synpred198_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1462:17: ( ',' initializer )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1462:17: ',' initializer
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1483:17: ( ',' initializer )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1483:17: ',' initializer
         {
         match(input,130,FOLLOW_130_in_synpred198_pollen7647); if (state.failed) return ;
 
@@ -28846,8 +28866,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred202_pollen
     public final void synpred202_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1481:4: ( IDENT ASSIGN expr )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1481:4: IDENT ASSIGN expr
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1502:4: ( IDENT ASSIGN expr )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1502:4: IDENT ASSIGN expr
         {
         match(input,IDENT,FOLLOW_IDENT_in_synpred202_pollen7787); if (state.failed) return ;
 
@@ -28866,8 +28886,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred203_pollen
     public final void synpred203_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1488:5: ( IDENT BIND expr )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1488:5: IDENT BIND expr
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1509:5: ( IDENT BIND expr )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1509:5: IDENT BIND expr
         {
         match(input,IDENT,FOLLOW_IDENT_in_synpred203_pollen7850); if (state.failed) return ;
 
@@ -28886,8 +28906,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred204_pollen
     public final void synpred204_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1490:4: ( IDENT ASSIGN expr )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1490:4: IDENT ASSIGN expr
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1511:4: ( IDENT ASSIGN expr )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1511:4: IDENT ASSIGN expr
         {
         match(input,IDENT,FOLLOW_IDENT_in_synpred204_pollen7883); if (state.failed) return ;
 
@@ -28906,8 +28926,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred213_pollen
     public final void synpred213_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1526:11: ( qualNameList )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1526:11: qualNameList
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1546:11: ( qualNameList )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1546:11: qualNameList
         {
         pushFollow(FOLLOW_qualNameList_in_synpred213_pollen8124);
         qualNameList();
@@ -28922,8 +28942,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred214_pollen
     public final void synpred214_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1531:6: ( '.' IDENT )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1531:6: '.' IDENT
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1551:6: ( '.' IDENT )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1551:6: '.' IDENT
         {
         match(input,131,FOLLOW_131_in_synpred214_pollen8153); if (state.failed) return ;
 
@@ -28936,8 +28956,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred226_pollen
     public final void synpred226_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1582:2: ( NL )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1582:2: NL
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1602:2: ( NL )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1602:2: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred226_pollen8491); if (state.failed) return ;
 
@@ -28948,8 +28968,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred227_pollen
     public final void synpred227_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1603:9: ( NL )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1603:9: NL
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1623:9: ( NL )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1623:9: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred227_pollen8601); if (state.failed) return ;
 
@@ -28960,8 +28980,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred228_pollen
     public final void synpred228_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1632:12: ( NL )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1632:12: NL
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:12: ( NL )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:12: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred228_pollen8653); if (state.failed) return ;
 
@@ -28972,18 +28992,18 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred229_pollen
     public final void synpred229_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1632:4: ( ( SEMI ) ( NL )* )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1632:4: ( SEMI ) ( NL )*
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:4: ( ( SEMI ) ( NL )* )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:4: ( SEMI ) ( NL )*
         {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1632:4: ( SEMI )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1632:5: SEMI
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:4: ( SEMI )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:5: SEMI
         {
         match(input,SEMI,FOLLOW_SEMI_in_synpred229_pollen8649); if (state.failed) return ;
 
         }
 
 
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1632:11: ( NL )*
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:11: ( NL )*
         loop165:
         do {
             int alt165=2;
@@ -28996,7 +29016,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt165) {
         	case 1 :
-        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1632:12: NL
+        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:12: NL
         	    {
         	    match(input,NL,FOLLOW_NL_in_synpred229_pollen8653); if (state.failed) return ;
 
@@ -29016,8 +29036,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred230_pollen
     public final void synpred230_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1633:5: ( NL )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1633:5: NL
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1653:5: ( NL )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1653:5: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred230_pollen8664); if (state.failed) return ;
 
@@ -29028,10 +29048,10 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred231_pollen
     public final void synpred231_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1633:4: ( ( NL )+ )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1633:4: ( NL )+
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1653:4: ( ( NL )+ )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1653:4: ( NL )+
         {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1633:4: ( NL )+
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1653:4: ( NL )+
         int cnt166=0;
         loop166:
         do {
@@ -29045,7 +29065,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt166) {
         	case 1 :
-        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1633:5: NL
+        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1653:5: NL
         	    {
         	    match(input,NL,FOLLOW_NL_in_synpred231_pollen8664); if (state.failed) return ;
 
@@ -29070,10 +29090,10 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred233_pollen
     public final void synpred233_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1635:4: ( ( NL )* '}' )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1635:5: ( NL )* '}'
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1655:4: ( ( NL )* '}' )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1655:5: ( NL )* '}'
         {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1635:5: ( NL )*
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1655:5: ( NL )*
         loop167:
         do {
             int alt167=2;
@@ -29086,7 +29106,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt167) {
         	case 1 :
-        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1635:6: NL
+        	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1655:6: NL
         	    {
         	    match(input,NL,FOLLOW_NL_in_synpred233_pollen8678); if (state.failed) return ;
 
@@ -29108,8 +29128,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred234_pollen
     public final void synpred234_pollen_fragment() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1635:20: ( NL )
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1635:20: NL
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1655:20: ( NL )
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1655:20: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred234_pollen8688); if (state.failed) return ;
 
@@ -30496,7 +30516,7 @@ public TreeAdaptor getTreeAdaptor() {
             this.transition = DFA139_transition;
         }
         public String getDescription() {
-            return "1631:1: delim : ( ( SEMI ) ( NL )* ->| ( NL )+ ->| ( ( NL )* '}' )=> ( NL )* ->);";
+            return "1651:1: delim : ( ( SEMI ) ( NL )* ->| ( NL )+ ->| ( ( NL )* '}' )=> ( NL )* ->);";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;

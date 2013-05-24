@@ -448,7 +448,10 @@ class Auxiliary {
 
 		SymbolEntry sym = expr.getSymbol();
 		if (sym == null) {
-			gen.fmt.print(expr.getName() + " /* ?? missing symbol ?? */ ");
+			if (expr.isIntrisicCall())
+				gen.fmt.print("%1%2%3", gen.cname(), expr.getName(), "__E");
+			else
+				gen.fmt.print(expr.getName() + " /* ?? missing symbol ?? */ ");
 			return;
 		}
 

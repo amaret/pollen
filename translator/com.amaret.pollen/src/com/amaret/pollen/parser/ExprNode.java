@@ -266,7 +266,7 @@ public class ExprNode extends BaseNode {
         			}
             	}
             	if (called == null)
-            		currUnit.reportError(call, "identifier is not declared in the current scope "
+            		currUnit.reportError(ei, "identifier is not declared in the current scope "
             				+  symtab.curScope().getScopeName());
 
             	else 
@@ -635,6 +635,11 @@ public class ExprNode extends BaseNode {
         public boolean isThisPtr() {
 			return thisPtr;
 		}
+        public boolean isIntrisicCall() {
+        	if (getName().getText().matches(ParseUnit.INTRINSIC_PREFIX + ".*"))
+        		return true;
+        	return false;
+        }
 
 		public SymbolEntry getQualifier() {
 			return qualifier;
@@ -718,7 +723,7 @@ public class ExprNode extends BaseNode {
         	if (symbol == null)
         		symbol = currUnit.getSymbolTable().resolveSymbol(getName(), true);
         	if (symbol == null) {
-        		currUnit.reportError(getName(), "identifier is not declared in the current scope " + currUnit.getSymbolTable().curScope().getScopeName());
+        		currUnit.reportError(this, "identifier is not declared in the current scope " + currUnit.getSymbolTable().curScope().getScopeName());
         	}
         	else {
         		

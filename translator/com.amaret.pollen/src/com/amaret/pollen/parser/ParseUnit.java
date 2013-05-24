@@ -40,6 +40,7 @@ public class ParseUnit {
     private List<String> metaModules = new ArrayList<String>();
 	static private boolean debugMode = false;
     public static final String EXPORT_PREFIX = "$$export";
+    public static final String INTRINSIC_PREFIX = "pollen__";
     
     public List<String> getMetaModules() {
 		return metaModules;
@@ -455,6 +456,12 @@ public class ParseUnit {
 	 * @param msg
 	 */
 	public void reportError(BaseNode node, String msg) {        
+		if (node instanceof ExprNode.Ident) {
+			if (((ExprNode.Ident)node).isIntrisicCall())
+				return;
+			msg = "'" + ((ExprNode.Ident)node).getName() + "': " + msg;
+		}
+
         reportErrorConsole(node.getFileName(), node.getLine(), node.getCharPositionInLine() + 1, msg);
     }
 	/**
