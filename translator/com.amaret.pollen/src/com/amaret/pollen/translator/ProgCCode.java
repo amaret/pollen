@@ -8,6 +8,7 @@ import java.util.List;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeObject;
 
+import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.Cat;
 import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.ExprNode;
@@ -115,6 +116,13 @@ public class ProgCCode {
         gen.fmt.print("%tvoid %1pollen__print_x(void* print, void* val) {\n%+", gen.cname());
         gen.fmt.print("%-}\n");
         
+        // if assertions are turned on, generate pollen.assert
+        if (ProcessUnits.isAsserts()) {
+        	gen.aux.genTitle("pollen.assert(bool, string)");
+            gen.fmt.print("%tvoid %1pollen__assert__E(bool b, string msg) {\n%+", gen.cname());
+            gen.fmt.print("%tif (!b) %1pollen__print_str(msg);\n", gen.cname());
+            gen.fmt.print("%-}\n");
+        }       
         // Generate defaults for pollen.reset, pollen.ready, pollen.shutdown, pollen.wake, pollen.hibernate.
         // if they do not exist.
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "reset") == null) {

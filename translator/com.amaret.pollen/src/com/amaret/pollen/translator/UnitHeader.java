@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.BaseNode;
 import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.ExprNode;
@@ -453,6 +454,12 @@ public class UnitHeader {
         gen.fmt.print("void %1pollen__print_uint(uint32 u);\n", gen.cname());
         gen.fmt.print("void %1pollen__print_str(string s);\n", gen.cname());
         gen.fmt.print("void %1pollen__print_x(void* print, void* val);\n", gen.cname());
+        
+        // if assertions are turned on, generate pollen.assert
+        if (ProcessUnits.isAsserts()) {
+            gen.fmt.print("%tvoid %1pollen__assert__E(bool b, string msg);\n", gen.cname());
+        }       
+
         
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "reset") == null) {
             gen.fmt.print("void %1pollen__reset__E();\n", gen.cname());

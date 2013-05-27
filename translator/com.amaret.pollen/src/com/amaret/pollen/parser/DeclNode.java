@@ -359,7 +359,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             Atom name = getName();
             unit = currUnit.getCurrUnitNode();
             
-            if (name.getText().matches("pollen.*")) {
+            if (name.getText().matches(ParseUnit.INTRINSIC_PREFIX + ".*")) {
             	flags.add(Flags.PUBLIC); // always
             	if (isMethod())
             		currUnit.reportError(name, "pollen lifecycle functions must be defined in modules");

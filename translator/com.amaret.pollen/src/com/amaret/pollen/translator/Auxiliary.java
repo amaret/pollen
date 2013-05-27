@@ -3,6 +3,7 @@ package com.amaret.pollen.translator;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.BaseNode;
 import com.amaret.pollen.parser.Cat;
 import com.amaret.pollen.parser.DeclNode;
@@ -311,6 +312,11 @@ class Auxiliary {
 
 		Cat cat = expr.getName().getCat();
 		Cat.Fcn fcncat = cat instanceof Cat.Fcn ? (Cat.Fcn) cat : null;
+				
+		String n = expr.getName() instanceof ExprNode.Ident ? ((ExprNode.Ident) expr.getName()).getName().getText() : "";
+				
+		if (n.equals(ParseUnit.INTRINSIC_PREFIX + "assert") && !ProcessUnits.isAsserts())
+			return;  // suppress call
 				
 		genExpr(expr.getName());
 		String sep = "";
@@ -1593,7 +1599,7 @@ class Auxiliary {
 
 
 	String mkPollenCname(String id) {
-		return id.startsWith("pollen.") ? ("pollen__" + id.substring("pollen."
+		return id.startsWith("pollen.") ? ("pollen__" + id.substring(ParseUnit.INTRINSIC_PREFIX
 				.length())) : id;
 	}
 

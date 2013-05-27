@@ -18,7 +18,14 @@ public class ProcessUnits {
 	private static String pollenEnv = "";
 	private static String pollenEnvPkg = "";
 	private static boolean gccAvr = false;
+	private static boolean asserts = false;
 	
+	public static boolean isAsserts() {
+		return asserts;
+	}
+	public static void setAsserts(boolean asserts) {
+		ProcessUnits.asserts = asserts;
+	}
 	public static boolean isGccAvr() {
 		return gccAvr;
 	}
@@ -127,7 +134,7 @@ public class ProcessUnits {
 		pollenHelp += "\n" + "  -h\tThis help message.";
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.21";  // user release . internal rev . fix number
+	private static String  v = "0.2.22";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -178,8 +185,12 @@ public class ProcessUnits {
 				pollenEnv = emod.substring(emod.lastIndexOf(File.separator)+1);
 				continue;
 			}
-			if (p.equals("-gccAvr")) { // UNDOCUMENTED, for testing
+			if (p.equals("-gccAvr")) { 	// UNDOCUMENTED, for testing: runs gccavr
 				ProcessUnits.setGccAvr(true);
+				continue;
+			}
+			if (p.equals("-a")) { 		// turns asserts on
+				ProcessUnits.setAsserts(true);
 				continue;
 			}
 			if (p.matches("-[A-z]+")) {

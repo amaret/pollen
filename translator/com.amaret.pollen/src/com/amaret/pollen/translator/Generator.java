@@ -151,7 +151,7 @@ public class Generator {
         File progFile = ParseUnit.cacheFile(unit.getQualName(), "-prog.c");
         File outFile = ParseUnit.cacheFile(unit.getQualName(), "-prog.out");
 
-        boolean missingRun = unit.getFcnMap().get("pollen.run") == null;
+        boolean missingRun = unit.getFcnMap().get(ParseUnit.INTRINSIC_PREFIX + "run") == null;
         boolean noProg = unit.isHost() || missingRun;
         if (noProg) {
         	if (missingRun)

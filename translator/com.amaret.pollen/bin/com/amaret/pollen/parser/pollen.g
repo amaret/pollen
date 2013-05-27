@@ -59,7 +59,6 @@ tokens {
     MODULE;
     NIL;
     QNAME;
-    S_ASSERT;
     S_ASSIGN;
     S_BIND;
     S_BLOCK;
@@ -145,10 +144,6 @@ tokens {
     }
     
     void handleIntrinsics(CommonTree t) {
-    	if (t.getText().equals("unit.name")) {
-    		t.getToken().setText("__unit_name");
-    		return;
-    	}
     	if (t.getText().indexOf('.') == -1) 
     		return;
     	char c = t.getText().charAt(0);
@@ -482,7 +477,7 @@ moduleFeatureList[String n]
 intrinsicVarsBraceClose[String n]
 	:	(NL)* '}' (NL)* -> ^(D_VAR<DeclNode.Var>["D_VAR", EnumSet.of(Flags.INTRINSIC_VAR)] 
 									^(T_STD<TypeNode.Std>["T_STD", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME["string"]) 
-										IDENT["__unit_name"] 
+										IDENT["pollen__unitname"] 
 										^(E_CONST<ExprNode.Const>["E_CONST", EnumSet.of(LitFlags.STR)] STRING["\"" + n + "\""]))
 	;
 moduleFeature
@@ -1241,7 +1236,6 @@ stmt
 }
 	:  stmtDecl
 	|  stmtAssign
-	|	stmtAssert
 	|	stmtBind
 	|	stmtBlock
 	|	stmtPrint
@@ -1279,9 +1273,6 @@ stmtAssign
 		-> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] assignOp varOrFcnOrArray expr))
 	|	injectionCode assignOp expr	delim
 		-> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] assignOp injectionCode expr))
-	;
-stmtAssert
-	:	'assert' exprList	delim -> ^(S_ASSERT exprList)
 	;
 stmtBind
 	:	varOrFcnOrArray BIND  userTypeName	 delim -> ^(S_BIND<StmtNode.Bind>["S_BIND"] varOrFcnOrArray  userTypeName)	
