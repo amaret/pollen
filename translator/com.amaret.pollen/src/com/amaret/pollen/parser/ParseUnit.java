@@ -41,6 +41,7 @@ public class ParseUnit {
 	static private boolean debugMode = false;
     public static final String EXPORT_PREFIX = "$$export";
     public static final String INTRINSIC_PREFIX = "pollen__";
+    public static final String DEFAULT_LOOPVAR = "pollen__loopvar"; // uses for 'for' loops with undeclared loop variables
     
     public List<String> getMetaModules() {
 		return metaModules;

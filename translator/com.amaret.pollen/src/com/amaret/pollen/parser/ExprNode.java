@@ -107,9 +107,6 @@ public class ExprNode extends BaseNode {
                 return;
             }
             Cat left = getSubExprCat(false); 
-            boolean dbg = false;
-    		if (getLeft().getCat() instanceof Cat.Scalar && getRight().getCat() instanceof Cat.Arr)
-				dbg = true;
             Cat right = getSubExprCat(true); 
             
             boolean providedTypeTest = this.getParent() instanceof StmtNode.Provided;
@@ -126,6 +123,7 @@ public class ExprNode extends BaseNode {
             		ParseUnit.current().reportError(getOp(), ((Cat.Error) exprCat).getMsg());
             	}
             }
+
         }
     }
     

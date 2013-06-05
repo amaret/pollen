@@ -259,6 +259,7 @@ public class StmtNode extends BaseNode {
         static final private int COND = 1;
         static final private int INIT = 0;
         static final private int NEXT = 2;
+        static final private int DEFAULT_VAR = 4; // subtree for default loop variable if none is declared
         
         For(int ttype, String ttext) {
             super(ttype, ttext);
@@ -285,14 +286,50 @@ public class StmtNode extends BaseNode {
         public ExprNode getNext() {
             return getChild(NEXT).getType() != pollenLexer.NIL ? (ExprNode) getChild(NEXT) : null;
         }
+        
+        public StmtNode.Decl getDefaultLoopVar() {
+        	if (getChildCount() <= DEFAULT_VAR) return null;
+            return  (getChild(DEFAULT_VAR).getType() != pollenLexer.NIL ? (StmtNode.Decl) getChild(DEFAULT_VAR) : null);
+        }
+        
+        @Override
+        protected boolean pass2Begin() {
+			if (getInit() instanceof StmtNode.Assign) {
+				StmtNode.Assign asgn = (Assign) getInit();
+				ExprNode.Binary b = asgn.getExpr() instanceof ExprNode.Binary ? ((ExprNode.Binary) asgn
+						.getExpr())
+						: null;
+				ExprNode.Ident loopVar = (Ident) (b != null
+						&& b.getLeft() instanceof ExprNode.Ident ? b.getLeft()
+						: null);
+
+				if (loopVar != null) {
+					Atom a = loopVar.getName();
+					SymbolEntry symbol = ParseUnit.current().getSymbolTable()
+					.resolveSymbol(a, true);
+					if (symbol == null) {
+						// no for loop variable was defined 
+						// so enter a default into the symbol table.
+						DeclNode.Var v = getDefaultLoopVar().getVars().get(0);
+						v.getName().setText(a.getText());
+						ParseUnit.current().getSymbolTable().defineSymbol(a, v);						
+					}
+				}
+			}
+
+            return true;
+        }
 
         @Override
-        protected void pass2End() {
-            ExprNode cond = getCond();
-            if (cond != null) {
-                checkCond(cond);
-            }
-        }
+		protected void pass2End() {
+        	
+			this.deleteChild(DEFAULT_VAR); // parser built the nodes, we delete them
+			
+			ExprNode cond = getCond();
+			if (cond != null) {
+				checkCond(cond);
+			}
+		}
     }
         
     // StmtNode.If

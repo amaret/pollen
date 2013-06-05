@@ -246,7 +246,6 @@ tokens {
             	return root;
         	}
 
-
     // Override to extract PollenException message when present
     public void displayRecognitionError(String[] tokenNames,
                                         RecognitionException e) {
@@ -257,6 +256,10 @@ tokens {
         }
         hdr = pollenLexer.getFileName()+ ", " + hdr;
         emitErrorMessage(hdr+" "+msg);       
+        if (msg.matches(".*mismatched input.*"))
+           ParseUnit.current().reportFailure("Illegal program");
+
+        
     }
 
     String pkgName;
@@ -1320,14 +1323,20 @@ stmtContinue
 	:	'continue' delim -> ^(S_CONTINUE<StmtNode.Continue>["S_CONTINUE"])
 	;
 stmtFor
-    :   'for' '(' stmtForInit stmtForCond stmtForNext ')' stmtBlock
-            -> ^(S_FOR<StmtNode.For>["S_FOR"] stmtForInit stmtForCond stmtForNext stmtBlock)
+    :   'for' defaultLoopVar stmtForInit stmtForCond stmtForNext ')' stmtBlock
+            -> ^(S_FOR<StmtNode.For>["S_FOR"]  stmtForInit stmtForCond stmtForNext stmtBlock defaultLoopVar)
     ;
 stmtForCond
     :   SEMI
            -> NIL
     |   expr SEMI -> expr
     ;
+defaultLoopVar   // subtree to use if no loop var is declared
+	:	lv='(' -> ^(S_DECL<StmtNode.Decl>["S_DECL"] 
+      		   ^(D_VAR<DeclNode.Var>["D_VAR", EnumSet.noneOf(Flags.class)] 
+      		   	^(T_STD<TypeNode.Std>["T_STD", EnumSet.noneOf(Flags.class)] IDENT[$lv,"uint32"]) 
+      		   	IDENT[ParseUnit.DEFAULT_LOOPVAR]  ))
+	;
 
 stmtForInit
     :   SEMI
