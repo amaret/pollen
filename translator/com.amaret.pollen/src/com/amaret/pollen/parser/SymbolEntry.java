@@ -1,9 +1,7 @@
 package com.amaret.pollen.parser;
 
-import com.amaret.pollen.parser.DeclNode.Arr;
 import com.amaret.pollen.parser.DeclNode.Formal;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
-import com.amaret.pollen.parser.DeclNode.Var;
 import com.amaret.pollen.parser.TypeNode.Usr;
 
 
@@ -15,6 +13,9 @@ public class SymbolEntry {
     SymbolEntry(IScope definingScope, ISymbolNode node) {
         this.scope = definingScope;
         this.node = node;
+    }
+    public boolean equals(SymbolEntry se) {
+    	return (this.scope == se.scope && this.node == se.node);
     }
     
     public final ISymbolNode node() {
@@ -36,10 +37,17 @@ public class SymbolEntry {
     	// 2. or the scope of the type. 
     	// For example the lookup for 'myFcn()' in obj1.myFcn() is the class of obj1. 
     	
-    	if (this.node() instanceof ImportNode && ((ImportNode) this.node()).getUnit() != null) {   		
-			sc = ((ImportNode) this.node()).getUnit().getUnitType();   		
-			if (sc != null)
-				return sc;   	
+    	if (this.node() instanceof ImportNode) {
+    		IScope i = ((ImportNode) this.node()).getExportedModule();
+    		if (i != null) {
+    			// if this is a reference via an exported module, use that
+    			// module for the next scope.   			
+    			sc = i;
+    		}  
+    		else
+    			sc = ((ImportNode) this.node()).getUnit().getUnitType();   		
+    		if (sc != null)
+    			return sc;   	
     	}
     	TypeNode.Usr t = null;
     	if (this.node() instanceof DeclNode.Arr){

@@ -14,8 +14,8 @@ public class Script {
         cx.setOptimizationLevel(-1);
         Scriptable scope = cx.initStandardObjects();
         //ParseUnit.setDebugMode(false);
-        if (ParseUnit.isDebugMode())
-        	System.out.println("\n\nSCRIPT source: " + prog  + "\n\nfilename: " + fileName);
+//        if (ParseUnit.isDebugMode())
+//        	System.out.println("\n\nSCRIPT source: " + prog  + "\n\nfilename: " + fileName);
         
         try {
             cx.evaluateString(scope, prog, fileName, 1, null);
@@ -24,8 +24,8 @@ public class Script {
             ParseUnit.current().reportFailure("JavaScript termination: " + jse.getMessage());
             return null;
         }
-        if (ParseUnit.isDebugMode())
-        	System.out.println("\n\n SCRIPT result: " + result + "\n\nfilename: " + fileName);
+//        if (ParseUnit.isDebugMode())
+//        	System.out.println("\n\n SCRIPT result: " + result + "\n\nfilename: " + fileName);
         //ParseUnit.setDebugMode(false);
 
 

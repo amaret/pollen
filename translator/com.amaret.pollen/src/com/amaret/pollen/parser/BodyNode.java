@@ -5,10 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.antlr.runtime.CommonToken;
-
-import com.amaret.pollen.parser.DeclNode.Formal;
-
 public class BodyNode extends BaseNode implements IScope {
 
 	static final private int FORMALS = 0;  

@@ -3,8 +3,6 @@ package com.amaret.pollen.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.antlr.runtime.CommonToken;
-
 public class ListNode<T> extends BaseNode {
 	
     List<T> elems;

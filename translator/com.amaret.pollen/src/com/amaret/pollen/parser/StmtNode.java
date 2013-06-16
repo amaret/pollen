@@ -8,8 +8,6 @@ import java.util.Set;
 import org.antlr.runtime.tree.Tree;
 
 import com.amaret.pollen.parser.Cat.Agg;
-import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
-import com.amaret.pollen.parser.DeclNode.Usr;
 import com.amaret.pollen.parser.ExprNode.Ident;
 
 public class StmtNode extends BaseNode {

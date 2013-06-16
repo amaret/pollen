@@ -365,14 +365,18 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             		currUnit.reportError(name, "pollen lifecycle functions must be defined in modules");
             }
             
+            
            	IScope scopeToUse = currUnit.getSymbolTable().curScope();
+           	if (((Usr) currUnit.getSymbolTable().curScope()).getScopeDeleg().lookupName(name.getText()) != null)
+        		currUnit.reportError(name, "identifier already defined in the current scope");    
+           	if (((Usr) currUnit.getSymbolTable().curScope()).getScopeHost().lookupName(name.getText()) != null)
+        		currUnit.reportError(name, "identifier already defined in the current scope");           	
+           	
            	// Host functions go in a host scope 
         	if (isHost() && scopeToUse instanceof DeclNode.Usr)
         		scopeToUse = ((DeclNode.Usr) scopeToUse).getScopeHost();
 
-            if (scopeToUse.defineSymbol(name, this) == false) {
-                currUnit.reportError(name, "identifier already defined in the current scope");
-            }   
+            scopeToUse.defineSymbol(name, this);
             
             currUnit.getSymbolTable().enterScope(this);
             currUnit.getCurrUnitNode().setHostScope(isHost());
@@ -840,8 +844,21 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         protected NestedScope scopeHost = new NestedScope(this);
         protected String qname = "";
         private boolean qnameSet = false;
+        private boolean isExport = false;
         
-        public NestedScope getScopeHost() {
+        public DeclNode.Usr copy() {
+        	DeclNode.Usr newU = new DeclNode.Usr(token.getType(), token.getText(), flags, "");
+        	qname = this.qname;
+        	return newU;
+        }
+        
+        public boolean isExport() {
+			return isExport;
+		}
+		public void setExport(boolean isExport) {
+			this.isExport = isExport;
+		}
+		public NestedScope getScopeHost() {
 			return scopeHost;
 		}
         public NestedScope getScopeDeleg() {

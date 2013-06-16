@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import com.amaret.pollen.parser.DeclNode.ITypeKind;
-
 public class NestedScope implements IScope {
 	
 	class UnitHashMap<K,V> extends HashMap<K,V> {

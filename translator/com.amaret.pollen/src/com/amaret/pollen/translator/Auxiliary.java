@@ -19,9 +19,7 @@ import com.amaret.pollen.parser.SymbolEntry;
 import com.amaret.pollen.parser.TypeNode;
 import com.amaret.pollen.parser.UnitNode;
 import com.amaret.pollen.parser.pollenParser;
-import com.amaret.pollen.parser.Cat.Arr;
 import com.amaret.pollen.parser.DeclNode.Formal;
-import com.amaret.pollen.parser.DeclNode.TypedMember;
 import com.amaret.pollen.parser.ExprNode.Const;
 import com.amaret.pollen.parser.ExprNode.Ident;
 import com.amaret.pollen.parser.ExprNode.Quest;
@@ -451,6 +449,8 @@ class Auxiliary {
 	}
 
 	private void genExpr$Ident(ExprNode.Ident expr) {
+		
+		boolean dbg = false;
 
 		SymbolEntry sym = expr.getSymbol();
 		if (sym == null) {
@@ -463,10 +463,16 @@ class Auxiliary {
 
 		ISymbolNode snode = sym.node();
 		IScope scope = sym.scope();
+		if (snode instanceof DeclNode.Fcn && scope instanceof ImportNode
+				&& ((ImportNode) scope).isExport()) {
+			// an exported function
+			scope = ((DeclNode.Fcn) sym.node()).getUnit();
+		}
 
 		String quot = isLval ? "'" : "";
 		boolean externScope = scope instanceof UnitNode
 				|| scope instanceof DeclNode.Usr;
+				
 		if (scope instanceof DeclNode.Usr) {
 			scope = scope.getEnclosingScope();
 		}

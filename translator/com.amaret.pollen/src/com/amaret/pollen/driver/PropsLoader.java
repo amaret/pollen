@@ -1,11 +1,8 @@
 package com.amaret.pollen.driver;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.PrintStream;
-import java.util.HashSet;
 import java.util.Properties;
-import java.util.Set;
 
 import com.amaret.pollen.parser.ParseUnit.Property;
 

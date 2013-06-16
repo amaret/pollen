@@ -4,8 +4,6 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 
-import org.antlr.runtime.CommonToken;
-
 import com.amaret.pollen.target.ITarget.TypeId;
 import com.amaret.pollen.target.ITarget.TypeInfo;
 

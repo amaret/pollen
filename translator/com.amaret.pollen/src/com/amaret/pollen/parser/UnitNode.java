@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.antlr.runtime.tree.Tree;
-
-import com.amaret.pollen.parser.DeclNode.Fcn;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 
 public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrapper, DeclNode.ITypeKind {
@@ -35,6 +32,11 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     private EnumSet<Flags> flags = EnumSet.noneOf(Flags.class);
 	private Map<String,Integer> exprConstStringTable = new HashMap<String,Integer>();   
     private Map<String, ImportNode> importMap = new HashMap<String, ImportNode>();
+	public Map<String, ImportNode> getImportMap() {
+		return importMap;
+	}
+
+
 	class UnitHashMap<K,V> extends HashMap<K,V> {
 		/**
 		 * 
@@ -44,8 +46,6 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
 		public V put(K k,V v) {
 			V rtn = super.put(k, v);
 			if (rtn != null) {
-				if (k.toString().equals("Core"))
-					k.toString();
 				ParseUnit.internalMsg("Collision detected for key " + k.toString());
 			}
 			return rtn;
@@ -127,13 +127,25 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
         if (resolveSymbol(name) != null) {
             return false;
         }
-	    symbolTable.put(name.getText(), new SymbolEntry(this, node));
+        if (ParseUnit.isDebugMode()) {
+        	if (node instanceof ImportNode) {
+        		System.out.println("********** enter import of " + name.getText() + " into symtab (scope) of unit " + this.getName().getText());
+            	
+            		boolean dbg = false; if (name.getText().equals("AsInterrupts")) 
+            			dbg = true;
+        	}
+        }
+	    getSymbolTable().put(name.getText(), new SymbolEntry(this, node));
 	    node.setDefiningScope(this);
 	    return true;
     }
     
     public SymbolEntry putSymbol(String name, SymbolEntry se) {
-    	return symbolTable.put(name, se);
+    	Atom a = new Atom(this.getName());
+    	a.setText(name);
+    	if (resolveSymbol(a) != null) 
+    		ParseUnit.internalMsg("UnitNode.putSymbol() collision on name " + name + " in unit " + getName().getText());
+    	return getSymbolTable().put(name, se);
     }
     
     void destruct() {
@@ -192,7 +204,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     
     @Override
     public Set<Map.Entry<String,SymbolEntry>> getEntrySet() {
-        return symbolTable.entrySet();
+        return getSymbolTable().entrySet();
     }
 
     public int getErrorCount() {
@@ -325,7 +337,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     @Override
     public SymbolEntry lookupName(String name) {
     	
-    	SymbolEntry result = symbolTable.get(name);
+    	SymbolEntry result = getSymbolTable().get(name);
         if (result != null) {
             return result;
         }
@@ -361,10 +373,31 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
 
         return null;
     }
+    /**
+     * Used for exported modules and functions ONLY.
+     * 
+     * Any functions or modules exported by a composition have their names
+     * inserted in the outermost unit symbol table. 
+     * (The unit type symbol table and its nested tables contain the names declared
+     * by the composition. The unit symbol table contains imports and exports.) 
+     * 
+     * @param name
+     * @return the SymbolEntry
+     */
+	public SymbolEntry lookupExportInUnit(String name) {
+	    	
+	    	SymbolEntry result = getSymbolTable().get(name);
+	        if (result != null) {
+	            return result;
+	        }
+	        return null;
+	}
+    
+    
     @Override
     public SymbolEntry lookupName(String name, boolean chkHostScope) {
     	
-    	SymbolEntry result = symbolTable.get(name);
+    	SymbolEntry result = getSymbolTable().get(name);
         if (result != null) {
             return result;
         }
@@ -388,7 +421,12 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
         			return result;
         		}
         		sc = result.derefScope(false);
-        		//sc = result.scope();
+        		
+        		// Adjust the next scope if we have an import of an exported module: go to the module scope.
+        		if (result.node() instanceof ImportNode && ((ImportNode) result.node()).getExportedModule() != null)
+        			result = null;
+        		
+        		
         		if (name.indexOf(".") == -1) {
         			qualifier = name;
         			name = "";
@@ -407,6 +445,12 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     @Override
     protected boolean pass1Begin() {
     	//System.out.println("**UnitNode " + this.getQualName() + " pass1Begin()");
+		if (importMap.isEmpty()) {
+			for (ImportNode imp : this.getImports()) {
+				importMap.put(imp.getName().getText(), imp);
+				//importMap.put(imp.getUnitName().getText(), imp); // these names can collide
+			}
+		}
     	flags = unitType.getFlags();
     	ParseUnit currUnit = ParseUnit.current();               
         currUnit.getSymbolTable().enterScope(this);    	
@@ -430,9 +474,6 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     	
     	//boolean dbg = true;
     	boolean dbg = false;
-//    	if (this.getQualName().equals("test44.BlinkEnvPin"))
-//    		dbg = true;
-
     	
     	ParseUnit.setDebugMode(dbg);
     	if (dbg) {
@@ -441,138 +482,169 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
 
     	UnitNode curUnit = this;  	
     	SymbolEntry newSymbol;
-    	next:
-    		for (ImportNode imp : curUnit.getImports()) {
-    			UnitNode impUnit = imp.getUnit();
-    			    			
-    			importedUnits.add(imp.getUnitName().getText());
-    			String frm = imp.getFrom().getText();
-    			importedFrom.add(frm);
+    	for (ImportNode imp : curUnit.getImports()) {
+    		UnitNode impUnit = imp.getUnit();
+
+    		importedUnits.add(imp.getUnitName().getText());
+    		String frm = imp.getFrom().getText();
+    		importedFrom.add(frm);
+    		boolean doImport = false;
+
+    		if (dbg)
+    			ParseUnit.current().reportError(curUnit, "START import " + imp.getQualName());
+    		
+        	DeclNode.Usr base = getUnitType().getBaseType();
+    		while (base != null) { 
     			
-    			if (dbg)
-    				ParseUnit.current().reportError(curUnit, "START import " + imp.getQualName());
-   			
-    			if (impUnit == null) {
-    				if (dbg)
-    					ParseUnit.current().reportError(curUnit, "Import " + imp.getQualName() + " has unit = NULL");   			
-    			}
-    			else 
-    				if (!imp.isExport() && impUnit != null && imp.isComposition()) {
-    					
-    					for (ImportNode iun : impUnit.getImports()) {
-    							for (Map.Entry<String, SymbolEntry> e : iun.getExportFcns().entrySet()) {
-    								if (dbg) {
-    									System.out.println("** importSymbols(): Insert " + e.getKey() + " into symtab from scope " + iun.getName());
-    								}
-    								SymbolEntry se = this.putSymbol(e.getKey(), e.getValue());		
-    								if (se != null && se != e.getValue()) {
-    									ParseUnit.current().reportError(ParseUnit.current().getCurrUnitNode(), "Import of composition '" + imp.getName().getText() + "' results in multiple objects being referenced with the name '" + e.getKey() + "'.");
-    								}
-    							}
-    					}
+    			// The exported modules and functions of the base type are also exported in the derived type: 
+    			// enter into derived type symtab
+    			String symtabNames = ""; 
+        		for (Map.Entry<String, SymbolEntry> se : base.getUnit().getSymbolTable().entrySet()) {
+        			
+        			if (dbg) {        				
+        					symtabNames += symtabNames.isEmpty() ? "** base unit " + base.getName().getText() + " symtab contains : " : "";
+        					symtabNames += se.getKey() + " ";
+        			}
+        			
+    				ISymbolNode node = se.getValue().node();
 
-    					for (Map.Entry<String, SymbolEntry> importedSym : impUnit.symbolTable.entrySet()) {
-    						
-    						ISymbolNode importedNode = importedSym.getValue().node();
-    						if (dbg) {
-    							ParseUnit.current().reportError(curUnit, "check for export of symbol '" + importedSym.getKey() + "' via import " + imp.getQualName() + " into scope " + curUnit.getScopeName());
-    						}
-
-    						if (importedNode instanceof ImportNode && ((ImportNode) importedNode).isComposition()) {
-    							// If I can get an import that will give me the module definition (to have access to full function set
-    							// for lookups) then make a copy of it and propagate the current exports to the copy. 
-    							ImportNode save = (ImportNode) importedNode;
-    							importedNode = lookupModuleDefn(importedNode);
-    							if (save != importedNode) {
-    								importedNode = ((ImportNode) importedNode).copy();
-    								((ImportNode) importedNode).setExport(save.isExport());
-    								((ImportNode) importedNode).setExportFcns(save.getExportFcns());
-    							}
-    						}
-
-    						if (importedNode instanceof UnitNode)
-    							importedNode = ((UnitNode) importedNode).getUnitType();
-
-    						if (importedNode instanceof DeclNode && !((DeclNode) importedNode).isPublic()) {
-    							continue;
-    						}
-
-    						if (importedNode instanceof DeclNode.Fcn ) {
-    							continue;
-    						}
-
-    						if (importedNode instanceof ImportNode && !((ImportNode) importedNode).isExport()) {
-    							continue;
-    						}
-
-    						if (importedNode instanceof ExportNode) // e.g. not an import or function
-    							continue;
-
-    						newSymbol = new SymbolEntry(importedNode.getDefiningScope(), importedNode);
-
-
-    						if (dbg) {
-    							ParseUnit.current().reportError(curUnit, "  import exported symbol '" 
-    									+ importedSym.getKey() + "' via import " + imp.getQualName() 
-    									+ " into scope " + curUnit.getScopeName());
-    						}
-    						SymbolEntry curr=null, s=null;
+					if ((node instanceof ITypeKind && (((ITypeKind) node)
+							.isModule() || ((ITypeKind) node).isComposition()))
+							|| node instanceof DeclNode.Fcn) {
+    					if (!getSymbolTable().containsKey(node.getName().getText())) {
+    						newSymbol = new SymbolEntry(node.getDefiningScope(), node);
+    						getSymbolTable().put(node.getName().getText(), newSymbol);   	
     						if (dbg)
-    							isDuplicateSymbol(newSymbol, importedSym);
-//    						
-//    						String f = imp.getUnit().getPkgName().getText();
-//    						ImportNode inew = (ImportNode) newSymbol.node();
-//    						String inewStr = "from " + inew.getFrom() + " import " + inew.getUnitName() + " As " + inew.getAs() + ", " + inew.getName() ;
-//    						System.out.println("newSymbol: " + inewStr);
-//    						String impStr = "from " + imp.getFrom() + " import " + imp.getUnitName() + " As " + imp.getAs() + ", " + imp.getName() ;
-//    						System.out.println("import: " + impStr + ", pkg " + f);
-    						String key;
-    						
-    						// Is imp an import of a composition or a module from a composition?
-    						// (1) 'import compos' or (2) 'from compos import m' 
-    						// It matters for the key for symtab insert.
-    						
-    						if (!(imp.getUnit().getPkgName().getText().equals(imp.getFrom().getText())))
-    							key = imp.getName().getText(); // (2): key is from module in (2)
-    						else
-    							key = importedSym.getKey(); // (1): key is from module imported as a result of (1)
-    							
-    						    						
-    						curr = symbolTable.put(key, newSymbol);  
-    						if (curr != null && curr.node() instanceof ImportNode
-    								&& ((ImportNode) curr.node()).isExport()) {
-    							((ImportNode) newSymbol.node()).getExportFcns().putAll(((ImportNode) curr.node()).getExportFcns());
-    							((ImportNode) newSymbol.node()).setExport(((ImportNode) curr.node()).isExport());
-
-    						}
-    						if (curr != null && dbg)  {
-    							String i = "";
-    							if (curr.node() instanceof ImportNode) {
-    								ImportNode origi = (ImportNode) curr.node();
-    								i =  "ImportNode ";
-    								i += origi.isExport() ? "(isExport TRUE) ": "";   							
-    							}
-
-    							ParseUnit.current().reportError(curUnit, "  and replace SymbolEntry for " + i + "'" 
-    									+ curr.scope().getScopeName() + "." + curr.node().getName().getText() + "'" 
-    									+ " with export '" + importedSym.getKey() + "'");
-
-    						}
-    						if (importedSym.getKey().equals(imp.getUnitName().getText()) && !importedSym.getKey().equals(imp.getName().getText())) {
-
-    							s = symbolTable.put(imp.getName().getText(), newSymbol);	// 	the 'as' name
-    							if (dbg) {
-    								ParseUnit.current().reportError(curUnit, "enter " + importedSym.getKey() + " SymbolEntry with import 'as' name " + imp.getName());
-    								if (s != null) {
-    									ParseUnit.current().reportError(curUnit, "  and replace SymbolEntry for " + imp.getQualName() + " (" + imp.getName().getText() + ") "+ " with SymbolEntry for export " + importedSym.getKey());
-    								}
-    							}
-    						}
+    							System.out.println("** importSymbols() inserting " + node.getName().getText());
     					}
-
     				}
+        		}
+        		if (dbg) System.out.println(symtabNames);
+        		base = base.getBaseType();
     		}
-    	
+
+
+    		if (impUnit == null) {
+    			if (dbg)
+    				ParseUnit.current().reportError(curUnit, "Import " + imp.getQualName() + " has unit = NULL");   			
+    		}
+//    		else 
+//    			if (doImport && !imp.isExport() && impUnit != null && imp.isComposition()) {
+//
+//    				for (ImportNode iun : impUnit.getImports()) {
+//    					for (Map.Entry<String, SymbolEntry> e : iun.getExportFcns().entrySet()) {
+//    						if (dbg) {
+//    							System.out.println("** importSymbols(): Insert " + e.getKey() + " into symtab from scope " + iun.getName());
+//    						}
+//    						//SymbolEntry se = this.putSymbol(e.getKey(), e.getValue());		
+//    						//if (se != null && se != e.getValue()) {
+//    						//	ParseUnit.current().reportError(ParseUnit.current().getCurrUnitNode(), "Import of composition '" + imp.getName().getText() + "' results in multiple objects being referenced with the name '" + e.getKey() + "'.");
+//    						//}
+//    					}
+//    				}
+//
+//    				for (Map.Entry<String, SymbolEntry> importedSym : impUnit.getSymbolTable().entrySet()) {
+//
+//    					ISymbolNode importedNode = importedSym.getValue().node();
+//    					if (dbg) {
+//    						ParseUnit.current().reportError(curUnit, "check for export of symbol '" + importedSym.getKey() + "' via import " + imp.getQualName() + " into scope " + curUnit.getScopeName());
+//    					}
+//
+//    					if (importedNode instanceof ImportNode && ((ImportNode) importedNode).isComposition()) {
+//    						// If I can get an import that will give me the module definition (to have access to full function set
+//    						// for lookups) then make a copy of it and propagate the current exports to the copy. 
+//    						ImportNode save = (ImportNode) importedNode;
+//    						importedNode = lookupModuleDefn(importedNode);
+//    						if (save != importedNode) {
+//    							importedNode = ((ImportNode) importedNode).copy();
+//    							((ImportNode) importedNode).setExport(save.isExport());
+//    							((ImportNode) importedNode).setExportFcns(save.getExportFcns());
+//    						}
+//    					}
+//
+//    					if (importedNode instanceof UnitNode)
+//    						importedNode = ((UnitNode) importedNode).getUnitType();
+//
+//    					if (importedNode instanceof DeclNode && !((DeclNode) importedNode).isPublic()) {
+//    						continue;
+//    					}
+//
+//    					if (importedNode instanceof DeclNode.Fcn ) {
+//    						continue;
+//    					}
+//
+//    					if (importedNode instanceof ImportNode && !((ImportNode) importedNode).isExport()) {
+//    						continue;
+//    					}
+//
+//    					if (importedNode instanceof ExportNode) // e.g. not an import or function
+//    						continue;
+//
+//    					newSymbol = new SymbolEntry(importedNode.getDefiningScope(), importedNode);
+//
+//
+//    					if (dbg) {
+//    						ParseUnit.current().reportError(curUnit, "  import exported symbol '" 
+//    								+ importedSym.getKey() + "' via import " + imp.getQualName() 
+//    								+ " into scope " + curUnit.getScopeName());
+//    					}
+//    					SymbolEntry curr=null, s=null;
+//    					if (dbg)
+//    						isDuplicateSymbol(newSymbol, importedSym);
+//    					//    						
+//    					//    						String f = imp.getUnit().getPkgName().getText();
+//    					//    						ImportNode inew = (ImportNode) newSymbol.node();
+//    					//    						String inewStr = "from " + inew.getFrom() + " import " + inew.getUnitName() + " As " + inew.getAs() + ", " + inew.getName() ;
+//    					//    						System.out.println("newSymbol: " + inewStr);
+//    					//    						String impStr = "from " + imp.getFrom() + " import " + imp.getUnitName() + " As " + imp.getAs() + ", " + imp.getName() ;
+//    					//    						System.out.println("import: " + impStr + ", pkg " + f);
+//    					String key;
+//
+//    					// Is imp an import of a composition or a module from a composition?
+//    					// (1) 'import compos' or (2) 'from compos import m' 
+//    					// It matters for the key for symtab insert.
+//
+//    					if (!(imp.getUnit().getPkgName().getText().equals(imp.getFrom().getText())))
+//    						key = imp.getName().getText(); // (2): key is from module in (2)
+//    					else
+//    						key = importedSym.getKey(); // (1): key is from module imported as a result of (1)
+//
+//
+//    					curr = getSymbolTable().put(key, newSymbol);  
+//    					if (curr != null && curr.node() instanceof ImportNode
+//    							&& ((ImportNode) curr.node()).isExport()) {
+//    						((ImportNode) newSymbol.node()).getExportFcns().putAll(((ImportNode) curr.node()).getExportFcns());
+//    						((ImportNode) newSymbol.node()).setExport(((ImportNode) curr.node()).isExport());
+//
+//    					}
+//    					if (curr != null && dbg)  {
+//    						String i = "";
+//    						if (curr.node() instanceof ImportNode) {
+//    							ImportNode origi = (ImportNode) curr.node();
+//    							i =  "ImportNode ";
+//    							i += origi.isExport() ? "(isExport TRUE) ": "";   							
+//    						}
+//
+//    						ParseUnit.current().reportError(curUnit, "  and replace SymbolEntry for " + i + "'" 
+//    								+ curr.scope().getScopeName() + "." + curr.node().getName().getText() + "'" 
+//    								+ " with export '" + importedSym.getKey() + "'");
+//
+//    					}
+//    					if (importedSym.getKey().equals(imp.getUnitName().getText()) && !importedSym.getKey().equals(imp.getName().getText())) {
+//
+//    						s = getSymbolTable().put(imp.getName().getText(), newSymbol);	// 	the 'as' name
+//    						if (dbg) {
+//    							ParseUnit.current().reportError(curUnit, "enter " + importedSym.getKey() + " SymbolEntry with import 'as' name " + imp.getName());
+//    							if (s != null) {
+//    								ParseUnit.current().reportError(curUnit, "  and replace SymbolEntry for " + imp.getQualName() + " (" + imp.getName().getText() + ") "+ " with SymbolEntry for export " + importedSym.getKey());
+//    							}
+//    						}
+//    					}
+//    				}
+//
+//    			}
+    	}
+
     	putBaseUnitImports(curUnit);
 
     	ParseUnit.setDebugMode(false);
@@ -590,7 +662,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     		UnitNode baseU = this.getUnitType().getBaseType().getUnit();
 
     		List<SymbolEntry> baseImpList = new ArrayList<SymbolEntry>();
-    		for (Map.Entry<String, SymbolEntry> baseImportSym : baseU.symbolTable.entrySet()) {					
+    		for (Map.Entry<String, SymbolEntry> baseImportSym : baseU.getSymbolTable().entrySet()) {					
     			ISymbolNode baseImportNode = baseImportSym.getValue().node();
     			if (baseImportNode instanceof ImportNode) {
     				//if (symbolTable.get(baseImportSym.getKey()) == null) {
@@ -616,7 +688,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
 
     							}
     							
-    							symbolTable.put(newSymbol.node().getName().getText(), newSymbol);    							
+    							getSymbolTable().put(newSymbol.node().getName().getText(), newSymbol);    							
     						}
     						
     					}
@@ -628,15 +700,55 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     	}
 	}
 
-    public ImportNode getImportByName(String n) {
-    	if (importMap.isEmpty()) {
-    		for (ImportNode imp : this.getImports()) {
-    			importMap.put(imp.getName().getText(), imp);
-    			importMap.put(imp.getUnitName().getText(), imp);    			
-    		}    		
-    	}
-    	return importMap.get(n);    	
-    }
+	/**
+	 * If not found, check base types.
+	 * @param u the current unit
+	 * @param i the import name
+	 * @return the SymbolEntry for the import or null if not found.
+	 */
+	public ImportNode getImportByName(Atom name, UnitNode u) {
+		String[] path = name.getText().split("\\.");
+		String i = path[0];
+		ImportNode imp = importMap.get(i);
+		if (imp != null)
+			return imp;
+		else {
+			SymbolEntry impse = u.lookupName(i);
+			DeclNode.Usr base = u.getUnitType()
+			.getBaseType();
+			if (impse == null) {
+				// As UnitNode.importSymbols() has not been called this could be
+				// from a basetype
+				boolean notFound = true;
+				while (base != null) { // if not found check base symbol tables
+					impse = base.lookupName(i);
+					if (impse == null)
+						impse = base.lookupName(i, true);
+					if (impse == null)
+						base = base.getBaseType();
+					else {
+						notFound = false;
+						break; // found
+					}
+				}
+				if (notFound) {
+					return null;
+				}
+			}
+
+			String n = impse.scope().getScopeName();
+			n = n.indexOf('.') == -1 ? n : n
+					.substring(n.lastIndexOf('.') + 1);
+			imp = importMap.get(n);
+			if (imp == null || imp.getUnit() == null) {
+				return null;
+			}
+			imp = imp.getUnit().getImportMap().get(i);
+		}
+		return imp;
+
+	}
+
     /**
      * @return all the exported functions of all the imports
      */
@@ -654,85 +766,6 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
 		}
 		return fcns; 	
     }
-    
-    /**
-     * Look through the exportedFcn lists of the Imports for a match
-     * on fname.
-     * Note when there are name collisions (Mcu.cycle, Board.cycle) and the composition
-     * containing these exports is imported as a whole (not modules from the composition) 
-     * then the names can lose their disambiguation. The first encountered is returned.
-     * Uncalled.
-     * @param fname
-     * @return fname SymbolEntry
-     */
-    public SymbolEntry lookupExportedFcn(String fname) {
-		for (ImportNode imp : this.getImports()) {
-			if (!imp.isExport())
-				continue;
-			if (imp.getExportFcns().isEmpty())
-				continue;
-			if (imp.getExportFcns().get(fname) == null)
-				continue;
-			return imp.getExportFcns().get(fname);
-		}
-		return null;   	
-    }
-    /**
-     * Look through the exportedFcn lists of this units Imports for a match
-     * on fname
-     * @param fname
-     * @param i the fail to match return value
-     * @return the ImportNode which (first) matched
-     */
-    public ImportNode lookupImportForExport(String fname, ImportNode i) {
-		for (ImportNode imp : this.getImports()) {
-			if (!imp.isExport())
-				continue;
-			if (imp.getExportFcns().isEmpty())
-				continue;
-			if (imp.getExportFcns().get(fname) == null)
-				continue;
-			return imp;
-		}
-		return i;   	
-    }
-
-
-	/**
-	 * For imports of composition modules, such as 'm':
-	 *   F1.p: 'from compos import m' 
-	 *              export m.foo
-	 *   F2.p  'from F1 import m as p'
-	 *              export p.bar
-	 *  F3.p   'from F2 import p as q'
-	 *  ...etc
-	 * drill into the import sequence to find the import 
-	 * which has the original module defn for m
-	 * (where the function is).
-	 * @param importedNode
-	 * @return importedNode (to original module definition)
-	 */
-	public ISymbolNode lookupModuleDefn(ISymbolNode importedNode) {
-		// drill down to something real, a non-composition
-		ImportNode i = (ImportNode) importedNode;
-		SymbolEntry is = null;
-		while (i.getUnit() != null && i.isComposition()) {
-			is = i.getUnit().lookupName(i.getUnitName().getText());
-			if (is == null || !(is.node() instanceof ImportNode)) {
-				is = null;
-				break;
-			}
-			
-			i = (ImportNode) is.node();
-			if (i.getUnit() == null)
-				ParseUnit.internalMsg(i.getName() + " has null unit");
-		} 
-		if (is instanceof ITypeKind && ((ITypeKind) is).isComposition())
-			ParseUnit.internalMsg(i.getName() + " is composition type");
-		if (is == null)
-			return importedNode; // no change
-		return is.node();
-	}
 
 	/**
 	 * @param newSymbol
@@ -740,9 +773,9 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
 	 */
 	private void isDuplicateSymbol(SymbolEntry newSymbol,
 			Map.Entry<String, SymbolEntry> importedSym) {
-		if (symbolTable.get(importedSym.getKey()) != null) {
+		if (getSymbolTable().get(importedSym.getKey()) != null) {
 			String symName = importedSym.getKey();
-			String oldSc = symbolTable.get(importedSym.getKey()).node().getDefiningScope().getScopeName();
+			String oldSc = getSymbolTable().get(importedSym.getKey()).node().getDefiningScope().getScopeName();
 			String newSc = newSymbol.scope().getScopeName();
 			ParseUnit.current().reportError(this, "  replacing symbol '" + symName + "' in scope " + oldSc + " with same name symbol in scope " + newSc);
 		}
@@ -768,7 +801,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     @Override
     public void replaceSymbol(Atom name, ISymbolNode node) {
     	
-        SymbolEntry r = symbolTable.put(name.getText(), new SymbolEntry(definingScope, node));
+        SymbolEntry r = getSymbolTable().put(name.getText(), new SymbolEntry(definingScope, node));
         boolean dbg = false;
         if (r != null) {
         	dbg = true;
@@ -809,6 +842,13 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
 	@Override
 	public boolean isReady() {
 		return true;
+	}
+
+	/**
+	 * @return the symbolTable
+	 */
+	public Map<String,SymbolEntry> getSymbolTable() {
+		return symbolTable;
 	}
 
 }

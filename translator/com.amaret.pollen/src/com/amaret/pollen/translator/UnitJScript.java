@@ -2,7 +2,6 @@ package com.amaret.pollen.translator;
 
 import java.util.List;
 
-import com.amaret.pollen.parser.Atom;
 import com.amaret.pollen.parser.BaseNode;
 import com.amaret.pollen.parser.BodyNode;
 import com.amaret.pollen.parser.Cat;
@@ -317,14 +316,13 @@ public class UnitJScript {
 	private void debugUse(ImportNode imp, String nUnit, String asName,
 			String impName) {
 		String s = "import ";
-		s = "from " + imp.getFrom() + " " + s + imp.getUnitName() + " as " + imp.getName().getText();
+		s = "  debugUse(): from " + imp.getFrom() + " " + s + imp.getUnitName() + " as " + imp.getName().getText();
 		if (imp.getUnit().isMeta()) s += ", isMeta";
 		if (imp.getMeta() != null) s += ", isMetaImport";
 		if (imp.getUnit().isComposition())	s += ", isComposition";
 		if (imp.getUnit().isGeneratedMetaInstance())	s+= ", isGeneratedMetaInstance";
-		System.out.println(s);
-		s = "  nUnit " + nUnit + ", impName " + impName + ", asName " + asName;
-		System.out.println(s);
+		System.out.println(s + ", nUnit " + nUnit + ", impName " + impName + ", asName " + asName);
+
 	}   
 
     private void genUses(UnitNode unit) {
