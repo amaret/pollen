@@ -17,20 +17,14 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 	static private final int META = 3; // might not be present
 	
     private Cat cat = null;
-	private UnitNode unit;
+	private UnitNode unit;	// the unit the import binds to (see bindUnit()).
     private EnumSet<Flags> flags = EnumSet.noneOf(Flags.class);
     private IScope definingScope;
     private boolean isExport;
-    private DeclNode.Usr exportUnit = null; // for exports, the ultimate module the imported module resolves to.
-    private boolean isCopy = false;
+    private DeclNode.Usr exportUnit = null; // for exports, the ultimate unit the imported unit resolves to.
     private boolean isProtocolBindTarget = false;
     private boolean fromComposImportModule = false;
-    private Map<String, SymbolEntry> exportFcns = new HashMap<String, SymbolEntry>();
-    private Map<String, List<SymbolEntry>> scopesExportFcns = new HashMap<String,  List<SymbolEntry>>();
     
-    public Map<String, List<SymbolEntry>> getScopesExportFcns() {
-		return scopesExportFcns;
-	}
 	public boolean isFromComposImportModule() {
 		return fromComposImportModule;
 	}
@@ -38,9 +32,12 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 		this.fromComposImportModule = fromComposImportModule;
 	}
 	/**
-	 * @return if this is an import of an exported module return that module else null
+	 * If this import brings in a unit that has been exported by another unit, 
+	 * retrieve the export unit of that unit. 
+	 * Used to resolve lookups into exported units.
+	 * @return if this is an import of an exported unit return that unit else null
 	 */
-	public IScope getExportedModule() {
+	public IScope getExportedUnit() {
 		IScope sc = null;
 	
 		if (this.getUnit() != null) {
@@ -59,11 +56,13 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 		}
     	return sc;
 	}
-	public void setExportFcns(Map<String, SymbolEntry> exportFcns) {
-		this.exportFcns = exportFcns;
-	}
 	/**
-	 * Return the DeclNode for the exported module. With cascaded imports via compositions, this info is lost from the unit the import is bound to.
+	 * If the unit which contains this import also contains an export statement for 
+	 * the imported unit, this field contains the DeclNode for that imported/exported unit. 
+	 * 
+	 * This is different from the field 'unit' because for modules exported from compositions
+	 * the unit which this import is bound to is the composition.
+	 * 
 	 * @return the DeclNode of the exported unit
 	 */
 	public DeclNode.Usr getExportUnit() {
@@ -75,57 +74,6 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 	public void setExportUnit(DeclNode.Usr exportUnit) {
 		this.exportUnit = exportUnit;
 	}
-	public boolean isCopy() {
-		return isCopy;
-	}
-	public Map<String, SymbolEntry> getExportFcns() {
-		return exportFcns;
-	}
-	/**
-     * @param name function name
-     * @return true if this is a call to an exported function else false.
-     */
-    public boolean isValidExportFcnCall(String name) {
-    	return true;
-    	//return (exportFcns.get(name) != null) ?  true : false;
-    }
-    /**
-     * lookup name in the list of fcns exported from this import.
-     * @param name
-     * @return the SymbolEntry if it exists or null
-     */
-    public SymbolEntry lookupExportFcn(String name) {
-    	return exportFcns == null ? null : exportFcns.get(name);
-    }
-    
-    public boolean hasExportFcns() {
-    	return exportFcns != null && exportFcns.size() > 0;
-    }
-    /**
-     * Insert function into the exportFcn list.
-     * Also add this function to the map scopesExportFcns
-     * where the key is the scopeName for the exported fcn.
-     * @param name
-     * @param s
-     */
-    public void insertExportFcn(String name, SymbolEntry s) {
-    	if (exportFcns == null)
-    		return;
-    	exportFcns.put(name, s);
-    	
-    	if (!(s.node() instanceof DeclNode.Usr))
-    		ParseUnit.internalMsg("export fcn " + s.node().getName().getText() + " lacks user type");
-    	
-    	String sc = s.scope().getScopeName();
-    	List<SymbolEntry> fcns;
-    	if (this.scopesExportFcns.get(sc) == null) {
-    		fcns = new ArrayList<SymbolEntry>();    		
-    	}
-    	else
-    		fcns = this.scopesExportFcns.get(sc);
-    	fcns.add(s);
-    	this.scopesExportFcns.put(sc, fcns);
-    }
     /**
      * true if this import is used in a composition to bind a protocol member
      */
@@ -148,26 +96,6 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     }
     ImportNode(BaseNode b) {
     	
-    }
-    /**
-     * copy
-     * This preserves the export filter on the import being copied.
-     * Called by UnitNode.importSymbols().
-     */
-    public ImportNode copy() {
-    	ImportNode newi = new ImportNode(new BaseNode(this.token));
-    	newi.unit = unit;
-    	newi.cat = cat;
-    	newi.definingScope = definingScope;
-    	newi.children = children;
-    	newi.parent = parent;
-    	newi.childIndex = childIndex;
-    	newi.setIndexes(this.getStartIndex(), this.getStopIndex());
-    	newi.isProtocolBindTarget = isProtocolBindTarget;
-    	newi.isExport = isExport;
-    	newi.exportFcns = exportFcns;   
-    	newi.isCopy = true;
-    	return newi;    	
     }
     
     public boolean isTypeMetaArg() {

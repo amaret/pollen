@@ -38,7 +38,7 @@ public class SymbolEntry {
     	// For example the lookup for 'myFcn()' in obj1.myFcn() is the class of obj1. 
     	
     	if (this.node() instanceof ImportNode) {
-    		IScope i = ((ImportNode) this.node()).getExportedModule();
+    		IScope i = ((ImportNode) this.node()).getExportedUnit();
     		if (i != null) {
     			// if this is a reference via an exported module, use that
     			// module for the next scope.   			

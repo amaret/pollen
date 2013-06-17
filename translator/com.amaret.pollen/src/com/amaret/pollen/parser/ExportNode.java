@@ -119,13 +119,13 @@ public class ExportNode extends BaseNode implements ISymbolNode {
     /**
      * 
      * @param name e.g. 'm' from 'export m'
-     * @return the DeclNode for that module
+     * @return the DeclNode for that unit
      */
-    ISymbolNode getExportModDclnNode(Atom name) {
+    ISymbolNode getExportUnitDclnNode(Atom name) {
 
     	String[] path = name.getText().split("\\.");
     	if (path.length != 1) {
-    		ParseUnit.internalMsg("ExportNode.getExportModDclnNode(): Invalid export module specification " + name.getText());
+    		ParseUnit.internalMsg("ExportNode.getExportUnitDclnNode(): Invalid export module specification " + name.getText());
     		return null;
     	}
 
@@ -161,6 +161,7 @@ public class ExportNode extends BaseNode implements ISymbolNode {
     			ISymbolNode tmp = imp.getUnit() != null ? imp.getUnit().getUnitType() : imp;
     			imp = impu.getImportByName(u, impu); 
     			if (((ITypeKind) tmp).isComposition() && imp == null)
+    				// the ultimate node to return could be a composition
     				return tmp;
     			if (imp == null)
     				return null;
@@ -172,7 +173,7 @@ public class ExportNode extends BaseNode implements ISymbolNode {
     			break; // once we are at the module we are done.    			
     		}
     		else {
-    			ParseUnit.internalMsg("ExportNode.getExportModDclnNode(): Invalid unit type for export " + name.getText());
+    			ParseUnit.internalMsg("ExportNode.getExportUnitDclnNode(): Invalid unit type for export " + name.getText());
     			return null;	
     		}   		
     	}
@@ -259,15 +260,14 @@ public class ExportNode extends BaseNode implements ISymbolNode {
         	
         	enterExport(exportedName);
         	currUnit.getCurrUnitNode().getExportList().add(this);
-            ISymbolNode modDcl = this.getExportModDclnNode(exportedName);
-            if (modDcl == null) { //|| !(modDcl instanceof DeclNode.Usr)) {
-            	// Okay to return null when the export is a composition export 
-            	currUnit.reportError(exportedName, "exported module not found");
+            ISymbolNode modDcl = this.getExportUnitDclnNode(exportedName);
+            if (modDcl == null) { 
+            	currUnit.reportError(exportedName, "exported unit not found");
             	return false;
             }
             if (modDcl instanceof DeclNode.Usr)
             	imp.setExportUnit((Usr) modDcl);
-            //((DeclNode.Usr)modDcl).setExport(true);
+           
             SymbolEntry se = new SymbolEntry(currUnit.getCurrUnitNode(), imp);
             
             // Insert module into outermost symboltable so it can be found by clients            

@@ -844,7 +844,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         protected NestedScope scopeHost = new NestedScope(this);
         protected String qname = "";
         private boolean qnameSet = false;
-        private boolean isExport = false;
         
         public DeclNode.Usr copy() {
         	DeclNode.Usr newU = new DeclNode.Usr(token.getType(), token.getText(), flags, "");
@@ -852,12 +851,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         	return newU;
         }
         
-        public boolean isExport() {
-			return isExport;
-		}
-		public void setExport(boolean isExport) {
-			this.isExport = isExport;
-		}
 		public NestedScope getScopeHost() {
 			return scopeHost;
 		}
