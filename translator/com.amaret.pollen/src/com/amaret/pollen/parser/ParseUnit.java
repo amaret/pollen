@@ -197,35 +197,33 @@ public class ParseUnit {
 
 		impChain.push(unit.getQualName());
 
-		for (ImportNode imp : unit.getImports()) {
+		for (ImportNode currImport : unit.getImports()) {
 
-			String fromPkg = imp.getFrom().getText();
+			String fromPkg = currImport.getFrom().getText();
 			String pkgPath = packages.get(fromPkg);
 
-			SymbolEntry impSym = unit.resolveSymbol(imp.getFrom());
-			ISymbolNode impSnode = impSym == null ? null : impSym.node();
-			UnitNode impUnit = null;
-			SymbolEntry expSym = null;
-			ISymbolNode expSnode = null;
-
+			SymbolEntry currSym = unit.resolveSymbol(currImport.getFrom());
+			ISymbolNode currSnode = currSym == null ? null : currSym.node();
+			UnitNode currUnit = null;
+			SymbolEntry currExportSym = null;
 			UnitNode client = unit;
-			ImportNode clientImport = imp;
-			if (Cat.Scalar.codeFromString(imp.getUnitName().getText()) != null) {
+			ImportNode clientImport = currImport;
+			if (Cat.Scalar.codeFromString(currImport.getUnitName().getText()) != null) {
 				// primitive type: don't import (instantiation side effect)
-				Atom name = imp.getName();
-				unit.defineSymbol(name, imp);
+				Atom name = currImport.getName();
+				unit.defineSymbol(name, currImport);
 				continue;
 			}
 			boolean dbg = true;
 			if (ParseUnit.isDebugMode()) {
 				String s = "**   ParseUnit.parseImports(): " + fromPkg + "."
-						+ imp.getUnitName().getText()
+						+ currImport.getUnitName().getText()
 						+ (pkgPath == null ? " (a composition)" : "");
 				System.out.println(s);
 
 			}
 
-			if (!(impSnode instanceof ImportNode)) {
+			if (!(currSnode instanceof ImportNode)) {
 				try {
 
 					if (pkgPath == null) {
@@ -233,7 +231,7 @@ public class ParseUnit {
 						// 'from c import m'
 						// In that case fromPkg contains the composition name
 						// 'c'.
-						imp.setFromComposImportModule(true);
+						currImport.setFromComposImportModule(true);
 						pkgPath = path.substring(0, path
 								.lastIndexOf(File.separator));
 						String pkg = pkgPath + File.separator + fromPkg + ".p";
@@ -248,84 +246,66 @@ public class ParseUnit {
 								continue;
 							}
 						}
-						impUnit = parseUnit(pkgPath + File.separator + fromPkg
+						currUnit = parseUnit(pkgPath + File.separator + fromPkg
 								+ ".p", client, clientImport);
 
 					} else {
-						impUnit = parseUnit(pkgPath + File.separator
-								+ imp.getUnitName() + ".p", client,
+						currUnit = parseUnit(pkgPath + File.separator
+								+ currImport.getUnitName() + ".p", client,
 								clientImport);
 					}
 
 				} catch (Termination te) {
-					reportError(imp, te.getMessage());
+					reportError(currImport, te.getMessage());
 				}
 			}
 
 			else {
-				impUnit = ((ImportNode) impSnode).getUnit();
-				if (impUnit == null) {
-					reportError(imp.getUnitName(), "import not bound to unit");
+				currUnit = ((ImportNode) currSnode).getUnit();
+				if (currUnit == null) {
+					reportError(currImport.getUnitName(), "import not bound to unit");
 					continue;
 				}
 
-				// This code handles:
+				// This flag identifies: 
 				// 'from compositionC import moduleA as moduleB'
 				// moduleA must be exported from compositionC
-				// Note impUnit in this case is compositionC (moduleA)
-
-				imp.setFromComposImportModule(true);
-				expSym = impUnit.resolveSymbol(imp.getUnitName());
-				expSnode = expSym != null ? expSym.node() : null;
-				if (expSnode == null
-						|| ((expSnode instanceof ImportNode && !((ImportNode) expSnode)
-								.isExport()) && imp.getUnit() != null)) {
-
-					reportError(imp.getUnitName(), "not an exported unit"); // causes null ptrs if I don't include parse tree
-					//if (expSnode == null)
-					//	continue;
-				}
+				currImport.setFromComposImportModule(true);
+				currExportSym = currUnit.resolveSymbol(currImport.getUnitName());
 			}
 
-			if (impUnit != null) {
+			if (currUnit != null) {
 
-				Atom name = imp.getName();
-				if (unit.defineSymbol(name, imp) == false) {
+				Atom name = currImport.getName();
+				if (unit.defineSymbol(name, currImport) == false) {
 					reportError(name,
 							"identifier already defined in the current scope");
 					continue;
 				}
 				
-				// if importing a module from a composition check that it is exported. 
-				if (expSym == null && impUnit.isComposition() 
-						&& (!imp.getUnitName().getText().equals(impUnit.getUnitType().getName().getText()))) {
-					imp.setFromComposImportModule(true);
-					expSym = impUnit.resolveSymbol(imp.getUnitName());
-					expSnode = expSym != null ? expSym.node() : null;
-					if (expSnode == null
-							|| (expSnode instanceof ImportNode && !((ImportNode) expSnode)
-									.isExport())) {
-						
-						reportError(imp.getUnitName(), "not an exported unit");
-						//if (expSnode == null) // causes null ptrs if I don't include parse tree
-						//	continue;
-					}
+				// This flag identifies: 
+				// 'from compositionC import moduleA as moduleB'
+				// moduleA must be exported from compositionC
+				if (currExportSym == null && currUnit.isComposition() 
+						&& (!currImport.getUnitName().getText().equals(currUnit.getUnitType().getName().getText()))) {
+					currImport.setFromComposImportModule(true);
+
 				}
 				
-				if (imp.getMeta() == null) {
+				if (currImport.getMeta() == null) {
 
-					imp.bindUnit(impUnit);
+					currImport.bindUnit(currUnit);
 				} else {
 
-					if (!impUnit.isMeta()) {
-						reportError(imp.getUnitName(),
+					if (!currUnit.isMeta()) {
+						reportError(currImport.getUnitName(),
 								"meta arguments provided but not a meta type");
 						continue;
 					}
-					imp.bindUnit(impUnit);
+					currImport.bindUnit(currUnit);
 				}
-				impUnit.addClient(unit);
-				this.enterUnit(impUnit.getQualName(), impUnit);
+				currUnit.addClient(unit);
+				this.enterUnit(currUnit.getQualName(), currUnit);
 			}
 		}
 

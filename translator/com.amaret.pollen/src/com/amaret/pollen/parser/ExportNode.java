@@ -47,10 +47,9 @@ public class ExportNode extends BaseNode implements ISymbolNode {
     /**
      * 
      * @param name e.g. 'm.foo' from 'export m.foo'
-     * @param emitMsg emit error msg if appropriate
      * @return the DeclNode for that function
      */
-    public static ISymbolNode getExportFcnDclnNode(Atom name, boolean emitMsg) {
+    public static ISymbolNode getExportFcnDclnNode(Atom name) {
 
     	String[] path = name.getText().split("\\.");
     	if (path.length < 2) {
@@ -75,8 +74,7 @@ public class ExportNode extends BaseNode implements ISymbolNode {
     		dbg = true;
     	   	
     	if (imp == null) {
-    		if (emitMsg)
-    			currUnit.reportError(name, "not an imported unit");
+    		currUnit.reportError(name, "not an imported unit");
     		return null;
     	}
 
@@ -277,7 +275,7 @@ public class ExportNode extends BaseNode implements ISymbolNode {
         }
         
         // handle the function export
-        ISymbolNode fcnDcl = ExportNode.getExportFcnDclnNode(exportedName, true);
+        ISymbolNode fcnDcl = ExportNode.getExportFcnDclnNode(exportedName);
         if (fcnDcl == null || !(fcnDcl instanceof DeclNode.Fcn)) {
         	currUnit.reportError(exportedName, "exported function not found");
         	return false;

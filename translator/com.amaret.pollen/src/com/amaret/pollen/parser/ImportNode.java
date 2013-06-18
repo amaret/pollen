@@ -258,6 +258,20 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 	public void bindUnit(UnitNode impUnit) {
 		unit = impUnit;
         cat = Cat.fromSymbolNode(unit, unit.getDefiningScope());
+        
+        if (this.isFromComposImportModule()) {
+        	// check that this unit which was imported from a composition was exported by that composition
+			SymbolEntry currExportSym = null;
+			ISymbolNode currExportSnode = null;
+			currExportSym = unit.resolveSymbol(this.getUnitName());
+			currExportSnode = currExportSym != null ? currExportSym.node() : null;
+			if (currExportSnode == null
+					|| (currExportSnode instanceof ImportNode && !((ImportNode) currExportSnode)
+							.isExport())) {
+				
+				ParseUnit.current().reportError(this.getUnitName(), "not an exported unit");
+			}
+        }
         if (ParseUnit.isDebugMode()) {
         	String list = "";
         	for (List<DeclNode.Fcn> fl : this.getUnit().getFcnMap().values()) {
