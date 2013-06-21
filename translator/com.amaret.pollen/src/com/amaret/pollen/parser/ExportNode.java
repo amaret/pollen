@@ -64,8 +64,8 @@ public class ExportNode extends BaseNode implements ISymbolNode {
     	String unit = path[0];
     	String fcn = path[1];
     	
-    	Atom u = new Atom(name);
-    	u.setText(unit);
+    	Atom uname = new Atom(name);
+    	uname.setText(unit);
     	
     	SymbolEntry fse = null;
     	ISymbolNode fsn = null;
@@ -80,26 +80,26 @@ public class ExportNode extends BaseNode implements ISymbolNode {
 
     	
     	while (true) {
-    		UnitNode impu = imp.getUnit();
-    		if (impu == null)
+    		UnitNode uimp = imp.getUnit();
+    		if (uimp == null)
     			dbg = true;
-    		if (impu.isComposition()) {
-    			fse = impu.lookupExportInUnit(fcn);
+    		if (uimp.isComposition()) {
+    			fse = uimp.lookupExportInUnit(fcn);
     			fsn = fse != null ? fse.node() : null;
     			if (fsn != null)
     				break;
-    			u.setText(imp.getUnitName().getText());
-    			imp = impu.getImportByName(u, ParseUnit.current().getCurrUnitNode()); 
+    			uname.setText(imp.getUnitName().getText());
+    			imp = uimp.getImportByName(uname, uimp); //ParseUnit.current().getCurrUnitNode()); 
     			if (imp == null) {
     				dbg = true;
     				return null;
     			}
     			
     		}
-    		else if (impu.isModule()) {
-    			fse = impu.getUnitType().lookupName(fcn); 
+    		else if (uimp.isModule()) {
+    			fse = uimp.getUnitType().lookupName(fcn); 
     			if (fse == null)
-    				fse = impu.getUnitType().lookupName(name.getText(), true);
+    				fse = uimp.getUnitType().lookupName(name.getText(), true);
     			fsn = fse != null ? fse.node() : null;
     			break; // once we are at the module we are done.    			
     		}
@@ -197,7 +197,7 @@ public class ExportNode extends BaseNode implements ISymbolNode {
 			return false;
         }
         
-        boolean dbg = false; //exportedName.getText().equals("GlobalInterrupts"); //|| getName().getText().equals(""); // || name.getText().equals("ATmega328");
+        boolean dbg = false; //exportedName.getText().equals("Mcu.wait"); //|| getName().getText().equals(""); // || name.getText().equals("ATmega328");
         if (dbg) {
      		System.out.println("\n**************ExportNode.pass1Begin() for " + exportedName.getText() + " in unit " + currUnit.getCurrUnitNode().getQualName() + "**********************\n" );
      		dbg = false;

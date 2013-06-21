@@ -591,7 +591,10 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
 					return null;
 				}
 			}
+			if (impse.node() instanceof ImportNode)
+				return (ImportNode) impse.node();
 
+			// else get the import from the unit type
 			String n = impse.scope().getScopeName();
 			n = n.indexOf('.') == -1 ? n : n
 					.substring(n.lastIndexOf('.') + 1);
