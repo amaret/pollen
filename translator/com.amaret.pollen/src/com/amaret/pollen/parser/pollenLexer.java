@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g 2013-06-05 13:32:12
+// $ANTLR 3.4 /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g 2013-07-03 15:57:37
 
     package com.amaret.pollen.parser;
     import org.antlr.runtime.BaseRecognizer;
@@ -85,6 +85,7 @@ public class pollenLexer extends Lexer {
     public static final int T__189=189;
     public static final int T__190=190;
     public static final int T__191=191;
+    public static final int T__192=192;
     public static final int ADD_EQ=4;
     public static final int ASSIGN=5;
     public static final int BIND=6;
@@ -1444,10 +1445,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__174;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:117:8: ( 'print' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:117:10: 'print'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:117:8: ( 'preset' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:117:10: 'preset'
             {
-            match("print"); 
+            match("preset"); 
 
 
 
@@ -1467,10 +1468,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__175;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:118:8: ( 'protocol' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:118:10: 'protocol'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:118:8: ( 'print' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:118:10: 'print'
             {
-            match("protocol"); 
+            match("print"); 
 
 
 
@@ -1490,10 +1491,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__176;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:119:8: ( 'provided' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:119:10: 'provided'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:119:8: ( 'protocol' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:119:10: 'protocol'
             {
-            match("provided"); 
+            match("protocol"); 
 
 
 
@@ -1513,10 +1514,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__177;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:120:8: ( 'public' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:120:10: 'public'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:120:8: ( 'provided' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:120:10: 'provided'
             {
-            match("public"); 
+            match("provided"); 
 
 
 
@@ -1536,10 +1537,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__178;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:121:8: ( 'return' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:121:10: 'return'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:121:8: ( 'public' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:121:10: 'public'
             {
-            match("return"); 
+            match("public"); 
 
 
 
@@ -1559,10 +1560,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__179;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:122:8: ( 'string' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:122:10: 'string'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:122:8: ( 'return' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:122:10: 'return'
             {
-            match("string"); 
+            match("return"); 
 
 
 
@@ -1582,10 +1583,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__180;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:123:8: ( 'switch' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:123:10: 'switch'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:123:8: ( 'string' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:123:10: 'string'
             {
-            match("switch"); 
+            match("string"); 
 
 
 
@@ -1605,10 +1606,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__181;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:124:8: ( 'true' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:124:10: 'true'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:124:8: ( 'switch' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:124:10: 'switch'
             {
-            match("true"); 
+            match("switch"); 
 
 
 
@@ -1628,10 +1629,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__182;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:125:8: ( 'type' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:125:10: 'type'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:125:8: ( 'true' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:125:10: 'true'
             {
-            match("type"); 
+            match("true"); 
 
 
 
@@ -1651,10 +1652,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__183;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:126:8: ( 'uint16' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:126:10: 'uint16'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:126:8: ( 'type' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:126:10: 'type'
             {
-            match("uint16"); 
+            match("type"); 
 
 
 
@@ -1674,10 +1675,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__184;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:127:8: ( 'uint32' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:127:10: 'uint32'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:127:8: ( 'uint16' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:127:10: 'uint16'
             {
-            match("uint32"); 
+            match("uint16"); 
 
 
 
@@ -1697,10 +1698,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__185;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:128:8: ( 'uint8' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:128:10: 'uint8'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:128:8: ( 'uint32' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:128:10: 'uint32'
             {
-            match("uint8"); 
+            match("uint32"); 
 
 
 
@@ -1720,10 +1721,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__186;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:129:8: ( 'volatile' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:129:10: 'volatile'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:129:8: ( 'uint8' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:129:10: 'uint8'
             {
-            match("volatile"); 
+            match("uint8"); 
 
 
 
@@ -1743,10 +1744,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__187;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:130:8: ( 'while' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:130:10: 'while'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:130:8: ( 'volatile' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:130:10: 'volatile'
             {
-            match("while"); 
+            match("volatile"); 
 
 
 
@@ -1766,10 +1767,12 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__188;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:131:8: ( '{' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:131:10: '{'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:131:8: ( 'while' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:131:10: 'while'
             {
-            match('{'); 
+            match("while"); 
+
+
 
             }
 
@@ -1787,10 +1790,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__189;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:132:8: ( '|' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:132:10: '|'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:132:8: ( '{' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:132:10: '{'
             {
-            match('|'); 
+            match('{'); 
 
             }
 
@@ -1808,12 +1811,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__190;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:133:8: ( '||' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:133:10: '||'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:133:8: ( '|' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:133:10: '|'
             {
-            match("||"); 
-
-
+            match('|'); 
 
             }
 
@@ -1831,10 +1832,12 @@ public class pollenLexer extends Lexer {
         try {
             int _type = T__191;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:134:8: ( '}' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:134:10: '}'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:134:8: ( '||' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:134:10: '||'
             {
-            match('}'); 
+            match("||"); 
+
+
 
             }
 
@@ -1847,18 +1850,39 @@ public class pollenLexer extends Lexer {
     }
     // $ANTLR end "T__191"
 
+    // $ANTLR start "T__192"
+    public final void mT__192() throws RecognitionException {
+        try {
+            int _type = T__192;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:135:8: ( '}' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:135:10: '}'
+            {
+            match('}'); 
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        	// do for sure before leaving
+        }
+    }
+    // $ANTLR end "T__192"
+
     // $ANTLR start "IDENT"
     public final void mIDENT() throws RecognitionException {
         try {
             int _type = IDENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1660:5: ( I ( I | D )* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1660:9: I ( I | D )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1664:5: ( I ( I | D )* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1664:9: I ( I | D )*
             {
             mI(); 
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1660:11: ( I | D )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1664:11: ( I | D )*
             loop1:
             do {
                 int alt1=2;
@@ -1908,10 +1932,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = HEX_LIT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1663:2: ( ( '0x' | '0X' ) ( H )+ ( LU )? )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1663:4: ( '0x' | '0X' ) ( H )+ ( LU )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1667:2: ( ( '0x' | '0X' ) ( H )+ ( LU )? )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1667:4: ( '0x' | '0X' ) ( H )+ ( LU )?
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1663:4: ( '0x' | '0X' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1667:4: ( '0x' | '0X' )
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -1941,7 +1965,7 @@ public class pollenLexer extends Lexer {
             }
             switch (alt2) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1663:5: '0x'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1667:5: '0x'
                     {
                     match("0x"); 
 
@@ -1950,7 +1974,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1663:12: '0X'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1667:12: '0X'
                     {
                     match("0X"); 
 
@@ -1962,7 +1986,7 @@ public class pollenLexer extends Lexer {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1663:18: ( H )+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1667:18: ( H )+
             int cnt3=0;
             loop3:
             do {
@@ -2001,7 +2025,7 @@ public class pollenLexer extends Lexer {
             } while (true);
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1663:23: ( LU )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1667:23: ( LU )?
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -2010,7 +2034,7 @@ public class pollenLexer extends Lexer {
             }
             switch (alt4) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1663:24: LU
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1667:24: LU
                     {
                     mLU(); 
 
@@ -2037,12 +2061,12 @@ public class pollenLexer extends Lexer {
         try {
             int _type = OCT_LIT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1666:2: ( '0' ( O )+ )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1666:4: '0' ( O )+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1670:2: ( '0' ( O )+ )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1670:4: '0' ( O )+
             {
             match('0'); 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1666:8: ( O )+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1670:8: ( O )+
             int cnt5=0;
             loop5:
             do {
@@ -2097,14 +2121,14 @@ public class pollenLexer extends Lexer {
         try {
             int _type = REAL_LIT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1669:2: ( ( MINUS )? ( D )+ E ( 'l' | 'L' )? | ( MINUS )? ( D )+ '.' ( D )* ( E )? ( 'l' | 'L' )? )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1673:2: ( ( MINUS )? ( D )+ E ( 'l' | 'L' )? | ( MINUS )? ( D )+ '.' ( D )* ( E )? ( 'l' | 'L' )? )
             int alt14=2;
             alt14 = dfa14.predict(input);
             switch (alt14) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1669:4: ( MINUS )? ( D )+ E ( 'l' | 'L' )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1673:4: ( MINUS )? ( D )+ E ( 'l' | 'L' )?
                     {
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1669:4: ( MINUS )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1673:4: ( MINUS )?
                     int alt6=2;
                     int LA6_0 = input.LA(1);
 
@@ -2131,7 +2155,7 @@ public class pollenLexer extends Lexer {
                     }
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1669:13: ( D )+
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1673:13: ( D )+
                     int cnt7=0;
                     loop7:
                     do {
@@ -2173,7 +2197,7 @@ public class pollenLexer extends Lexer {
                     mE(); 
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1669:18: ( 'l' | 'L' )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1673:18: ( 'l' | 'L' )?
                     int alt8=2;
                     int LA8_0 = input.LA(1);
 
@@ -2203,9 +2227,9 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1670:4: ( MINUS )? ( D )+ '.' ( D )* ( E )? ( 'l' | 'L' )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1674:4: ( MINUS )? ( D )+ '.' ( D )* ( E )? ( 'l' | 'L' )?
                     {
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1670:4: ( MINUS )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1674:4: ( MINUS )?
                     int alt9=2;
                     int LA9_0 = input.LA(1);
 
@@ -2232,7 +2256,7 @@ public class pollenLexer extends Lexer {
                     }
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1670:13: ( D )+
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1674:13: ( D )+
                     int cnt10=0;
                     loop10:
                     do {
@@ -2273,7 +2297,7 @@ public class pollenLexer extends Lexer {
 
                     match('.'); 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1670:20: ( D )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1674:20: ( D )*
                     loop11:
                     do {
                         int alt11=2;
@@ -2307,7 +2331,7 @@ public class pollenLexer extends Lexer {
                     } while (true);
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1670:23: ( E )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1674:23: ( E )?
                     int alt12=2;
                     int LA12_0 = input.LA(1);
 
@@ -2316,7 +2340,7 @@ public class pollenLexer extends Lexer {
                     }
                     switch (alt12) {
                         case 1 :
-                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1670:24: E
+                            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1674:24: E
                             {
                             mE(); 
 
@@ -2327,7 +2351,7 @@ public class pollenLexer extends Lexer {
                     }
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1670:28: ( 'l' | 'L' )?
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1674:28: ( 'l' | 'L' )?
                     int alt13=2;
                     int LA13_0 = input.LA(1);
 
@@ -2372,10 +2396,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = INT_LIT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1673:2: ( ( MINUS )? ( D )+ ( LU )? )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1673:4: ( MINUS )? ( D )+ ( LU )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1677:2: ( ( MINUS )? ( D )+ ( LU )? )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1677:4: ( MINUS )? ( D )+ ( LU )?
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1673:4: ( MINUS )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1677:4: ( MINUS )?
             int alt15=2;
             int LA15_0 = input.LA(1);
 
@@ -2402,7 +2426,7 @@ public class pollenLexer extends Lexer {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1673:13: ( D )+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1677:13: ( D )+
             int cnt16=0;
             loop16:
             do {
@@ -2441,7 +2465,7 @@ public class pollenLexer extends Lexer {
             } while (true);
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1673:16: ( LU )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1677:16: ( LU )?
             int alt17=2;
             int LA17_0 = input.LA(1);
 
@@ -2450,7 +2474,7 @@ public class pollenLexer extends Lexer {
             }
             switch (alt17) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1673:17: LU
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1677:17: LU
                     {
                     mLU(); 
 
@@ -2477,12 +2501,12 @@ public class pollenLexer extends Lexer {
         try {
             int _type = CHAR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1676:5: ( '\\'' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) ) '\\'' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1676:9: '\\'' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) ) '\\''
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1680:5: ( '\\'' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) ) '\\'' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1680:9: '\\'' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) ) '\\''
             {
             match('\''); 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1676:14: ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1680:14: ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) )
             int alt18=2;
             int LA18_0 = input.LA(1);
 
@@ -2501,10 +2525,10 @@ public class pollenLexer extends Lexer {
             }
             switch (alt18) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1676:15: ( '\\\\' ~ '\\n' )
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1680:15: ( '\\\\' ~ '\\n' )
                     {
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1676:15: ( '\\\\' ~ '\\n' )
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1676:16: '\\\\' ~ '\\n'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1680:15: ( '\\\\' ~ '\\n' )
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1680:16: '\\\\' ~ '\\n'
                     {
                     match('\\'); 
 
@@ -2524,7 +2548,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1676:30: ~ ( '\\\\' | '\\'' | '\\n' )
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1680:30: ~ ( '\\\\' | '\\'' | '\\n' )
                     {
                     if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '\t')||(input.LA(1) >= '\u000B' && input.LA(1) <= '&')||(input.LA(1) >= '(' && input.LA(1) <= '[')||(input.LA(1) >= ']' && input.LA(1) <= '\uFFFF') ) {
                         input.consume();
@@ -2560,7 +2584,7 @@ public class pollenLexer extends Lexer {
         try {
             int _type = STRING;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1679:5: ( '\"' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\"' | '\\n' ) )* '\"' | '\\'' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) )+ '\\'' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1683:5: ( '\"' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\"' | '\\n' ) )* '\"' | '\\'' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) )+ '\\'' )
             int alt21=2;
             int LA21_0 = input.LA(1);
 
@@ -2579,11 +2603,11 @@ public class pollenLexer extends Lexer {
             }
             switch (alt21) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1679:9: '\"' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\"' | '\\n' ) )* '\"'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1683:9: '\"' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\"' | '\\n' ) )* '\"'
                     {
                     match('\"'); 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1679:13: ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\"' | '\\n' ) )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1683:13: ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\"' | '\\n' ) )*
                     loop19:
                     do {
                         int alt19=3;
@@ -2599,10 +2623,10 @@ public class pollenLexer extends Lexer {
 
                         switch (alt19) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1679:14: ( '\\\\' ~ '\\n' )
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1683:14: ( '\\\\' ~ '\\n' )
                     	    {
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1679:14: ( '\\\\' ~ '\\n' )
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1679:15: '\\\\' ~ '\\n'
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1683:14: ( '\\\\' ~ '\\n' )
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1683:15: '\\\\' ~ '\\n'
                     	    {
                     	    match('\\'); 
 
@@ -2622,7 +2646,7 @@ public class pollenLexer extends Lexer {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1679:29: ~ ( '\\\\' | '\"' | '\\n' )
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1683:29: ~ ( '\\\\' | '\"' | '\\n' )
                     	    {
                     	    if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '\t')||(input.LA(1) >= '\u000B' && input.LA(1) <= '!')||(input.LA(1) >= '#' && input.LA(1) <= '[')||(input.LA(1) >= ']' && input.LA(1) <= '\uFFFF') ) {
                     	        input.consume();
@@ -2648,11 +2672,11 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1680:9: '\\'' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) )+ '\\''
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1684:9: '\\'' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) )+ '\\''
                     {
                     match('\''); 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1680:14: ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) )+
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1684:14: ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) )+
                     int cnt20=0;
                     loop20:
                     do {
@@ -2669,10 +2693,10 @@ public class pollenLexer extends Lexer {
 
                         switch (alt20) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1680:15: ( '\\\\' ~ '\\n' )
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1684:15: ( '\\\\' ~ '\\n' )
                     	    {
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1680:15: ( '\\\\' ~ '\\n' )
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1680:16: '\\\\' ~ '\\n'
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1684:15: ( '\\\\' ~ '\\n' )
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1684:16: '\\\\' ~ '\\n'
                     	    {
                     	    match('\\'); 
 
@@ -2692,7 +2716,7 @@ public class pollenLexer extends Lexer {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1680:30: ~ ( '\\\\' | '\\'' | '\\n' )
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1684:30: ~ ( '\\\\' | '\\'' | '\\n' )
                     	    {
                     	    if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '\t')||(input.LA(1) >= '\u000B' && input.LA(1) <= '&')||(input.LA(1) >= '(' && input.LA(1) <= '[')||(input.LA(1) >= ']' && input.LA(1) <= '\uFFFF') ) {
                     	        input.consume();
@@ -2737,10 +2761,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1683:5: ( ( ' ' | '\\t' )* )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1683:9: ( ' ' | '\\t' )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1687:5: ( ( ' ' | '\\t' )* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1687:9: ( ' ' | '\\t' )*
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1683:9: ( ' ' | '\\t' )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1687:9: ( ' ' | '\\t' )*
             loop22:
             do {
                 int alt22=2;
@@ -2792,7 +2816,7 @@ public class pollenLexer extends Lexer {
         try {
             int _type = SL_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1686:5: ( '#' (~ ( '\\n' | '\\r' ) )* | '/' '/' (~ ( '\\n' | '\\r' ) )* | '---' (~ ( '\\n' | '\\r' ) )* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1690:5: ( '#' (~ ( '\\n' | '\\r' ) )* | '/' '/' (~ ( '\\n' | '\\r' ) )* | '---' (~ ( '\\n' | '\\r' ) )* )
             int alt26=3;
             switch ( input.LA(1) ) {
             case '#':
@@ -2820,11 +2844,11 @@ public class pollenLexer extends Lexer {
 
             switch (alt26) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1686:7: '#' (~ ( '\\n' | '\\r' ) )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1690:7: '#' (~ ( '\\n' | '\\r' ) )*
                     {
                     match('#'); 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1686:11: (~ ( '\\n' | '\\r' ) )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1690:11: (~ ( '\\n' | '\\r' ) )*
                     loop23:
                     do {
                         int alt23=2;
@@ -2863,13 +2887,13 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1687:7: '/' '/' (~ ( '\\n' | '\\r' ) )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1691:7: '/' '/' (~ ( '\\n' | '\\r' ) )*
                     {
                     match('/'); 
 
                     match('/'); 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1687:14: (~ ( '\\n' | '\\r' ) )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1691:14: (~ ( '\\n' | '\\r' ) )*
                     loop24:
                     do {
                         int alt24=2;
@@ -2908,13 +2932,13 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1688:7: '---' (~ ( '\\n' | '\\r' ) )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1692:7: '---' (~ ( '\\n' | '\\r' ) )*
                     {
                     match("---"); 
 
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1688:13: (~ ( '\\n' | '\\r' ) )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1692:13: (~ ( '\\n' | '\\r' ) )*
                     loop25:
                     do {
                         int alt25=2;
@@ -2968,13 +2992,13 @@ public class pollenLexer extends Lexer {
         try {
             int _type = INJECT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1692:2: ( IJ_BEG ( options {greedy=false; } : . )* IJ_END )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1692:4: IJ_BEG ( options {greedy=false; } : . )* IJ_END
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1696:2: ( IJ_BEG ( options {greedy=false; } : . )* IJ_END )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1696:4: IJ_BEG ( options {greedy=false; } : . )* IJ_END
             {
             mIJ_BEG(); 
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1692:11: ( options {greedy=false; } : . )*
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1696:11: ( options {greedy=false; } : . )*
             loop27:
             do {
                 int alt27=2;
@@ -2999,7 +3023,7 @@ public class pollenLexer extends Lexer {
 
                 switch (alt27) {
             	case 1 :
-            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1692:39: .
+            	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1696:39: .
             	    {
             	    matchAny(); 
 
@@ -3031,7 +3055,7 @@ public class pollenLexer extends Lexer {
         try {
             int _type = ML_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1697:7: ( '----' ( '-' )* ( ' ' | '\\t' )* ( '\\n' | '\\r' ) ( options {greedy=false; } : . )* '---' ( '-' )* ( '\\n' | '\\r' )* | '!--' ( options {greedy=false; } : . )* '--!' ( '\\n' | '\\r' )* )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1701:7: ( '----' ( '-' )* ( ' ' | '\\t' )* ( '\\n' | '\\r' ) ( options {greedy=false; } : . )* '---' ( '-' )* ( '\\n' | '\\r' )* | '!--' ( options {greedy=false; } : . )* '--!' ( '\\n' | '\\r' )* )
             int alt35=2;
             int LA35_0 = input.LA(1);
 
@@ -3050,13 +3074,13 @@ public class pollenLexer extends Lexer {
             }
             switch (alt35) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1697:10: '----' ( '-' )* ( ' ' | '\\t' )* ( '\\n' | '\\r' ) ( options {greedy=false; } : . )* '---' ( '-' )* ( '\\n' | '\\r' )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1701:10: '----' ( '-' )* ( ' ' | '\\t' )* ( '\\n' | '\\r' ) ( options {greedy=false; } : . )* '---' ( '-' )* ( '\\n' | '\\r' )*
                     {
                     match("----"); 
 
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1697:17: ( '-' )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1701:17: ( '-' )*
                     loop28:
                     do {
                         int alt28=2;
@@ -3069,7 +3093,7 @@ public class pollenLexer extends Lexer {
 
                         switch (alt28) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1697:18: '-'
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1701:18: '-'
                     	    {
                     	    match('-'); 
 
@@ -3082,7 +3106,7 @@ public class pollenLexer extends Lexer {
                     } while (true);
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1697:24: ( ' ' | '\\t' )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1701:24: ( ' ' | '\\t' )*
                     loop29:
                     do {
                         int alt29=2;
@@ -3126,7 +3150,7 @@ public class pollenLexer extends Lexer {
                     }
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1697:50: ( options {greedy=false; } : . )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1701:50: ( options {greedy=false; } : . )*
                     loop30:
                     do {
                         int alt30=2;
@@ -3160,7 +3184,7 @@ public class pollenLexer extends Lexer {
 
                         switch (alt30) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1697:78: .
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1701:78: .
                     	    {
                     	    matchAny(); 
 
@@ -3177,7 +3201,7 @@ public class pollenLexer extends Lexer {
 
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1697:89: ( '-' )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1701:89: ( '-' )*
                     loop31:
                     do {
                         int alt31=2;
@@ -3190,7 +3214,7 @@ public class pollenLexer extends Lexer {
 
                         switch (alt31) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1697:90: '-'
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1701:90: '-'
                     	    {
                     	    match('-'); 
 
@@ -3203,7 +3227,7 @@ public class pollenLexer extends Lexer {
                     } while (true);
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1697:95: ( '\\n' | '\\r' )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1701:95: ( '\\n' | '\\r' )*
                     loop32:
                     do {
                         int alt32=2;
@@ -3242,13 +3266,13 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1698:8: '!--' ( options {greedy=false; } : . )* '--!' ( '\\n' | '\\r' )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1702:8: '!--' ( options {greedy=false; } : . )* '--!' ( '\\n' | '\\r' )*
                     {
                     match("!--"); 
 
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1698:14: ( options {greedy=false; } : . )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1702:14: ( options {greedy=false; } : . )*
                     loop33:
                     do {
                         int alt33=2;
@@ -3282,7 +3306,7 @@ public class pollenLexer extends Lexer {
 
                         switch (alt33) {
                     	case 1 :
-                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1698:42: .
+                    	    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1702:42: .
                     	    {
                     	    matchAny(); 
 
@@ -3299,7 +3323,7 @@ public class pollenLexer extends Lexer {
 
 
 
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1698:54: ( '\\n' | '\\r' )*
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1702:54: ( '\\n' | '\\r' )*
                     loop34:
                     do {
                         int alt34=2;
@@ -3353,8 +3377,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = SEMI;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1702:5: ( ';' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1702:9: ';'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1706:5: ( ';' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1706:9: ';'
             {
             match(';'); 
 
@@ -3374,10 +3398,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = NL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1705:5: ( ( '\\r' )? ( '\\n' ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1705:9: ( '\\r' )? ( '\\n' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1709:5: ( ( '\\r' )? ( '\\n' ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1709:9: ( '\\r' )? ( '\\n' )
             {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1705:9: ( '\\r' )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1709:9: ( '\\r' )?
             int alt36=2;
             int LA36_0 = input.LA(1);
 
@@ -3386,7 +3410,7 @@ public class pollenLexer extends Lexer {
             }
             switch (alt36) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1705:10: '\\r'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1709:10: '\\r'
                     {
                     match('\r'); 
 
@@ -3396,8 +3420,8 @@ public class pollenLexer extends Lexer {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1705:17: ( '\\n' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1705:18: '\\n'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1709:17: ( '\\n' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1709:18: '\\n'
             {
             match('\n'); 
 
@@ -3420,7 +3444,7 @@ public class pollenLexer extends Lexer {
         try {
             int _type = ILLEGAL_CHARACTER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1708:5: ( '\\u0080' .. '\\uFFFF' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1712:5: ( '\\u0080' .. '\\uFFFF' )
             // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             if ( (input.LA(1) >= '\u0080' && input.LA(1) <= '\uFFFF') ) {
@@ -3447,7 +3471,7 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "I"
     public final void mI() throws RecognitionException {
         try {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1711:11: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '$' ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1715:11: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '$' ) )
             // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             if ( input.LA(1)=='$'||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
@@ -3473,7 +3497,7 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "D"
     public final void mD() throws RecognitionException {
         try {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1712:11: ( '0' .. '9' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1716:11: ( '0' .. '9' )
             // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
@@ -3499,7 +3523,7 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "O"
     public final void mO() throws RecognitionException {
         try {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1713:11: ( '0' .. '7' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1717:11: ( '0' .. '7' )
             // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             if ( (input.LA(1) >= '0' && input.LA(1) <= '7') ) {
@@ -3525,7 +3549,7 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "H"
     public final void mH() throws RecognitionException {
         try {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1714:11: ( 'a' .. 'f' | 'A' .. 'F' | '0' .. '9' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1718:11: ( 'a' .. 'f' | 'A' .. 'F' | '0' .. '9' )
             // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             if ( (input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'F')||(input.LA(1) >= 'a' && input.LA(1) <= 'f') ) {
@@ -3551,8 +3575,8 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "E"
     public final void mE() throws RecognitionException {
         try {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1715:11: ( ( 'E' | 'e' ) ( PLUS | MINUS )? ( D )+ )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1715:20: ( 'E' | 'e' ) ( PLUS | MINUS )? ( D )+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1719:11: ( ( 'E' | 'e' ) ( PLUS | MINUS )? ( D )+ )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1719:20: ( 'E' | 'e' ) ( PLUS | MINUS )? ( D )+
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
@@ -3564,7 +3588,7 @@ public class pollenLexer extends Lexer {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1715:32: ( PLUS | MINUS )?
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1719:32: ( PLUS | MINUS )?
             int alt37=2;
             int LA37_0 = input.LA(1);
 
@@ -3591,7 +3615,7 @@ public class pollenLexer extends Lexer {
             }
 
 
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1715:48: ( D )+
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1719:48: ( D )+
             int cnt38=0;
             loop38:
             do {
@@ -3643,7 +3667,7 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "LU"
     public final void mLU() throws RecognitionException {
         try {
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1716:12: ( 'LU' | 'Lu' | 'lU' | 'lu' | 'UL' | 'uL' | 'Ul' | 'ul' | 'l' | 'u' | 'L' | 'U' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1720:12: ( 'LU' | 'Lu' | 'lU' | 'lu' | 'UL' | 'uL' | 'Ul' | 'ul' | 'l' | 'u' | 'L' | 'U' )
             int alt39=12;
             switch ( input.LA(1) ) {
             case 'L':
@@ -3732,7 +3756,7 @@ public class pollenLexer extends Lexer {
 
             switch (alt39) {
                 case 1 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1716:20: 'LU'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1720:20: 'LU'
                     {
                     match("LU"); 
 
@@ -3741,7 +3765,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1716:27: 'Lu'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1720:27: 'Lu'
                     {
                     match("Lu"); 
 
@@ -3750,7 +3774,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1716:34: 'lU'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1720:34: 'lU'
                     {
                     match("lU"); 
 
@@ -3759,7 +3783,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 4 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1716:41: 'lu'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1720:41: 'lu'
                     {
                     match("lu"); 
 
@@ -3768,7 +3792,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 5 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1716:48: 'UL'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1720:48: 'UL'
                     {
                     match("UL"); 
 
@@ -3777,7 +3801,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 6 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1716:55: 'uL'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1720:55: 'uL'
                     {
                     match("uL"); 
 
@@ -3786,7 +3810,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 7 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1716:62: 'Ul'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1720:62: 'Ul'
                     {
                     match("Ul"); 
 
@@ -3795,7 +3819,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 8 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1716:69: 'ul'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1720:69: 'ul'
                     {
                     match("ul"); 
 
@@ -3804,28 +3828,28 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 9 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1716:76: 'l'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1720:76: 'l'
                     {
                     match('l'); 
 
                     }
                     break;
                 case 10 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1716:82: 'u'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1720:82: 'u'
                     {
                     match('u'); 
 
                     }
                     break;
                 case 11 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1716:88: 'L'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1720:88: 'L'
                     {
                     match('L'); 
 
                     }
                     break;
                 case 12 :
-                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1716:94: 'U'
+                    // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1720:94: 'U'
                     {
                     match('U'); 
 
@@ -3846,8 +3870,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = INC;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1718:6: ( '++' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1718:8: '++'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1722:6: ( '++' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1722:8: '++'
             {
             match("++"); 
 
@@ -3869,8 +3893,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = PLUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1719:7: ( '+' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1719:9: '+'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1723:7: ( '+' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1723:9: '+'
             {
             match('+'); 
 
@@ -3890,8 +3914,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = DEC;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1720:6: ( '--' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1720:8: '--'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1724:6: ( '--' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1724:8: '--'
             {
             match("--"); 
 
@@ -3913,8 +3937,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = MINUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1721:8: ( ( '-' ) )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1721:10: ( '-' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1725:8: ( ( '-' ) )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1725:10: ( '-' )
             {
             if ( input.LA(1)=='-' ) {
                 input.consume();
@@ -3942,8 +3966,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = ASSIGN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1722:8: ( '=' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1722:10: '='
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1726:8: ( '=' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1726:10: '='
             {
             match('='); 
 
@@ -3963,8 +3987,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = BIND;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1723:8: ( ':=' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1723:10: ':='
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1727:8: ( ':=' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1727:10: ':='
             {
             match(":="); 
 
@@ -3986,8 +4010,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = ADD_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1724:8: ( '+=' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1724:10: '+='
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1728:8: ( '+=' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1728:10: '+='
             {
             match("+="); 
 
@@ -4009,8 +4033,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = SUB_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1725:8: ( '-=' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1725:10: '-='
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1729:8: ( '-=' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1729:10: '-='
             {
             match("-="); 
 
@@ -4032,8 +4056,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = MUL_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1726:8: ( '*=' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1726:10: '*='
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1730:8: ( '*=' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1730:10: '*='
             {
             match("*="); 
 
@@ -4055,8 +4079,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = DIV_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1727:8: ( '\\\\=' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1727:10: '\\\\='
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1731:8: ( '\\\\=' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1731:10: '\\\\='
             {
             match("\\="); 
 
@@ -4078,8 +4102,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = BITOR_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1728:10: ( '|=' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1728:12: '|='
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1732:10: ( '|=' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1732:12: '|='
             {
             match("|="); 
 
@@ -4101,8 +4125,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = BITXOR_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1729:10: ( '^=' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1729:12: '^='
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1733:10: ( '^=' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1733:12: '^='
             {
             match("^="); 
 
@@ -4124,8 +4148,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = BITAND_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1730:10: ( '&=' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1730:12: '&='
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1734:10: ( '&=' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1734:12: '&='
             {
             match("&="); 
 
@@ -4147,8 +4171,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = RSHFT_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1731:10: ( '>>=' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1731:12: '>>='
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1735:10: ( '>>=' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1735:12: '>>='
             {
             match(">>="); 
 
@@ -4170,8 +4194,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = LSHFT_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1732:10: ( '<<=' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1732:12: '<<='
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1736:10: ( '<<=' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1736:12: '<<='
             {
             match("<<="); 
 
@@ -4193,8 +4217,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = MOD_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1733:8: ( '%=' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1733:10: '%='
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1737:8: ( '%=' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1737:10: '%='
             {
             match("%="); 
 
@@ -4216,8 +4240,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1734:6: ( '==' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1734:8: '=='
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1738:6: ( '==' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1738:8: '=='
             {
             match("=="); 
 
@@ -4239,8 +4263,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = NOT_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1735:8: ( '!=' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1735:10: '!='
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1739:8: ( '!=' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1739:10: '!='
             {
             match("!="); 
 
@@ -4262,8 +4286,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = LT_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1736:8: ( '<=' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1736:10: '<='
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1740:8: ( '<=' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1740:10: '<='
             {
             match("<="); 
 
@@ -4285,8 +4309,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = GT_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1737:8: ( '>=' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1737:10: '>='
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1741:8: ( '>=' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1741:10: '>='
             {
             match(">="); 
 
@@ -4308,8 +4332,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = LOG_NOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1738:9: ( '!' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1738:11: '!'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1742:9: ( '!' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1742:11: '!'
             {
             match('!'); 
 
@@ -4329,8 +4353,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = BIT_NOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1739:9: ( '~' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1739:11: '~'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1743:9: ( '~' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1743:11: '~'
             {
             match('~'); 
 
@@ -4350,8 +4374,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = GT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1740:6: ( '>' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1740:9: '>'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1744:6: ( '>' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1744:9: '>'
             {
             match('>'); 
 
@@ -4371,8 +4395,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = LT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1741:6: ( '<' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1741:8: '<'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1745:6: ( '<' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1745:8: '<'
             {
             match('<'); 
 
@@ -4392,8 +4416,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = IJ_BEG;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1744:7: ( '+{' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1744:10: '+{'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1748:7: ( '+{' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1748:10: '+{'
             {
             match("+{"); 
 
@@ -4415,8 +4439,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = IJ_END;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1745:7: ( '}+' )
-            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1745:10: '}+'
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1749:7: ( '}+' )
+            // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1749:10: '}+'
             {
             match("}+"); 
 
@@ -4434,8 +4458,8 @@ public class pollenLexer extends Lexer {
     // $ANTLR end "IJ_END"
 
     public void mTokens() throws RecognitionException {
-        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:8: ( THIS | T__123 | T__124 | T__125 | T__126 | T__127 | T__128 | T__129 | T__130 | T__131 | T__132 | T__133 | T__134 | T__135 | T__136 | T__137 | T__138 | T__139 | T__140 | T__141 | T__142 | T__143 | T__144 | T__145 | T__146 | T__147 | T__148 | T__149 | T__150 | T__151 | T__152 | T__153 | T__154 | T__155 | T__156 | T__157 | T__158 | T__159 | T__160 | T__161 | T__162 | T__163 | T__164 | T__165 | T__166 | T__167 | T__168 | T__169 | T__170 | T__171 | T__172 | T__173 | T__174 | T__175 | T__176 | T__177 | T__178 | T__179 | T__180 | T__181 | T__182 | T__183 | T__184 | T__185 | T__186 | T__187 | T__188 | T__189 | T__190 | T__191 | IDENT | HEX_LIT | OCT_LIT | REAL_LIT | INT_LIT | CHAR | STRING | WS | SL_COMMENT | INJECT | ML_COMMENT | SEMI | NL | ILLEGAL_CHARACTER | INC | PLUS | DEC | MINUS | ASSIGN | BIND | ADD_EQ | SUB_EQ | MUL_EQ | DIV_EQ | BITOR_EQ | BITXOR_EQ | BITAND_EQ | RSHFT_EQ | LSHFT_EQ | MOD_EQ | EQ | NOT_EQ | LT_EQ | GT_EQ | LOG_NOT | BIT_NOT | GT | LT | IJ_BEG | IJ_END )
-        int alt40=110;
+        // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:8: ( THIS | T__123 | T__124 | T__125 | T__126 | T__127 | T__128 | T__129 | T__130 | T__131 | T__132 | T__133 | T__134 | T__135 | T__136 | T__137 | T__138 | T__139 | T__140 | T__141 | T__142 | T__143 | T__144 | T__145 | T__146 | T__147 | T__148 | T__149 | T__150 | T__151 | T__152 | T__153 | T__154 | T__155 | T__156 | T__157 | T__158 | T__159 | T__160 | T__161 | T__162 | T__163 | T__164 | T__165 | T__166 | T__167 | T__168 | T__169 | T__170 | T__171 | T__172 | T__173 | T__174 | T__175 | T__176 | T__177 | T__178 | T__179 | T__180 | T__181 | T__182 | T__183 | T__184 | T__185 | T__186 | T__187 | T__188 | T__189 | T__190 | T__191 | T__192 | IDENT | HEX_LIT | OCT_LIT | REAL_LIT | INT_LIT | CHAR | STRING | WS | SL_COMMENT | INJECT | ML_COMMENT | SEMI | NL | ILLEGAL_CHARACTER | INC | PLUS | DEC | MINUS | ASSIGN | BIND | ADD_EQ | SUB_EQ | MUL_EQ | DIV_EQ | BITOR_EQ | BITXOR_EQ | BITAND_EQ | RSHFT_EQ | LSHFT_EQ | MOD_EQ | EQ | NOT_EQ | LT_EQ | GT_EQ | LOG_NOT | BIT_NOT | GT | LT | IJ_BEG | IJ_END )
+        int alt40=111;
         alt40 = dfa40.predict(input);
         switch (alt40) {
             case 1 :
@@ -4999,319 +5023,327 @@ public class pollenLexer extends Lexer {
                 }
                 break;
             case 71 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:498: IDENT
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:498: T__192
+                {
+                mT__192(); 
+
+
+                }
+                break;
+            case 72 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:505: IDENT
                 {
                 mIDENT(); 
 
 
                 }
                 break;
-            case 72 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:504: HEX_LIT
+            case 73 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:511: HEX_LIT
                 {
                 mHEX_LIT(); 
 
 
                 }
                 break;
-            case 73 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:512: OCT_LIT
+            case 74 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:519: OCT_LIT
                 {
                 mOCT_LIT(); 
 
 
                 }
                 break;
-            case 74 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:520: REAL_LIT
+            case 75 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:527: REAL_LIT
                 {
                 mREAL_LIT(); 
 
 
                 }
                 break;
-            case 75 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:529: INT_LIT
+            case 76 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:536: INT_LIT
                 {
                 mINT_LIT(); 
 
 
                 }
                 break;
-            case 76 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:537: CHAR
+            case 77 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:544: CHAR
                 {
                 mCHAR(); 
 
 
                 }
                 break;
-            case 77 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:542: STRING
+            case 78 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:549: STRING
                 {
                 mSTRING(); 
 
 
                 }
                 break;
-            case 78 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:549: WS
+            case 79 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:556: WS
                 {
                 mWS(); 
 
 
                 }
                 break;
-            case 79 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:552: SL_COMMENT
+            case 80 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:559: SL_COMMENT
                 {
                 mSL_COMMENT(); 
 
 
                 }
                 break;
-            case 80 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:563: INJECT
+            case 81 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:570: INJECT
                 {
                 mINJECT(); 
 
 
                 }
                 break;
-            case 81 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:570: ML_COMMENT
+            case 82 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:577: ML_COMMENT
                 {
                 mML_COMMENT(); 
 
 
                 }
                 break;
-            case 82 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:581: SEMI
+            case 83 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:588: SEMI
                 {
                 mSEMI(); 
 
 
                 }
                 break;
-            case 83 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:586: NL
+            case 84 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:593: NL
                 {
                 mNL(); 
 
 
                 }
                 break;
-            case 84 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:589: ILLEGAL_CHARACTER
+            case 85 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:596: ILLEGAL_CHARACTER
                 {
                 mILLEGAL_CHARACTER(); 
 
 
                 }
                 break;
-            case 85 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:607: INC
+            case 86 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:614: INC
                 {
                 mINC(); 
 
 
                 }
                 break;
-            case 86 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:611: PLUS
+            case 87 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:618: PLUS
                 {
                 mPLUS(); 
 
 
                 }
                 break;
-            case 87 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:616: DEC
+            case 88 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:623: DEC
                 {
                 mDEC(); 
 
 
                 }
                 break;
-            case 88 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:620: MINUS
+            case 89 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:627: MINUS
                 {
                 mMINUS(); 
 
 
                 }
                 break;
-            case 89 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:626: ASSIGN
+            case 90 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:633: ASSIGN
                 {
                 mASSIGN(); 
 
 
                 }
                 break;
-            case 90 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:633: BIND
+            case 91 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:640: BIND
                 {
                 mBIND(); 
 
 
                 }
                 break;
-            case 91 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:638: ADD_EQ
+            case 92 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:645: ADD_EQ
                 {
                 mADD_EQ(); 
 
 
                 }
                 break;
-            case 92 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:645: SUB_EQ
+            case 93 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:652: SUB_EQ
                 {
                 mSUB_EQ(); 
 
 
                 }
                 break;
-            case 93 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:652: MUL_EQ
+            case 94 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:659: MUL_EQ
                 {
                 mMUL_EQ(); 
 
 
                 }
                 break;
-            case 94 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:659: DIV_EQ
+            case 95 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:666: DIV_EQ
                 {
                 mDIV_EQ(); 
 
 
                 }
                 break;
-            case 95 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:666: BITOR_EQ
+            case 96 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:673: BITOR_EQ
                 {
                 mBITOR_EQ(); 
 
 
                 }
                 break;
-            case 96 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:675: BITXOR_EQ
+            case 97 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:682: BITXOR_EQ
                 {
                 mBITXOR_EQ(); 
 
 
                 }
                 break;
-            case 97 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:685: BITAND_EQ
+            case 98 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:692: BITAND_EQ
                 {
                 mBITAND_EQ(); 
 
 
                 }
                 break;
-            case 98 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:695: RSHFT_EQ
+            case 99 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:702: RSHFT_EQ
                 {
                 mRSHFT_EQ(); 
 
 
                 }
                 break;
-            case 99 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:704: LSHFT_EQ
+            case 100 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:711: LSHFT_EQ
                 {
                 mLSHFT_EQ(); 
 
 
                 }
                 break;
-            case 100 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:713: MOD_EQ
+            case 101 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:720: MOD_EQ
                 {
                 mMOD_EQ(); 
 
 
                 }
                 break;
-            case 101 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:720: EQ
+            case 102 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:727: EQ
                 {
                 mEQ(); 
 
 
                 }
                 break;
-            case 102 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:723: NOT_EQ
+            case 103 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:730: NOT_EQ
                 {
                 mNOT_EQ(); 
 
 
                 }
                 break;
-            case 103 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:730: LT_EQ
+            case 104 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:737: LT_EQ
                 {
                 mLT_EQ(); 
 
 
                 }
                 break;
-            case 104 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:736: GT_EQ
+            case 105 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:743: GT_EQ
                 {
                 mGT_EQ(); 
 
 
                 }
                 break;
-            case 105 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:742: LOG_NOT
+            case 106 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:749: LOG_NOT
                 {
                 mLOG_NOT(); 
 
 
                 }
                 break;
-            case 106 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:750: BIT_NOT
+            case 107 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:757: BIT_NOT
                 {
                 mBIT_NOT(); 
 
 
                 }
                 break;
-            case 107 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:758: GT
+            case 108 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:765: GT
                 {
                 mGT(); 
 
 
                 }
                 break;
-            case 108 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:761: LT
+            case 109 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:768: LT
                 {
                 mLT(); 
 
 
                 }
                 break;
-            case 109 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:764: IJ_BEG
+            case 110 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:771: IJ_BEG
                 {
                 mIJ_BEG(); 
 
 
                 }
                 break;
-            case 110 :
-                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:771: IJ_END
+            case 111 :
+                // /home/lucidbee/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1:778: IJ_END
                 {
                 mIJ_END(); 
 
@@ -5376,7 +5408,7 @@ public class pollenLexer extends Lexer {
             this.transition = DFA14_transition;
         }
         public String getDescription() {
-            return "1668:1: REAL_LIT : ( ( MINUS )? ( D )+ E ( 'l' | 'L' )? | ( MINUS )? ( D )+ '.' ( D )* ( E )? ( 'l' | 'L' )? );";
+            return "1672:1: REAL_LIT : ( ( MINUS )? ( D )+ E ( 'l' | 'L' )? | ( MINUS )? ( D )+ '.' ( D )* ( E )? ( 'l' | 'L' )? );";
         }
     }
     static final String DFA40_eotS =
@@ -5384,22 +5416,23 @@ public class pollenLexer extends Lexer {
         "\4\uffff\1\113\22\47\1\uffff\1\161\1\163\1\uffff\1\167\1\172\1\167"+
         "\4\uffff\1\u0080\1\u0083\3\uffff\1\u0085\2\uffff\3\47\12\uffff\1"+
         "\u008a\2\uffff\1\u008c\4\uffff\1\u008d\7\47\1\u0096\10\47\1\u00a1"+
-        "\21\47\6\uffff\1\u00b4\2\uffff\1\u00b6\4\uffff\1\u00b9\10\uffff"+
-        "\3\47\5\uffff\10\47\1\uffff\3\47\1\u00ca\3\47\1\u00ce\2\47\1\uffff"+
-        "\2\47\1\u00d6\2\47\1\u00d9\1\47\1\u00db\12\47\1\uffff\1\56\5\uffff"+
-        "\1\u00e9\1\u00ea\1\u00eb\1\u00ec\1\47\1\u00ee\1\u00ef\5\47\1\u00f5"+
-        "\1\u00f6\1\u00f7\1\uffff\3\47\1\uffff\1\u00fb\1\u00fc\4\47\1\u0101"+
-        "\1\uffff\1\u0102\1\47\1\uffff\1\u0104\1\uffff\13\47\1\56\5\uffff"+
-        "\1\u0114\2\uffff\1\u0115\1\47\1\u0117\2\47\3\uffff\2\47\1\u011c"+
-        "\2\uffff\2\47\1\u011f\1\u0120\2\uffff\1\47\1\uffff\1\47\1\u0123"+
-        "\10\47\1\u012c\1\47\1\u012e\2\56\2\uffff\1\47\1\uffff\2\47\1\u0132"+
-        "\1\47\1\uffff\1\47\1\u0135\2\uffff\1\u0136\1\47\1\uffff\2\47\1\u013a"+
-        "\1\u013b\1\u013c\1\u013d\1\u013e\1\u013f\1\uffff\1\47\1\uffff\2"+
-        "\47\1\u0143\1\uffff\1\u0144\1\47\2\uffff\1\u0146\2\47\6\uffff\2"+
-        "\47\1\u014b\2\uffff\1\47\1\uffff\1\u014d\1\u014e\1\u014f\1\47\1"+
-        "\uffff\1\47\3\uffff\1\47\1\u0153\1\u0154\2\uffff";
+        "\21\47\6\uffff\1\u00b5\2\uffff\1\u00b7\4\uffff\1\u00ba\10\uffff"+
+        "\3\47\5\uffff\10\47\1\uffff\3\47\1\u00cb\3\47\1\u00cf\2\47\1\uffff"+
+        "\2\47\1\u00d7\2\47\1\u00da\1\47\1\u00dc\13\47\1\uffff\1\56\5\uffff"+
+        "\1\u00eb\1\u00ec\1\u00ed\1\u00ee\1\47\1\u00f0\1\u00f1\5\47\1\u00f7"+
+        "\1\u00f8\1\u00f9\1\uffff\3\47\1\uffff\1\u00fd\1\u00fe\4\47\1\u0103"+
+        "\1\uffff\1\u0104\1\47\1\uffff\1\u0106\1\uffff\14\47\1\56\5\uffff"+
+        "\1\u0117\2\uffff\1\u0118\1\47\1\u011a\2\47\3\uffff\2\47\1\u011f"+
+        "\2\uffff\2\47\1\u0122\1\u0123\2\uffff\1\47\1\uffff\2\47\1\u0127"+
+        "\10\47\1\u0130\1\47\1\u0132\2\56\2\uffff\1\47\1\uffff\2\47\1\u0136"+
+        "\1\47\1\uffff\1\47\1\u0139\2\uffff\1\u013a\1\47\1\u013c\1\uffff"+
+        "\2\47\1\u013f\1\u0140\1\u0141\1\u0142\1\u0143\1\u0144\1\uffff\1"+
+        "\47\1\uffff\2\47\1\u0148\1\uffff\1\u0149\1\47\2\uffff\1\u014b\1"+
+        "\uffff\2\47\6\uffff\2\47\1\u0150\2\uffff\1\47\1\uffff\1\u0152\1"+
+        "\u0153\1\u0154\1\47\1\uffff\1\47\3\uffff\1\47\1\u0158\1\u0159\2"+
+        "\uffff";
     static final String DFA40_eofS =
-        "\u0155\uffff";
+        "\u015a\uffff";
     static final String DFA40_minS =
         "\1\12\1\150\1\75\1\46\2\uffff\1\75\2\uffff\1\57\1\75\1\74\1\75\4"+
         "\uffff\1\75\1\163\1\157\1\141\1\145\1\154\1\141\1\157\1\146\1\157"+
@@ -5408,24 +5441,24 @@ public class pollenLexer extends Lexer {
         "\uffff\1\151\1\165\1\160\12\uffff\1\75\2\uffff\1\75\4\uffff\1\44"+
         "\1\157\1\145\1\164\1\163\1\141\1\155\1\146\1\44\1\151\1\165\1\162"+
         "\1\160\1\154\1\162\1\157\1\163\1\44\1\160\1\164\1\147\1\164\1\144"+
-        "\1\167\1\154\1\164\1\143\1\151\1\142\1\164\1\162\1\151\1\156\1\154"+
+        "\1\167\1\154\1\164\1\143\1\145\1\142\1\164\1\162\1\151\1\156\1\154"+
         "\1\151\6\uffff\1\56\2\uffff\1\55\2\uffff\3\0\10\uffff\1\163\2\145"+
         "\5\uffff\1\154\1\141\2\145\1\163\1\160\1\163\1\141\1\uffff\1\146"+
         "\1\145\1\155\1\44\1\157\1\145\1\163\1\44\1\155\1\164\1\uffff\1\154"+
-        "\1\61\1\44\1\141\1\165\1\44\1\154\1\44\1\153\1\156\1\164\1\154\1"+
-        "\165\1\151\2\164\1\141\1\154\1\uffff\1\55\1\uffff\1\0\3\uffff\4"+
-        "\44\1\153\2\44\1\163\1\157\1\164\1\151\1\165\3\44\1\uffff\1\162"+
+        "\1\61\1\44\1\141\1\165\1\44\1\154\1\44\1\153\1\163\1\156\1\164\1"+
+        "\154\1\165\1\151\2\164\1\141\1\154\1\uffff\1\55\1\uffff\1\0\3\uffff"+
+        "\4\44\1\153\2\44\1\163\1\157\1\164\1\151\1\165\3\44\1\uffff\1\162"+
         "\1\156\1\145\1\uffff\2\44\1\145\1\162\1\66\1\62\1\44\1\uffff\1\44"+
-        "\1\154\1\uffff\1\44\1\uffff\1\141\1\164\1\157\2\151\1\162\1\156"+
-        "\1\143\1\61\1\164\1\145\1\11\5\uffff\1\44\2\uffff\1\44\1\163\1\44"+
-        "\1\156\1\154\3\uffff\1\164\1\144\1\44\2\uffff\1\155\1\164\2\44\2"+
-        "\uffff\1\145\1\uffff\1\147\1\44\1\143\1\144\1\143\1\156\1\147\1"+
-        "\150\1\66\1\62\1\44\1\151\1\44\2\11\2\uffff\1\151\1\uffff\1\165"+
-        "\1\164\1\44\1\163\1\uffff\1\145\1\44\2\uffff\1\44\1\145\1\uffff"+
-        "\1\157\1\145\6\44\1\uffff\1\154\1\uffff\1\164\1\145\1\44\1\uffff"+
-        "\1\44\1\156\2\uffff\1\44\1\154\1\144\6\uffff\1\145\1\151\1\44\2"+
-        "\uffff\1\164\1\uffff\3\44\1\157\1\uffff\1\163\3\uffff\1\156\2\44"+
-        "\2\uffff";
+        "\1\154\1\uffff\1\44\1\uffff\1\141\1\145\1\164\1\157\2\151\1\162"+
+        "\1\156\1\143\1\61\1\164\1\145\1\11\5\uffff\1\44\2\uffff\1\44\1\163"+
+        "\1\44\1\156\1\154\3\uffff\1\164\1\144\1\44\2\uffff\1\155\1\164\2"+
+        "\44\2\uffff\1\145\1\uffff\1\147\1\164\1\44\1\143\1\144\1\143\1\156"+
+        "\1\147\1\150\1\66\1\62\1\44\1\151\1\44\2\11\2\uffff\1\151\1\uffff"+
+        "\1\165\1\164\1\44\1\163\1\uffff\1\145\1\44\2\uffff\1\44\1\145\1"+
+        "\44\1\uffff\1\157\1\145\6\44\1\uffff\1\154\1\uffff\1\164\1\145\1"+
+        "\44\1\uffff\1\44\1\156\2\uffff\1\44\1\uffff\1\154\1\144\6\uffff"+
+        "\1\145\1\151\1\44\2\uffff\1\164\1\uffff\3\44\1\157\1\uffff\1\163"+
+        "\3\uffff\1\156\2\44\2\uffff";
     static final String DFA40_maxS =
         "\1\uffff\1\171\2\75\2\uffff\1\75\2\uffff\1\57\2\75\1\76\4\uffff"+
         "\1\75\1\163\1\171\2\157\1\170\1\162\1\157\1\156\2\157\3\165\1\145"+
@@ -5438,39 +5471,39 @@ public class pollenLexer extends Lexer {
         "\165\2\uffff\1\55\2\uffff\3\uffff\10\uffff\1\163\2\145\5\uffff\1"+
         "\154\1\141\2\145\1\163\1\160\1\164\1\141\1\uffff\1\146\1\145\1\155"+
         "\1\172\1\157\1\145\1\163\1\172\1\155\1\164\1\uffff\1\157\1\70\1"+
-        "\172\1\141\1\165\1\172\1\154\1\172\1\153\1\156\1\166\1\154\1\165"+
-        "\1\151\2\164\1\141\1\154\1\uffff\1\55\1\uffff\1\uffff\3\uffff\4"+
-        "\172\1\153\2\172\1\163\1\157\1\164\1\151\1\165\3\172\1\uffff\1\162"+
-        "\1\156\1\145\1\uffff\2\172\1\145\1\162\1\66\1\62\1\172\1\uffff\1"+
-        "\172\1\154\1\uffff\1\172\1\uffff\1\141\1\164\1\157\2\151\1\162\1"+
-        "\156\1\143\1\70\1\164\1\145\1\55\5\uffff\1\172\2\uffff\1\172\1\163"+
-        "\1\172\1\156\1\154\3\uffff\1\164\1\144\1\172\2\uffff\1\155\1\164"+
-        "\2\172\2\uffff\1\145\1\uffff\1\147\1\172\1\143\1\144\1\143\1\156"+
-        "\1\147\1\150\1\66\1\62\1\172\1\151\1\172\1\55\1\40\2\uffff\1\151"+
-        "\1\uffff\1\165\1\164\1\172\1\163\1\uffff\1\145\1\172\2\uffff\1\172"+
-        "\1\145\1\uffff\1\157\1\145\6\172\1\uffff\1\154\1\uffff\1\164\1\145"+
-        "\1\172\1\uffff\1\172\1\156\2\uffff\1\172\1\154\1\144\6\uffff\1\145"+
-        "\1\151\1\172\2\uffff\1\164\1\uffff\3\172\1\157\1\uffff\1\163\3\uffff"+
-        "\1\156\2\172\2\uffff";
+        "\172\1\141\1\165\1\172\1\154\1\172\1\153\1\163\1\156\1\166\1\154"+
+        "\1\165\1\151\2\164\1\141\1\154\1\uffff\1\55\1\uffff\1\uffff\3\uffff"+
+        "\4\172\1\153\2\172\1\163\1\157\1\164\1\151\1\165\3\172\1\uffff\1"+
+        "\162\1\156\1\145\1\uffff\2\172\1\145\1\162\1\66\1\62\1\172\1\uffff"+
+        "\1\172\1\154\1\uffff\1\172\1\uffff\1\141\1\145\1\164\1\157\2\151"+
+        "\1\162\1\156\1\143\1\70\1\164\1\145\1\55\5\uffff\1\172\2\uffff\1"+
+        "\172\1\163\1\172\1\156\1\154\3\uffff\1\164\1\144\1\172\2\uffff\1"+
+        "\155\1\164\2\172\2\uffff\1\145\1\uffff\1\147\1\164\1\172\1\143\1"+
+        "\144\1\143\1\156\1\147\1\150\1\66\1\62\1\172\1\151\1\172\1\55\1"+
+        "\40\2\uffff\1\151\1\uffff\1\165\1\164\1\172\1\163\1\uffff\1\145"+
+        "\1\172\2\uffff\1\172\1\145\1\172\1\uffff\1\157\1\145\6\172\1\uffff"+
+        "\1\154\1\uffff\1\164\1\145\1\172\1\uffff\1\172\1\156\2\uffff\1\172"+
+        "\1\uffff\1\154\1\144\6\uffff\1\145\1\151\1\172\2\uffff\1\164\1\uffff"+
+        "\3\172\1\157\1\uffff\1\163\3\uffff\1\156\2\172\2\uffff";
     static final String DFA40_acceptS =
         "\4\uffff\1\5\1\6\1\uffff\1\10\1\11\4\uffff\1\16\1\17\1\20\1\21\23"+
-        "\uffff\1\103\2\uffff\1\107\4\uffff\1\115\1\116\1\117\2\uffff\1\122"+
-        "\1\123\1\124\1\uffff\1\136\1\152\3\uffff\1\144\1\2\1\3\1\141\1\4"+
-        "\1\135\1\7\1\12\1\132\1\13\1\uffff\1\147\1\154\1\uffff\1\150\1\153"+
-        "\1\140\1\22\43\uffff\1\105\1\137\1\104\1\156\1\106\1\110\1\uffff"+
-        "\1\112\1\113\1\uffff\1\134\1\130\3\uffff\1\125\1\133\1\126\1\121"+
-        "\1\146\1\151\1\145\1\131\3\uffff\1\143\1\14\1\142\1\15\1\23\10\uffff"+
-        "\1\35\12\uffff\1\50\22\uffff\1\111\1\uffff\1\127\1\uffff\1\114\1"+
-        "\155\1\120\17\uffff\1\41\3\uffff\1\45\7\uffff\1\56\2\uffff\1\61"+
-        "\1\uffff\1\63\14\uffff\1\114\1\1\1\74\1\75\1\24\1\uffff\1\26\1\27"+
+        "\uffff\1\104\2\uffff\1\110\4\uffff\1\116\1\117\1\120\2\uffff\1\123"+
+        "\1\124\1\125\1\uffff\1\137\1\153\3\uffff\1\145\1\2\1\3\1\142\1\4"+
+        "\1\136\1\7\1\12\1\133\1\13\1\uffff\1\150\1\155\1\uffff\1\151\1\154"+
+        "\1\141\1\22\43\uffff\1\106\1\140\1\105\1\157\1\107\1\111\1\uffff"+
+        "\1\113\1\114\1\uffff\1\135\1\131\3\uffff\1\126\1\134\1\127\1\122"+
+        "\1\147\1\152\1\146\1\132\3\uffff\1\144\1\14\1\143\1\15\1\23\10\uffff"+
+        "\1\35\12\uffff\1\50\23\uffff\1\112\1\uffff\1\130\1\uffff\1\115\1"+
+        "\156\1\121\17\uffff\1\41\3\uffff\1\45\7\uffff\1\56\2\uffff\1\61"+
+        "\1\uffff\1\63\15\uffff\1\115\1\1\1\75\1\76\1\24\1\uffff\1\26\1\27"+
         "\5\uffff\1\36\1\37\1\40\3\uffff\1\46\1\47\4\uffff\1\55\1\57\1\uffff"+
-        "\1\62\17\uffff\1\25\1\30\1\uffff\1\32\4\uffff\1\44\2\uffff\1\53"+
-        "\1\54\2\uffff\1\65\10\uffff\1\100\1\uffff\1\102\3\uffff\1\42\2\uffff"+
-        "\1\52\1\60\3\uffff\1\70\1\71\1\72\1\73\1\76\1\77\3\uffff\1\34\1"+
-        "\43\1\uffff\1\64\4\uffff\1\33\1\uffff\1\66\1\67\1\101\3\uffff\1"+
-        "\51\1\31";
+        "\1\62\20\uffff\1\25\1\30\1\uffff\1\32\4\uffff\1\44\2\uffff\1\53"+
+        "\1\54\3\uffff\1\66\10\uffff\1\101\1\uffff\1\103\3\uffff\1\42\2\uffff"+
+        "\1\52\1\60\1\uffff\1\65\2\uffff\1\71\1\72\1\73\1\74\1\77\1\100\3"+
+        "\uffff\1\34\1\43\1\uffff\1\64\4\uffff\1\33\1\uffff\1\67\1\70\1\102"+
+        "\3\uffff\1\51\1\31";
     static final String DFA40_specialS =
-        "\53\uffff\1\4\117\uffff\1\1\1\2\1\0\71\uffff\1\3\u009d\uffff}>";
+        "\53\uffff\1\0\117\uffff\1\1\1\3\1\4\72\uffff\1\2\u00a1\uffff}>";
     static final String[] DFA40_transitionS = {
             "\1\62\2\uffff\1\62\23\uffff\1\60\1\54\1\56\1\47\1\2\1\3\1\53"+
             "\1\4\1\5\1\6\1\57\1\7\1\51\1\10\1\11\1\50\11\52\1\12\1\61\1"+
@@ -5584,14 +5617,14 @@ public class pollenLexer extends Lexer {
             "\1\u00a8",
             "\1\u00a9",
             "\1\u00aa",
-            "\1\u00ab\5\uffff\1\u00ac",
-            "\1\u00ad",
+            "\1\u00ab\3\uffff\1\u00ac\5\uffff\1\u00ad",
             "\1\u00ae",
             "\1\u00af",
             "\1\u00b0",
             "\1\u00b1",
             "\1\u00b2",
             "\1\u00b3",
+            "\1\u00b4",
             "",
             "",
             "",
@@ -5602,75 +5635,76 @@ public class pollenLexer extends Lexer {
             "\uffff\1\167\17\uffff\1\166\6\uffff\1\167\10\uffff\1\167",
             "",
             "",
-            "\1\u00b5",
+            "\1\u00b6",
             "",
             "",
-            "\12\u00b7\1\uffff\ufff5\u00b7",
-            "\12\54\1\uffff\34\54\1\u00b8\uffd8\54",
-            "\0\u00ba",
-            "",
-            "",
-            "",
+            "\12\u00b8\1\uffff\ufff5\u00b8",
+            "\12\54\1\uffff\34\54\1\u00b9\uffd8\54",
+            "\0\u00bb",
             "",
             "",
             "",
             "",
             "",
-            "\1\u00bb",
+            "",
+            "",
+            "",
             "\1\u00bc",
             "\1\u00bd",
-            "",
-            "",
-            "",
-            "",
-            "",
             "\1\u00be",
+            "",
+            "",
+            "",
+            "",
+            "",
             "\1\u00bf",
             "\1\u00c0",
             "\1\u00c1",
             "\1\u00c2",
             "\1\u00c3",
-            "\1\u00c4\1\u00c5",
-            "\1\u00c6",
-            "",
+            "\1\u00c4",
+            "\1\u00c5\1\u00c6",
             "\1\u00c7",
+            "",
             "\1\u00c8",
             "\1\u00c9",
+            "\1\u00ca",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
-            "\1\u00cb",
             "\1\u00cc",
             "\1\u00cd",
+            "\1\u00ce",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
-            "\1\u00cf",
             "\1\u00d0",
+            "\1\u00d1",
             "",
-            "\1\u00d1\2\uffff\1\u00d2",
-            "\1\u00d3\1\uffff\1\u00d4\4\uffff\1\u00d5",
+            "\1\u00d2\2\uffff\1\u00d3",
+            "\1\u00d4\1\uffff\1\u00d5\4\uffff\1\u00d6",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
-            "\1\u00d7",
             "\1\u00d8",
+            "\1\u00d9",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
-            "\1\u00da",
+            "\1\u00db",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
-            "\1\u00dc",
             "\1\u00dd",
-            "\1\u00de\1\uffff\1\u00df",
-            "\1\u00e0",
-            "\1\u00e1",
+            "\1\u00de",
+            "\1\u00df",
+            "\1\u00e0\1\uffff\1\u00e1",
             "\1\u00e2",
             "\1\u00e3",
             "\1\u00e4",
             "\1\u00e5",
             "\1\u00e6",
-            "",
             "\1\u00e7",
+            "\1\u00e8",
             "",
-            "\12\54\1\uffff\34\54\1\u00b8\uffd8\54",
+            "\1\u00e9",
+            "",
+            "\12\54\1\uffff\34\54\1\u00b9\uffd8\54",
             "",
             "",
             "",
@@ -5682,16 +5716,16 @@ public class pollenLexer extends Lexer {
             "\47",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
-            "\1\u00ed",
+            "\1\u00ef",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
-            "\1\u00f0",
-            "\1\u00f1",
             "\1\u00f2",
             "\1\u00f3",
             "\1\u00f4",
+            "\1\u00f5",
+            "\1\u00f6",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
@@ -5699,41 +5733,42 @@ public class pollenLexer extends Lexer {
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
             "",
-            "\1\u00f8",
-            "\1\u00f9",
             "\1\u00fa",
+            "\1\u00fb",
+            "\1\u00fc",
             "",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
-            "\1\u00fd",
-            "\1\u00fe",
             "\1\u00ff",
             "\1\u0100",
+            "\1\u0101",
+            "\1\u0102",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
             "",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
-            "\1\u0103",
-            "",
-            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
-            "\47",
-            "",
             "\1\u0105",
-            "\1\u0106",
+            "",
+            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
+            "\47",
+            "",
             "\1\u0107",
             "\1\u0108",
             "\1\u0109",
             "\1\u010a",
             "\1\u010b",
             "\1\u010c",
-            "\1\u010d\1\uffff\1\u010e\4\uffff\1\u010f",
-            "\1\u0110",
-            "\1\u0111",
-            "\1\u0113\1\u0081\2\uffff\1\u0081\22\uffff\1\u0113\14\uffff"+
-            "\1\u0112",
+            "\1\u010d",
+            "\1\u010e",
+            "\1\u010f",
+            "\1\u0110\1\uffff\1\u0111\4\uffff\1\u0112",
+            "\1\u0113",
+            "\1\u0114",
+            "\1\u0116\1\u0081\2\uffff\1\u0081\22\uffff\1\u0116\14\uffff"+
+            "\1\u0115",
             "",
             "",
             "",
@@ -5745,70 +5780,73 @@ public class pollenLexer extends Lexer {
             "",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
-            "\1\u0116",
-            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
-            "\47",
-            "\1\u0118",
             "\1\u0119",
-            "",
-            "",
-            "",
-            "\1\u011a",
-            "\1\u011b",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
+            "\1\u011b",
+            "\1\u011c",
+            "",
             "",
             "",
             "\1\u011d",
             "\1\u011e",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
-            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
-            "\47",
             "",
             "",
+            "\1\u0120",
             "\1\u0121",
-            "",
-            "\1\u0122",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
+            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
+            "\47",
+            "",
+            "",
             "\1\u0124",
+            "",
             "\1\u0125",
             "\1\u0126",
-            "\1\u0127",
+            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
+            "\47",
             "\1\u0128",
             "\1\u0129",
             "\1\u012a",
             "\1\u012b",
-            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
-            "\47",
+            "\1\u012c",
             "\1\u012d",
+            "\1\u012e",
+            "\1\u012f",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
-            "\1\u0113\1\u0081\2\uffff\1\u0081\22\uffff\1\u0113\14\uffff"+
-            "\1\u0112",
-            "\1\u0113\1\u0081\2\uffff\1\u0081\22\uffff\1\u0113",
-            "",
-            "",
-            "\1\u012f",
-            "",
-            "\1\u0130",
             "\1\u0131",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
+            "\1\u0116\1\u0081\2\uffff\1\u0081\22\uffff\1\u0116\14\uffff"+
+            "\1\u0115",
+            "\1\u0116\1\u0081\2\uffff\1\u0081\22\uffff\1\u0116",
+            "",
+            "",
             "\1\u0133",
             "",
             "\1\u0134",
-            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
-            "\47",
-            "",
-            "",
+            "\1\u0135",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
             "\1\u0137",
             "",
             "\1\u0138",
-            "\1\u0139",
+            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
+            "\47",
+            "",
+            "",
+            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
+            "\47",
+            "\1\u013b",
+            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
+            "\47",
+            "",
+            "\1\u013d",
+            "\1\u013e",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
@@ -5822,49 +5860,50 @@ public class pollenLexer extends Lexer {
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
             "",
-            "\1\u0140",
-            "",
-            "\1\u0141",
-            "\1\u0142",
-            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
-            "\47",
-            "",
-            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
-            "\47",
             "\1\u0145",
             "",
-            "",
-            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
-            "\47",
+            "\1\u0146",
             "\1\u0147",
-            "\1\u0148",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\u0149",
-            "\1\u014a",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
             "",
+            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
+            "\47",
+            "\1\u014a",
+            "",
+            "",
+            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
+            "\47",
             "",
             "\1\u014c",
+            "\1\u014d",
             "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\1\u014e",
+            "\1\u014f",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
-            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
-            "\47",
-            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
-            "\47",
-            "\1\u0150",
+            "",
             "",
             "\1\u0151",
             "",
+            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
+            "\47",
+            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
+            "\47",
+            "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
+            "\47",
+            "\1\u0155",
+            "",
+            "\1\u0156",
             "",
             "",
-            "\1\u0152",
+            "",
+            "\1\u0157",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
             "\47",
             "\1\47\13\uffff\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32"+
@@ -5903,19 +5942,19 @@ public class pollenLexer extends Lexer {
             this.transition = DFA40_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( THIS | T__123 | T__124 | T__125 | T__126 | T__127 | T__128 | T__129 | T__130 | T__131 | T__132 | T__133 | T__134 | T__135 | T__136 | T__137 | T__138 | T__139 | T__140 | T__141 | T__142 | T__143 | T__144 | T__145 | T__146 | T__147 | T__148 | T__149 | T__150 | T__151 | T__152 | T__153 | T__154 | T__155 | T__156 | T__157 | T__158 | T__159 | T__160 | T__161 | T__162 | T__163 | T__164 | T__165 | T__166 | T__167 | T__168 | T__169 | T__170 | T__171 | T__172 | T__173 | T__174 | T__175 | T__176 | T__177 | T__178 | T__179 | T__180 | T__181 | T__182 | T__183 | T__184 | T__185 | T__186 | T__187 | T__188 | T__189 | T__190 | T__191 | IDENT | HEX_LIT | OCT_LIT | REAL_LIT | INT_LIT | CHAR | STRING | WS | SL_COMMENT | INJECT | ML_COMMENT | SEMI | NL | ILLEGAL_CHARACTER | INC | PLUS | DEC | MINUS | ASSIGN | BIND | ADD_EQ | SUB_EQ | MUL_EQ | DIV_EQ | BITOR_EQ | BITXOR_EQ | BITAND_EQ | RSHFT_EQ | LSHFT_EQ | MOD_EQ | EQ | NOT_EQ | LT_EQ | GT_EQ | LOG_NOT | BIT_NOT | GT | LT | IJ_BEG | IJ_END );";
+            return "1:1: Tokens : ( THIS | T__123 | T__124 | T__125 | T__126 | T__127 | T__128 | T__129 | T__130 | T__131 | T__132 | T__133 | T__134 | T__135 | T__136 | T__137 | T__138 | T__139 | T__140 | T__141 | T__142 | T__143 | T__144 | T__145 | T__146 | T__147 | T__148 | T__149 | T__150 | T__151 | T__152 | T__153 | T__154 | T__155 | T__156 | T__157 | T__158 | T__159 | T__160 | T__161 | T__162 | T__163 | T__164 | T__165 | T__166 | T__167 | T__168 | T__169 | T__170 | T__171 | T__172 | T__173 | T__174 | T__175 | T__176 | T__177 | T__178 | T__179 | T__180 | T__181 | T__182 | T__183 | T__184 | T__185 | T__186 | T__187 | T__188 | T__189 | T__190 | T__191 | T__192 | IDENT | HEX_LIT | OCT_LIT | REAL_LIT | INT_LIT | CHAR | STRING | WS | SL_COMMENT | INJECT | ML_COMMENT | SEMI | NL | ILLEGAL_CHARACTER | INC | PLUS | DEC | MINUS | ASSIGN | BIND | ADD_EQ | SUB_EQ | MUL_EQ | DIV_EQ | BITOR_EQ | BITXOR_EQ | BITAND_EQ | RSHFT_EQ | LSHFT_EQ | MOD_EQ | EQ | NOT_EQ | LT_EQ | GT_EQ | LOG_NOT | BIT_NOT | GT | LT | IJ_BEG | IJ_END );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             IntStream input = _input;
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA40_125 = input.LA(1);
+                        int LA40_43 = input.LA(1);
 
                         s = -1;
-                        if ( ((LA40_125 >= '\u0000' && LA40_125 <= '\uFFFF')) ) {s = 186;}
+                        if ( (LA40_43=='\\') ) {s = 123;}
 
-                        else s = 185;
+                        else if ( ((LA40_43 >= '\u0000' && LA40_43 <= '\t')||(LA40_43 >= '\u000B' && LA40_43 <= '&')||(LA40_43 >= '(' && LA40_43 <= '[')||(LA40_43 >= ']' && LA40_43 <= '\uFFFF')) ) {s = 124;}
 
                         if ( s>=0 ) return s;
                         break;
@@ -5924,40 +5963,40 @@ public class pollenLexer extends Lexer {
                         int LA40_123 = input.LA(1);
 
                         s = -1;
-                        if ( ((LA40_123 >= '\u0000' && LA40_123 <= '\t')||(LA40_123 >= '\u000B' && LA40_123 <= '\uFFFF')) ) {s = 183;}
+                        if ( ((LA40_123 >= '\u0000' && LA40_123 <= '\t')||(LA40_123 >= '\u000B' && LA40_123 <= '\uFFFF')) ) {s = 184;}
 
                         if ( s>=0 ) return s;
                         break;
 
                     case 2 : 
+                        int LA40_184 = input.LA(1);
+
+                        s = -1;
+                        if ( (LA40_184=='\'') ) {s = 185;}
+
+                        else if ( ((LA40_184 >= '\u0000' && LA40_184 <= '\t')||(LA40_184 >= '\u000B' && LA40_184 <= '&')||(LA40_184 >= '(' && LA40_184 <= '\uFFFF')) ) {s = 44;}
+
+                        if ( s>=0 ) return s;
+                        break;
+
+                    case 3 : 
                         int LA40_124 = input.LA(1);
 
                         s = -1;
-                        if ( (LA40_124=='\'') ) {s = 184;}
+                        if ( (LA40_124=='\'') ) {s = 185;}
 
                         else if ( ((LA40_124 >= '\u0000' && LA40_124 <= '\t')||(LA40_124 >= '\u000B' && LA40_124 <= '&')||(LA40_124 >= '(' && LA40_124 <= '\uFFFF')) ) {s = 44;}
 
                         if ( s>=0 ) return s;
                         break;
 
-                    case 3 : 
-                        int LA40_183 = input.LA(1);
-
-                        s = -1;
-                        if ( (LA40_183=='\'') ) {s = 184;}
-
-                        else if ( ((LA40_183 >= '\u0000' && LA40_183 <= '\t')||(LA40_183 >= '\u000B' && LA40_183 <= '&')||(LA40_183 >= '(' && LA40_183 <= '\uFFFF')) ) {s = 44;}
-
-                        if ( s>=0 ) return s;
-                        break;
-
                     case 4 : 
-                        int LA40_43 = input.LA(1);
+                        int LA40_125 = input.LA(1);
 
                         s = -1;
-                        if ( (LA40_43=='\\') ) {s = 123;}
+                        if ( ((LA40_125 >= '\u0000' && LA40_125 <= '\uFFFF')) ) {s = 187;}
 
-                        else if ( ((LA40_43 >= '\u0000' && LA40_43 <= '\t')||(LA40_43 >= '\u000B' && LA40_43 <= '&')||(LA40_43 >= '(' && LA40_43 <= '[')||(LA40_43 >= ']' && LA40_43 <= '\uFFFF')) ) {s = 124;}
+                        else s = 186;
 
                         if ( s>=0 ) return s;
                         break;

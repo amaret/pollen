@@ -42,6 +42,7 @@ public class UnitJScript {
         gen.aux.genFcnArgs(fcn.getFormals(), false, fcn);
         gen.fmt.print(" {\n%+");
         if (fcn.isHost()) {
+        	//gen.fmt.print("%tdebug_line(\"" + fcn.getName() + "\", " + gen.uname() + ");\n");
             gen.fmt.print("%tvar $$text = '';\n");
         }
         gen.aux.genLocals(body.getLocalVars());
@@ -207,9 +208,11 @@ public class UnitJScript {
         }
         
         if (unit.isTarget()) {
-            genUses(unit);
+            genUses(unit);            
             genPrivateDecls(unit);
+            genPresets(unit);
         }
+        
 
         genEpilogue(unit);
     }
@@ -235,6 +238,11 @@ public class UnitJScript {
              }
         }
     }
+    /**
+     * Calls bind() for imports that are used (bound). 
+     * @param imp
+     * @param inserted
+     */
     private void genUse(ImportNode imp, List<String> inserted) {
     	
     	if (imp.getUnit() == null)
@@ -324,8 +332,34 @@ public class UnitJScript {
 		System.out.println(s + ", nUnit " + nUnit + ", impName " + impName + ", asName " + asName);
 
 	}   
+    /**
+     * Generates assignments for presets
+     * @param unit
+     */
+	private void genPresets(UnitNode unit) {
 
-    private void genUses(UnitNode unit) {
+        List<StmtNode.Assign> assgn = unit.getPresetList();
+
+        if (assgn.size() > 0) {
+            gen.fmt.print("%t%1.pollen__presets__ = function() {\n%+", gen.uname());
+
+            for (StmtNode.Assign a : assgn) {
+            	gen.fmt.print("%t");
+            	gen.aux.genStmt(a);
+            	gen.fmt.print("\n");
+            }
+            gen.fmt.print("%-%t}\n");
+            
+        }
+    }
+
+	
+
+    /**
+     * calls bind() for imports that are used.
+     * @param unit
+     */
+	private void genUses(UnitNode unit) {
         //ParseUnit.setDebugMode(true);
         if (ParseUnit.isDebugMode())
                 debugUses(unit);
@@ -361,7 +395,6 @@ public class UnitJScript {
         gen.fmt.print("%tconst %1 = {};\n", un);
         gen.fmt.print("%t%1.%1 = %1\n", un);
         gen.fmt.print("%t%1.$name = '%2';\n", un, qn);
-        gen.fmt.print("%t%1.$$code = null;\n", un);
         gen.fmt.print("%t%1.pollen$used = 0;\n", un);
     }
     

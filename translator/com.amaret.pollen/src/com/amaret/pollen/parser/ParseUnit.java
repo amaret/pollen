@@ -38,13 +38,9 @@ public class ParseUnit {
 	static private boolean debugMode = false;
 	public static final String EXPORT_PREFIX = "$$export";
 	public static final String INTRINSIC_PREFIX = "pollen__";
-	public static final String DEFAULT_LOOPVAR = "pollen__loopvar"; // uses for
-																	// 'for'
-																	// loops
-																	// with
-																	// undeclared
-																	// loop
-																	// variables
+	// used for 'for' loops with undeclared loop variables
+	public static final String DEFAULT_LOOPVAR = "pollen__loopvar"; 
+	
 
 	public List<String> getMetaModules() {
 		return metaModules;
@@ -59,8 +55,8 @@ public class ParseUnit {
 	}
 
 	public static boolean isDebugMode() {
-		return false;
-		// return debugMode;
+		//return false;
+		return debugMode;
 	}
 
 	static public enum Property {
@@ -333,7 +329,7 @@ public class ParseUnit {
 				: "<none>";
 
 		setDebugMode(false);
-		// setDebugMode(true);
+		//setDebugMode(true);
 		debugParseUnit(inputPath, clientImport, cname, ciname);
 		File f = new File(inputPath);
 		if (!f.exists()) {
@@ -361,7 +357,7 @@ public class ParseUnit {
 
 		UnitNode unit = (UnitNode) result.getTree();
 
-		setDebugMode(false);
+		//setDebugMode(true);
 		if (isDebugMode())
 			System.out.println("       AST: " + unit.toStringTree());
 		setDebugMode(false);
@@ -575,6 +571,11 @@ public class ParseUnit {
 			fname = getFileName();
 		reportErrorConsole(fname, token.getLine(), token
 				.getCharPositionInLine() + 1, msg);
+	}
+	
+	public void reportJavascriptError(String msg) {
+		err.printf("%s: %s\n", "javascript problem", msg);
+		errorCount += 1;
 	}
 
 	/**

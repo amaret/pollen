@@ -147,7 +147,9 @@ public class UnitHeader {
         		braces += "[]";
         	}
         }
-		gen.fmt.print("extern const %1__TYPE %1%2%3;\n", gen.cname()
+        String constStr = "const "; 
+		
+        gen.fmt.print("extern " + constStr + "%1__TYPE %1%2%3;\n", gen.cname()
 				+ decl.getName(), gen.aux.mkSuf(decl),braces);
 
 	}
@@ -174,9 +176,17 @@ public class UnitHeader {
 
         	if (fld instanceof DeclNode.ITypeSpec && !(fld instanceof DeclNode.Fcn)) {
         		gen.fmt.print("%t");
-        		gen.aux.genType(((DeclNode.ITypeSpec) fld).getTypeSpec(), "" + fld.getName());
-        		gen.fmt.print(";\n");
+        		gen.aux.genType(((DeclNode.ITypeSpec) fld).getTypeSpec(), "" + fld.getName());       		
         	}
+    		if (fld instanceof DeclNode.Arr) {
+    			for (BaseNode e : ((DeclNode.Arr)fld).getDim().getElems()) {
+    				gen.fmt.print("[");
+    				if (e instanceof ExprNode.Const) 
+    					 gen.aux.genExpr((ExprNode) e);
+    				gen.fmt.print("]");
+    			}
+    		}
+    		gen.fmt.print(";\n");
         }
         gen.fmt.print("%-%t};\n"); 
         gen.fmt.print("%ttypedef struct %1 %1;\n", clsStruct, clsStruct); 
@@ -219,10 +229,10 @@ public class UnitHeader {
         			gen.aux.genType(((DeclNode.ITypeSpec) fld).getTypeSpec(), fld.getName().getText());
         		}
         		if (fld instanceof DeclNode.Arr) {
-        			for (ExprNode e : ((DeclNode.Arr)fld).getDim().getElems()) {
+        			for (BaseNode e : ((DeclNode.Arr)fld).getDim().getElems()) {
         				gen.fmt.print("[");
         				if (e instanceof ExprNode.Const) 
-        					 gen.aux.genExpr(e);
+        					 gen.aux.genExpr((ExprNode) e);
         				gen.fmt.print("]");
         			}
         		}
@@ -230,8 +240,20 @@ public class UnitHeader {
         	}
         }
         gen.fmt.print("%-%t};\n"); 
+        //gen.fmt.print("%ttypedef struct %1* %1;\n", gen.cname(), gen.cname());     
         gen.fmt.print("%ttypedef struct %1 %1;\n", gen.cname(), gen.cname());             
+
     }
+    /*
+     *         // class name is a qualifier only for nested class (as it's not carried in cname)
+        DeclNode.Class cls = outer instanceof DeclNode.Usr ? decl : null;
+        String qual = (cls == null) ? ("") : cls.getName().getText();
+        String clsStruct = (qual.isEmpty()) ? gen.cname().substring(0, gen.cname().length()-1) : gen.cname() + qual;
+        String clsStructPtr = (qual.isEmpty()) ?  gen.cname() :  gen.cname() + qual + "_";
+        gen.fmt.print("%ttypedef struct %1 %1;\n", clsStruct, clsStruct); 
+        gen.fmt.print("%ttypedef struct %1* %2;\n", clsStruct, clsStructPtr); 
+ 
+     */
 
     private void genDecl$Var(DeclNode.Var decl) {
     	
@@ -303,6 +325,8 @@ public class UnitHeader {
     		// the nested classes are first to resolve references to them in the module
 			gen.aux.genTitle("extern definition");
             gen.fmt.print("extern struct %1%2%3", gen.cname(), " ", gen.cname().substring(0, gen.cname().length()-1) + ";\n"); 
+            //gen.fmt.print("extern struct %1%2%3", gen.cname(), "* ", gen.cname().substring(0, gen.cname().length()-1) + ";\n"); 
+
             for (/*DeclNode decl*/ BaseNode b : unit.getFeatures()) {
             	DeclNode decl = (DeclNode) b;
                 switch (decl.getType()) {

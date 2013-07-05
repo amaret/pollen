@@ -1,12 +1,9 @@
 package com.amaret.pollen.parser;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import com.amaret.pollen.parser.SymbolEntry;
 
 public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWrapper, DeclNode.ITypeKind {
 
@@ -97,7 +94,10 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     ImportNode(BaseNode b) {
     	
     }
-    
+    /**
+     * This import describes a meta argument which was translated into an import.
+     * @return true if a meta argument
+     */
     public boolean isTypeMetaArg() {
     	if (flags.contains(Flags.TYPE_META_ARG))
     		return true;

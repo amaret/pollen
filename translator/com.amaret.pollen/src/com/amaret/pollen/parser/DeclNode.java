@@ -147,8 +147,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
 		@SuppressWarnings("unchecked")
 		public ListNode<ExprNode> getDim() {
-			return getChildCount() > DIM ? (ListNode<ExprNode>) getChild(DIM) : null;
-			
+			return getChildCount() > DIM ? (ListNode<ExprNode>) getChild(DIM) : null;			
 		}
         
         @Override
@@ -162,11 +161,16 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         
         @Override
         public void pass2End() {
+            UnitNode u = ParseUnit.current().getCurrUnitNode();
+            if (!this.isHost() && u.isComposition()) {
+            	ParseUnit.current().reportError(this.getName(), "compositions can only declare host variables");
+            }
         	ExprNode.Vec v = getInit();
         	if (v != null) {
         		SymbolEntry symbol = ParseUnit.current().getSymbolTable().resolveSymbol(getName());
         		v.setSymbol(symbol);
         	}
+        	super.pass2End();
         }
 
         @Override
@@ -365,7 +369,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             		currUnit.reportError(name, "pollen lifecycle functions must be defined in modules");
             }
             
-            
            	IScope scopeToUse = currUnit.getSymbolTable().curScope();
            	if (((Usr) currUnit.getSymbolTable().curScope()).getScopeDeleg().lookupName(name.getText()) != null)
         		currUnit.reportError(name, "identifier already defined in the current scope");    
@@ -380,7 +383,14 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             
             currUnit.getSymbolTable().enterScope(this);
             currUnit.getCurrUnitNode().setHostScope(isHost());
-
+            
+            if (this.isConstructor()) {
+            	if (this.isMethod() && this.getFormals().size() > 0 && this.isHost()) {           		
+            		ParseUnit.current().reportError(this.getUnit().getQualName(), "host constructors on classes are not allowed to have parameters");            		
+            	}
+            	else if (this.getFormals().size() > 0)
+            		ParseUnit.current().reportError(this.getUnit().getQualName(), "module constructors are not allowed to have parameters");            		
+            }
            
             if (currUnit.getCurrUnitNode().isProtocol() && this.getBody() != null) {
                 currUnit.reportError(getName(), "protocols can't have function definitions");
@@ -521,7 +531,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
         @Override
         protected void pass1End() {
-            
+            UnitNode u = ParseUnit.current().getCurrUnitNode();
+            if (!this.isHost() && u.isComposition()) {
+            	ParseUnit.current().reportError(this.getName(), "compositions can only declare host variables");
+            }
             super.pass1End();
         }
 
@@ -669,15 +682,19 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         protected boolean pass1Begin() {
             super.pass1Begin();
             UnitNode curr = ParseUnit.current().getCurrUnitNode();
+            if (!this.isHost() && curr.isComposition()) {
+            	ParseUnit.current().reportError(this.getName(), "compositions can only declare host variables");
+            }
             SymbolEntry sym = curr.getUnitType().resolveSymbol(getTypeName());
             ISymbolNode snode = sym != null ? sym.node() : null;
             boolean isClass = (snode != null && snode instanceof DeclNode.Class);
             
             //UnitNode unitType = null;   // The UnitNode that contains the type of this typed member. 
               // For a nested type T in module M, that is the unit node for M. 
-            
+            boolean isTypeMetaArg = false;
             if (snode instanceof ImportNode) {
                 unitType = ((ImportNode) snode).getUnit();
+                isTypeMetaArg = ((ImportNode) snode).isTypeMetaArg();
             }
             else if (snode instanceof UnitNode) {
                 unitType = (UnitNode) snode;
@@ -690,10 +707,15 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             	// this can happen when meta type is a instantiation to a primitive e.g. uint8
              }
             else {
-            	if (unitType.isProtocol() && !(snode instanceof DeclNode.Fcn))
+            	if (unitType.isProtocol() && !(snode instanceof DeclNode.Fcn)) {
             		flags.add(Flags.PROTOCOL_MEMBER);
+            		if (this.isHost()) {
+            			flags.remove(Flags.HOST);
+            			ParseUnit.current().reportError(getName(), "the 'host' specifier on a protocol member declaration is ignored");            			
+            		}
+            	}
             	else {
-            		if (!unitType.isClass() && !this.isFcnRef() && !isClass) {
+            		if (!unitType.isClass() && !this.isFcnRef() && !isClass && !isTypeMetaArg) {
             			ParseUnit.current().reportError(getTypeName(), "a typed member can have protocol, class, or function type");
             		}
             	}
@@ -1056,7 +1078,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         
         @Override
         protected boolean pass1Begin() {
-        	// TODO check that any implemented protocols are actually implemented.
+        	
             ParseUnit currUnit = ParseUnit.current();
             super.pass1Begin();
             
@@ -1256,6 +1278,12 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             return true;
         }
         public void pass2End() {
+        	
+            UnitNode u = ParseUnit.current().getCurrUnitNode();
+            if (!this.isHost() && u.isComposition()) {
+            	ParseUnit.current().reportError(this.getName(), "compositions can only declare host variables");
+            }
+
             if (getInit() != null) {
             	getInit().pass2End();
             }
@@ -1263,6 +1291,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             ExprNode init = tsi.getInit();
             if (init != null)
             	TypeRules.checkInit(tsi.getTypeCat(), init);
+            super.pass2End();
+            
         }
     }
     
@@ -1320,12 +1350,22 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     public boolean isConst() {
         return flags.contains(Flags.CONST);
     }
+    
+    public boolean isPreset() {
+        return flags.contains(Flags.PRESET);
+    }
+
 
     @Override
     protected boolean pass1Begin() {
         ParseUnit currUnit = ParseUnit.current();
         unit = currUnit.getCurrUnitNode();
         Atom name = getName();
+        
+        if (this.isPreset() && !(this instanceof DeclNode.Var)) {
+        	currUnit.reportError(name, "modifier \'preset\' is only applicable to simple variables (will be ignored)");
+        	this.flags.remove(Flags.PRESET);
+        }
 
         if (currUnit.getSymbolTable().defineSymbol(name, this) == false) {
             currUnit.reportError(name, "identifier already defined in the current scope");
@@ -1340,7 +1380,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     
     @Override
     public void pass2End() {
-        if (!(this instanceof ITypeSpecInit)) {
+    	
+       if (!(this instanceof ITypeSpecInit)) {
             return;
         }
         ITypeSpecInit tsi = (ITypeSpecInit) this;

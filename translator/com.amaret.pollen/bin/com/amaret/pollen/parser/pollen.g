@@ -388,9 +388,9 @@ stmtPackage
 stmtExport
     :   'export' qualName delim -> ^(EXPORT<ExportNode>["EXPORT"] qualName)
     ;
-exportList
-    :   stmtExport+  
-    	-> ^(LIST<ListNode>["LIST"] stmtExport+)
+stmtPreset
+    :   'preset' varOrFcnOrArray ASSIGN exprAssign delim
+		-> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] ASSIGN varOrFcnOrArray exprAssign))
     ;
 classDefinition  
 @init{
@@ -597,6 +597,7 @@ compositionFeature
 	featureFlags = EnumSet.noneOf(Flags.class);
 }
  	:  stmtExport
+ 	|  stmtPreset
    |  fcnDefinitionHost
    |  enumDefinition
    |  varDeclaration
@@ -1113,6 +1114,7 @@ fcnDeclaration
 fcnType_fcnName
 @init{
 	String modCtor = "";
+	String clsCtor = "";
 }
 // function names in a dcln can be qualified, e.g. pollen.reset()
 // function return is always a list, empty for void fcn.
@@ -1133,8 +1135,9 @@ fcnType_fcnName
 		typeName	 
 		{ 
 		  featureFlags.add(Flags.CONSTRUCTOR); 
+		  clsCtor = (featureFlags.contains(Flags.HOST)) ? ("new_" + "host") : "new_";
 		}
-		-> ^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] ^(LIST<ListNode>["LIST"] typeName)) IDENT["new_"]) 		  // constructor
+		-> ^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] ^(LIST<ListNode>["LIST"] typeName)) IDENT[clsCtor]) 		  // constructor
 	|	qualName 	
 		{ featureFlags.add(Flags.VOID_FCN); }
 		-> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"] ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
@@ -1175,7 +1178,7 @@ formalParameters
 			!(featureFlags.contains(Flags.HOST))) }? 
 			
 			methodParameters
-	|	formalParameter (',' formalParameter)* 
+	|	formalParameter (',' formalParameter)*  
 		-> ^(LIST<ListNode>["LIST"] formalParameter+)
 	|	-> ^(LIST<ListNode>["LIST"])
 	;
@@ -1418,6 +1421,7 @@ varAttr
 	:	(	 'const' { typeMods.add(Flags.CONST); }
 		|	 'volatile' { typeMods.add(Flags.VOLATILE); }
 		|   'host' { typeMods.add(Flags.HOST); } 
+		|   'preset' { typeMods.add(Flags.PRESET); } 
 		)*
 	;
 varDecl

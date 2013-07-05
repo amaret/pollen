@@ -102,7 +102,7 @@ class Auxiliary {
 			Cat.Arr arrCat = ((Cat.Arr) cat);
 			TypeNode.Arr tarr = arrCat.getType();
 			gen.fmt.print("new $$Array(");
-			if (tarr.hasDim()) {
+			if (tarr.hasDim() && tarr.getFirstDim() != null) {
 				gen.aux.genExpr(tarr.getFirstDim());
 			} else {
 				gen.fmt.print("-1");
@@ -534,12 +534,17 @@ class Auxiliary {
 					: (scope instanceof DeclNode.Usr) ? ((DeclNode.Usr) scope)
 							.getUnitQualName() : "/* ?? scope unknown ?? */");
 		}
+		if (expr.getName().getText().matches("Compos.ProtoMem.arr.*")) {
+			dbg = true;
+		}
 		
 		if (isHost && !isLval) {
 			if (scope == gen.curUnit()) {
 				gen.fmt.print("%1.%2", gen.uname(), expr.getName());
 			} else {
-				gen.fmt.print("$units['%1'].%2", qn, expr.getName());
+				// the scope qualifiers from the source are satisfied by the unit, so delete.
+				String n = expr.getName().getText().substring(expr.getName().getText().lastIndexOf('.')+1);
+				gen.fmt.print("$units['%1'].%2", qn, n);
 			}
 		} else if (isLval && expr.getCat().isAggArr()) {
 			if (scope == gen.curUnit()) {
@@ -1467,7 +1472,7 @@ class Auxiliary {
 			if (s != null && s.node() != null) {
 				if (s.node() instanceof ImportNode) {
 					ImportNode i = (ImportNode) s.node();
-					String qualifier;
+					String qualifier = "";
 					if (i.getUnit() == null) {
 						if (i.isTypeMetaArg())
 							qualifier = i.getUnitName().getText();
@@ -1475,22 +1480,21 @@ class Auxiliary {
 							qualifier = Cat.Scalar
 									.codeFromString(((ImportNode) s.node())
 											.getUnitName().getText());
-					} else {
-						String qname = "";
+					}  else {						
+
 						if (i.getUnit().isComposition()) {
 							// if the import is a composition, resolve down to the imported module.
 							UnitNode u = i.getUnit();
 							SymbolEntry se = u.lookupName(i.getUnitName().getText());
 							if (se.node() instanceof ImportNode)
-								qname = ((ImportNode) se.node()).getQualName().replace(".", "_")
+								qualifier = ((ImportNode) se.node()).getQualName().replace(".", "_")
 								+ "_";
 						}
 						else {
-							qname = i.getUnit()
+							qualifier = i.getUnit()
 							.getQualName().replace(".", "_")
 							+ "_";
 						}						
-						qualifier = i.isTypeMetaArg() ? "" : qname;
 					}
 					return qualifier; 
 				} else {

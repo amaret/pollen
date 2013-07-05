@@ -181,9 +181,9 @@ public class ExprNode extends BaseNode {
         		
         		String call = ei.getName().getText();
         		boolean dbg = false;
-        		if (call.equals("Mcu.wait")) //"GIComposition2.GlobalInterrupts.disable") || call.equals("AsInterrupts.disable"))
-        			dbg = true;
-
+        		
+            	if (call.matches("Compos.ProtoMem.arr.*"))
+            		dbg = true;
 
             	if (fcn == null 
             			&& this.getParent() instanceof ExprNode.Ident 
@@ -768,7 +768,7 @@ public class ExprNode extends BaseNode {
         		}
         	}
         	boolean dbg = false;
-        	if ("bindGlobalInterrupts".equals(this.getName().getText()))
+        	if ("Compos.ProtoMem.arr.*".matches(this.getName().getText()))
         		dbg = true;
         	if (symbol == null)
         		symbol = currUnit.getSymbolTable().resolveSymbol(getName(), true);

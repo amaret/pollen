@@ -229,7 +229,7 @@ public class ProgCCode {
         gen.fmt.append(part3);
     }
 
-    private void genFldVals(DeclNode.Class cls, Obj vobj, String name) {
+    private void genFldVals(DeclNode.Usr cls, Obj vobj, String name) {
     	
         gen.fmt.print("/* %1 obj init */\n", name);
         gen.fmt.print("%t{\n%+", name);
@@ -312,12 +312,6 @@ public class ProgCCode {
             
             if (unit.isTarget()) {
                 genUnitDefs(unit, ud);
-            }
-
-            String code = ud.getUnitObj().getStr("$$code");
-            if (code != null) {
-                gen.aux.genTitle(unit.getQualName() + " CODE TEMPLATE");
-                gen.fmt.print("%1", code);
             }
         }
     }
@@ -426,8 +420,9 @@ public class ProgCCode {
             ParseUnit.current().reportError(decl.getName(), "host variable has never been assigned");
             return;
         }
-
+        
         gen.fmt.print("const ");
+        
         gen.fmt.print("%1__TYPE %1%2", gen.cname() + decl.getName(), gen.aux.mkSuf(decl));
         if (decl instanceof DeclNode.Arr) {
         	for (ExprNode e : ((DeclNode.Arr)decl).getDim().getElems()) {
@@ -586,8 +581,11 @@ public class ProgCCode {
             gen.fmt.print("null");
             return;
         }
+        
          
-        ISymbolNode is = (DeclNode) cat.aggScope();
+        ISymbolNode is =  (ISymbolNode) cat.aggScope();
+        if (is instanceof UnitNode)
+        	is = ((UnitNode)is).getUnitType();
         if (cat.isStaticRef() && cast instanceof TypeNode.Usr) {
         	// 'new' on a module member: get the type
         	TypeNode.Usr t = (Usr) cast;
@@ -596,9 +594,15 @@ public class ProgCCode {
 		if (is instanceof ImportNode) 
 			is = ((ImportNode) is).getUnit().getUnitType();
         
-        DeclNode.Class struct = (DeclNode.Class) is;
-        String name = vobj.getStr("$$uname");        
+        DeclNode.Usr struct = (DeclNode.Usr) is;
+        
+        String name = vobj.getStr("$$uname");  
+        if (name.isEmpty())
+        	ParseUnit.current().reportError(gen.curUnit(), "javascript problem for " + struct.getName());
+
         genFldVals(struct, vobj, name);
+
+        
     }
     
     private void genValArr(Cat.Arr cat, TypeNode.Arr tarr, Object val) {

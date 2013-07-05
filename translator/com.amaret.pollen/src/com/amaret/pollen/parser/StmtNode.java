@@ -8,6 +8,7 @@ import java.util.Set;
 import org.antlr.runtime.tree.Tree;
 
 import com.amaret.pollen.parser.Cat.Agg;
+import com.amaret.pollen.parser.DeclNode.Var;
 import com.amaret.pollen.parser.ExprNode.Ident;
 
 public class StmtNode extends BaseNode {
@@ -24,6 +25,45 @@ public class StmtNode extends BaseNode {
         
         public ExprNode getExpr() {
             return (ExprNode) getChild(EXPR);
+        }
+        public void pass2End() {
+        	UnitNode u = ParseUnit.current().getCurrUnitNode();
+        	if (u.isComposition()) {
+        		ExprNode.Binary b = this.getExpr() instanceof ExprNode.Binary ? ((ExprNode.Binary) this
+        				.getExpr())
+        				: null;
+        		ExprNode.Ident preset = (Ident) (b != null
+        				&& b.getLeft() instanceof ExprNode.Ident ? b.getLeft()
+        						: null);
+        		if (preset != null) {       			        			
+        			SymbolEntry symbol = preset.getSymbol(); 
+        			ISymbolNode node = symbol != null ? symbol.node() : null;
+        			if (node != null && node instanceof DeclNode.Var) {
+        				if (!((DeclNode.Var)node).isPreset()) {
+        					ParseUnit.current().reportError(node.getName(), "a variable can be initialized with a preset statement only if it is declared with the 'preset' modifier");
+        				}
+        				else {
+        					DeclNode.Var v = (Var) node;
+        					v.getUnit().getPresetList().add(this);
+        					String n = preset.getName().getText();
+        					if (n.indexOf(".") != -1) {
+        						preset.getName().setText(n.substring(n.lastIndexOf(".")+1));
+        					}
+        					ExprNode e = b.getRight();
+        					if (!(e instanceof ExprNode.Const)) {
+        						if (e instanceof ExprNode.Ident) {
+        							SymbolEntry se = ((ExprNode.Ident)e).getSymbol();
+        							ISymbolNode sn = se != null ? se.node() : null;
+        							if (!(sn instanceof DeclNode.Var) || (sn instanceof DeclNode.Var && !((DeclNode.Var)sn).isConst()))
+        								ParseUnit.current().reportError(node.getName(), "a variable can be initialized with a preset statement only to a constant value");
+        						}
+        					}
+
+        				}        				
+        			}
+        		}
+
+        	}
         }
     }
     // StmtNode.Inject
