@@ -199,6 +199,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         	// grammar requires integer literal
         	return ((BaseNode) this.getChild(0)).getAtom();
         }
+        public boolean isPublic() {
+        	return true;
+        }
     }
     // DeclNode.Inject
     // for type features  consisting of injected code.
@@ -1261,6 +1264,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             if (isPublic()) {
                 currUnit.reportError(getName(), "variables can't be \'public\'");
             }
+            
             if (getTypeSpec() != null)
             	getTypeSpec().pass1Begin();
             

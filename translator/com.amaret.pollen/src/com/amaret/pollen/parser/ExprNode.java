@@ -251,14 +251,7 @@ public class ExprNode extends BaseNode {
                 		}            			
             		}
             	}
-//            	if (fcn == null && unit != null && unit.node() instanceof ImportNode) {
-//        			fcn = ((ImportNode) unit.node()).getUnit().lookupName(call, chkHostScope);   
-//        			if (fcn == null /* && is composition*/ ) { 
-//        				// This may be an exported function,
-//        				// so look in the local symtab, where such functions are inserted.
-//        				fcn = symtab.curScope.lookupName(call.substring(call.lastIndexOf('.')+1));
-//        			}
-//            	}
+
             	if (fcn == null)
             		currUnit.reportError(currUnit.getCurrUnitNode(), "'" + call + "': identifier is not declared in the current scope "
             				+  symtab.curScope().getScopeName());
@@ -768,7 +761,7 @@ public class ExprNode extends BaseNode {
         		}
         	}
         	boolean dbg = false;
-        	if ("Compos.ProtoMem.arr.*".matches(this.getName().getText()))
+        	if ("GImod.giVar".matches(this.getName().getText()))
         		dbg = true;
         	if (symbol == null)
         		symbol = currUnit.getSymbolTable().resolveSymbol(getName(), true);
@@ -779,6 +772,34 @@ public class ExprNode extends BaseNode {
         		
         		if (symbol.node() instanceof DeclNode.Var && ((DeclNode.Var) symbol.node()).isIntrinsic())
         			((DeclNode.Var) symbol.node()).setIntrinsicUsed(true); // only emit if used
+        		// check for proper access (public /private )
+        		UnitNode unitDcln = null;
+        		if (symbol.scope() instanceof DeclNode.Usr)
+        			unitDcln = ((DeclNode.Usr) symbol.scope()).getUnit();
+        		if (symbol.node() instanceof DeclNode && ((DeclNode)symbol.node()).isPublic()) // don't check
+        			unitDcln = null;
+        		if (!(symbol.node() instanceof BaseNode))
+        			unitDcln = null;
+        		if (unitDcln != null) {
+        			boolean accessOK = false;
+        			accessOK = symbol.node() instanceof DeclNode.TypedMember && ((DeclNode.TypedMember)symbol.node()).isProtocolMember();
+        			if (!accessOK) {
+        				accessOK = symbol.node() instanceof DeclNode.Var && ((DeclNode.Var)symbol.node()).isPreset();
+        				if (accessOK) { 
+        					BaseNode b = this;
+        					while (b != null && !(b instanceof StmtNode.Assign)) {
+        						b = (BaseNode) b.getParent();
+        					}
+        					if (b instanceof StmtNode.Assign) {
+        						accessOK = ((StmtNode.Assign)b).isPreset();
+        					}
+        					else 
+        						accessOK = false;
+        				}
+        			}
+        			if (unitDcln != ParseUnit.current().getCurrUnitNode() && !accessOK) 
+        				ParseUnit.current().reportError(this.getName(), "private member cannot be accessed outside its declaring unit (which was " + unitDcln.getQualName() + ")");
+        		}
         	}
         	return super.pass2Begin();
         }

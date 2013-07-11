@@ -40,6 +40,7 @@ public class UnitJScript {
                 cls != null ? ("." + cls.getName()) + ".prototype" : "", 
                 fcn.getName());
         gen.aux.genFcnArgs(fcn.getFormals(), false, fcn);
+        
         gen.fmt.print(" {\n%+");
         if (fcn.isHost()) {
         	//gen.fmt.print("%tdebug_line(\"" + fcn.getName() + "\", " + gen.uname() + ");\n");
@@ -209,7 +210,7 @@ public class UnitJScript {
         
         if (unit.isTarget()) {
             genUses(unit);            
-            genPrivateDecls(unit);
+            genPrivateInit(unit);
             genPresets(unit);
         }
         
@@ -217,7 +218,7 @@ public class UnitJScript {
         genEpilogue(unit);
     }
 
-    private void genPrivateDecls(UnitNode unit) {
+    private void genPrivateInit(UnitNode unit) {
         gen.fmt.print("%t%1.$$privateInit = function() {\n%+", gen.uname());
         String dbg = gen.uname();
         for (DeclNode decl : unit.getFeatures()) {

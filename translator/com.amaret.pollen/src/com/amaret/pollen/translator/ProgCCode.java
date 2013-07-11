@@ -593,6 +593,7 @@ public class ProgCCode {
         }
 		if (is instanceof ImportNode) 
 			is = ((ImportNode) is).getUnit().getUnitType();
+		
         
         DeclNode.Usr struct = (DeclNode.Usr) is;
         

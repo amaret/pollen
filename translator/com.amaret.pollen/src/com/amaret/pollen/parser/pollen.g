@@ -390,7 +390,7 @@ stmtExport
     ;
 stmtPreset
     :   'preset' varOrFcnOrArray ASSIGN exprAssign delim
-		-> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] ASSIGN varOrFcnOrArray exprAssign))
+		-> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN_PRESET"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] ASSIGN varOrFcnOrArray exprAssign))
     ;
 classDefinition  
 @init{

@@ -26,6 +26,9 @@ public class StmtNode extends BaseNode {
         public ExprNode getExpr() {
             return (ExprNode) getChild(EXPR);
         }
+        public boolean isPreset() {
+        	return this.token.getText().equals("S_ASSIGN_PRESET");
+        }
         public void pass2End() {
         	UnitNode u = ParseUnit.current().getCurrUnitNode();
         	if (u.isComposition()) {
@@ -244,7 +247,7 @@ public class StmtNode extends BaseNode {
         public List<DeclNode.Var> getVars() {
             return ((List<DeclNode.Var>) this.children);
         }
-        
+
         @Override
         protected void pass2End() {
             BodyNode body = BodyNode.current();

@@ -297,7 +297,7 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 	public boolean isComposition() {
 		if (unit != null)
 			return unit.isComposition();	
-		System.out.println("Null unit for import " + getName());
+		
 		return false;
 
 	}
