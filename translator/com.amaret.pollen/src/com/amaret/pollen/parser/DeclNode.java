@@ -1,6 +1,7 @@
 package com.amaret.pollen.parser;
 
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,9 +43,18 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         		return true;
         	return false;
         }
+        /**
+         * if (class) method, the local variables will be dereferenced from a 'this' ptr.
+         * This is also true for class target constructors.
+         * @return
+         */
         public boolean isMethod() {            
         	if (flags.contains(Flags.METHOD))
         		return true;
+        	if (this.getParent() instanceof DeclNode.Fcn) {
+        		if (((DeclNode.Fcn)this.getParent()).isClassTargetConstructor())
+        			return true;
+        	}
         	return false;       	
         }
 
@@ -236,6 +246,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         private NestedScope scopeDeleg = new NestedScope(this);
 		Fcn(int ttype, String ttext, EnumSet<Flags>  flags) {
             super(ttype, ttext, flags);
+            if (ParseUnit.current().getParseUnitFlags().contains(Flags.CLASS) && 
+						!(flags.contains(Flags.CONSTRUCTOR)) &&
+						!(flags.contains(Flags.HOST))) {
+					flags.add(Flags.METHOD); 
+			  }
         }
 		
 		private DeclNode.Class cls = null;
@@ -322,6 +337,36 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         	return false;
         }
         
+        public boolean isModuleHostConstructor() {
+        	if (!flags.contains(Flags.CONSTRUCTOR))
+        		return false;
+        	if (getName().getText().equals(ParseUnit.CTOR_MODULE_HOST))
+        		return true;
+        	return false;
+        }
+        public boolean isModuleTargetConstructor() {
+        	if (!flags.contains(Flags.CONSTRUCTOR))
+        		return false;
+        	if (getName().getText().equals(ParseUnit.CTOR_MODULE_TARGET))
+        		return true;
+        	return false;
+        }
+        public boolean isClassHostConstructor() {
+        	if (!flags.contains(Flags.CONSTRUCTOR))
+        		return false;
+        	if (getName().getText().equals(ParseUnit.CTOR_CLASS_HOST))
+        		return true;
+        	return false;
+        }
+        public boolean isClassTargetConstructor() {
+        	if (!flags.contains(Flags.CONSTRUCTOR))
+        		return false;
+        	if (getName().getText().substring(getName().getText().lastIndexOf(".")+1).equals(ParseUnit.CTOR_CLASS_TARGET))
+        		return true;
+        	return false;
+        }
+
+        
         public boolean isConstructor() {
         	if (flags.contains(Flags.CONSTRUCTOR))
         		return true;
@@ -331,17 +376,22 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public String cname() {
         	
             IScope scope = getEnclosingScope();
-            IScope outer = (scope != null) ? scope.getEnclosingScope() : null;
-           
+            
+            // comment this out because all classes treated as nested due to 
+            //IScope outer = (scope != null) ? scope.getEnclosingScope() : null;          
             // class name is a qualifier added to name only for nested class.
-            cls = scope instanceof DeclNode.Class  && (outer instanceof DeclNode.Usr) ? (DeclNode.Class) scope : null;
-            cname = (cls == null) ? ("" + getName()) : ("" + cls.getName() + "__" + getName());
-
+            //cls = scope instanceof DeclNode.Class  && (outer instanceof DeclNode.Usr) ? (DeclNode.Class) scope : null;
+            
+            cls = scope instanceof DeclNode.Class  ? (DeclNode.Class) scope : null;
+            cname = (cls == null) ? ("" + getName()) : ("" + cls.getName() + "_" + getName());
+            
             return cname;
 
         }
         
         public DeclNode.Class getFcnClass() {
+        	if (cls == null)
+        		cname();
 			return cls;
 		}
 
@@ -590,7 +640,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         static final private int TYPE = 0;
         static final private int INIT = 2; 
               
-        private UnitNode unitType;  // the unit for the type of this typed member. 
+        private UnitNode typeUnit;  // the unit for the type of this typed member. NOTE the typeUnit of a nested class is its containing unit.
+        boolean isClassRef = false;
         
         // for protocol members
         private UnitNode bindToUnit = null; 			// the module to which this protocol member is bound
@@ -599,7 +650,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		
         private NestedScope scopeDeleg = new NestedScope(this);
         private Cat.Fcn fcnCat = null;   // for function references
-        private boolean isMetaPrimitive = false; // a TypedMember with a meta type instantiated to a primitive has null unitType
+        private boolean isMetaPrimitive = false; // a TypedMember with a meta type instantiated to a primitive has null typeUnit
         
         
         public boolean isMetaPrimitive() {
@@ -621,10 +672,13 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
         /**
          * Could be null - if this is a meta type instantiated to a primitive, e.g. uint8.
-         * @return the unitType type of this member.
+         * NOTE For a nested type T in module M, this returns the unit node for M.
+         *   If M is a module and T is a class, this will show the TypedMember to have module not class type.
+         *   use isClassRef() to check if this is a reference to a class object.
+         * @return the typeUnit type of this member.
          */
         public UnitNode getTypeUnit() {
-            return unitType;
+            return typeUnit;
         }
         public Cat getTypeCat() {
         	if (typeCat == null) {
@@ -665,7 +719,13 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         	return getFcnTypeCat() != null;
         }
         public boolean isClassRef() {
-        	return this.isClass();
+        	return this.isClassRef;
+        }
+        public boolean isHostClassRef() {
+        	return this.isClassRef && this.isHost();
+        }
+        public boolean isTargetClassRef() {
+        	return this.isClassRef && !this.isHost();
         }
         public boolean isProtocolMember() {
         	if (flags.contains(Flags.PROTOCOL_MEMBER))
@@ -688,29 +748,44 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             if (!this.isHost() && curr.isComposition()) {
             	ParseUnit.current().reportError(this.getName(), "compositions can only declare host variables");
             }
+            
             SymbolEntry sym = curr.getUnitType().resolveSymbol(getTypeName());
             ISymbolNode snode = sym != null ? sym.node() : null;
-            boolean isClass = (snode != null && snode instanceof DeclNode.Class);
+            isClassRef = (snode != null && snode instanceof ITypeKind && ((ITypeKind)snode).isClass());
             
-            //UnitNode unitType = null;   // The UnitNode that contains the type of this typed member. 
+            // note 'host' is supported
+            if (flags.contains(Flags.CONST)) {
+            	ParseUnit.current().reportError(this, "'const' not supported for typed members (" + this.getName().getText() + ")");
+            	flags.remove(Flags.CONST);
+            }
+            if (flags.contains(Flags.VOLATILE)) {
+            	ParseUnit.current().reportError(this, "'volatile' not supported for typed members (" + this.getName().getText() + ")");
+            	flags.remove(Flags.VOLATILE);
+            }
+            if (flags.contains(Flags.PRESET)) {
+            	ParseUnit.current().reportError(this, "'preset' not supported for typed members (" + this.getName().getText() + ")");
+            	flags.remove(Flags.PRESET);
+            }
+            
+            //UnitNode typeUnit = null;   // The UnitNode that contains the type of this typed member. 
               // For a nested type T in module M, that is the unit node for M. 
             boolean isTypeMetaArg = false;
             if (snode instanceof ImportNode) {
-                unitType = ((ImportNode) snode).getUnit();
+                typeUnit = ((ImportNode) snode).getUnit();
                 isTypeMetaArg = ((ImportNode) snode).isTypeMetaArg();
             }
             else if (snode instanceof UnitNode) {
-                unitType = (UnitNode) snode;
+                typeUnit = (UnitNode) snode;
             }
             else if (snode instanceof DeclNode.Fcn || snode instanceof DeclNode.Usr)
-            	unitType = ((DeclNode)snode).getUnit();
+            	typeUnit = ((DeclNode)snode).getUnit();
             
-            if (unitType == null ) { 
+            if (typeUnit == null ) { 
             	isMetaPrimitive = true;
             	// this can happen when meta type is a instantiation to a primitive e.g. uint8
              }
             else {
-            	if (unitType.isProtocol() && !(snode instanceof DeclNode.Fcn)) {
+            	if (typeUnit.isProtocol() && !(snode instanceof DeclNode.Fcn)) {
             		flags.add(Flags.PROTOCOL_MEMBER);
             		if (this.isHost()) {
             			flags.remove(Flags.HOST);
@@ -718,11 +793,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             		}
             	}
             	else {
-            		if (!unitType.isClass() && !this.isFcnRef() && !isClass && !isTypeMetaArg) {
+            		if (!typeUnit.isClass() && !this.isFcnRef() && !isClassRef && !isTypeMetaArg) {
             			ParseUnit.current().reportError(getTypeName(), "a typed member can have protocol, class, or function type");
             		}
             	}
-                scopeDeleg.addSymbols(unitType.getEntrySet());
+                scopeDeleg.addSymbols(typeUnit.getEntrySet());
             }
             return false;
         }
@@ -801,44 +876,44 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
 		@Override
 		public boolean isClass() {
-			if (unitType != null)
-				return unitType.isClass();		
+			if (typeUnit != null)
+				return typeUnit.isClass();		
 			return false;
 		}
 
 		@Override
 		public boolean isComposition() {
-			if (unitType != null)
-				return unitType.isComposition();		
+			if (typeUnit != null)
+				return typeUnit.isComposition();		
 			return false;
 
 		}
 
 		@Override
 		public boolean isEnum() {
-			if (unitType != null)
-				return unitType.isEnum();		
+			if (typeUnit != null)
+				return typeUnit.isEnum();		
 			return false;
 		}
 
 		@Override
 		public boolean isModule() {
-			if (unitType != null)
-				return unitType.isModule();		
+			if (typeUnit != null)
+				return typeUnit.isModule();		
 			return false;
 
 		}
 
 		@Override
 		public boolean isProtocol() {
-			if (unitType != null)
-				return unitType.isProtocol();		
+			if (typeUnit != null)
+				return typeUnit.isProtocol();		
 			return false;
 		}
 
 		@Override
 		public boolean isReady() {
-			return (unitType != null);
+			return (typeUnit != null);
 		}
 
     }
@@ -869,6 +944,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         protected NestedScope scopeHost = new NestedScope(this);
         protected String qname = "";
         private boolean qnameSet = false;
+        private boolean featuresCheck = false;
         
         public DeclNode.Usr copy() {
         	DeclNode.Usr newU = new DeclNode.Usr(token.getType(), token.getText(), flags, "");
@@ -907,11 +983,24 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         	return baseType;
 		}
 		public EnumSet<Flags> getFlags() {
-        	return flags;	// Except for nested class, these apply to unitType.
+        	return flags;	// Except for nested class, these apply to typeUnit.
         }
         
         @SuppressWarnings("unchecked")
-    	public List<DeclNode> getFeatures() {
+        public List<DeclNode> getFeatures() {
+        	// Sometimes the parser creates NIL BaseNodes as a side effect of  
+        	// synthesized tree construction: remove the NIL BaseNodes.
+        	// This is necessary because a lot of code loops over this list expecting DeclNodes.
+        	if (!featuresCheck) {
+        		Iterator<DeclNode> it = ((ListNode<DeclNode>)getChild(FEATURES)).getElems().iterator();
+        		while (it.hasNext())
+        		{
+        			BaseNode b = (BaseNode) it.next();
+        			if (!(b instanceof DeclNode))
+        				it.remove();			      
+        		}
+        		featuresCheck = true;
+        	}
         	return ((ListNode<DeclNode>)getChild(FEATURES)).getElems();
         }
         
@@ -942,7 +1031,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		}
         
         /** 
-         * Qualify the Unit name using 'as' name in the instantiating unitType.
+         * Qualify the Unit name using 'as' name in the instantiating typeUnit.
          * This enforces uniqueness in the scope of reference despite 
          * multiple instantiations in the scope of reference. 
          * ONLY call just before translation phase.
@@ -1107,7 +1196,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             		if (b instanceof DeclNode.Formal) {
             			DeclNode.Formal f = (Formal) b;
             			f.pass1Begin();
-            			// If the meta argument is a void instance, this unitType is also
+            			// If the meta argument is a void instance, this typeUnit is also
             			SymbolEntry symbol = ParseUnit.current().getSymbolTable().lookupName(f.getName().getText());
             			ISymbolNode snode = symbol != null ? symbol.node() : null;
             			if (snode instanceof DeclNode.Usr && ((DeclNode.Usr) snode).isVoid()) {
@@ -1224,16 +1313,20 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         }
         /**
          * 
-         * @return true if this has 'new' on the dcln
-         * and is a module member.
+         * OLD: @return true if this has 'new' on the dcln and is a module member.
+         * 
+         * New: If true, object will be initialized at host time, via the host constructor.
+         * @return true if this DeclNode has new on the declaration AND is declared host
+         * 
          */
-        public boolean isStaticInstance() {
+        public boolean isHostNew() {
         	IScope sc = this.getDefiningScope();
         	boolean isStatic = sc instanceof DeclNode.Usr 
-        		&& ((DeclNode.Usr)sc).isModule() 
-        		&& flags.contains(Flags.NEW);
-        	return isStatic;
+        		//&& ((DeclNode.Usr)sc).isModule() 
+        		&& flags.contains(Flags.NEW);       	
+        	return (isStatic && this.isHost());
         }
+
         @Override
         public Atom getName() {
         	return ((BaseNode) getChild(NAME)).getAtom();
@@ -1351,12 +1444,39 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     	return flags.contains(Flags.HOST);
     }
 
+    public boolean isClassRef() {
+    	if (this instanceof DeclNode.TypedMember) {
+    		return ((DeclNode.TypedMember)this).isClassRef();    		
+    	}
+    	return false;
+    }
+    public boolean isHostClassRef() {
+    	if (this instanceof DeclNode.TypedMember) {
+    		return ((DeclNode.TypedMember)this).isHostClassRef();    		
+    	}
+    	return false;
+    }
+    public boolean isTargetClassRef() {
+    	if (this instanceof DeclNode.TypedMember) {
+    		return ((DeclNode.TypedMember)this).isTargetClassRef();    		
+    	}
+    	return false;
+    }
+    public boolean isProtocolMember() {
+    	if (this instanceof DeclNode.TypedMember) {
+    		return ((DeclNode.TypedMember)this).isProtocolMember();    		
+    	}
+    	return false;
+    }
     public boolean isConst() {
         return flags.contains(Flags.CONST);
     }
     
     public boolean isPreset() {
         return flags.contains(Flags.PRESET);
+    }
+    public boolean isNew() {
+    	return flags.contains(Flags.NEW);
     }
 
 

@@ -15,22 +15,41 @@ public class Cat implements Cloneable {
         private IScope aggScope;
         private IScope defScope;
         private boolean isRef;
-        private boolean isStaticRef;
-        private boolean isFcnRef;
+        private boolean isHostClassRef;
+        private boolean isTargetClassRef;
+        private boolean isClassRef;
+        private boolean isProtocolMember;
+		private boolean isFcnRef;
         
-		private Agg(IScope aggScope, IScope defScope, boolean isRef, boolean isFcnRef) {
+		private Agg(IScope aggScope, IScope defScope, boolean isRef, boolean fcnRef) {
             this.aggScope = aggScope;
             this.defScope = defScope;
             this.isRef = isRef;
             this.isFcnRef = aggScope instanceof DeclNode.TypedMember 
             	? ((DeclNode.TypedMember) aggScope).isFcnRef() : false;
-            this.isFcnRef |= isFcnRef;
-            this.isStaticRef = aggScope instanceof DeclNode.TypedMember 
-        	? ((DeclNode.TypedMember) aggScope).isStaticInstance() : false;
+            this.isFcnRef |= fcnRef;
+            this.isHostClassRef = aggScope instanceof DeclNode 
+        		? ((DeclNode) aggScope).isHostClassRef(): false;
+        	this.isTargetClassRef = aggScope instanceof DeclNode 
+        		? ((DeclNode) aggScope).isTargetClassRef(): false;
+        	this.isClassRef = aggScope instanceof DeclNode 
+        		? ((DeclNode) aggScope).isClassRef(): false;
+        	this.isProtocolMember = aggScope instanceof DeclNode 
+        		? ((DeclNode) aggScope).isProtocolMember(): false;
         }
-		
-        public boolean isStaticRef() {
-			return isStaticRef;
+        public boolean isProtocolMember() {
+			return isProtocolMember;
+		}
+        public boolean isClassRef() {
+			return isClassRef;
+		}
+
+		public boolean isTargetClassRef() {
+			return isTargetClassRef;
+		}
+
+		public boolean isHostClassRef() {
+			return isHostClassRef;
 		}
         
         public boolean isFcnRef() {
@@ -577,7 +596,21 @@ public class Cat implements Cloneable {
     public boolean isTypedMember() {
         return this instanceof Cat.Agg && ((Cat.Agg) this).aggScope instanceof DeclNode.TypedMember;
     }
-    
+    public boolean isProtocolMember() {        
+    	return this instanceof Cat.Agg && ((Cat.Agg) this).isProtocolMember();       
+    }
+    public boolean  isHostClassRef() {        
+    	return this instanceof Cat.Agg && ((Cat.Agg) this).isHostClassRef();       
+    }
+    public boolean isTargetClassRef() {        
+    	return this instanceof Cat.Agg && ((Cat.Agg) this).isTargetClassRef();       
+    }
+    public boolean isClassRef() {        
+    	return this instanceof Cat.Agg && ((Cat.Agg) this).isClassRef();       
+    }
+    public boolean isFcnRef() {        
+    	return this instanceof Cat.Agg && ((Cat.Agg) this).isFcnRef();       
+    }
     public boolean isModule() {
     	boolean rtn = false;
     	rtn = this instanceof Cat.Agg && ((Cat.Agg) this).aggScope instanceof DeclNode.Usr;

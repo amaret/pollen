@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeObject;
+import org.mozilla.javascript.UniqueTag;
 
 import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.Cat;
@@ -161,8 +162,8 @@ public class ProgCCode {
         gen.fmt.print("int main() {\n%+");
         gen.fmt.print("%t%1pollen__reset__E();\n", gen.cname());
         for (UnitDesc ud : units) {
-            if (ud.getUnit().lookupFcn("targetInit") != null) {
-                genSingleFcnCall("targetInit", ud.getUnit());
+            if (ud.getUnit().lookupFcn(ParseUnit.CTOR_MODULE_TARGET) != null) {
+                genSingleFcnCall(ParseUnit.CTOR_MODULE_TARGET, ud.getUnit());
             }
         }
         for (UnitDesc ud : units) {
@@ -238,8 +239,12 @@ public class ProgCCode {
         		if (((DeclNode.Var)fld).isIntrinsic() &&  !((DeclNode.Var)fld).isIntrinsicUsed())
         			continue;
         		gen.fmt.print("%t");
+   				gen.fmt.mark();
         		genVal((ITypeSpec) fld, vobj.getAny(fld.getName()));
-        		gen.fmt.print(",  /* %1 */\n", fld.getName());
+        		String ss = gen.fmt.release();
+        		int l = 16 - ss.length() > 0 ? 24 - ss.length() : 4;
+        		String spaces = String.format("%"+l+"s", "");
+        		gen.fmt.print("%1,%2/* %3 */\n",ss, spaces, fld.getName());
         	}
         }
         gen.fmt.print("%-%t}");
@@ -421,7 +426,11 @@ public class ProgCCode {
             return;
         }
         
-        gen.fmt.print("const ");
+        if (!(decl.isHostClassRef()))
+        	gen.fmt.print("const ");
+        String c = gen.cname();
+        String d = decl.getName().getText();
+        String suf = gen.aux.mkSuf(decl);
         
         gen.fmt.print("%1__TYPE %1%2", gen.cname() + decl.getName(), gen.aux.mkSuf(decl));
         if (decl instanceof DeclNode.Arr) {
@@ -557,7 +566,8 @@ public class ProgCCode {
             }
         }
         else if (cat instanceof Cat.Agg) {
-        	if (val instanceof Number)
+        	if (val instanceof Number 
+        			|| val instanceof UniqueTag) // latter happens when dynamic new() is the init expression (non-host)
         		vobj = null;
             genValAgg((Cat.Agg) cat, cast, (Value.Obj) vobj);
         }
@@ -586,7 +596,7 @@ public class ProgCCode {
         ISymbolNode is =  (ISymbolNode) cat.aggScope();
         if (is instanceof UnitNode)
         	is = ((UnitNode)is).getUnitType();
-        if (cat.isStaticRef() && cast instanceof TypeNode.Usr) {
+        if (cat.isHostClassRef() && cast instanceof TypeNode.Usr) {
         	// 'new' on a module member: get the type
         	TypeNode.Usr t = (Usr) cast;
         	is = (t != null) ? t.getSymbol().node() : null;

@@ -270,7 +270,7 @@ public class TypeRules {
 					implemUnit.getFcnMap().get(protoUnitFcn.getName().getText());
 					for (String implemUnitFcnName : implemUnit.getFcnMap().keySet()) {	
 						dbg3 = implemUnitFcnName;
-						if (implemUnitFcnName.equals("$$hostInit"))
+						if (implemUnitFcnName.equals(ParseUnit.CTOR_MODULE_HOST))
 							continue;
 						if (dbg)
 							ParseUnit.current().reportError(implemUnit, "checkImplements names (imple " + implemUnit.getName() + ", proto " + protoUnit.getName() + "): " + implemUnitFcnName + ", " + protoUnitFcn.getName().getText());

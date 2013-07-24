@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 
@@ -36,6 +38,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
 	public Map<String, ImportNode> getImportMap() {
 		return importMap;
 	}
+	private boolean featuresCheck = false;
 
 
 	class UnitHashMap<K,V> extends HashMap<K,V> {
@@ -103,9 +106,22 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
 		return unitType;
 	}
 	
-	public List<DeclNode> getFeatures() {		
+	public List<DeclNode> getFeatures() {	
+		// Sometimes the parser creates NIL BaseNodes as a side effect of  
+		// synthesized tree construction: remove the NIL BaseNodes.
+		// This is necessary because a lot of code loops over this list expecting DeclNodes.
+		if (!featuresCheck) {
+			Iterator<DeclNode> it = this.getUnitType().getFeatures().iterator();
+			while (it.hasNext())
+			{
+				BaseNode b = (BaseNode) it.next();
+				if (!(b instanceof DeclNode))
+					it.remove();			      
+			}
+			featuresCheck = true;
+		}
 		return this.getUnitType().getFeatures();
-    }
+	}
 
     
     UnitNode(int ttype, String ttext) {

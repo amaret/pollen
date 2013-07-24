@@ -13,6 +13,9 @@ import com.amaret.pollen.parser.StmtNode;
 import com.amaret.pollen.parser.SymbolEntry;
 import com.amaret.pollen.parser.UnitNode;
 import com.amaret.pollen.parser.pollenParser;
+import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
+import com.amaret.pollen.parser.DeclNode.Var;
+import com.amaret.pollen.parser.ExprNode.Ident;
 
 
 public class UnitJScript {
@@ -32,8 +35,10 @@ public class UnitJScript {
         }
 
         DeclNode.Class cls = fcn.getFcnClass();
-        if (!(cls != null && cls.getEnclosingScope() instanceof DeclNode.Class))
-        	cls = null; // a class scope name is needed only for nested classes
+        //if (cls != null && (cls.getContainingType() == null))
+        //	cls = null; // a class scope name is needed only for nested classes
+        
+        String n = fcn.getName().getText();
         
         gen.fmt.print("%t%1%2.%3 = function",
                 gen.uname(),
@@ -144,6 +149,7 @@ public class UnitJScript {
     private void genDecl$Var(DeclNode.Var decl) {
     	if (decl.isIntrinsic() && !decl.isIntrinsicUsed())
     		return;
+    	
     	if (decl.isHost()) {
             gen.fmt.print("%t%1.%2 = ", gen.uname(), decl.getName());
             genInit(decl);
@@ -168,13 +174,15 @@ public class UnitJScript {
     		return;
     	genDecls(unit.getContainingUnit());
     	genDecls(unit.getImplementedUnit());
+    	String n = unit.getQualName();
     	genDecl(unit.getUnitType());
   
-        for (DeclNode decl : unit.getFeatures()) {
-            if (!isPrivateInit(decl)) {
-                genDecl(decl);
-            }
-        }
+    	if (!unit.isClass())
+    		for (DeclNode decl : unit.getFeatures()) {
+    			if (!isPrivateInit(decl) && isHostInit(decl)) {
+    				genDecl(decl);
+    			}
+    		}
     }
         
     private void genEpilogue(UnitNode unit) {
@@ -202,11 +210,12 @@ public class UnitJScript {
         if (unit.isTarget())
         	genDecls(unit);
 
-        for (BaseNode d: unit.getFeatures()) {
-        	if (d instanceof DeclNode.Fcn) {
-        		genBody(((DeclNode.Fcn)d).getBody());
+        if (!unit.isClass())
+        	for (BaseNode d: unit.getFeatures()) {
+        		if (d instanceof DeclNode.Fcn) {
+        			genBody(((DeclNode.Fcn)d).getBody());
+        		}
         	}
-        }
         
         if (unit.isTarget()) {
             genUses(unit);            
@@ -220,9 +229,10 @@ public class UnitJScript {
 
     private void genPrivateInit(UnitNode unit) {
         gen.fmt.print("%t%1.$$privateInit = function() {\n%+", gen.uname());
-        String dbg = gen.uname();
+        String dbg ;
         for (DeclNode decl : unit.getFeatures()) {
-            if (isPrivateInit(decl)) {
+        	dbg = decl.getName().getText();
+            if (isPrivateInit(decl) && isHostInit(decl)) {
                 genDecl(decl);
             }
         }
@@ -404,9 +414,17 @@ public class UnitJScript {
         Cat cat = ts.getTypeCat();
         String tc = cat.code();
         ExprNode init = ts.getInit();
-        if (init == null 
-        		|| ( cat instanceof Cat.Agg && ((Cat.Agg) cat).isStaticRef())) {
+        if (init == null ) {
             gen.aux.genDefault(ts.getTypeCat(), ts);
+        }
+        else if ( cat instanceof Cat.Agg && ((Cat.Agg) cat).isHostClassRef()) {
+            gen.aux.genDefault(ts.getTypeCat(), ts);
+            
+            if (init instanceof ExprNode.New) {
+            	DeclNode d = (DeclNode) ts;
+            	// TODO handle constructor parameters
+            	gen.fmt.print("; %2.%3.%1()", ParseUnit.CTOR_CLASS_HOST, gen.uname(), d.getName() );
+            }
         }
         else if (tc.startsWith("A") || tc.startsWith("S") || tc.startsWith("V")) {
             gen.aux.genDefault(ts.getTypeCat(), ts);
@@ -424,8 +442,37 @@ public class UnitJScript {
             gen.aux.genExpr(init);
         }
     }
-    
+    /**
+     * 
+     * @param decl
+     * @return true if this decl should be initialized at host time to the init expression
+     */
+    private static boolean isHostInit(DeclNode decl) {   	
+    	if (decl.isHostClassRef())
+    		return true;
+
+    	if (decl instanceof DeclNode.ITypeSpecInit && ((ITypeSpecInit) decl).getInit() instanceof ExprNode.New) 
+    		return false;
+
+    	return true;
+    	
+//    	if (rtn && ((ITypeSpecInit) decl).getInit() instanceof ExprNode.New) {
+//    		ExprNode.New e = (ExprNode.New) ((ITypeSpecInit) decl).getInit();
+//    		ExprNode.Ident e1 = (Ident) e.getCall().getName();
+//    		if (!(e1.getName().getText().matches(".*" + ParseUnit.CTOR_CLASS_HOST)))
+//    			rtn = false;    // new() is never host time init	
+//    	}   	
+//        return rtn;
+    }
+    	
+    /**
+     * 
+     * @param decl
+     * @return true if this decl should be initialized to an initial value
+     * as specified in the init expression
+     */
     private static boolean isPrivateInit(DeclNode decl) {
+    	
         return decl instanceof DeclNode.ITypeSpecInit && !decl.isPublic();
     }
 }

@@ -48,10 +48,7 @@ public class StmtNode extends BaseNode {
         				else {
         					DeclNode.Var v = (Var) node;
         					v.getUnit().getPresetList().add(this);
-        					String n = preset.getName().getText();
-        					if (n.indexOf(".") != -1) {
-        						preset.getName().setText(n.substring(n.lastIndexOf(".")+1));
-        					}
+        					preset.getName().stripQualifiers();
         					ExprNode e = b.getRight();
         					if (!(e instanceof ExprNode.Const)) {
         						if (e instanceof ExprNode.Ident) {
@@ -612,7 +609,7 @@ public class StmtNode extends BaseNode {
                	SymbolTable symtab = ParseUnit.current().getSymbolTable();
                	boolean ok = false;
                	ok = (symtab.curScope() instanceof DeclNode.Usr && ((DeclNode.Usr) symtab.curScope()).isModule());
-               	ok |= symtab.currScopeIsHost();
+               	ok |= symtab.currScopeIsHostFcn();
                	if (!ok) {
         			ParseUnit.current().reportError(getPro(), "Protocol member binding can only occur in the body of a module or in a host function");     
         			return;

@@ -64,7 +64,7 @@ public class SymbolTable {
      * For calls. In host context, look in host scope.
      * @return true if current scope is a host scope.
      */
-    public boolean currScopeIsHost() {
+    public boolean currScopeIsHostFcn() {
     	ParseUnit currUnit = ParseUnit.current();
     	SymbolTable symtab = currUnit.getSymbolTable();
     	IScope sc = symtab.curScope();

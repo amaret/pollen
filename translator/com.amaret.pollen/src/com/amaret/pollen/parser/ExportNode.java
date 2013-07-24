@@ -171,7 +171,7 @@ public class ExportNode extends BaseNode implements ISymbolNode {
     			break; // once we are at the module we are done.    			
     		}
     		else {
-    			ParseUnit.internalMsg("ExportNode.getExportUnitDclnNode(): Invalid unit type for export " + name.getText());
+    			currUnit.reportError(imp, "exported unit must be a module or composition");
     			return null;	
     		}   		
     	}
@@ -256,13 +256,14 @@ public class ExportNode extends BaseNode implements ISymbolNode {
         	// do I call enterExport() for the module in 'export m.foo' when there is no 'export m'?
         	// currently I set isExport() true but don't call enterExport().
         	
-        	enterExport(exportedName);
-        	currUnit.getCurrUnitNode().getExportList().add(this);
+
             ISymbolNode modDcl = this.getExportUnitDclnNode(exportedName);
             if (modDcl == null) { 
             	currUnit.reportError(exportedName, "exported unit not found");
             	return false;
             }
+        	enterExport(exportedName);
+        	currUnit.getCurrUnitNode().getExportList().add(this);
             if (modDcl instanceof DeclNode.Usr)
             	imp.setExportUnit((Usr) modDcl);
            

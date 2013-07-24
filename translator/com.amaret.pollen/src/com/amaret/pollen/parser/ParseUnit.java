@@ -3,6 +3,7 @@ package com.amaret.pollen.parser;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
@@ -36,12 +37,31 @@ public class ParseUnit {
 	private HashMap<String, String> errors;
 	private List<String> metaModules = new ArrayList<String>();
 	static private boolean debugMode = false;
+	// pollen names
 	public static final String EXPORT_PREFIX = "$$export";
 	public static final String INTRINSIC_PREFIX = "pollen__";
 	// used for 'for' loops with undeclared loop variables
 	public static final String DEFAULT_LOOPVAR = "pollen__loopvar"; 
-	
-
+	public static final String CTOR_CLASS_TARGET = "new_";
+	public static final String CTOR_CLASS_HOST = "new_host";
+	public static final String CTOR_MODULE_TARGET = "targetInit";
+	public static final String CTOR_MODULE_HOST = "$$hostInit";
+	// info on parse time current type (under construction)
+	private pollenParser parser = null;
+	public EnumSet<Flags> getParseUnitFlags() {
+		if (parser == null)
+			return  EnumSet.noneOf(Flags.class);
+		if (this.currUnitNode != null)
+			return this.currUnitNode.getUnitType().getFlags();
+		return parser.getParseUnitFlags();
+	}
+	public String getParseUnitName() {
+		if (parser == null)
+			return  null;
+		if (this.currUnitNode != null)
+			return this.currUnitNode.getUnitType().getName().getText();
+		return parser.getParseUnitTypeName();
+	}
 	public List<String> getMetaModules() {
 		return metaModules;
 	}
@@ -55,8 +75,9 @@ public class ParseUnit {
 	}
 
 	public static boolean isDebugMode() {
-		//return false;
-		return debugMode;
+		return false;
+		//return true;
+		//return debugMode;
 	}
 
 	static public enum Property {
@@ -346,7 +367,7 @@ public class ParseUnit {
 
 		AtomStream tokens = new AtomStream(lexer);
 		tokens.discardOffChannelTokens(true);
-		pollenParser parser = new pollenParser(tokens, client, clientImport);
+		parser = new pollenParser(tokens, client, clientImport);
 
 		parser.setTreeAdaptor((TreeAdaptor) new BaseNodeAdaptor());
 		pollenParser.unit_return result = parser.unit();

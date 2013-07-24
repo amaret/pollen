@@ -14,8 +14,8 @@ public class Script {
         cx.setOptimizationLevel(-1);
         Scriptable scope = cx.initStandardObjects();
         //ParseUnit.setDebugMode(false);
-//        if (ParseUnit.isDebugMode())
-//        	System.out.println("\n\nSCRIPT source: " + prog  + "\n\nfilename: " + fileName);
+        if (ParseUnit.isDebugMode())
+        	System.out.println("\n\nSCRIPT source: " + prog  + "\n\nfilename: " + fileName);
         
         try {
             cx.evaluateString(scope, prog, fileName, 1, null);

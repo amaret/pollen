@@ -52,5 +52,15 @@ public class Atom extends CommonToken {
 	public String toTokenString() {
 		return super.toString();
 	}
+	/**
+	 * For qualified name construction.
+	 */
+	public void stripQualifiers() {
+		String n = this.getText();
+		if (n.indexOf('.') != -1) {
+			n = n.substring(n.lastIndexOf('.') + 1);
+			this.setText(n);
+		}		
+	}
 
 }

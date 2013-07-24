@@ -136,6 +136,8 @@ public class UnitHeader {
 		if (decl.isConst()) {
 			return;
 		}
+		
+		String dbg = decl.getName().getText();
 
 		gen.fmt.print("typedef ");
 		gen.aux.genType(decl.getTypeSpec(), gen.cname() + decl.getName()
@@ -186,7 +188,8 @@ public class UnitHeader {
     				gen.fmt.print("]");
     			}
     		}
-    		gen.fmt.print(";\n");
+    		if (!(fld instanceof DeclNode.Fcn))
+    			gen.fmt.print(";\n");
         }
         gen.fmt.print("%-%t};\n"); 
         gen.fmt.print("%ttypedef struct %1 %1;\n", clsStruct, clsStruct); 
@@ -213,13 +216,12 @@ public class UnitHeader {
         		gen.fmt.print("%t");     
         		
         		boolean proMem = fld instanceof DeclNode.TypedMember && ((DeclNode.TypedMember)fld).isProtocolMember();
-        		boolean staticInstance = fld instanceof DeclNode.TypedMember && ((DeclNode.TypedMember)fld).isStaticInstance();
-        		if (proMem) {
+       		if (proMem) {
         			gen.fmt.print("struct ");
             		gen.aux.genType(((DeclNode.ITypeSpec) fld).getTypeSpec(), "");
             		gen.fmt.print("*"  + fld.getName().getText());
         		}
-        		else if (staticInstance) {
+        		else if (fld.isHostClassRef()) {
     				gen.fmt.mark();
     				gen.aux.genType(((DeclNode.ITypeSpec) fld).getTypeSpec(), "");
     				String typeString = gen.fmt.release();
@@ -260,12 +262,12 @@ public class UnitHeader {
     	if (decl.isIntrinsic() && !decl.isIntrinsicUsed())
     		return;
     	
-    	if (gen.curUnit().isModule() && !decl.isHost()) {
+    	if (gen.curUnit().isModule() && (!decl.isHost() || (decl instanceof DeclNode.TypedMember))) {
+    		String qualifier = decl.isHostClassRef() ? "_" : ".";
     		gen.fmt.print("#define " + gen.cname() + decl.getName() + gen.aux.mkSuf(decl) + " ");
     		String cname = gen.cname().substring(0, gen.cname().length()-1);
-    		gen.fmt.print(cname + "." + decl.getName());
+    		gen.fmt.print(cname + qualifier + decl.getName());
     		gen.fmt.print("\n");
-    		boolean staticInstance = decl instanceof DeclNode.TypedMember && ((DeclNode.TypedMember) decl).isStaticInstance();
     		if (decl.getTypeSpec() instanceof TypeNode.Usr) {
     			TypeNode.Usr t = (Usr) decl.getTypeSpec();
 				if (t.getSymbol() != null
@@ -273,7 +275,8 @@ public class UnitHeader {
 						&& t.getSymbol().scope() == gen.curUnit().getUnitType()) { // nested class
 					DeclNode.Class cls = (Class) t.getSymbol().node();
 	    			List<DeclNode> fields = cls.getFeatures();
-	    			String deref = staticInstance ? "." : "->";
+	    			String deref = decl.isHostClassRef() ? "." : "->";
+	    			
 	    			for (DeclNode fld : fields) {
 	    				
 						if (fld instanceof DeclNode.Var
@@ -283,7 +286,7 @@ public class UnitHeader {
 						
 	    	    		gen.fmt.print("#define " + gen.cname() + decl.getName() + "_" + fld.getName() + gen.aux.mkSuf(decl) + " ");
 	    	    		cname = gen.cname().substring(0, gen.cname().length()-1);
-	    	    		gen.fmt.print(cname + "." + decl.getName() + deref + fld.getName());
+	    	    		gen.fmt.print(cname + qualifier + decl.getName() + deref + fld.getName());
 	    	    		gen.fmt.print("\n");
 
 	    			}
@@ -328,6 +331,8 @@ public class UnitHeader {
             //gen.fmt.print("extern struct %1%2%3", gen.cname(), "* ", gen.cname().substring(0, gen.cname().length()-1) + ";\n"); 
 
             for (/*DeclNode decl*/ BaseNode b : unit.getFeatures()) {
+            	if (!(b instanceof DeclNode))
+            		continue;
             	DeclNode decl = (DeclNode) b;
                 switch (decl.getType()) {
                 // the unit type contains a class
@@ -336,7 +341,8 @@ public class UnitHeader {
         				gen.aux.genTitle("class definition (unit " + unit.getName().getText() + "." + decl.getName() + ")");
         				title = true;
         			}
-                    genDecl$Class((DeclNode.Class) decl);
+
+        			genDecl$Class((DeclNode.Class) decl);
                     break;
                 default:
                 	break;
@@ -547,7 +553,7 @@ public class UnitHeader {
     	}
 
     	for (DeclNode decl : unit.getFeatures()) {
-    		if (decl.isHost()) {
+    		if (decl.isHost() && !(decl instanceof DeclNode.TypedMember)) {
     			continue;
     		}
     		if (decl instanceof DeclNode.Var) {

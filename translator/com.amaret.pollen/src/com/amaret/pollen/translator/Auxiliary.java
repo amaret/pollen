@@ -20,6 +20,7 @@ import com.amaret.pollen.parser.TypeNode;
 import com.amaret.pollen.parser.UnitNode;
 import com.amaret.pollen.parser.pollenParser;
 import com.amaret.pollen.parser.DeclNode.Formal;
+import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.parser.ExprNode.Const;
 import com.amaret.pollen.parser.ExprNode.Ident;
 import com.amaret.pollen.parser.ExprNode.Quest;
@@ -63,11 +64,11 @@ class Auxiliary {
 	private void genDefault(Cat cat, DeclNode.ITypeSpecInit ts, int context) {
 
 		String tc = cat.code();
-        if ((tc.startsWith("C") || tc.startsWith("X")) && ((Cat.Agg) cat).isStaticRef()) {
+        if ((tc.startsWith("C") || tc.startsWith("X")) && ((Cat.Agg) cat).isHostClassRef()) {
             Cat.Agg aggCat = (Cat.Agg) cat;
             ISymbolNode is = (DeclNode) aggCat.aggScope();
             IScope defScope = aggCat.defScope();
-            if (aggCat.isStaticRef()) {
+            if (aggCat.isHostClassRef()) {
             	// 'new' on a module member: get the type
             	TypeNode.Usr t = (Usr) (ts.getTypeSpec() instanceof TypeNode.Usr ? ts.getTypeSpec() : null);
             	String tn = t.getName().getText();
@@ -188,6 +189,7 @@ class Auxiliary {
 	}
 
 	void genExpr2(ExprNode expr, int eType) {
+		
 		switch (eType) {
 
 		case pollenParser.E_BINARY:
@@ -321,12 +323,14 @@ class Auxiliary {
 		gen.fmt.print("(");
 		int argc = 0;
 
-		if (expr.isThisPtr()) {
+		if (expr.addThisPtrParameter()) {
 			sep = ", ";
-			if (expr.getCaller() != null)
-				gen.fmt.print(mkQname(expr.getCaller()));
+			if (expr.getQualifier() != null) {				
+				String addrOf = expr.getQualifier().node() instanceof DeclNode && ((DeclNode)expr.getQualifier().node()).isHostClassRef() ? "&" : "";
+				gen.fmt.print("%1%2", addrOf, mkQname(expr.getQualifier()));
+			}
 			else 
-				gen.fmt.print("NULL");
+				gen.fmt.print("/* unknown invoker ?? */");
 			//++argc;
 		}
 
@@ -451,6 +455,10 @@ class Auxiliary {
 	private void genExpr$Ident(ExprNode.Ident expr) {
 		
 		boolean dbg = false;
+		String s = expr.getName().getText();
+		
+		if (s.matches(".*blue"))
+			dbg = true;
 
 		SymbolEntry sym = expr.getSymbol();
 		if (sym == null) {
@@ -462,19 +470,22 @@ class Auxiliary {
 		}
 
 		ISymbolNode snode = sym.node();
-		IScope scope = sym.scope();
-		if (snode instanceof DeclNode.Fcn && scope instanceof ImportNode
-				&& ((ImportNode) scope).isExport()) {
+		IScope scopeOfDcln = sym.scope();
+		if (snode instanceof DeclNode.Fcn && scopeOfDcln instanceof ImportNode
+				&& ((ImportNode) scopeOfDcln).isExport()) {
 			// an exported function
-			scope = ((DeclNode.Fcn) sym.node()).getUnit();
+			scopeOfDcln = ((DeclNode.Fcn) sym.node()).getUnit();
 		}
 
 		String quot = isLval ? "'" : "";
-		boolean externScope = scope instanceof UnitNode
-				|| scope instanceof DeclNode.Usr;
-				
-		if (scope instanceof DeclNode.Usr) {
-			scope = scope.getEnclosingScope();
+		boolean externScope = scopeOfDcln instanceof UnitNode
+				|| scopeOfDcln instanceof DeclNode.Usr;
+			
+		// Qualify the name with its scope.
+		
+		boolean classScopeOfDcln = scopeOfDcln instanceof DeclNode.Class;
+		if (scopeOfDcln instanceof DeclNode.Usr && !((ITypeKind)scopeOfDcln).isClass()) {
+			scopeOfDcln = scopeOfDcln.getEnclosingScope();
 		}
 
 		if (!(externScope)) {
@@ -525,29 +536,50 @@ class Auxiliary {
 		}
 		
 		if (qn.isEmpty()) {
-			if (scope instanceof UnitNode && ((UnitNode) scope).isComposition())	{
-				scope = ((DeclNode) snode).getUnit();
+			if (scopeOfDcln instanceof UnitNode && ((UnitNode) scopeOfDcln).isComposition())	{
+				scopeOfDcln = ((DeclNode) snode).getUnit();
 				
 			}
-			qn = (scope instanceof UnitNode ? ((UnitNode) scope)
+			qn = (scopeOfDcln instanceof UnitNode ? ((UnitNode) scopeOfDcln)
 					.getQualName()
-					: (scope instanceof DeclNode.Usr) ? ((DeclNode.Usr) scope)
-							.getUnitQualName() : "/* ?? scope unknown ?? */");
-		}
-		if (expr.getName().getText().matches("Compos.ProtoMem.arr.*")) {
-			dbg = true;
+					: (scopeOfDcln instanceof DeclNode.Usr) ? ((DeclNode.Usr) scopeOfDcln)
+							.getUnitQualName() 
+							: "/* ?? scope unknown ?? */");
+			
+			boolean isClassRef = expr.getQualifier() != null 
+					&& expr.getQualifier().node() instanceof DeclNode
+					&& ((DeclNode) expr.getQualifier().node()).isClassRef();
+			if (classScopeOfDcln && !expr.isThisPtr() && isClassRef && this.isHost())
+				qn = gen.uname();
+			
 		}
 		
 		if (isHost && !isLval) {
-			if (scope == gen.curUnit()) {
+			if (scopeOfDcln == gen.curUnit()) {
 				gen.fmt.print("%1.%2", gen.uname(), expr.getName());
+			} else if (classScopeOfDcln) {
+				if (expr.isThisPtr()){
+					// the scope qualifier is 'this'
+					String n = expr.getName().getText().substring(expr.getName().getText().lastIndexOf('.')+1);
+					gen.fmt.print("this.%1", n);
+				}
+				else {
+					if (expr.getQualifier() != null && expr.getQualifier().node() instanceof DeclNode.TypedMember) {
+						gen.fmt.print("%1.%2", qn, expr.getName().getText());
+					}
+					else 
+						gen.fmt.print("$units['%1'].%2", qn, expr.getName().getText());
+				}
+
 			} else {
 				// the scope qualifiers from the source are satisfied by the unit, so delete.
 				String n = expr.getName().getText().substring(expr.getName().getText().lastIndexOf('.')+1);
+				if (n.equals("init"))
+					dbg = true;
 				gen.fmt.print("$units['%1'].%2", qn, n);
 			}
 		} else if (isLval && expr.getCat().isAggArr()) {
-			if (scope == gen.curUnit()) {
+			if (scopeOfDcln == gen.curUnit()) {
 				gen.fmt.print("%1.%2.$$cname", gen.uname(), expr.getName());
 			} else {
 				gen.fmt.print("$units['%1'].%2.$$cname", qn, expr.getName());
@@ -561,7 +593,10 @@ class Auxiliary {
 			}
 
 			if (expr.isThisPtr()) {
-				gen.fmt.print("this->" + mkCname(expr));
+				if (isHost)
+					gen.fmt.print("this." + mkCname(expr));
+				else
+					gen.fmt.print("this->" + mkCname(expr));
 				return;
 			}
 
@@ -596,9 +631,9 @@ class Auxiliary {
 	}
 
 	private void genExpr$New(ExprNode.New expr) {
-		// TODO pollen ExprNode has Args.
-		// This does not handle Args
-		genDefault(expr.getCat(), null, DEFAULT_INNEW);
+		genExpr$Call(expr.getCall());
+		// code below does not handle args
+		//genDefault(expr.getCat(), null, DEFAULT_INNEW);
 	}
 
 	private void genExpr$Paren(ExprNode.Paren expr) {
@@ -1462,6 +1497,13 @@ class Auxiliary {
 	}
 
 	String mkCname(TypeNode t) {
+		String lastChar = "_";
+		if (t.getParent() != null && t.getParent() instanceof DeclNode) {
+			if (((DeclNode)t.getParent()).isHostClassRef()) {
+				// this changes the defines so that it is not a ptr deref (sigh...)
+				lastChar = "";
+			}								
+		}
 
 		if (t instanceof TypeNode.Std)
 			return ((TypeNode.Std) t).getIdent().getText();
@@ -1493,7 +1535,8 @@ class Auxiliary {
 						else {
 							qualifier = i.getUnit()
 							.getQualName().replace(".", "_")
-							+ "_";
+							+ lastChar;
+
 						}						
 					}
 					return qualifier; 
@@ -1501,7 +1544,7 @@ class Auxiliary {
 					if (s.node() instanceof DeclNode.Usr) {
 						if (s.scope() instanceof DeclNode.Usr) // nested
 							return gen.cname()
-							+ ((DeclNode.Usr) s.node()).getName().getText() + "_";
+							+ ((DeclNode.Usr) s.node()).getName().getText() + lastChar;
 						else
 							return gen.cname();
 								
@@ -1620,6 +1663,19 @@ class Auxiliary {
 	String mkQname(IScope scope, ISymbolNode snode) {
 		// NOTE the unit node name is javascript only!
 		String qn = gen.uname();
+		boolean dbg = false;
+		if (qn.equals("Dispatcher"))
+			dbg = true;
+		if (scope instanceof DeclNode.Fcn) {
+			scope = ((DeclNode.Fcn)scope).getUnit().getUnitType();
+		}
+		else if (scope instanceof StmtNode.Block) {
+			while (scope != null) {
+				scope = scope.getEnclosingScope();
+				if (scope instanceof DeclNode.Usr)
+					break;
+			}
+		}
 
 		if (snode instanceof DeclNode.Formal)
 			return ((DeclNode.Formal) snode).getName().getText();
@@ -1633,8 +1689,21 @@ class Auxiliary {
 			} else if (scope instanceof DeclNode.TypedMember) {
 				qn += "." + ((DeclNode.TypedMember) scope).getName();
 			}
-		}
+			else if (snode instanceof DeclNode && ((DeclNode)snode).isClassRef()) {
 
+				if (scope instanceof UnitNode)	
+					scope = ((DeclNode) snode).getUnit();					
+
+				qn = (scope instanceof DeclNode.Usr) ? ((DeclNode.Usr) scope)
+								.getUnitQualName() 
+								: "/* ?? scope unknown ?? */";
+				String rtn = snode.getName().getText().replace('.', '_');
+				rtn = qn.replace('.', '_') + "_" + rtn + mkSuf(snode);
+				return rtn;
+				
+			}
+
+		}
 		qn += "." + snode.getName();
 		return qn;
 	}

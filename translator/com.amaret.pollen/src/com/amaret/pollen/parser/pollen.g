@@ -102,6 +102,8 @@ tokens {
 
 	private boolean isMetaInstance = false;
 	private boolean isVoidInstance = false; // deferred instantiation: '{}'. No code gen.
+	private boolean hasHostConstructor = false;  // constructors with 0 parms will by synthesized if not declared.
+	private boolean hasTargetConstructor = false;
 	private boolean instantiateToDefaults = false; // A meta type imported with no '{..}'
 	private UnitNode client = null;
 	private ImportNode clientImport = null;
@@ -120,22 +122,30 @@ tokens {
     EnumSet<Flags> stmtFlags = EnumSet.noneOf(Flags.class);
     EnumSet<Flags> typeMods = EnumSet.noneOf(Flags.class);
     
-   private class TypeInfo {
-    	public EnumSet<Flags> getUnitFlags() {
-			return uf;
-		}
-		public void setUnitFlags(EnumSet<Flags> unitFlags) {
-			uf.addAll(unitFlags);
-		}
-		public String getTypeName() {
-			return tn;
-		}
-		public void setTypeName(String typeName) {
-			this.tn = typeName;
-		}
-		EnumSet<Flags> uf = EnumSet.noneOf(Flags.class);
-    	String tn = "";  
+    private class TypeInfo {
+        public EnumSet<Flags> getUnitFlags() {
+                        return uf;
+                }    
+                public void setUnitFlags(EnumSet<Flags> unitFlags) {
+                        uf.addAll(unitFlags);
+                }    
+                public String getTypeName() {
+                        return tn;
+                }    
+                public void setTypeName(String typeName) {
+                        this.tn = typeName;
+                }    
+                EnumSet<Flags> uf = EnumSet.noneOf(Flags.class);
+                String tn = "";  
+    }    
+    public String getParseUnitTypeName() {
+    	return ti.getTypeName();
     }
+    public EnumSet<Flags> getParseUnitFlags() {
+    	return ti.getUnitFlags();
+    }
+
+    
     ArrayList<TypeInfo> tl = new ArrayList<TypeInfo>();
     TypeInfo ti;
     
@@ -400,6 +410,8 @@ classDefinition
 		metaFlags = EnumSet.noneOf(Flags.class);		
 		String qual = "";
 		String name = "";
+		hasHostConstructor = false;
+		hasTargetConstructor = false;
 }
 @after{
    	ti = tl.remove(tl.size()-1);
@@ -422,9 +434,17 @@ classDefinition
 		IDENT classFeatureList extendsClause implementsClause {$unitTypeDefinition::meta})//{$unitTypeDefinition::metaImports})
 		;
 classFeatureList[String n]
-	:	classFeature*	intrinsicVarsBraceClose[n] 
+@init {
+  EnumSet<Flags> fh = EnumSet.noneOf(Flags.class);
+  fh.add(Flags.CONSTRUCTOR); fh.add(Flags.HOST);
+  EnumSet<Flags> ft = EnumSet.noneOf(Flags.class);
+  ft.add(Flags.CONSTRUCTOR); 
+}
+	:	classFeature* classHostCtor[fh] classTargCtor[ft]	intrinsicVarsBraceClose[n] 
 			-> ^(LIST<ListNode>["LIST"] 
 									classFeature* 
+									classHostCtor
+									classTargCtor
 									intrinsicVarsBraceClose)
 	;
 classFeature
@@ -437,6 +457,41 @@ classFeature
     |   classDefinition
     |   injectionDecl
     ; 
+
+classHostCtor[EnumSet<Flags> fh]
+@init {
+	featureFlags = fh.clone();
+}
+	: 				{!hasHostConstructor }? ->
+						^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", fh] 
+						^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
+							^(T_LST<TypeNode.Lst>["T_LST", fh] 
+								^(LIST<ListNode>["LIST"] ^(T_USR<TypeNode.Usr>["T_USR", fh] IDENT[ti.getTypeName()]))) 								
+							IDENT[ParseUnit.CTOR_CLASS_HOST]) 
+						^(LIST<ListNode>["LIST"]) // empty parameters
+						^(D_FORMAL<DeclNode.Formal>["D_FORMAL", fh] 
+							^(T_USR<TypeNode.Usr>["T_USR", fh] IDENT[ti.getTypeName()]) IDENT["this"])
+						^(FCNBODY<BodyNode>["FCNBODY"] ^(LIST<ListNode>["LIST"]) ^(LIST<ListNode>["LIST"]))
+						)	
+	| -> NIL
+	;
+classTargCtor[EnumSet<Flags> ft]
+@init {
+	featureFlags = ft.clone();
+}
+	:				{!hasTargetConstructor}? ->
+				 		^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", ft] 
+						^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
+							^(T_LST<TypeNode.Lst>["T_LST", ft] 
+								^(LIST<ListNode>["LIST"] ^(T_USR<TypeNode.Usr>["T_USR", ft] IDENT[ti.getTypeName()]))) 
+							IDENT[ParseUnit.CTOR_CLASS_TARGET]) 
+						^(LIST<ListNode>["LIST"]) // empty parameters
+						^(D_FORMAL<DeclNode.Formal>["D_FORMAL", ft] 
+							^(T_USR<TypeNode.Usr>["T_USR", ft] IDENT[ti.getTypeName()]) IDENT["this"])
+						^(FCNBODY<BodyNode>["FCNBODY"] ^(LIST<ListNode>["LIST"]) ^(LIST<ListNode>["LIST"]))
+						)
+	|	-> NIL
+	;
 moduleDefinition 
 @init{
 		ti = new TypeInfo();
@@ -445,6 +500,8 @@ moduleDefinition
 		tl.add(ti);		
 		String qual = "";
 		String name = "";
+		hasHostConstructor = false;
+		hasTargetConstructor = false;
 }
 @after{
    	ti = tl.remove(tl.size()-1);
@@ -467,12 +524,52 @@ moduleDefinition
 			IDENT moduleFeatureList extendsClause implementsClause {$unitTypeDefinition::meta}) 
 	;
 moduleFeatureList[String n]
-	:	moduleFeature*	intrinsicVarsBraceClose[n] -> ^(LIST<ListNode>["LIST"] 
-									moduleFeature*
-									intrinsicVarsBraceClose
-									
-			)
+@init {
+  EnumSet<Flags> fh = EnumSet.noneOf(Flags.class);
+  fh.add(Flags.CONSTRUCTOR); fh.add(Flags.HOST);
+  EnumSet<Flags> ft = EnumSet.noneOf(Flags.class);
+  ft.add(Flags.CONSTRUCTOR); 
+}
+	:	moduleFeature*	moduleHostCtor[fh] moduleTargCtor[ft] intrinsicVarsBraceClose[n] 		
+			-> ^(LIST<ListNode>["LIST"] 
+						moduleFeature* moduleHostCtor moduleTargCtor intrinsicVarsBraceClose 
+					)
+;
+moduleHostCtor[EnumSet<Flags> fh]
+@init {
+	featureFlags = fh.clone();
+}
+	: 				{!hasHostConstructor }? ->
+						^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", fh] 
+						^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
+							^(T_LST<TypeNode.Lst>["T_LST", fh] 
+								^(LIST<ListNode>["LIST"] ^(T_STD<TypeNode.Std>["T_STD", fh] VOID["void"]))) 
+							IDENT[ParseUnit.CTOR_MODULE_HOST]) 
+						^(LIST<ListNode>["LIST"]) // empty parameters
+						^(D_FORMAL<DeclNode.Formal>["D_FORMAL", fh] 
+							^(T_USR<TypeNode.Usr>["T_USR", fh] IDENT[ti.getTypeName()]) IDENT["this"])
+						^(FCNBODY<BodyNode>["FCNBODY"] ^(LIST<ListNode>["LIST"]) ^(LIST<ListNode>["LIST"]))
+						)	
+	| -> NIL
 	;
+moduleTargCtor[EnumSet<Flags> ft]
+@init {
+	featureFlags = ft.clone();
+}
+	:				{!hasTargetConstructor}? ->
+				 		^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", ft] 
+						^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
+							^(T_LST<TypeNode.Lst>["T_LST", ft] 
+								^(LIST<ListNode>["LIST"] ^(T_STD<TypeNode.Std>["T_STD", ft] VOID["void"]))) 
+							IDENT[ParseUnit.CTOR_MODULE_TARGET]) 
+						^(LIST<ListNode>["LIST"]) // empty parameters
+						^(D_FORMAL<DeclNode.Formal>["D_FORMAL", ft] 
+							^(T_USR<TypeNode.Usr>["T_USR", ft] IDENT[ti.getTypeName()]) IDENT["this"])
+						^(FCNBODY<BodyNode>["FCNBODY"] ^(LIST<ListNode>["LIST"]) ^(LIST<ListNode>["LIST"]))
+						)
+	|	-> NIL
+	;
+
 /*
  * This rule synthesizes a declaration of an intrincic variable 'unit.name' which holds the name of the unit. 
  * Can add more intrinsic variables here.
@@ -481,7 +578,7 @@ intrinsicVarsBraceClose[String n]
 	:	(NL)* '}' (NL)* -> ^(D_VAR<DeclNode.Var>["D_VAR", EnumSet.of(Flags.INTRINSIC_VAR)] 
 									^(T_STD<TypeNode.Std>["T_STD", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME["string"]) 
 										IDENT["pollen__unitname"] 
-										^(E_CONST<ExprNode.Const>["E_CONST", EnumSet.of(LitFlags.STR)] STRING["\"" + n + "\""]))
+										^(E_CONST<ExprNode.Const>["E_CONST", EnumSet.of(LitFlags.STR)] STRING["\"" + n + "\""]))								
 	;
 moduleFeature
 @init {
@@ -587,7 +684,7 @@ compositionDefinition
 		implementsClause
 		braceOpen compositionFeatureList braceClose 
 			-> ^(D_COMPOSITION<DeclNode.Usr>["D_COMPOSITION", ti.getUnitFlags(), qual] 
-			     IDENT compositionFeatureList extendsClause implementsClause {$unitTypeDefinition::meta}) //{$unitTypeDefinition::metaImports})
+			     IDENT compositionFeatureList extendsClause implementsClause {$unitTypeDefinition::meta}) 
 	;
 compositionFeatureList
 	:	compositionFeature*	-> ^(LIST<ListNode>["LIST"] compositionFeature*)
@@ -1041,7 +1138,14 @@ exprMultDiv
 	)*
 	;
 exprNew
-	:	'new' typeName fcnArgumentList -> ^(E_NEW<ExprNode.New>["E_NEW"] typeName fcnArgumentList)
+	//:	'new' typeName fcnArgumentList -> ^(E_NEW<ExprNode.New>["E_NEW"] typeName fcnArgumentList)
+@init {
+	String ctor = (typeMods.contains(Flags.HOST)) ? ParseUnit.CTOR_CLASS_HOST : ParseUnit.CTOR_CLASS_TARGET;
+}
+	: 'new' qualName fcnArgumentList fieldOrArrayAccess? 
+	-> ^(E_NEW<ExprNode.New>["E_NEW"] 
+			^(E_CALL<ExprNode.Call>["E_CALL"] 
+			^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT[$qualName.text + "." + ctor]) fcnArgumentList fieldOrArrayAccess?))
 	;
 exprUnary
 	:	primitiveLit
@@ -1057,8 +1161,7 @@ exprUnary
 	|	exprNew
 	;
 fcnDefinition
-	: ('public' { featureFlags.add(Flags.PUBLIC); } )? 
-		('host' { featureFlags.add(Flags.HOST); } )? 
+	: fcnAttr
 		fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] 
 		-> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", featureFlags] 
 			fcnType_fcnName 
@@ -1070,13 +1173,14 @@ fcnDefinition
 	;
 fcnDefinitionHost
 // composition
-	:	('public')? ('host' { featureFlags.add(Flags.HOST); })?
+	:	fcnAttr
 	   	fcnType_fcnName  formalParameterList fcnBody[$formalParameterList.tree]
 		{ 	featureFlags.add(Flags.PUBLIC); /* enforce */ 	
 			if (!featureFlags.contains(Flags.HOST))
        		throw new PollenException("Composition features must be one of host functions, export statements, or enum definitions.", input);
 		}
 		-> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", featureFlags] 
+		
 				fcnType_fcnName 
 				formalParameterList 
 				^(D_FORMAL<DeclNode.Formal>["D_FORMAL", featureFlags] 
@@ -1089,15 +1193,14 @@ catch [PollenException re] {
     emitErrorMessage(hdr+" "+msg);
 }
 fcnAttr
-	:	('public' { featureFlags.add(Flags.PUBLIC); } )? 
-		('host' { featureFlags.add(Flags.HOST); } )?
+	:	(	'public' { featureFlags.add(Flags.PUBLIC); } 
+		|	'host' { featureFlags.add(Flags.HOST); } )*
 	;
 fcnBody[CommonTree formals]
   :	braceOpen (stmts)  braceClose  -> ^(FCNBODY<BodyNode>["FCNBODY"] {$formals} stmts) 
   ;
 fcnDeclaration
-   :	('public' { featureFlags.add(Flags.PUBLIC); } )? 
-		('host' { featureFlags.add(Flags.HOST); } )? 
+   :	fcnAttr
 		fcnType_fcnName (formalParameterList) delim
 		{
 			if (ti.getUnitFlags().contains(Flags.PROTOCOL))
@@ -1125,7 +1228,9 @@ fcnType_fcnName
 		typeName	         
 		{ 
 		  featureFlags.add(Flags.CONSTRUCTOR); 
-		  modCtor = (featureFlags.contains(Flags.HOST)) ? ("$$" + "hostInit") : "targetInit";
+		  if (featureFlags.contains(Flags.HOST)) hasHostConstructor = true;
+		  if (!featureFlags.contains(Flags.HOST)) hasTargetConstructor = true;
+		  modCtor = (featureFlags.contains(Flags.HOST)) ? ParseUnit.CTOR_MODULE_HOST : ParseUnit.CTOR_MODULE_TARGET;
 		}
 		-> ^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
 			^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
@@ -1135,9 +1240,12 @@ fcnType_fcnName
 		typeName	 
 		{ 
 		  featureFlags.add(Flags.CONSTRUCTOR); 
-		  clsCtor = (featureFlags.contains(Flags.HOST)) ? ("new_" + "host") : "new_";
+		  if (featureFlags.contains(Flags.HOST)) hasHostConstructor = true;
+		  if (!featureFlags.contains(Flags.HOST)) hasTargetConstructor = true;
+		  clsCtor = (featureFlags.contains(Flags.HOST)) ? ParseUnit.CTOR_CLASS_HOST : ParseUnit.CTOR_CLASS_TARGET;
 		}
-		-> ^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] ^(LIST<ListNode>["LIST"] typeName)) IDENT[clsCtor]) 		  // constructor
+		-> ^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
+			^(T_LST<TypeNode.Lst>["T_LST", featureFlags] ^(LIST<ListNode>["LIST"] typeName)) IDENT[clsCtor]) 		  // constructor
 	|	qualName 	
 		{ featureFlags.add(Flags.VOID_FCN); }
 		-> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"] ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
@@ -1153,35 +1261,30 @@ fcnTypes
 formalParameterList
 	:	'(' formalParameters ')' -> formalParameters
 	;
-methodParameters
-@init {	
-	featureFlags.add(Flags.METHOD); 
-}
-// class methods (except constructors & host methods) will pass a ptr to their struct 
+
+// class methods (except host methods) will pass a ptr to their struct 
 // as a first parameter: implementation of 'this' ptr. This is added to 'c' and is not a 
 // part of the internal signature. 
-	:	formalParameter (',' formalParameter)* 
-				-> ^(LIST<ListNode>["LIST"] formalParameter+)
-	|	-> ^(LIST<ListNode>["LIST"])
-	;
-// Old: synthezise a 'this' and add to signature
-//		-> ^(LIST<ListNode>["LIST"] 
-//			^(D_FORMAL<DeclNode.Formal>["D_FORMAL", mFlags] ^(T_USR<TypeNode.Usr>["T_USR", mFlags] IDENT[ti.getTypeName()]) IDENT["this"])
-//			formalParameter+)
-//	|	-> ^(LIST<ListNode>["LIST"] 
-//			^(D_FORMAL<DeclNode.Formal>["D_FORMAL", mFlags] ^(T_USR<TypeNode.Usr>["T_USR", mFlags] IDENT[ti.getTypeName()]) IDENT["this"]))
-//	;
-	
+
 formalParameters
-	:	{(ti.getUnitFlags().contains(Flags.CLASS) && 
-			!(featureFlags.contains(Flags.CONSTRUCTOR)) &&
-			!(featureFlags.contains(Flags.HOST))) }? 
-			
-			methodParameters
-	|	formalParameter (',' formalParameter)*  
+@init {
+}
+	:	formalParameter (',' formalParameter)*  
 		-> ^(LIST<ListNode>["LIST"] formalParameter+)
-	|	-> ^(LIST<ListNode>["LIST"])
+	|	
+		/* {  if (featureFlags.contains(Flags.CONSTRUCTOR)
+				&& (ti.getUnitFlags().contains(Flags.CLASS) || ti.getUnitFlags().contains(Flags.MODULE))) {
+	         // synth AST for empty constructors if none defined
+	         if (featureFlags.contains(Flags.HOST))
+	           hasHostConstructor = true;
+	         else
+	           hasTargetConstructor = true;
+	      }
+		}
+		*/
+	-> ^(LIST<ListNode>["LIST"])
 	;
+
 formalParameter
 @init {
 	EnumSet<Flags> pFlags = EnumSet.noneOf(Flags.class);		
@@ -1202,8 +1305,8 @@ fcnArguments
 	:	exprList
 	;
 varOrFcnOrArray
-	:	'new' typeName fcnArgumentList fieldOrArrayAccess?
-		-> ^(E_NEW<ExprNode.New>["E_NEW"] typeName fcnArgumentList fieldOrArrayAccess?)
+	:	exprNew //'new' typeName fcnArgumentList fieldOrArrayAccess?
+		//-> ^(E_NEW<ExprNode.New>["E_NEW"] typeName fcnArgumentList fieldOrArrayAccess?)
 	|	'@' IDENT fcnArgumentList fieldOrArrayAccess? 
 		-> ^(E_SELF<ExprNode.Self>["E_SELF"] 
 			^(E_CALL<ExprNode.Call>["E_CALL"] ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT) fcnArgumentList fieldOrArrayAccess?))
@@ -1398,8 +1501,15 @@ stmtWhile
 	:	'while' '('	expr')' stmtBlock -> ^(S_WHILE<StmtNode.While>["S_WHILE"] expr stmtBlock)
 	;
 stmtDecl
-   :	 varAttr varDecl delim	-> ^(S_DECL<StmtNode.Decl>["S_DECL"] varDecl)
+   :	 stmtDeclAttr varDecl delim	-> ^(S_DECL<StmtNode.Decl>["S_DECL"] varDecl)
    ;
+stmtDeclAttr
+	:	(	 'const' { typeMods.add(Flags.CONST); }
+		|	 t='volatile' { ParseUnit.current().reportError($t, "invalid function local variable attribute"); }
+		|   t='host' { ParseUnit.current().reportError($t, "invalid function local variable attribute"); } 
+		|   t='preset' { ParseUnit.current().reportError($t, "invalid function local variable attribute"); } 
+		)*
+	;
 fieldDeclaration    
 @init {
 	stmtFlags = EnumSet.noneOf(Flags.class);
@@ -1433,15 +1543,21 @@ scope {
 @init {
 	$varDecl::typ = null;
 	stmtFlags.addAll(typeMods);
+	String ctor = (typeMods.contains(Flags.HOST)) ? ParseUnit.CTOR_CLASS_HOST : ParseUnit.CTOR_CLASS_TARGET;
 }
 	:	(typeName IDENT (ASSIGN expr)? ',') => varDeclList	
 	|  (typeName IDENT '[') => varArray 
 	|  (typeName '(' ) => varFcnRef 
 	|   (typeName varInit) => varDeclList
-	|	 'new' t=typeName IDENT fcnArgumentList  // declaration of an instance ('new')
+	|	 'new' qualName IDENT fcnArgumentList  // declaration of an instance ('new')
 		 { stmtFlags.add(Flags.NEW); } 
-		-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] $t
-		     IDENT ^(E_NEW<ExprNode.New>["E_NEW"] $t fcnArgumentList))
+		-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] ^(T_USR<TypeNode.Usr>["T_USR", typeMods] qualName)
+		     IDENT ^(E_NEW<ExprNode.New>["E_NEW"] 
+		     			^(E_CALL<ExprNode.Call>["E_CALL"] 
+							^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT[$qualName.text + "." + ctor]) 
+							fcnArgumentList))		     		     		
+		     )
+
 	;
 varFcnRef
 	: typeName fcnRefTypeList IDENT 
@@ -1542,6 +1658,7 @@ scope {
 }
 @after {
 	handleIntrinsics((CommonTree) $qualName::qtree);
+	//System.out.println("qualName: " + $qualName::s);
 }      
     :	   qualNameConcat  { $qualName::qtree = $qualNameConcat.tree; }
     ;
