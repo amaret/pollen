@@ -414,6 +414,7 @@ public class UnitJScript {
         Cat cat = ts.getTypeCat();
         String tc = cat.code();
         ExprNode init = ts.getInit();
+
         if (init == null ) {
             gen.aux.genDefault(ts.getTypeCat(), ts);
         }
@@ -423,7 +424,8 @@ public class UnitJScript {
             if (init instanceof ExprNode.New) {
             	DeclNode d = (DeclNode) ts;
             	// TODO handle constructor parameters
-            	gen.fmt.print("; %2.%3.%1()", ParseUnit.CTOR_CLASS_HOST, gen.uname(), d.getName() );
+            	gen.fmt.print("; %2.%3.%1", ParseUnit.CTOR_CLASS_HOST, gen.uname(), d.getName() );
+            	gen.aux.genCallArgs(((ExprNode.New)init).getCall());            	
             }
         }
         else if (tc.startsWith("A") || tc.startsWith("S") || tc.startsWith("V")) {

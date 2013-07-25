@@ -152,8 +152,8 @@ public class ExprNode extends BaseNode {
 		}
 
 		public boolean addThisPtrParameter() {
-			if (!addThisPtrParameter)
-				return isHostConstructorCall();
+			//if (!addThisPtrParameter)
+			//	return isHostConstructorCall(); currently I don't pass 'this' for these
 			return addThisPtrParameter;
 		}
 		/**
@@ -486,20 +486,20 @@ public class ExprNode extends BaseNode {
 
 				for (ExprNode e : getArgs()) {
 					k += 1;
-					Cat ecat = e instanceof ExprNode.SubExprCat ? ((ExprNode.SubExprCat) e)
+					Cat actualCat = e instanceof ExprNode.SubExprCat ? ((ExprNode.SubExprCat) e)
 							.getSubExprCat()
 							: e.getCat();
-					Cat acat = fcncat.argCats().get(k);
-					if (acat.isAggTyp()) {
-						if (((Cat.Agg) acat).isComposition()) {
+					Cat formalCat = fcncat.argCats().get(k);
+					if (formalCat.isAggTyp()) {
+						if (((Cat.Agg) formalCat).isComposition()) {
 							// TODO do I need to resolve to the module, for an
 							// export?
 						}
-						if (((Cat.Agg) acat).isProtocol()) {
+						if (((Cat.Agg) formalCat).isProtocol()) {
 							ParseUnit.current().reportError(
 									this,
 									"actual parameter type error for \'"
-											+ ((Cat.Agg) acat).aggName()
+											+ ((Cat.Agg) formalCat).aggName()
 											+ "\' (protocol not allowed)");
 							continue;
 						}
@@ -507,13 +507,16 @@ public class ExprNode extends BaseNode {
 					}
 
 					if (e instanceof ExprNode.AggVal) {
-						TypeRules.checkInit(acat, e);
+						TypeRules.checkInit(formalCat, e);
 						continue;
 					}
-					if (TypeRules.preCheck(ecat) != null) {
+					if (TypeRules.preCheck(actualCat) != null) {
 						continue;
 					}
-					Cat res = TypeRules.checkBinary("=", acat, ecat,
+					if (this.isHostConstructorCall()) {
+						boolean dbg = true;
+					}
+					Cat res = TypeRules.checkBinary("=", formalCat, actualCat,
 							"formal / actual parameter type conflict");
 					if (res instanceof Cat.Error) {
 						ParseUnit.current().reportError(this.getName(),

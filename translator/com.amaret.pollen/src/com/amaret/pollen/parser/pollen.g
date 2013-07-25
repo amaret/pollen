@@ -1592,8 +1592,12 @@ varArraySpec
 	:	('[' varDim ']')+	->   ^(LIST<ListNode>["LIST"] varDim+)
 	;
 varDim
+@init {
+  EnumSet<LitFlags> fl = EnumSet.noneOf(LitFlags.class);
+  fl.add(LitFlags.NUM); fl.add(LitFlags.INT);
+}
 	:  expr  
-	| -> NIL 
+	| -> ^(E_CONST<ExprNode.Const>["E_CONST", fl] INT_LIT["-1"]) // -> NIL 
 	;
 initializer
 	: expr // restrict

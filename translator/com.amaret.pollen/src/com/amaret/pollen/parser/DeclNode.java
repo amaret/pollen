@@ -145,16 +145,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 //        	}
 //        	return super.getTypeCat();
         }
-        /**
-         * 
-         * @return first dimension
-         * TODO delete and replace with getDim() after multi-dim is implemented
-         */
-        @SuppressWarnings("unchecked")
-		public ExprNode getFirstDim() {
-        	ListNode<ExprNode> child = (ListNode<ExprNode>) getChild(DIM);
-         	return (!child.getElems().isEmpty()) ? child.getElems().get(0) : null;  
-        }
+
 		@SuppressWarnings("unchecked")
 		public ListNode<ExprNode> getDim() {
 			return getChildCount() > DIM ? (ListNode<ExprNode>) getChild(DIM) : null;			
@@ -172,10 +163,40 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         @Override
         public void pass2End() {
             UnitNode u = ParseUnit.current().getCurrUnitNode();
+             
+            ExprNode.Vec v = getInit();
+            int exprs = (v != null && v.getVals() != null) ? v.getVals().size() : 0;
+            List<ExprNode> dim =  getDim().getElems();
+            if (dim.size() > 1) {
+            	// TODO handle > 1 dimension
+            	// dimension / initializer checks below will need to be updated.
+            	ParseUnit.current().reportError(this.getName(), "multi-dimensional arrays not yet implemented");
+            }
+            
+            // Error check dimension / initializer specification
+            if (dim.get(0) instanceof ExprNode.Const) {
+            	int dims = Integer.valueOf(((ExprNode.Const)dim.get(0)).getValue().getText());
+            	if (dims == -1) { //this condition means we had '[]' instead of '[numExpr]'
+            		if (exprs > 0) 
+            			((ExprNode.Const)dim.get(0)).getValue().setText(String.valueOf(exprs)); // set to # of initializer exprs
+            		else {
+            			((ExprNode.Const)dim.get(0)).getValue().setText(String.valueOf("1"));
+                    	ParseUnit.current().reportError(this.getName(), "arrays must be declared with an initializer or array dimensions (or both)");
+            		}
+            	}
+            	// 'uint8 arr[3] = {1}'  will become 'uint8 arr[3] = {1, 1, 1}'
+            	if (exprs == 1 && dims > 1) {
+            		ExprNode e = v.getVals().get(0);
+            		for (int i = exprs; i < dims; i++) {
+            			v.getVals().add(e);
+            		}
+            	}
+            }
+
             if (!this.isHost() && u.isComposition()) {
             	ParseUnit.current().reportError(this.getName(), "compositions can only declare host variables");
             }
-        	ExprNode.Vec v = getInit();
+        	
         	if (v != null) {
         		SymbolEntry symbol = ParseUnit.current().getSymbolTable().resolveSymbol(getName());
         		v.setSymbol(symbol);
@@ -404,6 +425,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         public String getScopeName() {
         	return getName().getText();
         }
+        /**
+         * 
+         * @return true if a class (non-host, non-constructor) function else false
+         */
         public boolean isMethod() {            
         	if (flags.contains(Flags.METHOD))
         		return true;
@@ -437,12 +462,13 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             currUnit.getSymbolTable().enterScope(this);
             currUnit.getCurrUnitNode().setHostScope(isHost());
             
+			boolean isClass = (this.getEnclosingScope() instanceof DeclNode.Usr && ((DeclNode.Usr) this
+					.getEnclosingScope()).isClass()) ? true : false;
+
             if (this.isConstructor()) {
-            	if (this.isMethod() && this.getFormals().size() > 0 && this.isHost()) {           		
-            		ParseUnit.current().reportError(this.getUnit().getQualName(), "host constructors on classes are not allowed to have parameters");            		
+            	if (!isClass && this.getFormals().size() > 0 ) {           		
+            		ParseUnit.current().reportError(this, "module constructors are not allowed to have parameters");            		
             	}
-            	else if (this.getFormals().size() > 0)
-            		ParseUnit.current().reportError(this.getUnit().getQualName(), "module constructors are not allowed to have parameters");            		
             }
            
             if (currUnit.getCurrUnitNode().isProtocol() && this.getBody() != null) {

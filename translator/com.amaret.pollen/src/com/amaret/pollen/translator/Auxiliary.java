@@ -310,8 +310,6 @@ class Auxiliary {
 
 	private void genExpr$Call(ExprNode.Call expr) {
 
-		Cat cat = expr.getName().getCat();
-		Cat.Fcn fcncat = cat instanceof Cat.Fcn ? (Cat.Fcn) cat : null;
 				
 		String n = expr.getName() instanceof ExprNode.Ident ? ((ExprNode.Ident) expr.getName()).getName().getText() : "";
 				
@@ -319,6 +317,17 @@ class Auxiliary {
 			return;  // suppress call
 				
 		genExpr(expr.getName());
+		
+		genCallArgs(expr);
+	}
+
+	/**
+	 * @param expr
+	 */
+	void genCallArgs(ExprNode.Call expr) {
+		Cat cat = expr.getName().getCat();
+		Cat.Fcn fcncat = cat instanceof Cat.Fcn ? (Cat.Fcn) cat : null;
+		
 		String sep = "";
 		gen.fmt.print("(");
 		int argc = 0;
@@ -631,6 +640,10 @@ class Auxiliary {
 	}
 
 	private void genExpr$New(ExprNode.New expr) {
+		
+		if (!expr.getCall().isHostConstructorCall()) {
+        	ParseUnit.current().reportError(expr, "non-host invocations of 'new()' are not yet implemented");        	
+        }
 		genExpr$Call(expr.getCall());
 		// code below does not handle args
 		//genDefault(expr.getCat(), null, DEFAULT_INNEW);
