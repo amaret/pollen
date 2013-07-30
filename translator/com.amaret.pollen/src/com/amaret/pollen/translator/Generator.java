@@ -25,6 +25,7 @@ import com.amaret.pollen.target.ITarget;
 public class Generator {
 
 	private UnitNode curUnit;
+	boolean nestedClass = false;
 	private UnitNode mainUnit;
 	private static String uname;
 	private String jsname;
@@ -32,6 +33,14 @@ public class Generator {
     private ITarget target;
 	final Formatter fmt = new Formatter();
 	final Auxiliary aux = new Auxiliary(this);
+	public boolean isNestedClass() {
+		return nestedClass;
+	}
+
+	public void setNestedClass(boolean nestedClass) {
+		this.nestedClass = nestedClass;
+	}
+
 	
 	/**
 	 * @param unit The pollen file

@@ -47,7 +47,7 @@ public class StmtNode extends BaseNode {
         				}
         				else {
         					DeclNode.Var v = (Var) node;
-        					v.getUnit().getPresetList().add(this);
+        					v.getUnit().addToPresetList(this); 
         					preset.getName().stripQualifiers();
         					ExprNode e = b.getRight();
         					if (!(e instanceof ExprNode.Const)) {

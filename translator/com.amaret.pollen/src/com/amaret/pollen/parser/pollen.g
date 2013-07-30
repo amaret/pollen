@@ -1141,6 +1141,8 @@ exprNew
 	//:	'new' typeName fcnArgumentList -> ^(E_NEW<ExprNode.New>["E_NEW"] typeName fcnArgumentList)
 @init {
 	String ctor = (typeMods.contains(Flags.HOST)) ? ParseUnit.CTOR_CLASS_HOST : ParseUnit.CTOR_CLASS_TARGET;
+	if (!(typeMods.contains(Flags.HOST)))
+		ctor = (featureFlags.contains(Flags.HOST)) ? ParseUnit.CTOR_CLASS_HOST : ParseUnit.CTOR_CLASS_TARGET;
 }
 	: 'new' qualName fcnArgumentList fieldOrArrayAccess? 
 	-> ^(E_NEW<ExprNode.New>["E_NEW"] 

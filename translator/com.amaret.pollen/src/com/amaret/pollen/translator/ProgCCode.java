@@ -428,9 +428,6 @@ public class ProgCCode {
         
         if (!(decl.isHostClassRef()))
         	gen.fmt.print("const ");
-        String c = gen.cname();
-        String d = decl.getName().getText();
-        String suf = gen.aux.mkSuf(decl);
         
         gen.fmt.print("%1__TYPE %1%2", gen.cname() + decl.getName(), gen.aux.mkSuf(decl));
         if (decl instanceof DeclNode.Arr) {
@@ -482,7 +479,6 @@ public class ProgCCode {
     					gen.fmt.print("%t");
     					genUnitVar(ud, v);
     				}
-
     				break;
     			}
     		}
@@ -493,6 +489,7 @@ public class ProgCCode {
     private void genUnitVar(UnitDesc ud, DeclNode.Var decl) {
 
     	String n =  decl.getName().getText();
+    	
         Object obj = ud.getUnitObj().getAny(n);
         if (obj == Value.UNDEF) {
             ParseUnit.current().reportError(decl.getName(), "private variable has never been assigned");
@@ -535,8 +532,13 @@ public class ProgCCode {
         	}
         	gen.fmt.print("&");        	
         }
-        genVal(decl, val);
-    	gen.fmt.print(",\n");
+        
+		gen.fmt.mark();
+		genVal(decl, val);
+		String ss = gen.fmt.release();
+		int l = 16 - ss.length() > 0 ? 24 - ss.length() : 4;
+		String spaces = String.format("%"+l+"s", "");
+		gen.fmt.print("%1,%2/* %3 */\n",ss, spaces, decl.getName());   					
     }
     
     private void genVal(Cat cat, TypeNode cast, Object val) {

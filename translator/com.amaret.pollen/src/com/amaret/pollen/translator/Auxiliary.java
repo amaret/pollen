@@ -25,6 +25,7 @@ import com.amaret.pollen.parser.ExprNode.Const;
 import com.amaret.pollen.parser.ExprNode.Ident;
 import com.amaret.pollen.parser.ExprNode.Quest;
 import com.amaret.pollen.parser.StmtNode.Bind;
+import com.amaret.pollen.parser.StmtNode.Decl;
 import com.amaret.pollen.parser.StmtNode.Provided;
 import com.amaret.pollen.parser.TypeNode.Fcn;
 import com.amaret.pollen.parser.TypeNode.Usr;
@@ -108,9 +109,18 @@ class Auxiliary {
 			} else {
 				gen.fmt.print("-1");
 			}
-			gen.fmt.print(", function($$cn,$$idx){return ");
-			genDefault(arrCat.getBase(), null, DEFAULT_INARR);
-			gen.fmt.print(";}, ");
+			Cat base = arrCat.getBase();
+			if (base.isAggTyp() && ((Cat.Agg) base).aggScope() instanceof DeclNode.Usr) {
+				// this is an array of objects
+				String s = "obj = new " + gen.uname() + "." + (((Cat.Agg) base).aggScope()).getScopeName() +  "(); obj.new_host(); return obj";
+				gen.fmt.print(", function($$cn,$$idx){" + s + ";}, ");				
+			}
+			else {
+				gen.fmt.print(", function($$cn,$$idx){ return ");
+				genDefault(arrCat.getBase(), null, DEFAULT_INARR); 
+				gen.fmt.print(";}, ");
+			}
+			
 
 			char ch = tc.charAt(1);
 			boolean aggFlg = ch == 'A' || ch == 'V'; // || ch == 'C';
@@ -466,7 +476,7 @@ class Auxiliary {
 		boolean dbg = false;
 		String s = expr.getName().getText();
 		
-		if (s.matches(".*blue"))
+		if (s.matches(".*blueInitialValue"))
 			dbg = true;
 
 		SymbolEntry sym = expr.getSymbol();
@@ -496,7 +506,7 @@ class Auxiliary {
 		if (scopeOfDcln instanceof DeclNode.Usr && !((ITypeKind)scopeOfDcln).isClass()) {
 			scopeOfDcln = scopeOfDcln.getEnclosingScope();
 		}
-
+		
 		if (!(externScope)) {
 			if (isLval) {
 				if (expr.getCat().isAggArr()) {
@@ -562,12 +572,12 @@ class Auxiliary {
 				qn = gen.uname();
 			
 		}
-		
+
 		if (isHost && !isLval) {
 			if (scopeOfDcln == gen.curUnit()) {
 				gen.fmt.print("%1.%2", gen.uname(), expr.getName());
 			} else if (classScopeOfDcln) {
-				if (expr.isThisPtr()){
+				if (expr.isThisPtr() || gen.curUnit().isClass() || gen.isNestedClass()){
 					// the scope qualifier is 'this'
 					String n = expr.getName().getText().substring(expr.getName().getText().lastIndexOf('.')+1);
 					gen.fmt.print("this.%1", n);
@@ -1090,7 +1100,9 @@ class Auxiliary {
 	}
 
 	private void genStmt$Decl(StmtNode.Decl stmt) {
+		
 		for (DeclNode.Var decl : stmt.getVars()) {
+			
 			boolean arrayInit = decl instanceof DeclNode.Arr && ((DeclNode.Arr) decl).getInit() != null;
 			if (decl.getInit() != null) {
 				if (isHost || !arrayInit) {

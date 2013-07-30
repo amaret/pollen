@@ -1338,10 +1338,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             return null;
         }
         /**
-         * 
-         * OLD: @return true if this has 'new' on the dcln and is a module member.
-         * 
-         * New: If true, object will be initialized at host time, via the host constructor.
+         * If true, object will be initialized at host time, via the host constructor.
          * @return true if this DeclNode has new on the declaration AND is declared host
          * 
          */
@@ -1474,6 +1471,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     	if (this instanceof DeclNode.TypedMember) {
     		return ((DeclNode.TypedMember)this).isClassRef();    		
     	}
+    	return false;
+    }
+    public boolean isClassScope() {
+    	if (definingScope instanceof DeclNode.Class)
+    		return true;
     	return false;
     }
     public boolean isHostClassRef() {

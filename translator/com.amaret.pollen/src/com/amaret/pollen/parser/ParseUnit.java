@@ -37,15 +37,18 @@ public class ParseUnit {
 	private HashMap<String, String> errors;
 	private List<String> metaModules = new ArrayList<String>();
 	static private boolean debugMode = false;
+	
 	// pollen names
 	public static final String EXPORT_PREFIX = "$$export";
 	public static final String INTRINSIC_PREFIX = "pollen__";
-	// used for 'for' loops with undeclared loop variables
-	public static final String DEFAULT_LOOPVAR = "pollen__loopvar"; 
+	public static final String DEFAULT_LOOPVAR = INTRINSIC_PREFIX + "loopvar"; // for loops w/ undeclared loop variables
 	public static final String CTOR_CLASS_TARGET = "new_";
 	public static final String CTOR_CLASS_HOST = "new_host";
 	public static final String CTOR_MODULE_TARGET = "targetInit";
 	public static final String CTOR_MODULE_HOST = "$$hostInit";
+	public static final String PRIVATE_INIT = "$$privateInit";
+	public static final String PRESET_INIT = INTRINSIC_PREFIX + "presets__";
+	
 	// info on parse time current type (under construction)
 	private pollenParser parser = null;
 	public EnumSet<Flags> getParseUnitFlags() {
@@ -157,7 +160,28 @@ public class ParseUnit {
 
 	public void enterUnit(String qualname, UnitNode unit) {
 		if (!unit.isVoid()) { // deferred instantiation ('{}')
-			unitMap.put(qualname, unit);
+			UnitNode tmp = unitMap.put(qualname, unit);
+			if (tmp != null) {
+		    	// the complexity is due to the fact that there may be >1 versions of a node
+		    	// because there may be >1 unit trees for the same unit, depending on imports.
+				// So figure out if two nodes are actually dupes, but from separate parses.
+				if (tmp.getPresetList().size() > 0 && unit.getPresetList().size() == 0) {
+					unit.getPresetList().addAll(tmp.getPresetList());
+				}
+				else
+				for (StmtNode.Assign st : tmp.getPresetList()) {
+					String filename = st.getFileName();
+					boolean found = false;
+					for (StmtNode.Assign su : unit.getPresetList()) {
+						if (su.getFileName().equals(filename)) {
+							found = true;
+							break;
+						}
+					}
+					if (!found)
+						unit.addToPresetList(st);					
+				}
+			}
 			if (!unit.getUnitType().getMetaQualName().isEmpty()) {
 				String pkg = qualname.substring(0,
 						qualname.lastIndexOf(".") + 1);
@@ -397,7 +421,6 @@ public class ParseUnit {
 			reportError(unit.getName(),
 					"unit name does not match the current file");
 		}
-
 		enterUnit(unit.getQualName(), unit);
 		parseImports(unit);
 		checkUnit(unit);

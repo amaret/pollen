@@ -513,9 +513,6 @@ public class ExprNode extends BaseNode {
 					if (TypeRules.preCheck(actualCat) != null) {
 						continue;
 					}
-					if (this.isHostConstructorCall()) {
-						boolean dbg = true;
-					}
 					Cat res = TypeRules.checkBinary("=", formalCat, actualCat,
 							"formal / actual parameter type conflict");
 					if (res instanceof Cat.Error) {
@@ -917,6 +914,7 @@ public class ExprNode extends BaseNode {
 
 		@Override
 		protected void pass2End() {
+			
 			if (symbol != null) {
 				if (symbol.node() instanceof DeclNode.Var
 						&& ((DeclNode.Var) symbol.node()).isConst())
