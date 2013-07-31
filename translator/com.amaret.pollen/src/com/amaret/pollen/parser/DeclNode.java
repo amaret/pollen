@@ -163,6 +163,13 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         @Override
         public void pass2End() {
             UnitNode u = ParseUnit.current().getCurrUnitNode();
+            
+            TypeNode base = this.getTypeArr().getBase();
+            SymbolEntry se = base != null && base instanceof TypeNode.Usr ? ((TypeNode.Usr)base).getSymbol() : null;
+            ISymbolNode node = se != null && se.node() != null ? se.node() : null;
+            if (node != null && node instanceof DeclNode.Usr && !((DeclNode.Usr)node).isClass())
+            	ParseUnit.current().reportError(this.getName(), "Objects as array elements must have class type");
+            
              
             ExprNode.Vec v = getInit();
             int exprs = (v != null && v.getVals() != null) ? v.getVals().size() : 0;
@@ -781,15 +788,15 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             
             // note 'host' is supported
             if (flags.contains(Flags.CONST)) {
-            	ParseUnit.current().reportError(this, "'const' not supported for typed members (" + this.getName().getText() + ")");
+            	ParseUnit.current().reportError(this.getName(), "'const' not supported for typed members (" + this.getName().getText() + ")");
             	flags.remove(Flags.CONST);
             }
             if (flags.contains(Flags.VOLATILE)) {
-            	ParseUnit.current().reportError(this, "'volatile' not supported for typed members (" + this.getName().getText() + ")");
+            	ParseUnit.current().reportError(this.getName(), "'volatile' not supported for typed members (" + this.getName().getText() + ")");
             	flags.remove(Flags.VOLATILE);
             }
             if (flags.contains(Flags.PRESET)) {
-            	ParseUnit.current().reportError(this, "'preset' not supported for typed members (" + this.getName().getText() + ")");
+            	ParseUnit.current().reportError(this.getName(), "'preset' not supported for typed members (" + this.getName().getText() + ")");
             	flags.remove(Flags.PRESET);
             }
             
@@ -835,7 +842,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
     	public void bindModule(UnitNode mUnit, TypeNode mt, Bind bind) {
     		if (this.isProtocolMember()) {
     			if (bindToUnit != null) {
-                    ParseUnit.current().reportError(this, "More than one binding encountered for a protocol member. Warning: binding order is indeterminate.");
+                    ParseUnit.current().reportError(this.getName(), "More than one binding encountered for a protocol member. Warning: binding order is indeterminate.");
     			}
     			bindToUnit = mUnit;
     			bindToTypeSpec = mt;
@@ -1266,7 +1273,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
             	scopeDeleg.addSymbols(this.getBaseType().scopeDeleg.getEntrySet());
             }
             if (this.getExtends() != null && this.getBaseType() == null) {
-            	ParseUnit.current().reportError(this, "Use of the clause 'extends " + this.getExtends().getText() + "' requires that '" + this.getExtends().getText() + "' be imported" );
+            	ParseUnit.current().reportError(this.getName(), "Use of the clause 'extends " + this.getExtends().getText() + "' requires that '" + this.getExtends().getText() + "' be imported" );
             }
 
         	ParseUnit.current().getSymbolTable().leaveScope();

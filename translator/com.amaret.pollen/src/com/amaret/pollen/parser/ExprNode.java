@@ -3,6 +3,8 @@ package com.amaret.pollen.parser;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.antlr.runtime.tree.Tree;
+
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 
 public class ExprNode extends BaseNode {
@@ -164,6 +166,14 @@ public class ExprNode extends BaseNode {
 			if (this.getParent() instanceof ExprNode.New && this.getParent().getParent() instanceof DeclNode) {
 				DeclNode d = (DeclNode) this.getParent().getParent();
 				return d.isHostClassRef();				
+			}
+			Tree b = this;
+			while (b.getParent() != null) {				
+				b = b.getParent();
+				if (b instanceof DeclNode.Arr) {
+					if (((DeclNode.Arr)b).isHost())
+						return true;
+				}				
 			}
 			return false;
 		}

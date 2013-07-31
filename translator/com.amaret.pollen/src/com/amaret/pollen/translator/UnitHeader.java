@@ -206,26 +206,26 @@ public class UnitHeader {
         gen.fmt.print("%tstruct %1 {\n%+", gen.cname());
         String dbg = gen.cname();
         for (DeclNode fld : fields) {
-        	
-			if (fld instanceof DeclNode.Var
-					&& ((DeclNode.Var) fld).isIntrinsic()
-					&& !((DeclNode.Var) fld).isIntrinsicUsed())
-				continue;
+
+        	if (fld instanceof DeclNode.Var
+        			&& ((DeclNode.Var) fld).isIntrinsic()
+        			&& !((DeclNode.Var) fld).isIntrinsicUsed())
+        		continue;
 
         	if (!fld.isHost() && fld instanceof DeclNode.ITypeSpec && !(fld instanceof DeclNode.Fcn)) {
         		gen.fmt.print("%t");     
-        		
+
         		boolean proMem = fld instanceof DeclNode.TypedMember && ((DeclNode.TypedMember)fld).isProtocolMember();
-       		if (proMem) {
+        		if (proMem) {
         			gen.fmt.print("struct ");
-            		gen.aux.genType(((DeclNode.ITypeSpec) fld).getTypeSpec(), "");
-            		gen.fmt.print("*"  + fld.getName().getText());
+        			gen.aux.genType(((DeclNode.ITypeSpec) fld).getTypeSpec(), "");
+        			gen.fmt.print("*"  + fld.getName().getText());
         		}
         		else if (fld.isHostClassRef()) {
-    				gen.fmt.mark();
-    				gen.aux.genType(((DeclNode.ITypeSpec) fld).getTypeSpec(), "");
-    				String typeString = gen.fmt.release();
-    				gen.fmt.print("%1 %2",typeString.substring(0, typeString.length()-2), fld.getName().getText());
+        			gen.fmt.mark();
+        			gen.aux.genType(((DeclNode.ITypeSpec) fld).getTypeSpec(), "");
+        			String typeString = gen.fmt.release();
+        			gen.fmt.print("%1 %2",typeString.substring(0, typeString.length()-2), fld.getName().getText());
         		}
         		else {
         			gen.aux.genType(((DeclNode.ITypeSpec) fld).getTypeSpec(), fld.getName().getText());
@@ -234,7 +234,7 @@ public class UnitHeader {
         			for (BaseNode e : ((DeclNode.Arr)fld).getDim().getElems()) {
         				gen.fmt.print("[");
         				if (e instanceof ExprNode.Const) 
-        					 gen.aux.genExpr((ExprNode) e);
+        					gen.aux.genExpr((ExprNode) e);
         				gen.fmt.print("]");
         			}
         		}
@@ -261,6 +261,7 @@ public class UnitHeader {
     	
     	if (decl.isIntrinsic() && !decl.isIntrinsicUsed())
     		return;
+    	
     	
     	if (gen.curUnit().isModule() && (!decl.isHost() || (decl instanceof DeclNode.TypedMember))) {
     		String qualifier = decl.isHostClassRef() ? "_" : ".";

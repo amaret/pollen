@@ -484,7 +484,7 @@ public class UnitJScript {
     		return true;
 
     	if (decl instanceof DeclNode.ITypeSpecInit && ((ITypeSpecInit) decl).getInit() instanceof ExprNode.New) {
-    		ParseUnit.current().reportError(decl, "non-host invocations of 'new()' are not yet implemented");  
+    		ParseUnit.current().reportError(decl.getName(), "non-host invocations of 'new()' are not yet implemented");  
     		return false;
     	}
 

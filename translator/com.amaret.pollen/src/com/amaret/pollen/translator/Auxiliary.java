@@ -112,7 +112,7 @@ class Auxiliary {
 			Cat base = arrCat.getBase();
 			if (base.isAggTyp() && ((Cat.Agg) base).aggScope() instanceof DeclNode.Usr) {
 				// this is an array of objects
-				String s = "obj = new " + gen.uname() + "." + (((Cat.Agg) base).aggScope()).getScopeName() +  "(); obj.new_host(); return obj";
+				String s = "obj = new " + gen.uname() + "." + (((Cat.Agg) base).aggScope()).getScopeName() +  "(); obj." + ParseUnit.CTOR_CLASS_HOST + "(); return obj";
 				gen.fmt.print(", function($$cn,$$idx){" + s + ";}, ");				
 			}
 			else {
@@ -652,7 +652,7 @@ class Auxiliary {
 	private void genExpr$New(ExprNode.New expr) {
 		
 		if (!expr.getCall().isHostConstructorCall()) {
-        	ParseUnit.current().reportError(expr, "non-host invocations of 'new()' are not yet implemented");        	
+        	ParseUnit.current().reportError(expr.getCall().getName(), "non-host invocations of 'new()' are not yet implemented");        	
         }
 		genExpr$Call(expr.getCall());
 		// code below does not handle args
@@ -741,6 +741,10 @@ class Auxiliary {
 		SymbolEntry s = expr.getSymbol();
 		boolean isArrayInit = (s != null && s.node() != null
 				&& s.node() instanceof DeclNode.Arr);
+		Cat.Arr arrCat =  expr.getCat() instanceof Cat.Arr ? ((Cat.Arr) expr.getCat()) : null;			
+		Cat base = arrCat != null ? arrCat.getBase() : null;
+		boolean objectBase = (base != null && base.isAggTyp() && ((Cat.Agg) base).aggScope() instanceof DeclNode.Usr) ? true : false;
+		
 		String openBr = braces && isArrayInit && !isHost ? "{" : "[";
 		String closBr = braces && isArrayInit && !isHost ? "}" : "]";
 
@@ -762,10 +766,20 @@ class Auxiliary {
 			if (braces)
 				gen.fmt.print(openBr + "%+");
 			String sep = " ";
+			
+
 			for (ExprNode e : vals) {
 				gen.fmt.print(sep);
 				sep = ", ";
-				genExpr(e);
+				if (objectBase && e instanceof ExprNode.New) {							
+					String initElem1 = "(function() {obj = new " + gen.uname() + "." + (((Cat.Agg) base).aggScope()).getScopeName() +  "(); obj." + ParseUnit.CTOR_CLASS_HOST ;
+					String initElem2 = "; return obj;}) ()";
+					gen.fmt.print(initElem1);
+					gen.aux.genCallArgs(((ExprNode.New)e).getCall());   
+					gen.fmt.print(initElem2);
+				}
+				else 
+					genExpr(e);
 			}
 			gen.fmt.print(" ");
 			if (braces)
@@ -1522,12 +1536,16 @@ class Auxiliary {
 	}
 
 	String mkCname(TypeNode t) {
-		String lastChar = "_";
+		String lastChar = "_"; // TODO get rid of this when I change name printing!
 		if (t.getParent() != null && t.getParent() instanceof DeclNode) {
 			if (((DeclNode)t.getParent()).isHostClassRef()) {
 				// this changes the defines so that it is not a ptr deref (sigh...)
 				lastChar = "";
 			}								
+		}
+		if (t.getParent() instanceof TypeNode.Arr && t.getParent().getParent() instanceof DeclNode.Arr) {
+			if (((DeclNode.Arr)t.getParent().getParent()).isHost())
+				lastChar = "";
 		}
 
 		if (t instanceof TypeNode.Std)
