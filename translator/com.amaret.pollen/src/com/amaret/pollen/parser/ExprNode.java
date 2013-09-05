@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.antlr.runtime.tree.Tree;
 
+import com.amaret.pollen.parser.DeclNode.Fcn;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 
 public class ExprNode extends BaseNode {
@@ -70,6 +71,12 @@ public class ExprNode extends BaseNode {
 			ExprNode e = isRight ? this.getRight() : this.getLeft();
 			if (e.getChildren().isEmpty())
 				return e.getCat();
+			if (e instanceof ExprNode.Self) {
+				if (((ExprNode.Self)e).getMember() == null)
+					return this.getCat();
+				else
+					e = ((ExprNode.Self)e).getMember();
+			}
 			for (int i = e.getChildren().size() - 1; i > 0; i--) {
 				if (!(e.getChild(i) instanceof ExprNode))
 					continue;
@@ -771,7 +778,15 @@ public class ExprNode extends BaseNode {
 
 		public boolean isThisPtr() {
 			if (!thisPtr) {
+				IScope sc = this.getSymbol() != null ? this.getSymbol().scope() : null;
+				while (sc != null && sc.getEnclosingScope() != null)
+					sc = sc.getEnclosingScope();
+				if (sc instanceof ITypeKind && !((ITypeKind)sc).isClass())
+					return false;
 				if (qualifier != null && qualifier.node().getName().getText().equals("this"))
+					thisPtr = true;
+				else
+				if (this.getParent() instanceof ExprNode.Self)
 					thisPtr = true;
 			}
 			return thisPtr;
@@ -843,8 +858,7 @@ public class ExprNode extends BaseNode {
 		@Override
 		protected boolean pass2Begin() {
 			// this used to be pass1Begin() but that creates a requirement that
-			// a
-			// variable be declared before it is referenced.
+			// a variable be declared before it is referenced.
 
 			ParseUnit currUnit = ParseUnit.current();
 			if (this.getParent() instanceof ExprNode.Ident
@@ -1037,17 +1051,11 @@ public class ExprNode extends BaseNode {
 
 		@Override
 		protected boolean pass2Begin() {
-			// this used to be pass1Begin() but that creates a requirement that
-			// a
-			// variable be declared before it is referenced.
+			// this used to be pass1Begin() but that creates a requirement 
+			// that a variable be declared before it is referenced.
 
 			ParseUnit currUnit = ParseUnit.current();
 
-			// if (currUnit.getCurrUnitNode().isHostScope()) {
-			// currUnit.reportError(this,
-			// "use of \'@\' is prohibited in a host scope");
-			// //return true;
-			// }
 			if (!currUnit.getCurrUnitNode().getUnitType().isClass()) {
 				currUnit.reportError(this,
 						"\'@\' can only be used in \'class\' methods");
@@ -1066,6 +1074,8 @@ public class ExprNode extends BaseNode {
 							"identifer is not declared in the current scope");
 				} else {
 					ei.setSymbol(symbol);
+					// This prevents codegen collisions with parameters and locals with the same name.
+					//ei.getName().setText("this." + ei.getName().getText());
 				}
 			} else {
 				symbol = currUnit.getSymbolTable().lookupName(
@@ -1209,7 +1219,12 @@ public class ExprNode extends BaseNode {
 				return ((DeclNode.Var) this.getParent()).getTypeSpec();
 			}
 			if (this.getChild(0) instanceof ExprNode.Call) {
-				Cat c = ((ExprNode.Call) this.getChild(0)).getCat();
+				ExprNode.Call e = (Call) this.getChild(0);
+				if (e.getSymbol() != null && e.getSymbol().node() instanceof DeclNode.Fcn) {
+					DeclNode.Fcn f = (Fcn) e.getSymbol().node();
+					return f.getTypeSpec();
+				}
+				return null;				
 			}
 			return ((TypeNode) getChild(TYPE));
 		}
@@ -1239,16 +1254,20 @@ public class ExprNode extends BaseNode {
 							&& ((DeclNode)sn).isHostClassRef())
 						ParseUnit.current().reportError(this, "host objects can only be initalized in host contexts (which are the bodies of types or within host constructors or host functions)");
 				}
-				
+		
 				exprCat = ((ExprNode.Call) this.getChild(0)).getCat();
 			} else {
 				exprCat = Cat.fromNew((TypeNode) getChild(TYPE));
 			}
+			exprCat = exprCat == null ? Cat.fromError("Invalid constructor call", null, null) : exprCat;
 			if (exprCat instanceof Cat.Error) {
-				ParseUnit.current().reportError(getTypeSpec(),
+				ParseUnit.current().reportError(this.getCall().getName(),
 						((Cat.Error) exprCat).getMsg());
 				return;
 			}
+			boolean dbg;
+			if (exprCat == null)
+				dbg = true;
 			isConst = false;
 		}
 	}
@@ -1404,6 +1423,31 @@ public class ExprNode extends BaseNode {
 
 	public final boolean isConst() {
 		return isConst;
+	}
+
+	/**
+	 * @return if this expression resolves to an ExprNode.Const return that node else return null.
+	 */
+	public ExprNode.Const getConstExpr() {
+		// TODO handle EnumVal
+		ExprNode.Const rtn = null;
+		if (this instanceof ExprNode.Const) 
+			return (Const) this;
+		else {
+			if (this instanceof ExprNode.Ident) {
+				SymbolEntry se = ((ExprNode.Ident)this).getSymbol();
+				ISymbolNode node = se != null ? se.node() : null;
+				if (node instanceof DeclNode.Var) {
+					rtn = ((DeclNode.Var)node).getPresetValue();
+   				if (rtn instanceof ExprNode.Const) 
+   					return rtn;
+				}
+				if (((DeclNode.Var)node).isConst() && ((DeclNode.Var)node).getInit() instanceof ExprNode.Const) {
+					return (Const) ((DeclNode.Var)node).getInit();
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override

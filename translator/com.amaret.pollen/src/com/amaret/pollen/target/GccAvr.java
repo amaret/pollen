@@ -64,6 +64,7 @@ public class GccAvr extends GccBase {
         //cmd += " -Wa,-ahl=" + asmFile;
         cmd += " -o " + outFile;
         cmd = addCcOptsSuffix(cmd);
+        
         if (execCmd(cmd) != 0) {
             return;
         }

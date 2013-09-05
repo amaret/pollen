@@ -242,19 +242,48 @@ public class ParseUnit {
 
 			String fromPkg = currImport.getFrom().getText();
 			String pkgPath = packages.get(fromPkg);
+			UnitNode currUnit = null;
 
 			SymbolEntry currSym = unit.resolveSymbol(currImport.getFrom());
 			ISymbolNode currSnode = currSym == null ? null : currSym.node();
-			UnitNode currUnit = null;
+			
 			SymbolEntry currExportSym = null;
 			UnitNode client = unit;
 			ImportNode clientImport = currImport;
+			
+			String cname = client != null ? client.getQualName() : "<no import>";
+			String ciname = clientImport != null ? clientImport.getQualName()
+					: "<none>";
+
+			
+			// import is instantiated primitive type
 			if (Cat.Scalar.codeFromString(currImport.getUnitName().getText()) != null) {
 				// primitive type: don't import (instantiation side effect)
 				Atom name = currImport.getName();
 				unit.defineSymbol(name, currImport);
+				checkParseUnit(pkgPath + File.separator
+						+ currImport.getUnitName() + ".p", clientImport, cname, ciname);
 				continue;
 			}
+			
+			// import is instantiated meta type
+			if (currSnode == null && currImport.isTypeMetaArg()) {
+				// if this is an instantiated meta type, its pollen file won't exist
+				currSnode = findUnit(fromPkg + "." + currImport.getQualName());
+				if (currSnode != null && currSnode instanceof UnitNode) {
+					currUnit = (UnitNode) currSnode;
+					currImport.bindUnit(currUnit);
+					boolean f = currUnit.isGeneratedMetaInstance();
+					Atom name = currImport.getName();
+					unit.defineSymbol(name, currImport);
+					currUnit.addClient(unit);
+					this.enterUnit(currUnit.getQualName(), currUnit);
+					checkParseUnit(pkgPath + File.separator
+							+ currImport.getUnitName() + ".p", clientImport, cname, ciname);
+					continue;
+				}
+			}
+
 			boolean dbg = true;
 			if (ParseUnit.isDebugMode()) {
 				String s = "**   ParseUnit.parseImports(): " + fromPkg + "."
@@ -373,9 +402,9 @@ public class ParseUnit {
 		String ciname = clientImport != null ? clientImport.getQualName()
 				: "<none>";
 
-		setDebugMode(false);
-		//setDebugMode(true);
-		debugParseUnit(inputPath, clientImport, cname, ciname);
+		//setDebugMode(false);
+		setDebugMode(true);
+		checkParseUnit(inputPath, clientImport, cname, ciname);
 		File f = new File(inputPath);
 		if (!f.exists()) {
 			reportError(getPackageName() + "." + getFileName(),
@@ -429,21 +458,36 @@ public class ParseUnit {
 		return unit;
 
 	}
-
+	static private List<String> metaInstancePaths = new ArrayList<String>();
 	/**
 	 * @param inputPath
 	 * @param clientImport
-	 * @param cname
+	 * @param client
 	 * @param ciname
 	 */
-	private void debugParseUnit(String inputPath, ImportNode clientImport,
-			String cname, String ciname) {
+	private void checkParseUnit(String inputPath, ImportNode clientImport,
+			String client, String ciname) {
+		
+		if (clientImport != null && clientImport.getMeta() != null) {
+			String n = client.indexOf('.') != -1 ? client.substring(0, client.lastIndexOf('.')) : client;
+			n = client + "/" + n + "." + clientImport.getName();
+			//System.out.println("metaInstancePath: " + n + ", inputPath " + inputPath);
+
+			if (metaInstancePaths.contains(n) && isDebugMode()) // I no longer think this is an error 
+				// TODO track if there are circumstances where meta type instantiations can collide and break resulting code
+				ParseUnit.current().reportError(n.substring(n.lastIndexOf('/')+1), "file path is used by multiple meta instantiations. Each meta instantiation should have a unique path.");
+			else
+				metaInstancePaths.add(n);
+
+		}
+		
 		if (isDebugMode()) {
 			String dbgStr = "  START parseUnit() : ";
+			String asName = clientImport != null ? " as " + clientImport.getName().getText() : "";
 			dbgStr += "parse \'" + ParseUnit.mkPackageName(inputPath) + "."
 					+ ParseUnit.mkUnitName(inputPath)
-					+ "\', imported from client \'" + cname
-					+ "\' with \'import " + ciname + "\' statement";
+					+ "\', imported in client \'" + client
+					+ "\' with \'import " + ciname  + asName + "\' statement";
 			if (clientImport != null && clientImport.getMeta() != null) {
 				dbgStr += ", meta args ";
 				String comma = "";
@@ -493,8 +537,7 @@ public class ParseUnit {
 
 		int k = qualName.lastIndexOf('.');
 		String pn = qualName.substring(0, k);
-		String un = qualName.substring(k + 1);
-		// TODO make a command line option for location of output directory
+		String un = qualName.substring(k + 1);		
 		File dir = new File(ProcessUnits.getWorkingDir() + '/' + pn + '/' + un);
 		dir.mkdirs();
 		currFile = new File(dir, un + suffix);

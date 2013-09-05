@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
+import com.amaret.pollen.parser.DeclNode.Usr;
 
 
 public class Cat implements Cloneable {
@@ -22,6 +23,15 @@ public class Cat implements Cloneable {
 		private boolean isFcnRef;
         
 		private Agg(IScope aggScope, IScope defScope, boolean isRef, boolean fcnRef) {
+			if (aggScope instanceof UnitNode) {
+				UnitNode u = (UnitNode) aggScope;	
+				boolean dbg = false;
+				if (dbg)
+				System.out.println(u.getQualName() + (u.isMeta() ? " is meta type " : "") + (u.isGeneratedMetaInstance() ? ", is generated meta instance" : ""));							
+			}
+			if (aggScope instanceof ImportNode) {
+				System.out.println(((ImportNode)aggScope).getQualName());
+			}
             this.aggScope = aggScope;
             this.defScope = defScope;
             this.isRef = isRef;
@@ -34,6 +44,7 @@ public class Cat implements Cloneable {
         		? ((DeclNode) aggScope).isTargetClassRef(): false;
         	this.isClassRef = aggScope instanceof DeclNode 
         		? ((DeclNode) aggScope).isClassRef(): false;
+        	this.isClassRef |= aggScope instanceof DeclNode.Class && isRef;
         	this.isProtocolMember = aggScope instanceof DeclNode 
         		? ((DeclNode) aggScope).isProtocolMember(): false;
         }
@@ -113,7 +124,7 @@ public class Cat implements Cloneable {
         	if (isFcnRef && sc instanceof DeclNode.TypedMember) {
         		return "x" + ((DeclNode.TypedMember) sc).getTypeUnit().getQualName();
         	}
-        	if (isFcnRef && sc instanceof DeclNode.Fcn) {
+        	if ((isFcnRef || isRef) && sc instanceof DeclNode.Fcn) {
         		return "x" + ((DeclNode.Fcn) sc).getEnclosingScope().getScopeName() + "." + ((DeclNode.Fcn) sc).getName().getText();
         	}
         	if (sc instanceof DeclNode.TypedMember) {
@@ -515,6 +526,16 @@ public class Cat implements Cloneable {
         else if (snode instanceof DeclNode.TypedMember) {
             return new Cat.Agg((DeclNode.TypedMember) snode, defScope, false, false);
         }
+        else if (snode instanceof DeclNode.Formal && ((DeclNode.Formal)snode).getTypeSpec() instanceof TypeNode.Usr) { 
+        	TypeNode.Usr t = (com.amaret.pollen.parser.TypeNode.Usr) ((DeclNode.Formal)snode).getTypeSpec();
+        	ISymbolNode is = (t.getSymbol() != null ? t.getSymbol().node() : null);
+        	if (is != null && is instanceof ImportNode && ((ImportNode)is).getUnit() != null)
+        		is = ((ImportNode)is).getUnit().getUnitType();       	
+        	if (is instanceof DeclNode)
+        		return new Cat.Agg((IScope) is, defScope, isRef, false);
+        	else
+        		return Cat.fromType((TypeNode) t);
+        }
         else if (snode instanceof DeclNode.ITypeSpec) {
         	BaseNode b = ((DeclNode.ITypeSpec) snode).getTypeSpec();
         	if (b instanceof TypeNode) {
@@ -649,7 +670,7 @@ public class Cat implements Cloneable {
         return "?";
     }
     
-    final String mkType() {
+    public final String mkType() {
         return mkType("");
     }
     

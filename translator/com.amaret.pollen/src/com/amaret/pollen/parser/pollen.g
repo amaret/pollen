@@ -1343,6 +1343,7 @@ stmts
 	;
 stmt
 @init {
+	typeMods = EnumSet.noneOf(Flags.class);
 	stmtFlags = EnumSet.noneOf(Flags.class);
 }
 	:  stmtDecl
@@ -1515,6 +1516,7 @@ stmtDeclAttr
 fieldDeclaration    
 @init {
 	stmtFlags = EnumSet.noneOf(Flags.class);
+	typeMods = EnumSet.noneOf(Flags.class);
 	stmtFlags.add(Flags.FIELD);
 }
    :	 varAttr varDecl delim	-> varDecl

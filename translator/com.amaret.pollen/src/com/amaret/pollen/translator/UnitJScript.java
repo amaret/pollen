@@ -261,6 +261,8 @@ public class UnitJScript {
 
     private void genPrivateInit(UnitNode unit) {
     	
+    	if (unit.isClass())
+    		return;
         gen.fmt.print("%t%1." + ParseUnit.PRIVATE_INIT + " = function() {\n%+", gen.uname());
         for (DeclNode decl : unit.getFeatures()) {
             if (isPrivateInit(decl) && isHostInit(decl)) {
@@ -369,8 +371,8 @@ public class UnitJScript {
 			String impName) {
 		String s = "import ";
 		s = "  debugUse(): from " + imp.getFrom() + " " + s + imp.getUnitName() + " as " + imp.getName().getText();
-		if (imp.getUnit().isMeta()) s += ", isMeta";
-		if (imp.getMeta() != null) s += ", isMetaImport";
+		if (imp.getUnit().isMeta()) s += ", importUnitIsMeta";
+		if (imp.getMeta() != null) s += ", importIsMeta";
 		if (imp.getUnit().isComposition())	s += ", isComposition";
 		if (imp.getUnit().isGeneratedMetaInstance())	s+= ", isGeneratedMetaInstance";
 		System.out.println(s + ", nUnit " + nUnit + ", impName " + impName + ", asName " + asName);
@@ -459,8 +461,10 @@ public class UnitJScript {
             }
         }
         else if (tc.startsWith("A") || tc.startsWith("S") || tc.startsWith("V")) {
+        	DeclNode d = (DeclNode) ts;
+        	String qualifier = d.isClassScope() ? "this" : gen.uname();
             gen.aux.genDefault(ts.getTypeCat(), ts);
-            gen.fmt.print("; %1.%2.$$assign(", gen.uname(), ts.getName());
+            gen.fmt.print("; %1.%2.$$assign(", qualifier, ts.getName());
             gen.aux.genExpr(init);
             gen.fmt.print(")");
         }

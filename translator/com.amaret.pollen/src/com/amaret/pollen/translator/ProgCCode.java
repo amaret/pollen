@@ -251,8 +251,8 @@ public class ProgCCode {
     }
 
     private void genFwdAggs() {
-
-        gen.aux.genTitle("forward aggregate values");
+    	 // currently unused but keep in case a need comes up
+    	boolean title = false;
         ArrayList<FwdAgg> workList = new ArrayList<FwdAgg>();
 
         while (fwdAggList.size() > 0) {
@@ -261,6 +261,10 @@ public class ProgCCode {
             workList.addAll(fwdAggList);
             fwdAggDecls.addAll(fwdAggList);
             fwdAggList.clear();
+        	if (!title) {
+        		title = true;
+                gen.aux.genTitle("forward aggregate values");
+        	}
 
             for (FwdAgg fwdagg : workList) {
                 if (fwdagg.cls == null) {
@@ -295,8 +299,13 @@ public class ProgCCode {
     }
 
     private void genFwdAggDecls() {
-        gen.aux.genTitle("forward aggregate declarations");
+    	boolean title = false;
+        // currently unused but keep in case a need comes up
         for (FwdAgg fwdagg : fwdAggDecls) {
+        	if (!title) {
+        		title = true;
+        		gen.aux.genTitle("forward aggregate declarations");
+        	}
             if (fwdagg.cls != null) {
                 gen.fmt.print("%1 %2;\n", fwdagg.tname, fwdagg.cname);
             }
@@ -312,7 +321,7 @@ public class ProgCCode {
         for (UnitDesc ud : units) {
 
             UnitNode unit = ud.getUnit();
-
+            
             gen.setupUnit(unit);
             
             if (unit.isTarget()) {
@@ -425,8 +434,17 @@ public class ProgCCode {
             ParseUnit.current().reportError(decl.getName(), "host variable has never been assigned");
             return;
         }
+        if (val.toString().matches(".*NOT_FOUND")) {
+        	if (decl.isClassScope()) {
+        		String n = decl.getDefiningScope().getScopeName() + "." + decl.getName().getText();
+        		val = ud.getUnitObj().getAny(decl.getName());
+        		if (val.toString().matches(".*NOT_FOUND"))
+        			n = decl.getDefiningScope().getScopeName() + "." + n;
+        		val = ud.getUnitObj().getAny(decl.getName());
+        	}
+        }
         
-        if (!(decl.isHostClassRef()))
+        if (!decl.isHostClassRef() && !decl.isClassScope())
         	gen.fmt.print("const ");
         
         gen.fmt.print("%1__TYPE %1%2", gen.cname() + decl.getName(), gen.aux.mkSuf(decl));
@@ -443,26 +461,28 @@ public class ProgCCode {
     private void genUnitDefs(UnitNode unit, UnitDesc ud) {
     	boolean title = false;
     	
-        for (DeclNode decl : unit.getFeatures()) {
-            switch (decl.getType()) {
-             case pollenParser.D_VAR:
-             case pollenParser.D_ARR:
-            	DeclNode.Var v = (DeclNode.Var) decl;
-            	if (v.isIntrinsic() && !v.isIntrinsicUsed())
-            		continue;
-            	if (v.isHost()) {
-        			if (!title) {
-        				gen.aux.genTitle("host data definitions (unit " + unit.getName().getText() + ")");
-        				title = true;
-        			}
-            		genHostVal(ud, v);
-            	}
-                break;
-            }
-        }
+    	if (!unit.isClass())
+    		for (DeclNode decl : unit.getFeatures()) {
+    			switch (decl.getType()) {
+    			case pollenParser.D_VAR:
+    			case pollenParser.D_ARR:
+    				DeclNode.Var v = (DeclNode.Var) decl;
+    				if (v.isIntrinsic() && !v.isIntrinsicUsed())
+    					continue;
+    				if (v.isHost()) {
+    					if (!title) {
+    						gen.aux.genTitle("host data definitions (unit " + unit.getName().getText() + ")");
+            				//System.out.println("Current Unit: " + unit.getName().getText());
+    						title = true;
+    					}
+    					genHostVal(ud, v);
+    				}
+    				break;
+    			}
+    		}
     	String n = gen.cname();
 		
-    	if (!unit.isClass()) {
+    	if (!unit.isClass() && !unit.isEnum()) {
     		gen.aux.genTitle("target data definitions (unit " + unit.getName().getText() + ")");
 
     		gen.fmt.print("struct %1 %2 = { %3\n", n, n.substring(0, n.length()-1), "/* module data */");

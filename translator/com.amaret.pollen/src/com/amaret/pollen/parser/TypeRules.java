@@ -92,6 +92,10 @@ public class TypeRules {
 		//        }
 
 		String r = right.mkCode();
+		if (right instanceof Cat.Arr && r.charAt(0) == 'V') {
+			right = ((Cat.Arr) right).getBase();	
+			r = right.mkCode();
+		}
 		boolean leftAgg = left.mkCode().charAt(0) == 'C' || left.mkCode().charAt(0) == 'X';
 		if (leftAgg) {
 			boolean rightAgg = right.mkCode().charAt(0) == 'C' || right.mkCode().charAt(0) == 'X';
@@ -198,7 +202,12 @@ public class TypeRules {
         }
         Cat resCat = checkBinary("=", declCat, initCat, "initialization type mismatch");
         if (resCat instanceof Cat.Error) {
-            ParseUnit.current().reportError(init, ((Cat.Error) resCat).getMsg());
+        	if (declCat.isAggTyp() && ((Cat.Agg)declCat).aggScope() instanceof DeclNode) { // error message with name & linenum
+        		IScope d = ((Cat.Agg)declCat).aggScope();
+        		ParseUnit.current().reportError( ((DeclNode)d).getName(), ((Cat.Error) resCat).getMsg());
+        	}
+        	else 
+        		ParseUnit.current().reportError(init, ((Cat.Error) resCat).getMsg());
         }
     }
     static private void checkInitHash(Cat declCat, ExprNode.Hash init, boolean genArgs) {

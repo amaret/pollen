@@ -103,6 +103,17 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     		return true;
     	return false;
     }
+    /**
+     * 
+     * @return true if instantiating type is a primitive, e.g. 'uint8'
+     */
+    public boolean isTypeMetaArgPrimitive() {
+    	if (isTypeMetaArg() && Cat.Scalar.codeFromString(this.getUnitName().getText()) != null) {
+    		// primitive type
+    		return true;
+    	}
+    	return false;
+    }
    
     public boolean isExport() {
 		return isExport;
@@ -278,9 +289,9 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
         		for (DeclNode.Fcn f : fl) {
         			list += f.getName() + " ";
         		}   
-        		if (!list.isEmpty())
-        			list = " containing fcns: " + list;
         	}
+        	if (!list.isEmpty())
+    			list = ", containing fcns: " + list;
         	
         	ParseUnit.current().reportError(this, "Binding module '" + getName().getText() + "' to unit '" + unit.getQualName() + list);
         }

@@ -34,7 +34,7 @@ public class UnitBody {
 				+ gen.aux.mkPollenCname(fcn.cname()) + gen.aux.mkSuf(fcn));
 		gen.aux.genFcnArgs(body.getFormals(), true, fcn);
 		gen.fmt.print(" {\n%+");
-		String n = gen.cname();
+		
 		gen.aux.genLocals(body.getLocalVars());
 		for (StmtNode stmt : body.getStmts()) {
 			gen.fmt.print("%t");

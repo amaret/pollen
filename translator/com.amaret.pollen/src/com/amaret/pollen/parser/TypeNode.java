@@ -98,6 +98,7 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
     static public class Usr extends TypeNode {
 
         static final private int NAME = 0;
+        private boolean isFunctionRef = false;
         
         private HashMap<String,SymbolEntry> symbolMap = new HashMap<String,SymbolEntry>();
         
@@ -105,7 +106,11 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
             super(ttype, ttext, flags);
         }
         
-        public Atom getName() {
+        public boolean isFunctionRef() {
+			return isFunctionRef;
+		}
+
+		public Atom getName() {
             return ((BaseNode) getChild(NAME)).getAtom();
         }
         
@@ -149,6 +154,8 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 						|| snode instanceof DeclNode.Fcn
 						|| snode instanceof DeclNode.FcnTyp;
             }
+            
+            isFunctionRef = snode instanceof DeclNode.Fcn;
 					
             // type members ok?
             if (symbol == null || !okFlag)  {

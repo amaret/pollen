@@ -65,11 +65,13 @@ public class SymbolEntry {
     	}
 
     	if (t != null) {
-   			SymbolEntry s = t.getSymbol();
-			if (s.node() instanceof ImportNode && ((ImportNode) s.node()).getUnit() != null)    
-				sc = ((ImportNode)s.node()).getUnit().getUnitType();    
-			else if (s.node() instanceof DeclNode.Usr)
-				sc = ((DeclNode.Usr)s.node()).getScopeDeleg();
+    		SymbolEntry s = t.getSymbol();
+    		if (s != null) {
+    			if (s.node() instanceof ImportNode && ((ImportNode) s.node()).getUnit() != null)    
+    				sc = ((ImportNode)s.node()).getUnit().getUnitType();    
+    			else if (s.node() instanceof DeclNode.Usr)
+    				sc = ((DeclNode.Usr)s.node()).getScopeDeleg();
+    		}
     	}
     	
     	if (t == null) {
