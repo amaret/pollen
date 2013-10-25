@@ -35,11 +35,16 @@ public class UnitJScript {
         }
 
         DeclNode.Class cls = fcn.getFcnClass();
-        //if (cls != null && (cls.getContainingType() == null))
-        //	cls = null; // a class scope name is needed only for nested classes
-        
-        String n = fcn.getName().getText();
-        
+        // note cls is associated with javascript 'prototype'
+    
+        boolean dbg = false;
+        if (dbg) {
+            String n = fcn.getName().getText();
+            if (n.equals(ParseUnit.CTOR_CLASS_HOST) || n.equals(ParseUnit.CTOR_MODULE_HOST)) {
+            	System.out.println(fcn.getUnit().getQualName() + "." + n);     
+            }          	
+        }
+      
         gen.fmt.print("%t%1%2.%3 = function",
                 gen.uname(),
                 cls != null ? ("." + cls.getName()) + ".prototype" : "", 
@@ -100,7 +105,7 @@ public class UnitJScript {
         if (!decl.isHost()) {
             String suf = decl.isPublic() ? "E" : "I";
             String n = decl.getName().getText().replace('.', '_');
-            gen.fmt.print("%t%1.%2 = new $$Ref('%3%2__%4');\n", gen.uname(), n, gen.cname(), suf);
+            gen.fmt.print("%t%1.%2 = new $$Ref('%3%2__%4');\n", gen.uname(), n, gen.uname_target(), suf);
         }
     }
     

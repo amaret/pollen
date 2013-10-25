@@ -515,6 +515,7 @@ public class StmtNode extends BaseNode {
 
 					
 					if (TypeRules.preCheck(valcat) == null) {
+						
 						Cat rescat = TypeRules.checkBinary("=", retcat, valcat,
 								"return type error (unmatched or invalid return types)");
 						if (rescat instanceof Cat.Error) {

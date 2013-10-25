@@ -53,7 +53,6 @@ class Auxiliary {
 	private boolean curSkip;
 	private String curTypeString;
 	private Generator gen;
-	private boolean isLval;
 	private boolean isHost;
 	Auxiliary(Generator gen) {
 		this.gen = gen;
@@ -95,7 +94,7 @@ class Auxiliary {
                 gen.fmt.print("($$cn+'['+$$idx+']')");
                 break;
             case DEFAULT_INMOD:
-                gen.fmt.print("('%1')", gen.cname() + ts.getName() + gen.aux.mkSuf((ISymbolNode)ts));
+                gen.fmt.print("('%1')", gen.uname_target() + ts.getName() + gen.aux.mkSuf((ISymbolNode)ts));
                 break;
             case DEFAULT_INNEW:
                 break;
@@ -109,7 +108,7 @@ class Auxiliary {
 			Cat.Arr arrCat = ((Cat.Arr) cat);
 			TypeNode.Arr tarr = arrCat.getType();
 			gen.fmt.print("new $$Array(");
-			if (tarr.hasDim() && tarr.getFirstDim() != null) {
+			if (tarr.getFirstDim() != null) {
 				gen.aux.genExpr(tarr.getFirstDim());
 			} else {
 				gen.fmt.print("-1");
@@ -139,7 +138,7 @@ class Auxiliary {
 				}
 				break;
 			case DEFAULT_INMOD:
-				gen.fmt.print("'%1__A', %2", gen.cname() + ts.getName(),aggFlg);
+				gen.fmt.print("'%1__A', %2", gen.uname_target() + ts.getName(),aggFlg);
 				break;
 			case DEFAULT_INNEW:
 				gen.fmt.print("'__new_'+($$Array.$$idx++)+'__A', %1", aggFlg);
@@ -186,7 +185,7 @@ class Auxiliary {
 					int eType = e.getType();
 					switch (eType) {
 					case pollenParser.E_INDEX:
-						if (!isHost)
+						if (!isHost())
 							genExpr2(e, eType);
 						break;
 					case pollenParser.E_IDENT:
@@ -263,7 +262,7 @@ class Auxiliary {
 		ExprNode right = expr.getRight();
 		String op = expr.getOp().getText();
 
-		if (expr.isAssign() && isHost && expr.hasLeftIndexExpr()) {
+		if (expr.isAssign() && isHost() && expr.hasLeftIndexExpr()) {
 			ExprNode.Index idxExpr = expr.getLeftIndexExpr();
 			genExpr(idxExpr.getBase());
 			gen.fmt.print(".set(");
@@ -282,7 +281,7 @@ class Auxiliary {
 			return;
 		}
 
-		if (op.equals("=") && isHost && right instanceof ExprNode.AggVal) {
+		if (op.equals("=") && isHost() && right instanceof ExprNode.AggVal) {
 			genExpr(left);
 			gen.fmt.print(".$$assign(");
 			genExpr(right);
@@ -303,40 +302,47 @@ class Auxiliary {
 				gen.fmt.print("), (");
 				genExpr(right);
 				gen.fmt.print("), (");
-				genType(rightCat.getType().getBase(), null);
+				genType_VarName(rightCat.getType().getBase(), null);
 				gen.fmt.print("))");
 				return;
 			}
 		}
 
 		genExpr(left);
-		
+		if (right instanceof ExprNode.New) { 
+			// class host constructors are a bit special
+			ExprNode.Call c = ((ExprNode.New) right).getCall();
+			if (c.getCalledFcn() != null) {
+				SymbolEntry se = c.getCalledFcn();
+				ISymbolNode node = se != null ? se.node() : null;
+				if (node != null
+						&& node.getName().getText().equals(ParseUnit.CTOR_CLASS_HOST)) {
+					gen.fmt.print(".%1()", ParseUnit.CTOR_CLASS_HOST);
+					return;
+				}
+			}
+		}
+
 		String addrOf = "";
 		String deref = "";
 		if (cl instanceof Cat.Agg) {
 			Cat.Agg leftCat = (Agg) cl;
-			if (leftCat.isClassRef() && !(cr instanceof Cat.Scalar) && !isHost)
-				addrOf = "&";	
+			if (leftCat.isClassRef() && !(cr instanceof Cat.Scalar)
+					&& !isHost())
+				addrOf = "&";
 			gen.fmt.print(" %1 %2", op, addrOf);
-		}
-		else 
+		} else {
 			if (cl instanceof Cat.Arr) {
-				if (expr.isAssign() && expr.hasLeftIndexExpr() && cr.isClassRef())	
+				if (expr.isAssign() && expr.hasLeftIndexExpr()
+						&& cr.isClassRef())
 					deref = "*";
 				gen.fmt.print(" %1 %2", op, deref);
-			}
-			else 
+			} else {
 				gen.fmt.print(" %1 ", op);
-		genExpr(right);
-	}
+			}
+		}
 
-	void genLvalExpr(ExprNode expr) {
-		// currently unused in new pollen - if 
-		// it turns out never needed, delete isLval
-		// (used in Em in genExpr$Addr())
-		isLval = true;
-		genExpr(expr);
-		isLval = false;
+		genExpr(right);
 	}
 
 	private void genExpr$Call(ExprNode.Call expr) {
@@ -392,7 +398,7 @@ class Auxiliary {
 					String formalTypeName = ((Cat.Agg)f.getTypeCat()).aggName();
 					if (!(argTypeName.equals(formalTypeName))) { // CAST
 						gen.fmt.print("(");
-						genType(f.getTypeSpec(), null);
+						genType_VarName(f.getTypeSpec(), null);
 						gen.fmt.print(")&");
 					}
 				}
@@ -424,15 +430,13 @@ class Auxiliary {
 
 	private void genExpr$Const(ExprNode.Const expr) {
 		String vs = expr.getValue().getText();
-		if (!isHost && vs.startsWith("\"")) {
+		if (!isHost() && vs.startsWith("\"")) {
 			int id = gen.curUnit().findString(vs);
 			if (id == -1) {
 				gen.fmt.print("%1", vs);
 			} else {
-				gen.fmt.print("%1_s__%2", gen.cname(), id);
+				gen.fmt.print("%1_s__%2", gen.uname_target(), id);
 			}
-		} else if (isLval && vs.equals("this")) {
-			gen.fmt.print("this.$$cname");
 		} else {
 			gen.fmt.print("%1", vs);
 		}
@@ -523,7 +527,7 @@ class Auxiliary {
 		SymbolEntry sym = expr.getSymbol();
 		if (sym == null) {
 			if (expr.isIntrisicCall())
-				gen.fmt.print("%1%2%3", gen.cname(), expr.getName(), "__E");
+				gen.fmt.print("%1%2%3", gen.uname_target(), expr.getName(), "__E");
 			else
 				gen.fmt.print(expr.getName() + " /* ?? missing symbol ?? */ ");
 			return;
@@ -545,7 +549,7 @@ class Auxiliary {
 			scopeOfDcln = ((DeclNode.Fcn) sym.node()).getUnit();
 		}
 		
-		String quot = isLval ? "'" : "";
+		String quot = "";
 		boolean externScope = scopeOfDcln instanceof UnitNode
 				|| scopeOfDcln instanceof DeclNode.Usr;
 				
@@ -558,13 +562,7 @@ class Auxiliary {
 		}
 		
 		if (!(externScope)) {
-			if (isLval) {
-				if (expr.getCat().isAggArr()) {
-					gen.fmt.print("%1.$$cname", expr.getName());
-					return;
-				}
-			}
-			String scopeQualifier = expr.isThisPtr() && !isHost && !expr.getName().getText().equals("this") ? "this->" : "";
+			String scopeQualifier = expr.isThisPtr() && !isHost() && !expr.getName().getText().equals("this") ? "this->" : "";
 			gen.fmt.print(scopeQualifier + expr.getName());
 			return;
 		}
@@ -572,7 +570,7 @@ class Auxiliary {
 		if (snode instanceof ImportNode) {
 			if (((ImportNode) snode).getUnit() != null) {
 				String qn = ((ImportNode) snode).getUnit().getQualName();
-				if (isHost && !isLval) {
+				if (isHost()) {
 					gen.fmt.print("$units['%1']", qn);
 				} else {
 					gen.fmt.print("%2%1%2", qn.replace('.', '_'), quot);
@@ -582,7 +580,7 @@ class Auxiliary {
 		}
 
 		if (snode == gen.curUnit()) {
-			if (isHost && !isLval) {
+			if (isHost()) {
 				gen.fmt.print(gen.uname());
 			} else {
 				gen.fmt.print("%2%1%2", gen.curUnit().getQualName().replace(
@@ -624,7 +622,7 @@ class Auxiliary {
 			
 		}
 
-		if (isHost && !isLval) {
+		if (isHost()) {
 			if (scopeOfDcln == gen.curUnit()) {
 				gen.fmt.print("%1.%2", gen.uname(), expr.getName());
 			} else if (classScopeOfDcln) {
@@ -648,12 +646,6 @@ class Auxiliary {
 					dbg = true;
 				gen.fmt.print("$units['%1'].%2", qn, n);
 			}
-		} else if (isLval && expr.getCat().isAggArr()) {
-			if (scopeOfDcln == gen.curUnit()) {
-				gen.fmt.print("%1.%2.$$cname", gen.uname(), expr.getName());
-			} else {
-				gen.fmt.print("$units['%1'].%2.$$cname", qn, expr.getName());
-			}
 		} else {
 			// local (function scope)
 
@@ -663,7 +655,7 @@ class Auxiliary {
 			}
 
 			if (expr.isThisPtr() && !(snode instanceof DeclNode.Fcn)) {
-				if (isHost)
+				if (isHost())
 					gen.fmt.print("this." + mkCname(expr));
 				else
 					gen.fmt.print("this->" + mkCname(expr));
@@ -677,16 +669,7 @@ class Auxiliary {
 
 	private void genExpr$Index(ExprNode.Index expr) {
 		ExprNode base = expr.getBase();
-		if (isLval) {
-			genExpr(base);
-			for (ExprNode e : expr.getIndexes()) {
-				gen.fmt.print("+'['+");
-				isLval = false;
-				genExpr(e);
-				isLval = true;
-				gen.fmt.print("+']'");
-			}
-		} else if (isHost) {
+		if (isHost()) {
 			// genExpr(base);
 			gen.fmt.print(".get(");
 			genExpr(expr.getFirstIndex());
@@ -743,7 +726,7 @@ class Auxiliary {
 
 		gen.fmt.print("var $$s = ");
 
-		String uname = "$units[\'" + gen.jsname() + "\']"; 
+		String uname = "$units[\'" + gen.uname_host() + "\']"; 
 		if (proMem instanceof ExprNode.Ident) {
 			gen.fmt.print("$$bind(%1, '%2', $$v);", uname,
 					((ExprNode.Ident) proMem).getName());
@@ -755,20 +738,20 @@ class Auxiliary {
 	private void genExpr$Size(ExprNode.Size expr) {
 		switch (expr.getOp()) {
 		case 's':
-			if (isHost) {
+			if (isHost()) {
 				gen.fmt.print("%1", expr.getTypeSpec().getTypeInfo().size);
 			} else {
 				gen.fmt.print("sizeof(");
-				genType(expr.getTypeSpec(), null);
+				genType_VarName(expr.getTypeSpec(), null);
 				gen.fmt.print(")");
 			}
 			break;
 		case 'a':
-			if (isHost) {
+			if (isHost()) {
 				gen.fmt.print("%1", expr.getTypeSpec().getTypeInfo().align);
 			} else {
 				gen.fmt.print("offsetof (cls { char c; ");
-				genType(expr.getTypeSpec(), "t");
+				genType_VarName(expr.getTypeSpec(), "t");
 				gen.fmt.print("; }, t)");
 			}
 			break;
@@ -798,11 +781,11 @@ class Auxiliary {
 				.aggScope() instanceof DeclNode.Usr || ((Cat.Agg) base)
 				.aggScope() instanceof UnitNode)) ? true : false;
 		
-		String openBr = braces && isArrayInit && !isHost ? "{" : "[";
-		String closBr = braces && isArrayInit && !isHost ? "}" : "]";
+		String openBr = braces && isArrayInit && !isHost() ? "{" : "[";
+		String closBr = braces && isArrayInit && !isHost() ? "}" : "]";
 
 		List<ExprNode> vals = expr.getVals();
-		if (newFlg && isHost) {
+		if (newFlg && isHost()) {
 
 				gen.fmt.print("(");
 				genDefault(expr.getCat(), null, DEFAULT_INNEW);
@@ -810,7 +793,7 @@ class Auxiliary {
 
 		}
 
-		if (newFlg && isHost) 
+		if (newFlg && isHost()) 
 			gen.fmt.print("(");
 		
 		if (vals.size() == 0 && braces) {
@@ -853,7 +836,7 @@ class Auxiliary {
 				gen.fmt.print("%-" + closBr);
 		}
 
-		if (newFlg && isHost) {
+		if (newFlg && isHost()) {
 			gen.fmt.print(")");
 		}
 	}
@@ -871,7 +854,7 @@ class Auxiliary {
 		if (args.size() == 0) {
 			if (thisPtr.isMethod()) {	// to access class data
 				gen.fmt.print("( ");
-				genType(thisPtr.getTypeSpec(), "" + thisPtr.getName());
+				genType_VarName(thisPtr.getTypeSpec(), "" + thisPtr.getName());
 				gen.fmt.print(" )");
 				return;
 			}
@@ -884,7 +867,7 @@ class Auxiliary {
 		
 		if (thisPtr.isMethod()) {	// to access class data
 			sep = ", ";
-			genType(thisPtr.getTypeSpec(), "" + thisPtr.getName());
+			genType_VarName(thisPtr.getTypeSpec(), "" + thisPtr.getName());
 		}
 
 		for (DeclNode.Formal arg : args) {
@@ -898,7 +881,7 @@ class Auxiliary {
 				if (is instanceof DeclNode.Fcn) {
 					gen.fmt.print("void* " + arg.getName());
 				} else
-					genType(arg.getTypeSpec(), "" + arg.getName());
+					genType_VarName(arg.getTypeSpec(), "" + arg.getName());
 			} else
 				gen.fmt.print(arg.getName()); // javascript
 		}
@@ -917,8 +900,10 @@ class Auxiliary {
 	}
 
 	void genLocals(List<DeclNode.Var> localVars) {
+		// locals are first declared without initializers.
+		// later on they are initialized with assign statements.
 		for (DeclNode.Var var : localVars) {
-			if (isHost) {
+			if (isHost()) {
 				gen.fmt.print("%tvar %1", var.getName());
 				if (var.getInit() == null) {
 					gen.fmt.print(" = ");
@@ -932,8 +917,8 @@ class Auxiliary {
 					gen.fmt.print("%t");
 					TypeNode t = var instanceof DeclNode.Arr ? ((DeclNode.Arr) var)
 							.getTypeArr() : var.getTypeSpec();
-					genType(t, "" + var.getName());
-					gen.fmt.print(";\n", var.getName());
+					genType_VarName(t, "" + var.getName());
+					gen.fmt.print(";\n");
 				}
 			}
 		}
@@ -1185,18 +1170,26 @@ class Auxiliary {
 		for (DeclNode.Var decl : stmt.getVars()) {
 			
 			boolean arrayInit = decl instanceof DeclNode.Arr && ((DeclNode.Arr) decl).getInit() != null;
+			boolean arrayNoDim = arrayInit && !((DeclNode.Arr) decl).hasDim(); // e.g. uint8 arr[] = fcnReturningArray();
 			if (decl.getInit() != null) {
-				if (isHost || !arrayInit) {
+				if (isHost() || !arrayInit) {
 					gen.fmt.print("%1 = ", decl.getName());
 					genExpr(decl.getInit());
 					gen.fmt.print(";");
 				}
-				else {
-					// in c, 'int arr[2] = {1,2};' cannot be split into 2 statements.
-					// Special case to prevent that splitting.
-					gen.fmt.print("%t");
-					TypeNode t = ((DeclNode.Arr) decl).getTypeArr();
-					genType(t, "" + decl.getName());
+				else { // target array initialization
+					if (arrayNoDim) {
+						// declare as ptr and index like array						
+						TypeNode t = ((DeclNode.Arr) decl).getTypeArr().getBase();
+						genType_VarName(t, "* " + decl.getName());
+					}
+					else  {
+						// in c, 'int arr[2] = {1,2};' cannot be split into 2 statements.
+						// Special case to prevent that splitting.
+						TypeNode t = ((DeclNode.Arr) decl).getTypeArr();
+						genType_VarName(t, "" + decl.getName());
+
+					}
 					gen.fmt.print(" = ");
 					genExpr(decl.getInit());
 					gen.fmt.print(";");
@@ -1247,7 +1240,7 @@ class Auxiliary {
 	}
 
 	private void genStmt$Print(StmtNode.Print stmt) {
-		if (isHost) {
+		if (isHost()) {
 			gen.fmt.print("$$printf(");
 			String sep = "";
 			for (ExprNode expr : stmt.getArgs()) {
@@ -1274,23 +1267,23 @@ class Auxiliary {
 				}	
 				switch (cat.charAt(0)) {
 				case 'b':
-					gen.fmt.print("%1pollen_print_bool(", gen.cname());
+					gen.fmt.print("%1pollen_print_bool(", gen.uname_target());
 					gen.aux.genExpr(expr);
 					gen.fmt.print(");");
 
 					break;
 				case 'i':
-					gen.fmt.print("%1pollen_print_int((int32)", gen.cname());
+					gen.fmt.print("%1pollen_print_int((int32)", gen.uname_target());
 					gen.aux.genExpr(expr);
 					gen.fmt.print(");");
 					break;
 				case 'u':
-					gen.fmt.print("%1pollen_print_uint((uint32)", gen.cname());
+					gen.fmt.print("%1pollen_print_uint((uint32)", gen.uname_target());
 					gen.aux.genExpr(expr);
 					gen.fmt.print(");");
 					break;
 				case 's':
-					gen.fmt.print("%1pollen_print_str((string)", gen.cname());
+					gen.fmt.print("%1pollen_print_str((string)", gen.uname_target());
 					gen.aux.genExpr(expr);
 					gen.fmt.print(");");
 					break;
@@ -1319,7 +1312,7 @@ class Auxiliary {
 				SymbolEntry se;
 				if (ei != null) {
 					se = ei.getSymbol();
-					addrOf = se != null && !(se.node() instanceof DeclNode.TypedMember) && !isHost ? " &" : "";
+					addrOf = se != null && !(se.node() instanceof DeclNode.TypedMember) && !isHost() ? " &" : "";
 				}
 				
 				se = ((TypeNode.Usr)t).getSymbol();
@@ -1376,25 +1369,30 @@ class Auxiliary {
 	}
 
 	/**
-	 * Enter here for print of type.
+	 * Enter here for print of type AND var name (if passed).
 	 * 
 	 * @param type
 	 * @param name
 	 *            e.g. Argtype argName
 	 */
-	void genType(TypeNode type, String name) {
+	void genType_VarName(TypeNode type, String name) {
 		
-		gen.fmt.print("%1", genTypeString(type, name));
+		gen.fmt.print("%1", genVarTypeVarName(type, name));
 	}
 
 	void genType(TypeNode type, String dtor, int arrSize) {
 		int oldArrSize = curArrSize;
 		curArrSize = arrSize;
-		genType(type, dtor);
+		genType_VarName(type, dtor);
 		curArrSize = oldArrSize;
 	}
 
-	private String genTypeString(TypeNode type, String name) {
+	/**
+	 * @param type
+	 * @param name printed if passed
+	 * @return
+	 */
+	private String genVarTypeVarName(TypeNode type, String name) {
 
 		String oldTypeString = curTypeString;
 		curTypeString = (name == null) ? "" : name;
@@ -1410,6 +1408,12 @@ class Auxiliary {
 				 * "__ArrDesc__ " + curTypeString; done = true; break; }
 				 */
 				genType$Arr((TypeNode.Arr) t);
+				Tree tr = tarr.getParent();
+				while (tr != null && !(tr instanceof DeclNode.FcnTyp))
+					tr = tr.getParent();
+				if (tr instanceof DeclNode.FcnTyp)
+					curTypeString = "* " + curTypeString;
+					
 				break;
 			case pollenParser.T_FCN:
 				genType$Fcn((TypeNode.Fcn) t);
@@ -1453,9 +1457,8 @@ class Auxiliary {
 				curTypeString += gen.fmt.release();
 				curTypeString += "]";
 			}
-
 		}
-
+		
 		curArrSize = 0;
 	}
 
@@ -1465,7 +1468,7 @@ class Auxiliary {
 		for (TypeNode argT : type.getArgs()) {
 			curTypeString += sep;
 			sep = ",";
-			curTypeString += genTypeString(argT, null);
+			curTypeString += genVarTypeVarName(argT, null);
 		}
 		curTypeString += ")";
 	}
@@ -1531,7 +1534,7 @@ class Auxiliary {
 		}
 		else if (scope instanceof UnitNode) {
 			UnitNode u = (UnitNode) scope;
-			cn = u.isProtocol() ? gen.cname() : (u.getQualName().replace('.',
+			cn = u.isProtocol() ? gen.uname_target() : (u.getQualName().replace('.',
 					'_') + '_');
 		} else if (scope instanceof DeclNode.TypedMember) {
 			DeclNode.TypedMember prx = (DeclNode.TypedMember) scope;
@@ -1575,7 +1578,7 @@ class Auxiliary {
 		ISymbolNode snode = sym.node();
 		IScope scope = sym.scope();
 
-		String qs = isLval ? "'" : "";
+		String qs = "";
 		boolean externScope = scope instanceof UnitNode
 				|| scope instanceof DeclNode.Usr;
 		if (scope instanceof DeclNode.Usr) {
@@ -1583,19 +1586,13 @@ class Auxiliary {
 		}
 
 		if (!(externScope)) {
-			if (isLval) {
-				if (cat.isAggArr()) {
-					gen.fmt.print("%1.$$cname", name);
-					return true;
-				}
-			}
 			gen.fmt.print(name);
 			return true;
 		}
 
 		if (snode instanceof ImportNode) {
 			String qn = ((ImportNode) snode).getUnit().getQualName();
-			if (isHost && !isLval) {
+			if (isHost()) {
 				gen.fmt.print("$units['%1']", qn);
 			} else {
 				gen.fmt.print("%2%1%2", qn.replace('.', '_'), qs);
@@ -1604,7 +1601,7 @@ class Auxiliary {
 		}
 
 		if (snode == gen.curUnit()) {
-			if (isHost && !isLval) {
+			if (isHost()) {
 				gen.fmt.print(gen.uname());
 			} else {
 				gen.fmt.print("%2%1%2", gen.curUnit().getQualName().replace(
@@ -1617,17 +1614,11 @@ class Auxiliary {
 				.getQualName()
 				: (scope instanceof DeclNode.Usr) ? ((DeclNode.Usr) scope)
 						.getUnitQualName() : "/* ?? unknown module qualifier ?? */");
-		if (isHost && !isLval) {
+		if (isHost()) {
 			if (scope == gen.curUnit()) {
 				gen.fmt.print("%1.%2", gen.uname(), name);
 			} else {
 				gen.fmt.print("$units['%1'].%2", qn, name);
-			}
-		} else if (isLval && cat.isAggArr()) {
-			if (scope == gen.curUnit()) {
-				gen.fmt.print("%1.%2.$$cname", gen.uname(), name);
-			} else {
-				gen.fmt.print("$units['%1'].%2.$$cname", qn, name);
 			}
 		} else {
 			// local (function scope) names not printed here
@@ -1701,23 +1692,18 @@ class Auxiliary {
 				} else {
 					if (s.node() instanceof DeclNode.Usr) {
 						if (s.scope() instanceof DeclNode.Usr) // nested
-							return gen.cname()
+							return gen.uname_target()
 							+ ((DeclNode.Usr) s.node()).getName().getText() + lastChar;
 						else
-							return gen.cname();
+							return gen.uname_target();
 								
 					}
 					else
-						return (gen.cname() + ((Usr) t).getName().getText()).replace('.', '_');
+						return (gen.uname_target() + ((Usr) t).getName().getText()).replace('.', '_');
 				}
 			}
 		}
 		return "/* ?? unknown symbol ?? */";
-	}
-
-	String mkCname(DeclNode.TypedMember member) {
-		return member.getTypeUnit().getQualName().replace('.', '_') + '_'
-				+ member.getName();
 	}
 
 	/**
@@ -1729,7 +1715,7 @@ class Auxiliary {
 	String mkCname(ExprNode.Ident e) {
 		String rtn = e.getName().getText();
 
-		if (isLval || isHost)
+		if (isHost())
 			return rtn;
 		if (e.getSymbol().node() instanceof ImportNode
 				|| e.getSymbol().node() instanceof UnitNode)
@@ -1768,50 +1754,6 @@ class Auxiliary {
 
 		return rtn.replace('.', '_');
 	}
-	/**
-	 * Not host, not lval, not import, not unit.
-	 * 
-	 * @param inj
-	 * @param sym 
-	 * @param snode 
-	 * @return
-	 */
-//	String mkCname(ExprNode.Inject inj, SymbolEntry s, ISymbolNode snode) {
-//		String rtn = inj.getName().getText();
-//		if (isLval || isHost)
-//			return rtn;
-//		if (inj.getSymbol().node() instanceof ImportNode
-//				|| inj.getSymbol().node() instanceof UnitNode)
-//			return rtn;
-//		
-//		if (rtn.indexOf(".") == -1) {
-//			return rtn;
-//		}
-//		//SymbolEntry s = inj.getSymbol();
-//		SymbolEntry qs = inj.getQualifier();
-//		String qual = rtn.substring(0, rtn.indexOf("."));
-//		// SymbolEntry qs = gen.curUnit().lookupName(qual);
-//		if (qs != null) {
-//			if (qs.node() instanceof ImportNode) {
-//				if (((ImportNode) qs.node()).isTypeMetaArg()) {
-//					// first qualifier is spurious
-//					return rtn.substring(rtn.indexOf(".") + 1);
-//				}
-//				if (((ImportNode) qs.node()).getName().getText().equals(qual)) {
-//					// first qualifier is spurious
-//					return rtn.substring(rtn.indexOf(".") + 1);
-//				}
-//			}
-//			if (qs.node() instanceof DeclNode.TypedMember) {
-//				if (((DeclNode.TypedMember) qs.node()).isProtocolMember()) {
-//					// the protocol member name is an alias for the module name
-//					return rtn.substring(rtn.indexOf(".") + 1);
-//				}
-//			}
-//		}
-//
-//		return rtn.replace('.', '_');
-//	}
 
 
 	String mkPollenCname(String id) {

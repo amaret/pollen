@@ -92,6 +92,11 @@ public class TypeRules {
 		//        }
 
 		String r = right.mkCode();
+		String l = left.mkCode();
+		if (r.charAt(0) == 'V' && l.charAt(0) == 'A') {
+			// assigning a dimensioned array to one w/out dimensions
+			left = ((Cat.Arr) left).getBase();
+		}
 		if (right instanceof Cat.Arr && r.charAt(0) == 'V') {
 			right = ((Cat.Arr) right).getBase();	
 			r = right.mkCode();
@@ -109,7 +114,7 @@ public class TypeRules {
 				
 			}
 		}
-		String l = left.mkCode();
+		l = left.mkCode();
 		if (l.charAt(0) == 'V' && r.charAt(0) != 'V' && l.length() > 1) {
 			l = l.substring(1); // check assign of array element to value			
 		}
@@ -385,7 +390,7 @@ public class TypeRules {
 				mkBinary(OP_ASSIGN, "u4", "ua", "$1"),
 				mkBinary(OP_ASSIGN, "x.+", "F.+|v|x.+", "$1"),
 				mkBinary(OP_ASSIGN, "C.+|X.+", "C.+|X.+|v", "$1"),
-				mkBinary(OP_ASSIGN, "p|r|s|P.+|F.+|R.+", "\\1|v", "$1"),
+				mkBinary(OP_ASSIGN, "p|r|s|P.+|F.+|R.+|A.+", "\\1|v", "$1"),
 				mkBinary(OP_ASSIGN, "p", "p|s|v|P.+|R.+", "$1"),
 				mkBinary(OP_ASSIGN, "r", "R.+|S.+", "$1"),
 				mkBinary(OP_ASSIGN, "s", "Pu1", "$1"),

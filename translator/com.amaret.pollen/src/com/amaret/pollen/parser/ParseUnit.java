@@ -51,6 +51,7 @@ public class ParseUnit {
 	
 	// info on parse time current type (under construction)
 	private pollenParser parser = null;
+	
 	public EnumSet<Flags> getParseUnitFlags() {
 		if (parser == null)
 			return  EnumSet.noneOf(Flags.class);

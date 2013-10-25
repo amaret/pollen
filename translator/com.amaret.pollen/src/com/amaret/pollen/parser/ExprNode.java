@@ -180,7 +180,18 @@ public class ExprNode extends BaseNode {
 				if (b instanceof DeclNode.Arr) {
 					if (((DeclNode.Arr)b).isHost())
 						return true;
-				}				
+				}	
+				else 
+					if (b instanceof ExprNode.Binary) {
+						Tree b1 = ((ExprNode.Binary)b).getLeft();
+						if (b1 instanceof ExprNode.Ident) {
+							SymbolEntry se = ((ExprNode.Ident)b1).getSymbol();
+							ISymbolNode node = se!=null? se.node() : null;
+							if (node instanceof DeclNode)
+								return ((DeclNode)node).isHost();			
+						}
+									
+					}
 			}
 			return false;
 		}
@@ -1442,8 +1453,11 @@ public class ExprNode extends BaseNode {
    				if (rtn instanceof ExprNode.Const) 
    					return rtn;
 				}
-				if (((DeclNode.Var)node).isConst() && ((DeclNode.Var)node).getInit() instanceof ExprNode.Const) {
-					return (Const) ((DeclNode.Var)node).getInit();
+				if (node != null
+						&& (((DeclNode.Var) node).isConst() || ((DeclNode.Var) node)
+								.isPreset())
+						&& ((DeclNode.Var) node).getInit() instanceof ExprNode.Const) {
+					return (Const) ((DeclNode.Var) node).getInit();
 				}
 			}
 		}

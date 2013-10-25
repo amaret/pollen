@@ -38,6 +38,13 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
 		return importMap;
 	}
 	private boolean featuresCheck = false;
+	private boolean codegen = false;
+	public boolean isCodegen() {
+		return codegen;
+	}
+	public void setCodegen(boolean codegen) {
+		this.codegen = codegen;
+	}
 
 
 	class UnitHashMap<K,V> extends HashMap<K,V> {

@@ -174,6 +174,10 @@ public class Cat implements Cloneable {
         }
         
         @Override
+        /**
+         * 'V' is array with dimensions, 'A' is dimensionless. 
+         * Latter is implemented as pointer.
+         */
         protected String mkCode() {
             String pre = tarr.hasDim() ? "V" : "A";
             return pre + getBase().mkCode();

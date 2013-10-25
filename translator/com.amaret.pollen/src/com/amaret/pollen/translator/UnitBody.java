@@ -30,7 +30,7 @@ public class UnitBody {
 			return;
 		}
 		
-		gen.aux.genType(fcn.getTypeSpec(), gen.cname()
+		gen.aux.genType_VarName(fcn.getTypeSpec(), gen.uname_target()
 				+ gen.aux.mkPollenCname(fcn.cname()) + gen.aux.mkSuf(fcn));
 		gen.aux.genFcnArgs(body.getFormals(), true, fcn);
 		gen.fmt.print(" {\n%+");
@@ -100,10 +100,10 @@ public class UnitBody {
 
 	private void genStrings(UnitNode unit) {
 		// this prints out the name of the instantiated file, if applicable
-		gen.fmt.print("static const char %1_s__fileName[] = \"%2\";\n", gen.cname(), 
+		gen.fmt.print("static const char %1_s__fileName[] = \"%2\";\n", gen.uname_target(), 
 				unit.getUnitType().getName().getText() + ".p"); // unit.getFileName());
 		for (Map.Entry<String, Integer> ent : unit.getStrings()) {
-			gen.fmt.print("static const char %1_s__%2[] = %3;\n", gen.cname(),
+			gen.fmt.print("static const char %1_s__%2[] = %3;\n", gen.uname_target(),
 					ent.getValue(), ent.getKey());
 		}
 	}

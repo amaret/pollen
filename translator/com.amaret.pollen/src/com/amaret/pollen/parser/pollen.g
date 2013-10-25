@@ -1224,8 +1224,16 @@ fcnType_fcnName
 // function names in a dcln can be qualified, e.g. pollen.reset()
 // function return is always a list, empty for void fcn.
 // module constructors have the name "targetInit" or "$$hostInit", class constructors have the name "new"
-	:	typeName qualName  
-		-> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"]  ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] ^(LIST<ListNode>["LIST"] typeName)) qualName)      // int myfcn()
+	:	typeNameArray varArraySpec qualName
+		-> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"]  
+			^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
+				^(LIST<ListNode>["LIST"] typeNameArray)) 
+				qualName)   
+	|	typeName qualName  
+		-> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"]  
+			^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
+				^(LIST<ListNode>["LIST"] typeName)) 
+				qualName)      // int myfcn()
 	|	{input.LT(1).getText().equals(ti.getTypeName()) && !(ti.getUnitFlags().contains(Flags.CLASS)) }? 
 		typeName	         
 		{ 
@@ -1601,7 +1609,7 @@ varDim
   fl.add(LitFlags.NUM); fl.add(LitFlags.INT);
 }
 	:  expr  
-	| -> ^(E_CONST<ExprNode.Const>["E_CONST", fl] INT_LIT["-1"]) // -> NIL 
+	| -> ^(E_CONST<ExprNode.Const>["E_CONST", fl] INT_LIT["-1"]) // an array without dimensions (in c, flexible)
 	;
 initializer
 	: expr // restrict

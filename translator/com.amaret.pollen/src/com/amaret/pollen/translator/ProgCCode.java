@@ -106,61 +106,61 @@ public class ProgCCode {
         }
         
         gen.aux.genTitle("pollen.print");
-        gen.fmt.print("%tvoid %1pollen__print_bool(bool b) {\n%+", gen.cname());
+        gen.fmt.print("%tvoid %1pollen__print_bool(bool b) {\n%+", gen.uname_target());
         gen.fmt.print("%-}\n");
-        gen.fmt.print("%tvoid %1pollen__print_int(int32 i) {\n%+", gen.cname());
+        gen.fmt.print("%tvoid %1pollen__print_int(int32 i) {\n%+", gen.uname_target());
         gen.fmt.print("%-}\n");
-        gen.fmt.print("%tvoid %1pollen__print_uint(uint32 u) {\n%+", gen.cname());
+        gen.fmt.print("%tvoid %1pollen__print_uint(uint32 u) {\n%+", gen.uname_target());
         gen.fmt.print("%-}\n");
-        gen.fmt.print("%tvoid %1pollen__print_str(string s) {\n%+", gen.cname());
+        gen.fmt.print("%tvoid %1pollen__print_str(string s) {\n%+", gen.uname_target());
         gen.fmt.print("%-}\n");
-        gen.fmt.print("%tvoid %1pollen__print_x(void* print, void* val) {\n%+", gen.cname());
+        gen.fmt.print("%tvoid %1pollen__print_x(void* print, void* val) {\n%+", gen.uname_target());
         gen.fmt.print("%-}\n");
         
         // if assertions are turned on, generate pollen.assert
         if (ProcessUnits.isAsserts()) {
         	gen.aux.genTitle("pollen.assert(bool, string)");
-            gen.fmt.print("%tvoid %1pollen__assert__E(bool b, string msg) {\n%+", gen.cname());
-            gen.fmt.print("%tif (!b) %1pollen__print_str(msg);\n", gen.cname());
+            gen.fmt.print("%tvoid %1pollen__assert__E(bool b, string msg) {\n%+", gen.uname_target());
+            gen.fmt.print("%tif (!b) %1pollen__print_str(msg);\n", gen.uname_target());
             gen.fmt.print("%-}\n");
         }       
         // Generate defaults for pollen.reset, pollen.ready, pollen.shutdown, pollen.wake, pollen.hibernate.
         // if they do not exist.
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "reset") == null) {
         	gen.aux.genTitle("pollen.reset()");
-            gen.fmt.print("%tvoid %1pollen__reset__E() {\n%+", gen.cname());
+            gen.fmt.print("%tvoid %1pollen__reset__E() {\n%+", gen.uname_target());
             gen.fmt.print("%t/* empty default */\n");
             gen.fmt.print("%-}\n");
         }
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "ready") == null) {
         	gen.aux.genTitle("pollen.ready()");
-            gen.fmt.print("%tvoid %1pollen__ready__E() {\n%+", gen.cname());
+            gen.fmt.print("%tvoid %1pollen__ready__E() {\n%+", gen.uname_target());
             gen.fmt.print("%t/* empty default */\n");
             gen.fmt.print("%-}\n");
         }
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "shutdown") == null) {
         	gen.aux.genTitle("pollen.shutdown()");
-            gen.fmt.print("%tvoid %1pollen__shutdown__E() {\n%+", gen.cname());
+            gen.fmt.print("%tvoid %1pollen__shutdown__E() {\n%+", gen.uname_target());
             gen.fmt.print("%tvolatile int dummy = 0xCAFE;\n");
             gen.fmt.print("%twhile (dummy) ;\n");
             gen.fmt.print("%-}\n");
         }
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "wake") == null) {
         	gen.aux.genTitle("pollen.wake(uint8 id)");
-            gen.fmt.print("%tvoid %1pollen__wake__E(byte id) {\n%+", gen.cname());
+            gen.fmt.print("%tvoid %1pollen__wake__E(byte id) {\n%+", gen.uname_target());
             gen.fmt.print("%t/* empty default */\n");
             gen.fmt.print("%-}\n");
         }
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "hibernate") == null) {
         	gen.aux.genTitle("pollen.hibernate(uint8 id)");
-            gen.fmt.print("%tvoid %1pollen__hibernate__E(byte id) {\n%+", gen.cname());
+            gen.fmt.print("%tvoid %1pollen__hibernate__E(byte id) {\n%+", gen.uname_target());
             gen.fmt.print("%t/* empty default */\n");
             gen.fmt.print("%-}\n");
         }
               
         gen.aux.genTitle("main()");
         gen.fmt.print("int main() {\n%+");
-        gen.fmt.print("%t%1pollen__reset__E();\n", gen.cname());
+        gen.fmt.print("%t%1pollen__reset__E();\n", gen.uname_target());
         for (UnitDesc ud : units) {
             if (ud.getUnit().lookupFcn(ParseUnit.CTOR_MODULE_TARGET) != null) {
                 genSingleFcnCall(ParseUnit.CTOR_MODULE_TARGET, ud.getUnit());
@@ -174,9 +174,9 @@ public class ProgCCode {
                 gen.fmt.print("%t%1_pollen__ready__E();\n", u.getQualName().replace('.', '_'));
             }
         }
-        gen.fmt.print("%t%1pollen__ready__E();\n", gen.cname());
+        gen.fmt.print("%t%1pollen__ready__E();\n", gen.uname_target());
         
-        gen.fmt.print("%t%1pollen__run__E();\n", gen.cname());
+        gen.fmt.print("%t%1pollen__run__E();\n", gen.uname_target());
         
         for (UnitDesc ud : units) {
             UnitNode u = ud.getUnit();
@@ -186,7 +186,7 @@ public class ProgCCode {
                 gen.fmt.print("%t%1_pollen__shutdown__E();\n", u.getQualName().replace('.', '_'));
             }
         }
-        gen.fmt.print("%t%1pollen__shutdown__E();\n", gen.cname());
+        gen.fmt.print("%t%1pollen__shutdown__E();\n", gen.uname_target());
         gen.fmt.print("%-}\n");
        
     }
@@ -384,7 +384,7 @@ public class ProgCCode {
             }
             else 
             	qn = ((Value.Obj) Value.toVal(val)).getStr("$name");
-            String pcn = gen.cname() + protoMem.getName() + '_';
+            String pcn = gen.uname_target() + protoMem.getName() + '_';
             String dcn = qn.replace('.', '_') + '_';
             gen.aux.genTitle("protocol member " + gen.curUnit().getQualName() + '.' + protoMem.getName() + " delegates " + qn);
             gen.aux.genHeaderInclude(qn);
@@ -447,7 +447,7 @@ public class ProgCCode {
         if (!decl.isHostClassRef() && !decl.isClassScope())
         	gen.fmt.print("const ");
         
-        gen.fmt.print("%1__TYPE %1%2", gen.cname() + decl.getName(), gen.aux.mkSuf(decl));
+        gen.fmt.print("%1__TYPE %1%2", gen.uname_target() + decl.getName(), gen.aux.mkSuf(decl));
         if (decl instanceof DeclNode.Arr) {
         	for (ExprNode e : ((DeclNode.Arr)decl).getDim().getElems()) {
         		gen.fmt.print("[]");
@@ -480,7 +480,7 @@ public class ProgCCode {
     				break;
     			}
     		}
-    	String n = gen.cname();
+    	String n = gen.uname_target();
 		
     	if (!unit.isClass() && !unit.isEnum()) {
     		gen.aux.genTitle("target data definitions (unit " + unit.getName().getText() + ")");
@@ -566,11 +566,6 @@ public class ProgCCode {
         cast = cast.toRaw();
         if (vobj == null) {
         	gen.fmt.print("null");
-        }
-        else if (vobj instanceof Value.Obj && "$$Ref".equals(((Value.Obj) vobj).getProp("$$category"))) {
-            gen.fmt.print("(");
-            gen.aux.genType(cast, null);
-            gen.fmt.print(")&%1", ((Value.Obj) vobj).getStr("$$text"));
         }
         else if (val instanceof String) {
         	if (cat instanceof Cat.Agg) {
@@ -696,7 +691,7 @@ public class ProgCCode {
         long lg = num.longValue();
         double d = num.doubleValue();
         gen.fmt.print("(");
-        gen.aux.genType(cast, null);
+        gen.aux.genType_VarName(cast, null);
         gen.fmt.print(")");
         if (d != lg) {
             gen.fmt.print("%1", num);

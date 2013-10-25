@@ -28,11 +28,12 @@ public class Generator {
 	boolean nestedClass = false;
 	private UnitNode mainUnit;
 	private static String uname;
-	private String jsname;
-	private String cname;
+	private String uname_host;
+	private String uname_target;
     private ITarget target;
 	final Formatter fmt = new Formatter();
 	final Auxiliary aux = new Auxiliary(this);
+	public Generator() {}
 	public boolean isNestedClass() {
 		return nestedClass;
 	}
@@ -79,8 +80,8 @@ public class Generator {
 		return uname;
 	}
 
-	public String cname() {
-		return cname;
+	public String uname_target() {
+		return uname_target;
 	}
 	public UnitNode curUnit() {
 		return curUnit;
@@ -91,16 +92,17 @@ public class Generator {
 	 * @param unit
 	 */
 	void setupUnit(UnitNode unit) {
+		unit.setCodegen(true);
 		ParseUnit.current().setCurrUnitNode(unit);
         curUnit = unit;
         uname = unit.getName().getText();
-        cname = unit.getPkgName().getText().replace('.', '_') + '_'  + uname + '_';	
-        jsname = unit.getPkgName().getText() + '.'  + uname;	
+        uname_target = unit.getPkgName().getText().replace('.', '_') + '_'  + uname + '_';	
+        uname_host = unit.getPkgName().getText() + '.'  + uname;	
         
 	}
 
-	public String jsname() {
-		return jsname;
+	public String uname_host() {
+		return uname_host;
 	}
 
 	/**

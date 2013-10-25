@@ -194,14 +194,44 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			return getChildCount() > DIM ? (ListNode<ExprNode>) getChild(DIM)
 					: null;
 		}
+        /**
+         * 
+         * @return first dimension
+         * TODO delete and replace with getDim() after multi-dim is implemented
+         */
+        @SuppressWarnings("unchecked")
+		public ExprNode getFirstDim() {
+        	if (getChildCount() <= DIM)
+        		return null;
+        	ListNode<ExprNode> child = (ListNode<ExprNode>) getChild(DIM);
+        	if (child.getElems().isEmpty())
+        		return null;
+        	BaseNode b = child.getElems().get(0);
+        	if ( b instanceof ExprNode )
+        		return (ExprNode) b;
+        	else 
+        		return null;
+        }
 
 		@Override
 		public Atom getName() {
 			return ((BaseNode) getChild(NAME)).getAtom();
 		}
 
+		/**
+		 * E.g. uint8 arr[] //is dimensionless
+		 * @return
+		 */
 		public boolean hasDim() {
-			return getChildCount() > DIM;
+			if (getInit() instanceof ExprNode.Vec)
+				return true;
+			ExprNode e = this.getFirstDim();
+			if (e instanceof ExprNode.Const) {
+				if (((ExprNode.Const)e).getValue().getText().equals("-1")) {
+					return false;
+				}
+			}
+			return true;
 		}
 
 		@Override
@@ -219,56 +249,13 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				ParseUnit.current().reportError(this.getName(),
 						"Objects as array elements must have class type");
 
-			ExprNode.Vec v = getInit();
-			int exprs = (v != null && v.getVals() != null) ? v.getVals().size()
-					: 0;
-			List<ExprNode> dim = getDim().getElems();
-			if (dim.size() > 1) {
-				// TODO handle > 1 dimension
-				// dimension / initializer checks below will need to be updated.
-				ParseUnit.current().reportError(this.getName(),
-						"multi-dimensional arrays not yet implemented");
-			}
-			int dims = dim.get(0) instanceof ExprNode
-					&& ((ExprNode) dim.get(0)).getConstExpr() != null ? Integer
-					.valueOf(((ExprNode) dim.get(0)).getConstExpr().getValue()
-							.getText()) : -1;
-
-			// Error check dimension / initializer specification
-			if (dims == -1) {
-				// this condition means we had '[]' or '[x]' instead of '[constExpr]'
-				if (dim.get(0) instanceof ExprNode.Ident) {
-					ParseUnit
-					.current()
-					.reportError(this.getName(),
-					"if specified, array dimensions must be constant or preset");
-				}
-				else
-					if (exprs > 0)
-						// set to # of initializer exprs
-						((ExprNode.Const) dim.get(0)).getValue().setText(
-								String.valueOf(exprs));
-					else {
-						((ExprNode.Const) dim.get(0)).getValue().setText(
-								String.valueOf("1"));
-						ParseUnit
-						.current()
-						.reportError(this.getName(),
-								"arrays must be declared with an initializer or array dimensions (or both)");
-					}
-			}
-			// 'uint8 arr[3] = {1}' will become 'uint8 arr[3] = {1, 1, 1}'
-			if (exprs == 1 && dims > 1) {
-				ExprNode e = v.getVals().get(0);
-				for (int i = exprs; i < dims; i++) {
-					v.getVals().add(e);
-				}
-			}
-
 			if (!this.isHost() && u.isComposition()) {
 				ParseUnit.current().reportError(this.getName(),
 						"compositions can only declare host variables");
 			}
+			checkDims();
+
+			ExprNode.Vec v = checkInits();
 
 			if (v != null) {
 				SymbolEntry symbol = ParseUnit.current().getSymbolTable()
@@ -278,9 +265,68 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			super.pass2End();
 		}
 
+		/**
+		 * 
+		 */
+		private void checkDims() {
+			List<ExprNode> dim = getDim().getElems();
+			if (dim.size() > 1) {
+				// TODO handle > 1 dimension
+				// checks  will need to be updated.
+				ParseUnit.current().reportError(this.getName(),
+						"multi-dimensional arrays not yet implemented");
+			}
+			// this condition means we had '[x]' instead of '[constExpr]'
+			if (dim.get(0) instanceof ExprNode.Ident) {
+				SymbolEntry se = ((ExprNode.Ident)dim.get(0)).getSymbol();
+				ISymbolNode node = se != null ? se.node() : null;
+				if (node instanceof DeclNode.Var) {
+					DeclNode.Var v = (Var) node;
+					if (!(v.isConst() || v.isPreset()))
+						ParseUnit
+						.current()
+						.reportError(this.getName(),
+								"if specified, array dimensions must be constant or preset");
+				}
+			}
+		}
+
+		/**
+		 * Initialize the element nodes with ExprNodes.
+		 * @return the initializing vector
+		 */
+		private ExprNode.Vec checkInits() {
+			if (!(getInit() instanceof ExprNode.Vec))
+				return null;
+			ExprNode.Vec v = (Vec) getInit();
+			int exprs = (v != null && v.getVals() != null) ? v.getVals().size()
+					: 0;
+			List<ExprNode> dim = getDim().getElems();
+
+			int dims = dim.get(0) instanceof ExprNode
+					&& ((ExprNode) dim.get(0)).getConstExpr() != null ? Integer
+					.valueOf(((ExprNode) dim.get(0)).getConstExpr().getValue()
+							.getText()) : -1;
+
+			if (exprs > 0 && exprs > dims)
+				// set dims to # of initializer exprs
+				((ExprNode.Const) dim.get(0)).getValue().setText(
+						String.valueOf(exprs));
+
+			// 'uint8 arr[3] = {1}' will become 'uint8 arr[3] = {1, 1, 1}'
+			if (exprs == 1 && dims > 1) {
+				ExprNode e = v.getVals().get(0);
+				for (int i = exprs; i < dims; i++) {
+					v.getVals().add(e);
+				}
+			}
+			return v;
+		}
+
 		@Override
-		public ExprNode.Vec getInit() {
-			return (Vec) (getChildCount() > INIT ? getChild(INIT) : null);
+		public ExprNode getInit() {
+			
+			return (ExprNode) (getChildCount() > INIT ? getChild(INIT) : null);
 		}
 
 		/**
@@ -1633,7 +1679,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				}
 
 			}
-			if (rslt == null)
+			if (rslt == null
+					// postpone error check until all units have been seen (codegen)
+					&& ParseUnit.current().getCurrUnitNode().isCodegen())
 				ParseUnit.current().reportError(getName(), "Invalid preset");
 			return rslt;
 
@@ -1731,7 +1779,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 	public IScope getDefiningScope() {
 		return definingScope;
 	}
-
 	@Override
 	public Atom getName() {
 		return ((BaseNode) getChild(NAME)).getAtom();

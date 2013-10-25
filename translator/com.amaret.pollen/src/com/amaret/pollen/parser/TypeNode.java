@@ -51,6 +51,8 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 
         
         public boolean hasDim() {
+        	if (parent instanceof DeclNode.Arr)
+        		return ((DeclNode.Arr)parent).hasDim();
             return getChildCount() > DIM;
         }
         
