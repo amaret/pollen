@@ -270,7 +270,7 @@ public class UnitJScript {
     		return;
         gen.fmt.print("%t%1." + ParseUnit.PRIVATE_INIT + " = function() {\n%+", gen.uname());
         for (DeclNode decl : unit.getFeatures()) {
-            if (isPrivateInit(decl) && isHostInit(decl)) {
+            if (isPrivateInit(decl) && isHostInit(decl) && !(decl instanceof DeclNode.Arr)) {
                 genDecl(decl);
             }
         }
@@ -398,6 +398,12 @@ public class UnitJScript {
             	gen.aux.genStmt(a);
             	gen.fmt.print("\n");
             }                  
+        }
+        // init Arrays AFTER presets
+        for (DeclNode decl : unit.getFeatures()) {
+            if (isPrivateInit(decl) && isHostInit(decl) && decl instanceof DeclNode.Arr) {
+                genDecl(decl);
+            }
         }
         gen.fmt.print("%-%t}\n");    
     }

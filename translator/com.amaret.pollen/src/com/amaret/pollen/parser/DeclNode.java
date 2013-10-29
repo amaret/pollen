@@ -1023,6 +1023,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 			if (typeUnit == null) {
 				isMetaPrimitive = true;
+				ExprNode i = this.getInit();
+				if (i instanceof ExprNode.Const && ((ExprNode.Const)i).getValue().getText().equals("null")) {
+					((ExprNode.Const)i).getValue().setText("0");
+					
+				}
 				// this can happen when meta type is a instantiation to a
 				// primitive e.g. uint8
 			} else {
@@ -1741,8 +1746,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			}
 			ITypeSpecInit tsi = (ITypeSpecInit) this;
 			ExprNode init = tsi.getInit();
-			if (init != null)
+			if (init != null) {
 				TypeRules.checkInit(tsi.getTypeCat(), init);
+			}
 			super.pass2End();
 
 		}

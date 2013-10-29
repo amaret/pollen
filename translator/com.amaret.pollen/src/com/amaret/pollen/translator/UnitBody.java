@@ -30,7 +30,7 @@ public class UnitBody {
 			return;
 		}
 		
-		gen.aux.genType_VarName(fcn.getTypeSpec(), gen.uname_target()
+		gen.aux.genTypeWithVarName(fcn.getTypeSpec(), gen.uname_target()
 				+ gen.aux.mkPollenCname(fcn.cname()) + gen.aux.mkSuf(fcn));
 		gen.aux.genFcnArgs(body.getFormals(), true, fcn);
 		gen.fmt.print(" {\n%+");

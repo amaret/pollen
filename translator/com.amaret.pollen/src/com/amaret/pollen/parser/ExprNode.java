@@ -26,6 +26,9 @@ public class ExprNode extends BaseNode {
 
 		private boolean hasLeftIndexExpr = false;
 		private ExprNode.Index leftIndexExpr = null;
+		private boolean hasRightIndexExpr = false;
+		private ExprNode.Index rightIndexExpr = null;
+
 		private boolean isAssign;
 
 		Binary(int ttype, String ttext) {
@@ -43,6 +46,13 @@ public class ExprNode extends BaseNode {
 
 		public ExprNode.Index getLeftIndexExpr() {
 			return leftIndexExpr;
+		}
+		public boolean hasRightIndexExpr() {
+			return hasRightIndexExpr;
+		}
+
+		public ExprNode.Index getRightIndexExpr() {
+			return rightIndexExpr;
 		}
 
 		public ExprNode getLeft() {
@@ -88,6 +98,11 @@ public class ExprNode extends BaseNode {
 						hasLeftIndexExpr = true;
 						if (leftIndexExpr == null)
 							leftIndexExpr = (Index) e; // first one
+					}
+					else {
+						hasRightIndexExpr = true;
+						if (rightIndexExpr == null)
+							rightIndexExpr = (Index) e; // first one
 					}
 					ExprNode base = ((ExprNode.Index) e).getBase();
 					if (base instanceof ExprNode.Ident) {

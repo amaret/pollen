@@ -460,7 +460,12 @@ classFeature
 
 classHostCtor[EnumSet<Flags> fh]
 @init {
-	featureFlags = fh.clone();
+	featureFlags = fh.clone();	
+	if (!hasHostConstructor) {
+		fh.add(Flags.PUBLIC);
+		fh.add(Flags.CONSTRUCTOR);
+	}
+	
 }
 	: 				{!hasHostConstructor }? ->
 						^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", fh] 
@@ -478,6 +483,10 @@ classHostCtor[EnumSet<Flags> fh]
 classTargCtor[EnumSet<Flags> ft]
 @init {
 	featureFlags = ft.clone();
+	if (!hasTargetConstructor) {
+		ft.add(Flags.PUBLIC);
+		ft.add(Flags.CONSTRUCTOR);
+	}
 }
 	:				{!hasTargetConstructor}? ->
 				 		^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", ft] 

@@ -80,9 +80,13 @@ public class ProgCCode {
 		}
     }
     
-    private ArrayList<FwdAgg> fwdAggList = new ArrayList<FwdAgg>();
-    private ArrayList<FwdAgg> fwdAggDecls = new ArrayList<FwdAgg>();
-    private HashSet<String> fwdAggNames = new HashSet<String>();
+//     legacy, unused.
+//     fwdAggList and fwdAggDecls are added to when fwdAggNames is non-empty.
+//     this could be useful for complex arrays so I'm keeping it.
+//    private HashSet<String> fwdAggNames = new HashSet<String>();
+//    private ArrayList<FwdAgg> fwdAggList = new ArrayList<FwdAgg>();
+//    private ArrayList<FwdAgg> fwdAggDecls = new ArrayList<FwdAgg>();
+    
     private Generator gen;
     /**
      * target 'c' code is generated for these units.
@@ -220,13 +224,15 @@ public class ProgCCode {
         String part3 = gen.fmt.toString();
         gen.fmt.reset();
 
-        genFwdAggs();
-        String part2 = gen.fmt.toString();
-        gen.fmt.reset();
+//        genFwdAggs();
+//        String part2 = gen.fmt.toString();
+//        gen.fmt.reset();
         
         gen.fmt.append(part1);
-        genFwdAggDecls();
-        gen.fmt.append(part2);
+        
+//        genFwdAggDecls();
+//        gen.fmt.append(part2);
+        
         gen.fmt.append(part3);
     }
 
@@ -250,71 +256,72 @@ public class ProgCCode {
         gen.fmt.print("%-%t}");
     }
 
-    private void genFwdAggs() {
-    	 // currently unused but keep in case a need comes up
-    	boolean title = false;
-        ArrayList<FwdAgg> workList = new ArrayList<FwdAgg>();
-
-        while (fwdAggList.size() > 0) {
-
-            workList.clear();
-            workList.addAll(fwdAggList);
-            fwdAggDecls.addAll(fwdAggList);
-            fwdAggList.clear();
-        	if (!title) {
-        		title = true;
-                gen.aux.genTitle("forward aggregate values");
-        	}
-
-            for (FwdAgg fwdagg : workList) {
-                if (fwdagg.cls == null) {
-                    gen.aux.genType(fwdagg.tarr, fwdagg.cname, fwdagg.vobj.getInt("$$len"));
-                    Value.Arr varr = (Value.Arr) Value.toVal(fwdagg.vobj.getProp("$$elems")); 
-                    TypeNode base = fwdagg.tarr.getBase();
-                    if (fwdagg.vobj.getBool("$$virgin")) {
-                        gen.fmt.print(";\n");
-                        continue;
-                    }
-                    gen.fmt.print(" = {\n%+");
-                    for (int i = 0; i < varr.length(); i++) {
-                        gen.fmt.print("%t");
-                        genVal(fwdagg.basecat, base, varr.getAny(i));
-                        gen.fmt.print(",  /* [%1] */\n", i);
-                    }
-                    gen.fmt.print("%-%t};\n");
-                    continue;
-                }
-
-//                if (fwdagg.cls.hasMethods()) {
+//    private void genFwdAggs() {
+//    	 // legacy; unused 
+//    	boolean title = false;
+//        ArrayList<FwdAgg> workList = new ArrayList<FwdAgg>();
+//
+//        while (fwdAggList.size() > 0) {
+//
+//            workList.clear();
+//            workList.addAll(fwdAggList);
+//            fwdAggDecls.addAll(fwdAggList);
+//            fwdAggList.clear();
+//        	if (!title) {
+//        		title = true;
+//                gen.aux.genTitle("forward aggregate values");
+//        	}
+//
+//            for (FwdAgg fwdagg : workList) {
+//                if (fwdagg.cls == null) {
+//                    gen.aux.genType(fwdagg.tarr, fwdagg.cname, fwdagg.vobj.getInt("$$len"));
+//                    Value.Arr varr = (Value.Arr) Value.toVal(fwdagg.vobj.getProp("$$elems")); 
+//                    TypeNode base = fwdagg.tarr.getBase();
+//                    if (fwdagg.vobj.getBool("$$virgin")) {
+//                        gen.fmt.print(";\n");
+//                        continue;
+//                    }
+//                    gen.fmt.print(" = {\n%+");
+//                    for (int i = 0; i < varr.length(); i++) {
+//                        gen.fmt.print("%t");
+//                        genVal(fwdagg.basecat, base, varr.getAny(i));
+//                        gen.fmt.print(",  /* [%1] */\n", i);
+//                    }
+//                    gen.fmt.print("%-%t};\n");
 //                    continue;
 //                }
-//                if (!fwdagg.cname.endsWith("__S")) {
-//                    continue;
-//                }
-                gen.fmt.print("%1 %2 = ", fwdagg.tname, fwdagg.cname);
-                genFldVals(fwdagg.cls, fwdagg.vobj, null);
-                gen.fmt.print(";\n");
-            }
-        }
-    }
-
-    private void genFwdAggDecls() {
-    	boolean title = false;
-        // currently unused but keep in case a need comes up
-        for (FwdAgg fwdagg : fwdAggDecls) {
-        	if (!title) {
-        		title = true;
-        		gen.aux.genTitle("forward aggregate declarations");
-        	}
-            if (fwdagg.cls != null) {
-                gen.fmt.print("%1 %2;\n", fwdagg.tname, fwdagg.cname);
-            }
-            else {
-                gen.aux.genType(fwdagg.tarr, fwdagg.cname, Auxiliary.ARR_BRACKET);
-                gen.fmt.print(";\n");
-            }
-        }
-    }
+//
+////                if (fwdagg.cls.hasMethods()) {
+////                    continue;
+////                }
+////                if (!fwdagg.cname.endsWith("__S")) {
+////                    continue;
+////                }
+//                gen.fmt.print("%1 %2 = ", fwdagg.tname, fwdagg.cname);
+//                genFldVals(fwdagg.cls, fwdagg.vobj, null);
+//                gen.fmt.print(";\n");
+//            }
+//        }
+//    }
+//
+//    private void genFwdAggDecls() {
+//    	boolean title = false;
+//    	// legacy; unused 
+//        for (FwdAgg fwdagg : fwdAggDecls) {
+//        	if (!title) {
+//        		title = true;
+//        		gen.aux.genTitle("forward aggregate declarations");
+//        	}
+//            if (fwdagg.cls != null) {
+//                gen.fmt.print("%1 %2;\n", fwdagg.tname, fwdagg.cname);
+//            }
+//            else {
+//                gen.aux.genType(fwdagg.tarr, fwdagg.cname, Auxiliary.ARR_BRACKET);
+//                gen.fmt.print(";\n");
+//            }
+//        }
+//    }
+    
 
     private void genModules() {
 
@@ -655,20 +662,22 @@ public class ProgCCode {
 				gen.fmt.print("null");
 				return;
 			}
-            String cname = vobj.getStr("$$cname");
-            cname = cname.replace("[", "__");
-            cname = cname.replace("]", "__");
-            cname = cname.replace(".", "__");
-            gen.fmt.print("(void*)%1", cname);
-            if (!fwdAggNames.contains(cname)) {
-                FwdAgg fwarr = new FwdAgg();
-                fwarr.cname = cname;
-                fwarr.tarr = tarr;
-                fwarr.basecat = cat.getBase();
-                fwarr.vobj = vobj;
-                fwdAggNames.add(cname);
-                fwdAggList.add(fwarr);
-            }
+			
+//			legacy code, see dcln of fwdAddNames
+//            String cname = vobj.getStr("$$cname");
+//            cname = cname.replace("[", "__");
+//            cname = cname.replace("]", "__");
+//            cname = cname.replace(".", "__");
+//            gen.fmt.print("(void*)%1", cname);
+//            if (!fwdAggNames.contains(cname)) {
+//                FwdAgg fwarr = new FwdAgg();
+//                fwarr.cname = cname;
+//                fwarr.tarr = tarr;
+//                fwarr.basecat = cat.getBase();
+//                fwarr.vobj = vobj;
+//                fwdAggNames.add(cname);
+//                fwdAggList.add(fwarr);
+//            }
             return;
         }
         
@@ -691,7 +700,7 @@ public class ProgCCode {
         long lg = num.longValue();
         double d = num.doubleValue();
         gen.fmt.print("(");
-        gen.aux.genType_VarName(cast, null);
+        gen.aux.genTypeWithVarName(cast, null);
         gen.fmt.print(")");
         if (d != lg) {
             gen.fmt.print("%1", num);

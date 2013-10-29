@@ -122,7 +122,7 @@ public class UnitHeader {
     private void genDecl$Fcn(DeclNode.Fcn decl) {
         gen.fmt.print("extern ");
         TypeNode ft = decl.getTypeSpec();
-        gen.aux.genType_VarName(ft, gen.uname_target() + gen.aux.mkPollenCname(decl.cname()) + gen.aux.mkSuf(decl));
+        gen.aux.genTypeWithVarName(ft, gen.uname_target() + gen.aux.mkPollenCname(decl.cname()) + gen.aux.mkSuf(decl));
         gen.aux.genFcnArgs(decl.getFormals(), true, decl);
         gen.fmt.print(";\n");
     }
@@ -139,7 +139,7 @@ public class UnitHeader {
 		String dbg = decl.getName().getText();
 
 		gen.fmt.print("typedef ");
-		gen.aux.genType_VarName(decl.getTypeSpec(), gen.uname_target() + decl.getName()
+		gen.aux.genTypeWithVarName(decl.getTypeSpec(), gen.uname_target() + decl.getName()
 				+ "__TYPE");
 		gen.fmt.print(";\n");
 		String braces = "";
@@ -193,7 +193,7 @@ public class UnitHeader {
 			else
 				if (fld instanceof DeclNode.ITypeSpec && !(fld instanceof DeclNode.Fcn)) {
 					gen.fmt.print("%t");
-					gen.aux.genType_VarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "" + fld.getName());       		
+					gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "" + fld.getName());       		
 				}
     		if (fld instanceof DeclNode.Arr) {
     			for (BaseNode e : ((DeclNode.Arr)fld).getDim().getElems()) {
@@ -243,12 +243,12 @@ public class UnitHeader {
         		boolean proMem = fld instanceof DeclNode.TypedMember && ((DeclNode.TypedMember)fld).isProtocolMember();
         		if (proMem) {
         			gen.fmt.print("struct ");
-        			gen.aux.genType_VarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "");
+        			gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "");
         			gen.fmt.print("*"  + fld.getName().getText());
         		}
         		else if (fld.isHostClassRef()) {
         			gen.fmt.mark();
-        			gen.aux.genType_VarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "");
+        			gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "");
         			String typeString = gen.fmt.release();
         			gen.fmt.print("%1 %2",typeString.substring(0, typeString.length()-2), fld.getName().getText());
         		}
@@ -260,7 +260,7 @@ public class UnitHeader {
         		else {
         			String name = (fld instanceof DeclNode.Arr && !((DeclNode.Arr)fld).hasDim()) ? "* " : "";
         			name += fld.getName().getText();
-        			gen.aux.genType_VarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), name);
+        			gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), name);
         		}
         		if (fld instanceof DeclNode.Arr && ((DeclNode.Arr)fld).hasDim()) {
         			
@@ -330,7 +330,7 @@ public class UnitHeader {
     	}
     	else {
     		gen.fmt.print("extern ");
-    		gen.aux.genType_VarName(decl.getTypeSpec(), gen.uname_target() + decl.getName() + gen.aux.mkSuf(decl));
+    		gen.aux.genTypeWithVarName(decl.getTypeSpec(), gen.uname_target() + decl.getName() + gen.aux.mkSuf(decl));
     		if (decl instanceof DeclNode.Arr) {
     			for (ExprNode e : ((DeclNode.Arr)decl).getDim().getElems()) {
     				gen.fmt.print("[]");
