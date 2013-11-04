@@ -6,6 +6,7 @@ import com.amaret.pollen.parser.BaseNode;
 import com.amaret.pollen.parser.BodyNode;
 import com.amaret.pollen.parser.Cat;
 import com.amaret.pollen.parser.DeclNode;
+import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
 import com.amaret.pollen.parser.ExprNode;
 import com.amaret.pollen.parser.ImportNode;
 import com.amaret.pollen.parser.ParseUnit;
@@ -13,9 +14,6 @@ import com.amaret.pollen.parser.StmtNode;
 import com.amaret.pollen.parser.SymbolEntry;
 import com.amaret.pollen.parser.UnitNode;
 import com.amaret.pollen.parser.pollenParser;
-import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
-import com.amaret.pollen.parser.DeclNode.Var;
-import com.amaret.pollen.parser.ExprNode.Ident;
 
 
 public class UnitJScript {
@@ -42,35 +40,36 @@ public class UnitJScript {
             String n = fcn.getName().getText();
             if (n.equals(ParseUnit.CTOR_CLASS_HOST) || n.equals(ParseUnit.CTOR_MODULE_HOST)) {
             	System.out.println(fcn.getUnit().getQualName() + "." + n);     
+            	
             }          	
         }
       
-        gen.fmt.print("%t%1%2.%3 = function",
+        gen.getFmt().print("%t%1%2.%3 = function",
                 gen.uname(),
                 cls != null ? ("." + cls.getName()) + ".prototype" : "", 
                 fcn.getName());
         gen.aux.genFcnArgs(fcn.getFormals(), false, fcn);
         
-        gen.fmt.print(" {\n%+");
+        gen.getFmt().print(" {\n%+");
         if (fcn.isHost()) {
         	//gen.fmt.print("%tdebug_line(\"" + fcn.getName() + "\", " + gen.uname() + ");\n");
-            gen.fmt.print("%tvar $$text = '';\n");
+            gen.getFmt().print("%tvar $$text = '';\n");
 
         }
         gen.aux.genLocals(body.getLocalVars());
         if (fcn.isClassHostConstructor()) {
-        	gen.fmt.print("%t%2.%1();\n", ParseUnit.PRIVATE_INIT, "this" );
-        	gen.fmt.print("%t%2.%1();\n", ParseUnit.PRESET_INIT, "this" );
+        	gen.getFmt().print("%t%2.%1();\n", ParseUnit.PRIVATE_INIT, "this" );
+        	gen.getFmt().print("%t%2.%1();\n", ParseUnit.PRESET_INIT, "this" );
         }
         for (StmtNode stmt : body.getStmts()) {
-            gen.fmt.print("%t");
+            gen.getFmt().print("%t");
             gen.aux.genStmt(stmt);
-            gen.fmt.print("\n");
+            gen.getFmt().print("\n");
         }
         if (fcn.isHost()) {
-            gen.fmt.print("%treturn $$text;\n");
+            gen.getFmt().print("%treturn $$text;\n");
         }
-        gen.fmt.print("%-%t}\n");
+        gen.getFmt().print("%-%t}\n");
     }
     
     private void genDecl(DeclNode decl) {
@@ -97,7 +96,7 @@ public class UnitJScript {
         if (!decl.isEnum()) 
         	return;
         for (DeclNode.EnumVal ev : decl.getVals()) {
-            gen.fmt.print("%t%1.%2 = %3;\n", gen.uname(), ev.getName(), k++);
+            gen.getFmt().print("%t%1.%2 = %3;\n", gen.uname(), ev.getName(), k++);
         }
     }
 
@@ -105,7 +104,7 @@ public class UnitJScript {
         if (!decl.isHost()) {
             String suf = decl.isPublic() ? "E" : "I";
             String n = decl.getName().getText().replace('.', '_');
-            gen.fmt.print("%t%1.%2 = new $$Ref('%3%2__%4');\n", gen.uname(), n, gen.uname_target(), suf);
+            gen.getFmt().print("%t%1.%2 = new $$Ref('%3%2__%4');\n", gen.uname(), n, gen.uname_target(), suf);
         }
     }
     
@@ -114,12 +113,12 @@ public class UnitJScript {
     	gen.setNestedClass(decl.getContainingType()!= null);
 
         String sn = decl.getUnitQualName().replace('.', '_') + "_" + decl.getName();
-        gen.fmt.print("%t%1.%2$$id = 1;\n", gen.uname(), decl.getName());
-        gen.fmt.print("%t%1.%2 = function(cn) {\n%+", gen.uname(), decl.getName());
-        gen.fmt.print("%tthis.$$id = %1.%2$$id++;\n", gen.uname(), decl.getName());
-        gen.fmt.print("%tthis.$$cname = cn ? cn : '%1__'+this.$$id+'__S';\n", sn); 
-        gen.fmt.print("%tthis.$$tname = '%1';\n", sn);
-        gen.fmt.print("%tthis.$$uname = '%1';\n", gen.curUnit().getQualName());
+        gen.getFmt().print("%t%1.%2$$id = 1;\n", gen.uname(), decl.getName());
+        gen.getFmt().print("%t%1.%2 = function(cn) {\n%+", gen.uname(), decl.getName());
+        gen.getFmt().print("%tthis.$$id = %1.%2$$id++;\n", gen.uname(), decl.getName());
+        gen.getFmt().print("%tthis.$$cname = cn ? cn : '%1__'+this.$$id+'__S';\n", sn); 
+        gen.getFmt().print("%tthis.$$tname = '%1';\n", sn);
+        gen.getFmt().print("%tthis.$$uname = '%1';\n", gen.curUnit().getQualName());
         for (DeclNode fld : decl.getFeatures()) {
         	if (fld instanceof DeclNode.Var) {
         		
@@ -127,15 +126,15 @@ public class UnitJScript {
 						&& !((DeclNode.Var) fld).isIntrinsicUsed())
 					continue;
 
-        		gen.fmt.print("%tthis.%1 = ", fld.getName());
+        		gen.getFmt().print("%tthis.%1 = ", fld.getName());
         		genInit((DeclNode.Var)fld);
-        		gen.fmt.print(";\n");
+        		gen.getFmt().print(";\n");
         	}
         }
 
-        gen.fmt.print("%-%t}\n");
-        gen.fmt.print("%t%1.%2.prototype = new $$Struct('%3.%2');\n", gen.uname(), decl.getName(), gen.curUnit().getQualName());
-        gen.fmt.print("%t%1.%2.prototype.$$isAggFld = {};\n", gen.uname(), decl.getName());
+        gen.getFmt().print("%-%t}\n");
+        gen.getFmt().print("%t%1.%2.prototype = new $$Struct('%3.%2');\n", gen.uname(), decl.getName(), gen.curUnit().getQualName());
+        gen.getFmt().print("%t%1.%2.prototype.$$isAggFld = {};\n", gen.uname(), decl.getName());
         for (DeclNode fld : decl.getFeatures()) {
     		
 			if (fld instanceof DeclNode.Var && ((DeclNode.Var) fld).isIntrinsic()
@@ -145,8 +144,8 @@ public class UnitJScript {
 
         	if (fld instanceof DeclNode.Var) {
         		String tc = fld.getTypeCat().code();
-        		boolean isAgg = tc.startsWith("A") || tc.startsWith("S") || tc.startsWith("V");
-        		gen.fmt.print("%t%1.%2.prototype.$$isAggFld.%3 = %4;\n", gen.uname(), decl.getName(), fld.getName(), isAgg);
+        		boolean isAgg = tc.startsWith(Cat.ARR) || tc.startsWith(Cat.VEC);
+        		gen.getFmt().print("%t%1.%2.prototype.$$isAggFld.%3 = %4;\n", gen.uname(), decl.getName(), fld.getName(), isAgg);
         	}
         }
 
@@ -157,23 +156,23 @@ public class UnitJScript {
         }
         List<StmtNode.Assign> assgn = decl.getUnit().getPresetList();
 
-        gen.fmt.print("%t%1.%2.prototype." + ParseUnit.PRESET_INIT + " = function() {\n%+", gen.uname(), decl.getName());
+        gen.getFmt().print("%t%1.%2.prototype." + ParseUnit.PRESET_INIT + " = function() {\n%+", gen.uname(), decl.getName());
         if (assgn.size() > 0) {
         	for (StmtNode.Assign a : assgn) {
-        		gen.fmt.print("%t");
+        		gen.getFmt().print("%t");
         		gen.aux.genStmt(a);
-        		gen.fmt.print("\n");
+        		gen.getFmt().print("\n");
         	}                  
         }            
-        gen.fmt.print("%-%t}\n");
+        gen.getFmt().print("%-%t}\n");
     
-    	gen.fmt.print("%t%1.%2.prototype." + ParseUnit.PRIVATE_INIT + " = function() {\n%+", gen.uname(), decl.getName());
+    	gen.getFmt().print("%t%1.%2.prototype." + ParseUnit.PRIVATE_INIT + " = function() {\n%+", gen.uname(), decl.getName());
         for (DeclNode d : decl.getFeatures()) {
             if (isPrivateInit(d) && isHostInit(d)) {
                 genDecl(d);
             }
         }
-        gen.fmt.print("%-%t}\n");
+        gen.getFmt().print("%-%t}\n");
         gen.setNestedClass(false);      
     }
 
@@ -185,20 +184,20 @@ public class UnitJScript {
     	
     	if (decl.isHost() || isHostInit(decl)) {
     		String qualifier = (decl.isClassScope()) ? "this" : gen.uname();
-            gen.fmt.print("%t%1.%2 = ", qualifier, decl.getName());
+            gen.getFmt().print("%t%1.%2 = ", qualifier, decl.getName());
             genInit(decl);
-            gen.fmt.print(";\n");
+            gen.getFmt().print(";\n");
             return;
     	}
     	else if (decl.isConst()) {
-            gen.fmt.print("%t%1.%2 = ", gen.uname(), decl.getName());
+            gen.getFmt().print("%t%1.%2 = ", gen.uname(), decl.getName());
             genInit(decl);
-            gen.fmt.print(";\n");
+            gen.getFmt().print(";\n");
             return;
     	}
-        gen.fmt.print("%t%1.%2 = ", gen.uname(), decl.getName());
+        gen.getFmt().print("%t%1.%2 = ", gen.uname(), decl.getName());
         genInit(decl);
-        gen.fmt.print(";\n");
+        gen.getFmt().print(";\n");
     }
     
     private void genDecls(UnitNode unit) {
@@ -221,13 +220,13 @@ public class UnitJScript {
     }
         
     private void genEpilogue(UnitNode unit) {
-        gen.fmt.print("%treturn %1;\n", unit.getName());
-        gen.fmt.print("%-%t}\n");
-        gen.fmt.print("var $$u = $$c();\n");
-        gen.fmt.print("$units['%1'] = $$u;\n", unit.getQualName());
-        gen.fmt.print("$units.push($$u);\n");
+        gen.getFmt().print("%treturn %1;\n", unit.getName());
+        gen.getFmt().print("%-%t}\n");
+        gen.getFmt().print("var $$u = $$c();\n");
+        gen.getFmt().print("$units['%1'] = $$u;\n", unit.getQualName());
+        gen.getFmt().print("$units.push($$u);\n");
         //gen.fmt.print("debug(\"EPILOGUE code\", $$c());\n");
-        gen.fmt.print("\n");
+        gen.getFmt().print("\n");
     }
 
     public void generate(UnitNode unit) {
@@ -268,13 +267,13 @@ public class UnitJScript {
     	
     	if (unit.isClass())
     		return;
-        gen.fmt.print("%t%1." + ParseUnit.PRIVATE_INIT + " = function() {\n%+", gen.uname());
+        gen.getFmt().print("%t%1." + ParseUnit.PRIVATE_INIT + " = function() {\n%+", gen.uname());
         for (DeclNode decl : unit.getFeatures()) {
             if (isPrivateInit(decl) && isHostInit(decl) && !(decl instanceof DeclNode.Arr)) {
                 genDecl(decl);
             }
         }
-        gen.fmt.print("%-%t}\n");
+        gen.getFmt().print("%-%t}\n");
         
 
     }
@@ -336,7 +335,7 @@ public class UnitJScript {
     		if (!inserted.contains(nameU)) {
     			inserted.add(nameU);
     			if (ParseUnit.isDebugMode()) System.out.println("  genUse(): USE " + nameU);
-    			gen.fmt.print("%t$$bind($units['%1'], 'pollen$used', true);\n", nameU);
+    			gen.getFmt().print("%t$$bind($units['%1'], 'pollen$used', true);\n", nameU);
     		}
     	}
     	else  if (imp.getUnit().isComposition()) {
@@ -391,12 +390,12 @@ public class UnitJScript {
 
         List<StmtNode.Assign> assgn = unit.getPresetList();
                
-        gen.fmt.print("%t%1." + ParseUnit.PRESET_INIT + " = function() {\n%+", gen.uname());
+        gen.getFmt().print("%t%1." + ParseUnit.PRESET_INIT + " = function() {\n%+", gen.uname());
         if (assgn.size() > 0) {
             for (StmtNode.Assign a : assgn) {
-            	gen.fmt.print("%t");
+            	gen.getFmt().print("%t");
             	gen.aux.genStmt(a);
-            	gen.fmt.print("\n");
+            	gen.getFmt().print("\n");
             }                  
         }
         // init Arrays AFTER presets
@@ -405,7 +404,7 @@ public class UnitJScript {
                 genDecl(decl);
             }
         }
-        gen.fmt.print("%-%t}\n");    
+        gen.getFmt().print("%-%t}\n");    
     }
 
 	
@@ -421,21 +420,21 @@ public class UnitJScript {
         List<ImportNode> impL = unit.getImports();
         List<String> inserted = new java.util.ArrayList<String>();
         if (impL.size() > 0) {
-            gen.fmt.print("%t%1.pollen__uses__ = function() {\n%+", gen.uname());
+            gen.getFmt().print("%t%1.pollen__uses__ = function() {\n%+", gen.uname());
             for (ImportNode imp : impL) {
                 if (imp.getUnit() != null) { 
                         genUse(imp, inserted);
                 }
             }
-            gen.fmt.print("%-%t}\n");
+            gen.getFmt().print("%-%t}\n");
             //ParseUnit.setDebugMode(false);
         }
     }
 
     private void genImport(ImportNode imp) {
     	if (imp.getUnit() != null) {
-    		gen.fmt.print("%t%1.%2 = ", gen.uname(), imp.getName());
-    		gen.fmt.print("$units['%1'];\n", imp.getUnit().getQualName());
+    		gen.getFmt().print("%t%1.%2 = ", gen.uname(), imp.getName());
+    		gen.getFmt().print("$units['%1'];\n", imp.getUnit().getQualName());
     	}
     }
     
@@ -446,11 +445,11 @@ public class UnitJScript {
 
         String ks = unit.isModule() ? "MODULE " : "CLASS ";
         gen.aux.genTitle(ks + qn);
-        gen.fmt.print("var $$c = function() {\n%+", qn);
-        gen.fmt.print("%tconst %1 = {};\n", un);
-        gen.fmt.print("%t%1.%1 = %1\n", un);
-        gen.fmt.print("%t%1.$name = '%2';\n", un, qn);
-        gen.fmt.print("%t%1.pollen$used = 0;\n", un);
+        gen.getFmt().print("var $$c = function() {\n%+", qn);
+        gen.getFmt().print("%tconst %1 = {};\n", un);
+        gen.getFmt().print("%t%1.%1 = %1\n", un);
+        gen.getFmt().print("%t%1.$name = '%2';\n", un, qn);
+        gen.getFmt().print("%t%1.pollen$used = 0;\n", un);
     }
     
     private void genInit(DeclNode.ITypeSpecInit ts) {
@@ -467,19 +466,19 @@ public class UnitJScript {
             
             if (init instanceof ExprNode.New) {
             	DeclNode d = (DeclNode) ts;
-            	gen.fmt.print("; %2.%3.%1", ParseUnit.CTOR_CLASS_HOST, gen.uname(), d.getName() );
+            	gen.getFmt().print("; %2.%3.%1", ParseUnit.CTOR_CLASS_HOST, gen.uname(), d.getName() );
             	gen.aux.genCallArgs(((ExprNode.New)init).getCall());            	
             }
         }
-        else if (tc.startsWith("A") || tc.startsWith("S") || tc.startsWith("V")) {
+        else if (tc.startsWith(Cat.ARR) || tc.startsWith(Cat.VEC)) {
         	DeclNode d = (DeclNode) ts;
         	String qualifier = d.isClassScope() ? "this" : gen.uname();
             gen.aux.genDefault(ts.getTypeCat(), ts);
-            gen.fmt.print("; %1.%2.$$assign(", qualifier, ts.getName());
+            gen.getFmt().print("; %1.%2.$$assign(", qualifier, ts.getName());
             gen.aux.genExpr(init);
-            gen.fmt.print(")");
+            gen.getFmt().print(")");
         }
-        else if (tc.startsWith("C")) {
+        else if (tc.startsWith(Cat.CLASS)) {
             gen.aux.genDefault(ts.getTypeCat(), ts);
 //            Cat.Agg c = (Agg) (ts.getTypeCat() instanceof Cat.Agg ? ts.getTypeCat() : null);
 //            String cls = c != null ? c.aggScope().getScopeName() : "";

@@ -7,10 +7,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.amaret.pollen.parser.BaseNode;
+import com.amaret.pollen.parser.Flags;
+import com.amaret.pollen.parser.IOutputName;
+import com.amaret.pollen.parser.IOutputNode;
+import com.amaret.pollen.parser.IOutputQualifiedName;
+import com.amaret.pollen.parser.IScope;
+import com.amaret.pollen.parser.ISymbolNode;
 import com.amaret.pollen.parser.ImportNode;
 import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.UnitNode;
@@ -31,17 +39,72 @@ public class Generator {
 	private String uname_host;
 	private String uname_target;
     private ITarget target;
-	final Formatter fmt = new Formatter();
+	private final Formatter fmt = new Formatter();
 	final Auxiliary aux = new Auxiliary(this);
+	
+	public Auxiliary getAux() {
+		return aux;
+	}
+	public boolean isHostJS() {
+		return true;
+	}
+	public boolean isTargetC() {
+		return true;
+	}
+	
 	public Generator() {}
 	public boolean isNestedClass() {
 		return nestedClass;
+	}
+	
+	public boolean isHost() {
+		return aux.isHost();
 	}
 
 	public void setNestedClass(boolean nestedClass) {
 		this.nestedClass = nestedClass;
 	}
+	
+	public String getOutputNode(BaseNode b) {
+		String rtn = null;
+		if (b instanceof IOutputNode) { 
+			getFmt().mark();
+			if (aux.isHost()) {
+				((IOutputNode)b).outputNodeHost(this);
+			}
+			else {
+				((IOutputNode)b).outputNodeTarget(this);
+			}
+			rtn = getFmt().release();
+			rtn = !rtn.isEmpty() ? rtn : null;
+		}		
+		return rtn;
+	}
 
+	public String getOutputName(Object s, IScope sc, EnumSet<Flags> flags) {
+		if (s instanceof IOutputName) {
+			if (aux.isHost()) {
+				return ((IOutputName)s).getOutputNameHost(this, sc, flags);
+			}
+			else {
+				return ((IOutputName)s).getOutputNameTarget(this, sc, flags);
+			}
+		}
+		ParseUnit.current().reportError(curUnit, "Generator.getOutputName(): unimplemented feature");
+		return null;
+	}
+	public String getOutputQName(Object s, ISymbolNode n, IScope is, boolean thisPtr) {
+		if (s instanceof IOutputQualifiedName) {
+			if (aux.isHost()) {
+				return ((IOutputQualifiedName)s).getOutputQNameHost(this, n, is, thisPtr);
+			}
+			else {
+				return ((IOutputQualifiedName)s).getOutputQNameTarget(this, n, is, thisPtr);
+			}
+		}
+		ParseUnit.current().reportError(curUnit, "Generator.getOutputQName(): unimplemented feature");
+		return null;
+	}
 	
 	/**
 	 * @param unit The pollen file
@@ -117,10 +180,10 @@ public class Generator {
         //if (!curUnit.isComposition() && !curUnit.isProtocol()) {
         //if (curUnit.isModule() || curUnit.isClass() || curUnit.isEnum()) {
             File file = ParseUnit.cacheFile(curUnit.getQualName(), ".js");
-            fmt.reset();
+            getFmt().reset();
             UnitJScript unitJScript = new UnitJScript(this);
             unitJScript.generate(curUnit);
-            writeFile(file, fmt.toBytes());
+            writeFile(file, getFmt().toBytes());
         }
     }
     void findUses(UnitNode unit, Set<UnitNode> uses) {
@@ -172,16 +235,16 @@ public class Generator {
         }
 
         setupUnit(unit);
-        fmt.reset();
+        getFmt().reset();
         ProgJScript jsProg = new ProgJScript(this);
         jsProg.generate(uses, unit);
-        writeFile(jsFile, fmt.toBytes(), true);
-        Value.Arr unitsArr = (Value.Arr) Script.execute(fmt.toString(), "$units", jsFile.getAbsolutePath());
+        writeFile(jsFile, getFmt().toBytes(), true);
+        Value.Arr unitsArr = (Value.Arr) Script.execute(getFmt().toString(), "$units", jsFile.getAbsolutePath());
 
-        fmt.reset();
+        getFmt().reset();
         ProgCCode targProg = new ProgCCode(this);
         targProg.generate(unitsArr);
-        writeFile(progFile, fmt.toBytes(), true);
+        writeFile(progFile, getFmt().toBytes(), true);
 
         if (cur.getErrorCount() > 0) {
             return;
@@ -198,10 +261,10 @@ public class Generator {
 	private void genBody() throws Exception {
         if ((curUnit.isModule() || curUnit.isClass()) && !curUnit.isHost()) {
             File file = ParseUnit.cacheFile(curUnit.getQualName(), ".c");
-            fmt.reset();
+            getFmt().reset();
             UnitBody unitBody = new UnitBody(this);
             unitBody.generate(curUnit);
-            writeFile(file, fmt.toBytes());
+            writeFile(file, getFmt().toBytes());
         }				
 	}
 	
@@ -213,10 +276,10 @@ public class Generator {
 		if ((curUnit.isModule() || curUnit.isClass() || curUnit.isEnum())
 				&& !curUnit.isHost()) {
 			File file = ParseUnit.cacheFile(curUnit.getQualName(), ".h");
-			fmt.reset();
+			getFmt().reset();
 			UnitHeader unitHeader = new UnitHeader(this);
 			unitHeader.generate(curUnit);
-			writeFile(file, fmt.toBytes());
+			writeFile(file, getFmt().toBytes());
 		}
 
 	}
@@ -247,5 +310,11 @@ public class Generator {
         outStr.write(newBytes);
         outStr.close();
     }
+	/**
+	 * @return the fmt
+	 */
+	public Formatter getFmt() {
+		return fmt;
+	}
 
 }

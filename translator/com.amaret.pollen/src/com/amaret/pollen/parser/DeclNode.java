@@ -4,13 +4,14 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.amaret.pollen.parser.ExprNode.Binary;
 import com.amaret.pollen.parser.ExprNode.Vec;
 import com.amaret.pollen.parser.StmtNode.Bind;
 import com.amaret.pollen.target.ITarget.TypeInfo;
+import com.amaret.pollen.translator.Generator;
 
 public class DeclNode extends BaseNode implements ISymbolNode {
 
@@ -342,7 +343,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 	}
 
 	// DeclNode.EnumVal
-	static public class EnumVal extends DeclNode {
+	static public class EnumVal extends DeclNode implements IOutputName {
 
 		EnumVal(int ttype, String ttext, EnumSet<Flags> f) {
 			super(ttype, ttext, f);
@@ -355,6 +356,48 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 		public boolean isPublic() {
 			return true;
+		}
+
+		public String getOutputNameTarget(Generator g, IScope sc, EnumSet<Flags> flags) {
+			String qn = "";
+			if (sc == null)
+				return qn;
+			IScope scopeOfDcln = sc;
+
+			qn = (scopeOfDcln instanceof UnitNode ? ((UnitNode) scopeOfDcln)
+					.getQualName()
+					: (scopeOfDcln instanceof DeclNode.Usr) ? ((DeclNode.Usr) scopeOfDcln)
+							.getUnitQualName() 
+							: "/* ?? scope unknown ?? */");
+
+
+			if (this.getDefiningScope() instanceof ISymbolNode)
+				qn += "." + ((ISymbolNode)this.getDefiningScope()).getName().getText();
+			String n = this.getName().getText();
+			qn = qn + "." + n + g.getAux().mkSuf(this);
+			return qn.replace('.', '_');
+			
+		}
+		public String getOutputNameHost(Generator g, IScope sc, EnumSet<Flags> flags) {
+			boolean thisPtr = flags.contains(Flags.IS_THISPTR);
+			
+			String qn = "";
+			if (sc == null)
+				return qn;
+
+			IScope scopeOfDcln = sc;
+			if (scopeOfDcln == g.curUnit()) 
+				return (g.uname() + "." + this.getName());
+
+			qn = (scopeOfDcln instanceof UnitNode ? ((UnitNode) scopeOfDcln)
+					.getQualName()
+					: (scopeOfDcln instanceof DeclNode.Usr) ? ((DeclNode.Usr) scopeOfDcln)
+							.getUnitQualName() 
+							: "/* ?? scope unknown ?? */");
+
+			if (scopeOfDcln instanceof DeclNode.Class && !thisPtr && isClassRef())
+				qn = g.uname();
+			return "$units['" + qn + "']." + this.getName().getText();
 		}
 	}
 
@@ -835,7 +878,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 	// For proxy (protocol member), a member with class type, or a member with
 	// function type (function ref)
 	static public class TypedMember extends DeclNode.Var implements
-			ITypeSpecInit, IScope, IUnitWrapper, ITypeKind {
+			ITypeSpecInit, IScope, IUnitWrapper, ITypeKind, IOutputQualifiedName {
 
 		TypedMember(int ttype, String ttext, EnumSet<Flags> f) {
 			super(ttype, ttext, f);
@@ -849,6 +892,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 									// member. NOTE the typeUnit of a nested
 									// class is its containing unit.
 		boolean isClassRef = false;
+		boolean isNestedClassRef = false;
+
 
 		// for protocol members
 		private UnitNode bindToUnit = null; // the module to which this protocol
@@ -870,6 +915,76 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		public UnitNode getBindLocUnit() {
 			return bindLocUnit;
 		}
+		
+		public String getOutputQNameTarget(Generator g, ISymbolNode node, IScope sc, boolean thisPtr) {
+			String qn = "";
+			if (node == null || sc == null)
+				return qn;
+			IScope scopeOfDcln = sc;
+			
+			if (this.isProtocolMember()) {
+				// qualify to the binding unit
+				if (this.getBindToUnit() == null) {
+					ParseUnit.current().reportError(this, this.getName().getText() + ": unbound protocol member detected");
+				}
+				else 
+					qn = this.getBindToUnit().getQualName();
+			}
+			boolean isFcnNode = node instanceof DeclNode.Fcn;
+			if (qn.isEmpty()) { // a class or fcn ref
+				qn = (scopeOfDcln instanceof UnitNode ? ((UnitNode) scopeOfDcln)
+						.getQualName()
+						: (scopeOfDcln instanceof DeclNode.Usr) ? ((DeclNode.Usr) scopeOfDcln)
+								.getUnitQualName() 
+								: "/* ?? scope unknown ?? */");
+				
+				
+				if (this.isNestedClassRef() && !this.getQualName().equals(qn) && !isFcnNode)
+					qn +="." + this.getName();
+				
+			}
+			String n = isFcnNode ? ((DeclNode.Fcn)node).cname() : node.getName().getText();
+			qn = qn + "." + n + g.getAux().mkSuf(node);
+			return qn.replace('.', '_');
+		}
+		public String getOutputQNameHost(Generator g, ISymbolNode node, IScope sc, boolean thisPtr) {
+			String qn = "";
+			if (node == null || sc == null)
+				return qn;
+			IScope scopeOfDcln = sc;
+			if (scopeOfDcln == g.curUnit()) 
+				return (g.uname() + "." + node.getName());
+			
+			if (this.isProtocolMember()) {
+				// qualify to the binding unit
+				if (this.getBindToUnit() == null) {
+					ParseUnit.current().reportError(this, "Unbound protocol member detected");
+				}
+				else 
+					qn = this.getBindToUnit().getQualName();
+			}
+			if (qn.isEmpty()) {
+				qn = (scopeOfDcln instanceof UnitNode ? ((UnitNode) scopeOfDcln)
+						.getQualName()
+						: (scopeOfDcln instanceof DeclNode.Usr) ? ((DeclNode.Usr) scopeOfDcln)
+								.getUnitQualName() 
+								: "/* ?? scope unknown ?? */");
+				
+				if (scopeOfDcln instanceof DeclNode.Class && !thisPtr && isClassRef())
+					qn = g.uname();
+			}
+			String s = node.getName().getText();
+			if (this != node) {
+				s = this.getName().getText() + "." + s;				
+			}
+			if (scopeOfDcln instanceof DeclNode.Class) {
+				return qn + "." + s;
+			}
+			return "";
+			
+		}
+
+
 
 		public Atom getTypeName() {
 			TypeNode.Usr t = ((TypeNode.Usr) getChild(TYPE));
@@ -944,6 +1059,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		public boolean isClassRef() {
 			return this.isClassRef;
 		}
+		public boolean isNestedClassRef() {
+			return this.isNestedClassRef;
+		}
 
 		public boolean isHostClassRef() {
 			return this.isClassRef && this.isHost();
@@ -982,6 +1100,17 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			ISymbolNode snode = sym != null ? sym.node() : null;
 			isClassRef = (snode != null && snode instanceof ITypeKind && ((ITypeKind) snode)
 					.isClass());
+			isNestedClassRef = false;
+			if (isClassRef) {
+				DeclNode.Usr tmp = (Usr) (snode instanceof DeclNode.Usr ? snode
+						: snode instanceof ImportNode ? ((ImportNode) snode)
+								.getUnit().getUnitType()
+								: snode instanceof ImportNode ? ((ImportNode) snode)
+										.getUnit().getUnitType() : null);
+
+				isNestedClassRef = tmp.getContainingType() != null ? true : false;
+				
+			}
 			boolean metaPrimitiveType = (snode instanceof ImportNode && ((ImportNode) snode)
 					.isTypeMetaArgPrimitive());
 
@@ -1373,6 +1502,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				return true;
 			return false;
 		}
+		public boolean isNestedClass() {
+			if (flags.contains(Flags.CLASS) && containingType != null)
+				return true;
+			return false;
+		}
 
 		public boolean isMeta() {
 			if (flags.contains(Flags.META))
@@ -1583,7 +1717,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 	// DeclNode.Var
 	// A data member or a protocol member.
-	static public class Var extends DeclNode implements ITypeSpecInit {
+	static public class Var extends DeclNode implements ITypeSpecInit, IOutputQualifiedName, IOutputName {
 
 		static final private int NAME = 1;
 		static final private int TYPE = 0;
@@ -1594,6 +1728,113 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		Var(int ttype, String ttext, EnumSet<Flags> flags) {
 			super(ttype, ttext, flags);
 		}
+		public String getOutputQNameTarget(Generator g, ISymbolNode node, IScope sc, boolean thisPtr) {
+			String qn = "";
+			if (node == null || sc == null)
+				return qn;
+			IScope scopeOfDcln = sc;
+			
+			if (qn.isEmpty()) {
+				qn = (scopeOfDcln instanceof UnitNode ? ((UnitNode) scopeOfDcln)
+						.getQualName()
+						: (scopeOfDcln instanceof DeclNode.Usr) ? ((DeclNode.Usr) scopeOfDcln)
+								.getUnitQualName() 
+								: "/* ?? scope unknown ?? */");
+				
+			}
+			String n = node instanceof DeclNode.Fcn ? ((DeclNode.Fcn)node).cname() : node.getName().getText();
+			qn = qn + "." + n + g.getAux().mkSuf(node);
+			return qn.replace('.', '_');
+		}
+		public String getOutputQNameHost(Generator g, ISymbolNode node, IScope sc, boolean thisPtr) {
+			String qn = "";
+			if (node == null || sc == null)
+				return qn;
+			
+			IScope scopeOfDcln = sc;
+			if (scopeOfDcln == g.curUnit()) 
+				return (g.uname() + "." + node.getName());
+			
+			qn = (scopeOfDcln instanceof UnitNode ? ((UnitNode) scopeOfDcln)
+					.getQualName()
+					: (scopeOfDcln instanceof DeclNode.Usr) ? ((DeclNode.Usr) scopeOfDcln)
+							.getUnitQualName() 
+							: "/* ?? scope unknown ?? */");
+			
+			if (scopeOfDcln instanceof DeclNode.Class && !thisPtr && isClassRef())
+				qn = g.uname();
+			boolean classScopeOfDcln = scopeOfDcln instanceof DeclNode.Class;
+			if (classScopeOfDcln) {
+				if (thisPtr || g.curUnit().isClass() || g.isNestedClass()){
+					// the scope qualifier is 'this'
+					String n = node.getName().getText().substring(node.getName().getText().lastIndexOf('.')+1);
+					return "this." + n;
+				}
+			}
+			return "$units['" + qn + "']." + node.getName().getText();
+						
+		}
+		public String getOutputNameHost(Generator g, IScope sc, EnumSet<Flags> flags) {
+			boolean thisPtr = flags.contains(Flags.IS_THISPTR);
+			boolean postExpr = flags.contains(Flags.IS_POSTEXPR);
+			if (thisPtr) {
+				return "this." + this.getName().getText();
+			}
+			if  (postExpr) {
+				return this.getName().getText();
+			}
+			String qn = "";
+			ISymbolNode node = this;
+			IScope scopeOfDcln = sc;
+			if (scopeOfDcln == g.curUnit()) 
+				return (g.uname() + "." + this.getName());
+			
+			qn = (scopeOfDcln instanceof UnitNode ? ((UnitNode) scopeOfDcln)
+					.getQualName()
+					: (scopeOfDcln instanceof DeclNode.Usr) ? ((DeclNode.Usr) scopeOfDcln)
+							.getUnitQualName() 
+							: "/* ?? scope unknown ?? */");
+			
+			if (scopeOfDcln instanceof DeclNode.Class && !thisPtr && isClassRef())
+				qn = g.uname();
+			boolean classScopeOfDcln = scopeOfDcln instanceof DeclNode.Class;
+			if (classScopeOfDcln) {
+				if (thisPtr || g.curUnit().isClass() || g.isNestedClass()){
+					// the scope qualifier is 'this'
+					String n = this.getName().getText().substring(this.getName().getText().lastIndexOf('.')+1);
+					return "this." + n;
+				}
+			}
+			return "$units['" + qn + "']." + node.getName().getText();
+						
+		}
+		public String getOutputNameTarget(Generator g, IScope sc, EnumSet<Flags> flags) {
+			boolean thisPtr = flags.contains(Flags.IS_THISPTR);
+			boolean postExpr = flags.contains(Flags.IS_POSTEXPR);
+			String qn = "";
+			
+			if (postExpr) {
+				return this.getName().getText();
+			}			
+			if (thisPtr) {
+				return "this->" + this.getName().getText();
+			}
+			IScope scopeOfDcln = sc;			
+
+			qn = (scopeOfDcln instanceof UnitNode ? ((UnitNode) scopeOfDcln)
+					.getQualName()
+					: (scopeOfDcln instanceof DeclNode.Usr) ? ((DeclNode.Usr) scopeOfDcln)
+							.getUnitQualName() 
+							: "/* ?? scope unknown ?? */");
+
+
+			String n = this.getName().getText();
+			qn = qn + "." + n + g.getAux().mkSuf(this);
+			return qn.replace('.', '_');
+		}
+
+
+
 
 		public boolean isIntrinsic() {
 			return (flags.contains(Flags.INTRINSIC_VAR));

@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWrapper, DeclNode.ITypeKind {
+import com.amaret.pollen.translator.Generator;
+
+public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWrapper, DeclNode.ITypeKind, IOutputName {
 
     
 	static private final int FROM = 0;
@@ -27,6 +29,15 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 	}
 	public void setFromComposImportModule(boolean fromComposImportModule) {
 		this.fromComposImportModule = fromComposImportModule;
+	}
+    public String getOutputNameHost(Generator gen, IScope sc, EnumSet<Flags> flags){		
+		String qn = this.getUnit().getQualName();
+		qn = "$units['" + qn + "']";
+    	return qn;  	
+    }
+	public String getOutputNameTarget(Generator gen, IScope sc, EnumSet<Flags> flags){
+		String qn = this.getUnit().getQualName();
+		return qn.replace('.', '_');		
 	}
 	/**
 	 * If this import brings in a unit that has been exported by another unit, 

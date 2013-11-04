@@ -332,7 +332,7 @@ public class TypeRules {
 
         if (op.equals("*")) {
             if (code.startsWith("s")) {
-                return Cat.fromScalarCode("u1");
+                return Cat.fromScalarCode(Cat.UINT8);
             }
             return mkResult(null, operand, null, err);
         }
@@ -407,17 +407,17 @@ public class TypeRules {
 
 				mkBinary(OP_ADD|OP_MULT, "i0|i1|n", "i1", "$2"),
 				mkBinary(OP_ADD|OP_MULT, "i0|i1|i2|n", "i2", "$2"),
-				mkBinary(OP_ADD|OP_MULT, "i0|i1|i2|i4", "i4", "$2"),
+				mkBinary(OP_ADD|OP_MULT, "i0|i1|i2|i4|n", "i4", "$2"),
 				mkBinary(OP_ADD|OP_MULT, "n|ia|i0", "ia", "$2"),
 
 				// Added 'u2|u4' rhs cases below as it occurs in pollen and c does not complain
-				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, "u1", "n|u1|u2|u4", "$1"),
+				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, Cat.UINT8, "n|u1|u2|u4", "$1"),
 				// Added 'u4' rhs case below as it occurs in pollen and c does not complain
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, "u2", "n|u1|u2|u4", "$1"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, "u4", "n|u1|u2|u4", "$1"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, "ua", "n|ua", "$1"),
 
-				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n|u1", "u1", "$2"),
+				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n|u1", Cat.UINT8, "$2"),
 				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n|u1|u2", "u2", "$2"),
 				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n|u1|u2|u4", "u4", "$2"),
 				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n|ua", "ua", "$2"),
@@ -460,7 +460,7 @@ public class TypeRules {
 				mkUnary(OP_BOOL, "u.|n", "$1"),
 				mkUnary(OP_COND, "b|i.|n|p|s|u.|A.+|F.+|P.+|R.+|x.+|C.+|X.+", "b"),
 				mkUnary(OP_INC, "i.|u.|n|p|s|P.+", "$1"),
-				mkUnary(OP_SEL, "u1", "$1"),
+				mkUnary(OP_SEL, Cat.UINT8, "$1"),
 				mkUnary(OP_SEL, "i1|i2|i4|u1|u2|u4|s", "$1", HOST_DOMAIN),
 		};
 	}

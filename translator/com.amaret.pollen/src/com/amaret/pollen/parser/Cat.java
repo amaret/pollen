@@ -5,10 +5,32 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
-import com.amaret.pollen.parser.DeclNode.Usr;
 
 
 public class Cat implements Cloneable {
+    // type codes
+    // scalar
+    public static final String BOOL = "b";
+    public static final String BYTE = "u1";
+    public static final String INT = "i"; 
+    public static final String INT8 = "i1"; 
+    public static final String INT16 = "i2"; 
+    public static final String INT32 = "i4"; 
+    public static final String NUMLIT = "n"; 
+    public static final String STRING = "s"; 
+    public static final String UINT = "u"; 
+    public static final String UINT8 = "u1"; 
+    public static final String UINT16 = "u2"; 
+    public static final String UINT32 = "u4"; 
+    public static final String VOID = "v"; 
+    // aggregate
+    public static final String CLASS = "C";
+    public static final String USR = "X";
+    public static final String TYP_MEMBER = "X"; 
+    public static final String FCN_REF = "x";
+    public static final String VEC = "V";  // 'V' is array with dimensions
+    public static final String ARR = "A";  // 'A' is dimensionless
+
 
     // Cat.Agg
     static public class Agg extends Cat {
@@ -20,10 +42,11 @@ public class Cat implements Cloneable {
         private boolean isTargetClassRef;
         private boolean isClassRef;
         private boolean isProtocolMember;
-		private boolean isFcnRef;
-        
-		private Agg(IScope aggScope, IScope defScope, boolean isRef, boolean fcnRef) {
-			if (aggScope instanceof UnitNode) {
+        private boolean isFcnRef;
+
+
+        private Agg(IScope aggScope, IScope defScope, boolean isRef, boolean fcnRef) {
+        	if (aggScope instanceof UnitNode) {
 				UnitNode u = (UnitNode) aggScope;	
 				boolean dbg = false;
 				if (dbg)
@@ -116,19 +139,19 @@ public class Cat implements Cloneable {
         		return mkCodeFromScope(((UnitNode) sc).getUnitType());
         	
         	if (sc instanceof DeclNode.Class) {
-        		return "C" + ((DeclNode.Class) sc).getUnitQualName();
+        		return Cat.CLASS + ((DeclNode.Class) sc).getUnitQualName();
         	}
         	if (sc instanceof DeclNode.Usr) {
-        		return "X" + ((DeclNode.Usr) sc).getUnitQualName();
+        		return Cat.USR + ((DeclNode.Usr) sc).getUnitQualName();
         	}
         	if (isFcnRef && sc instanceof DeclNode.TypedMember) {
-        		return "x" + ((DeclNode.TypedMember) sc).getTypeUnit().getQualName();
+        		return Cat.FCN_REF + ((DeclNode.TypedMember) sc).getTypeUnit().getQualName();
         	}
         	if ((isFcnRef || isRef) && sc instanceof DeclNode.Fcn) {
-        		return "x" + ((DeclNode.Fcn) sc).getEnclosingScope().getScopeName() + "." + ((DeclNode.Fcn) sc).getName().getText();
+        		return Cat.FCN_REF + ((DeclNode.Fcn) sc).getEnclosingScope().getScopeName() + "." + ((DeclNode.Fcn) sc).getName().getText();
         	}
         	if (sc instanceof DeclNode.TypedMember) {
-        		return "X" + ((DeclNode.TypedMember) sc).getTypeUnit().getQualName();
+        		return Cat.TYP_MEMBER + ((DeclNode.TypedMember) sc).getTypeUnit().getQualName();
             }
             return super.mkCode();
         	
@@ -179,7 +202,7 @@ public class Cat implements Cloneable {
          * Latter is implemented as pointer.
          */
         protected String mkCode() {
-            String pre = tarr.hasDim() ? "V" : "A";
+            String pre = tarr.hasDim() ? Cat.VEC : Cat.ARR;
             return pre + getBase().mkCode();
         }
         
@@ -357,7 +380,7 @@ public class Cat implements Cloneable {
         static {
         	// "n" is not here but is used for numeric literals
         	// which should match any numeric type, 
-        	// e.g. 'uint8Var == 0' should pass checks.
+        	// e.g. 'uint8 Var == 0' should pass checks.
             codeMap.put("bool",     "b");
             //codeMap.put("Char",     "u1");
             codeMap.put("byte",		"u1");
@@ -441,7 +464,7 @@ public class Cat implements Cloneable {
 	public static final Cat INJECT = new Cat();
     public static final Cat HASH = new Cat();
     public static final Cat UNKNOWN = new Cat();
-    public static final Cat VEC = new Cat();
+    public static final Cat VECTOR = new Cat();
 
 
     
@@ -549,7 +572,7 @@ public class Cat implements Cloneable {
         		return UNKNOWN;
         }
         else if (snode instanceof DeclNode.EnumVal) {
-            return Cat.fromScalarCode("u1");
+            return Cat.fromScalarCode(Cat.UINT8);
         }
         else {
             return UNKNOWN;

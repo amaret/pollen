@@ -220,7 +220,7 @@ public class ExprNode extends BaseNode {
 
 		Call(int ttype, String ttext, boolean dr) {
 			super(ttype, ttext);
-			deref = dr;
+			postExpr = dr;
 		}
 
 		@SuppressWarnings("unchecked")
@@ -255,140 +255,144 @@ public class ExprNode extends BaseNode {
 				boolean chkHostScope = symtab.currScopeIsHostFcn() || isHostConstructorCall();
 				boolean dbg = false;
 
-				if (call.matches("classMethod"))
+				if (call.matches("pollen__assert"))
 					dbg = true;
+				
+				boolean skipLookup =  (call.matches(ParseUnit.INTRINSIC_PREFIX + ".*")) ? true : false;
 
-				if (fcn == null
-						&& this.getParent() instanceof ExprNode.Ident
-						&& ((ExprNode.Ident) this.getParent()).getSymbol() != null) {
-					// this is an access after a dereference: 'arr[i].fcn()'.
-					// lookup scope for 'fcn()' is the type for arr.
+				if (!skipLookup) {
+					if (fcn == null
+							&& this.getParent() instanceof ExprNode.Ident
+							&& ((ExprNode.Ident) this.getParent()).getSymbol() != null) {
+						// this is an access after a dereference: 'arr[i].fcn()'.
+						// lookup scope for 'fcn()' is the type for arr.
 
-					IScope sc = ((ExprNode.Ident) this.getParent()).getSymbol()
-							.derefScope(false);
-					fcn = sc.lookupName(ei.getName().getText());
-					if (fcn != null && fcn.node() instanceof DeclNode) {
-						DeclNode d = (DeclNode) fcn.node();
-						boolean accessible = d.query(EnumSet.of(Flags.PUBLIC));
-						accessible |= (d.getUnit() == currUnit
-								.getCurrUnitNode());
-						fcn = (accessible) ? fcn : null;
+						IScope sc = ((ExprNode.Ident) this.getParent()).getSymbol()
+								.derefScope(false);
+						fcn = sc.lookupName(ei.getName().getText());
+						if (fcn != null && fcn.node() instanceof DeclNode) {
+							DeclNode d = (DeclNode) fcn.node();
+							boolean accessible = d.query(EnumSet.of(Flags.PUBLIC));
+							accessible |= (d.getUnit() == currUnit
+									.getCurrUnitNode());
+							fcn = (accessible) ? fcn : null;
+						}
 					}
-				}
 
-				if (fcn == null) {
-					fcn = symtab.curScope().lookupName(ei.getName().getText(),
-							chkHostScope);
-				}
-				if (qualifier == null) {
-					if (ei.getName().getText().indexOf('.') != -1) {
-						String n = ei.getName().getText();
-						n = n.substring(0, n.lastIndexOf('.'));
-						qualifier = symtab.curScope().lookupName(n, chkHostScope);
-						if (qualifier == null && chkHostScope)
-							qualifier = symtab.curScope().lookupName(n, false);
+					if (fcn == null) {
+						fcn = symtab.curScope().lookupName(ei.getName().getText(),
+								chkHostScope);
+					}
+					if (qualifier == null) {
+						if (ei.getName().getText().indexOf('.') != -1) {
+							String n = ei.getName().getText();
+							n = n.substring(0, n.lastIndexOf('.'));
+							qualifier = symtab.curScope().lookupName(n, chkHostScope);
+							if (qualifier == null && chkHostScope)
+								qualifier = symtab.curScope().lookupName(n, false);
 
-						ei.setQualifier(qualifier);
-						if (qualifier != null && qualifier.node() instanceof ImportNode) {
-							// For imports, the qualifier will get output by translator code.
+							ei.setQualifier(qualifier);
+							if (qualifier != null && qualifier.node() instanceof ImportNode) {
+								// For imports, the qualifier will get output by translator code.
+								ei.getName().stripQualifiers();
+							}
+						} else {
+							IScope sc = currUnit.getSymbolTable().curScope();
+							while (!(sc instanceof DeclNode.Usr)) {
+								sc = sc.getEnclosingScope();
+								if (sc instanceof DeclNode.Usr
+										&& ((DeclNode.Usr) sc).isClass()) {
+									// if calling a method in current class, 'this'
+									// is the qualifier
+									qualifier = symtab.curScope().lookupName("this",
+											false);
+									ei.setQualifier(qualifier);
+								}
+							}
+						}
+					}
+					if (fcn == null) {
+						// Could be a host function accessed through a non-host
+						// qualifier:
+						// look up in the host table of the deref scope of the qualifier.
+						if (chkHostScope && qualifier != null) {
+							String n = ei.getName().getText();
+							if (n.indexOf('.') != -1) {
+								n = n.substring(n.lastIndexOf('.') + 1);
+								fcn = qualifier.derefScope(true).lookupName(n,
+										chkHostScope);
+
+								if (qualifier != null && fcn != null
+										&& qualifier.node() instanceof DeclNode) {
+									if (((DeclNode) qualifier.node())
+											.isHostClassRef()
+											&& fcn.scope() instanceof DeclNode.Usr
+											&& addThisPtrParameter) {
+										ei.getName().stripQualifiers();
+									}
+
+								}
+							}
+						}
+					}
+
+					if (fcn == null)
+						currUnit
+						.reportError(
+								currUnit.getCurrUnitNode(),
+								"'"
+										+ call
+										+ "': identifier is not declared in the current scope "
+										+ symtab.curScope().getScopeName());
+
+					else if (qualifier != null) {
+
+						if (qualifier.node() instanceof ImportNode
+								&& ((ImportNode) qualifier.node()).isComposition()) {
+							// check that name resolution was correct. Sometimes
+							// exported function names in
+							// outer qualifier symtabs match but they are defined in
+							// different modules.
+							ISymbolNode f = this.getDclnNodeFcn((ImportNode) qualifier
+									.node(), ei.getName());
+							if (f != fcn.node()) {
+								fcn = null;
+								currUnit
+								.reportError(
+										currUnit.getCurrUnitNode(),
+										"'"
+												+ call
+												+ "': identifier is not declared in the current scope "
+												+ symtab.curScope()
+												.getScopeName());
+							}
+						}
+
+						ei.setSymbol(fcn);
+						boolean isHostFcn = false;
+						if (fcn != null) {
+							IScope sc = fcn.scope();
+							isHostFcn = (fcn.node() instanceof DeclNode.Fcn && ((DeclNode.Fcn) fcn
+									.node()).isHost());
+							if (!isHostFcn && sc instanceof DeclNode.Usr
+									&& ((DeclNode.Usr) sc).isClass()
+									&& !((DeclNode.Usr) sc).isHost()
+									&& !(fcn.node() instanceof DeclNode.FcnRef)) {
+
+								// for function references, the scope of the
+								// function ref is not the scope of the fcn 
+								addThisPtrParameter = true;
+							}
+						}
+						if (qualifier != null && qualifier.node() instanceof ITypeKind
+								&& ((ITypeKind) qualifier.node()).isComposition()
+								&& !isHostFcn) {
+							// Strip the composition from the qualification: it
+							// won't exist at runtime
 							ei.getName().stripQualifiers();
 						}
-					} else {
-						IScope sc = currUnit.getSymbolTable().curScope();
-						while (!(sc instanceof DeclNode.Usr)) {
-							sc = sc.getEnclosingScope();
-							if (sc instanceof DeclNode.Usr
-									&& ((DeclNode.Usr) sc).isClass()) {
-								// if calling a method in current class, 'this'
-								// is the qualifier
-								qualifier = symtab.curScope().lookupName("this",
-										false);
-								ei.setQualifier(qualifier);
-							}
-						}
 					}
-				}
-				if (fcn == null) {
-					// Could be a host function accessed through a non-host
-					// qualifier:
-					// look up in the host table of the deref scope of the qualifier.
-					if (chkHostScope && qualifier != null) {
-						String n = ei.getName().getText();
-						if (n.indexOf('.') != -1) {
-							n = n.substring(n.lastIndexOf('.') + 1);
-							fcn = qualifier.derefScope(true).lookupName(n,
-									chkHostScope);
-							
-							if (qualifier != null && fcn != null
-									&& qualifier.node() instanceof DeclNode) {
-								if (((DeclNode) qualifier.node())
-										.isHostClassRef()
-										&& fcn.scope() instanceof DeclNode.Usr
-										&& addThisPtrParameter) {
-									ei.getName().stripQualifiers();
-								}
-
-							}
-						}
-					}
-				}
-
-				if (fcn == null)
-					currUnit
-							.reportError(
-									currUnit.getCurrUnitNode(),
-									"'"
-											+ call
-											+ "': identifier is not declared in the current scope "
-											+ symtab.curScope().getScopeName());
-
-				else if (qualifier != null) {
-
-					if (qualifier.node() instanceof ImportNode
-							&& ((ImportNode) qualifier.node()).isComposition()) {
-						// check that name resolution was correct. Sometimes
-						// exported function names in
-						// outer qualifier symtabs match but they are defined in
-						// different modules.
-						ISymbolNode f = this.getDclnNodeFcn((ImportNode) qualifier
-								.node(), ei.getName());
-						if (f != fcn.node()) {
-							fcn = null;
-							currUnit
-									.reportError(
-											currUnit.getCurrUnitNode(),
-											"'"
-													+ call
-													+ "': identifier is not declared in the current scope "
-													+ symtab.curScope()
-															.getScopeName());
-						}
-					}
-
-					ei.setSymbol(fcn);
-					boolean isHostFcn = false;
-					if (fcn != null) {
-						IScope sc = fcn.scope();
-						isHostFcn = (fcn.node() instanceof DeclNode.Fcn && ((DeclNode.Fcn) fcn
-								.node()).isHost());
-						if (!isHostFcn && sc instanceof DeclNode.Usr
-								&& ((DeclNode.Usr) sc).isClass()
-								&& !((DeclNode.Usr) sc).isHost()
-								&& !(fcn.node() instanceof DeclNode.FcnRef)) {
-							
-							// for function references, the scope of the
-							// function ref is not the scope of the fcn 
-							addThisPtrParameter = true;
-						}
-					}
-					if (qualifier != null && qualifier.node() instanceof ITypeKind
-							&& ((ITypeKind) qualifier.node()).isComposition()
-							&& !isHostFcn) {
-						// Strip the composition from the qualification: it
-						// won't exist at runtime
-						ei.getName().stripQualifiers();
-					}
-				}
+				} // end 'if (!skipLookup)'
 
 			}
 			return super.pass2Begin();
@@ -667,7 +671,7 @@ public class ExprNode extends BaseNode {
 			ParseUnit currUnit = ParseUnit.current();
 			if (vs.startsWith("\"")) {
 				currUnit.getCurrUnitNode().addString(vs);
-				exprCat = Cat.fromScalarCode("s");
+				exprCat = Cat.fromScalarCode(Cat.STRING);
 			} else if (vs.startsWith("'")) {
 				if (vs.length() > 1) {
 					this.getLitFlags().add(LitFlags.STR);
@@ -679,15 +683,15 @@ public class ExprNode extends BaseNode {
 					getValue().setText(
 							"\"" + vs.substring(1, vs.length() - 1) + "\"");
 					currUnit.getCurrUnitNode().addString(getValue().getText());
-					exprCat = Cat.fromScalarCode("s");
+					exprCat = Cat.fromScalarCode(Cat.STRING);
 				} else
-					exprCat = Cat.fromScalarCode("u1");
+					exprCat = Cat.fromScalarCode(Cat.UINT8);
 			} else if (Character.isDigit(vs.charAt(0))) {
-				exprCat = Cat.fromScalarCode("n");
+				exprCat = Cat.fromScalarCode(Cat.NUMLIT);
 			} else if (vs.equals("null")) {
-				exprCat = Cat.fromScalarCode("v");
+				exprCat = Cat.fromScalarCode(Cat.VOID);
 			} else if (vs.equals("true") || vs.equals("false")) {
-				exprCat = Cat.fromScalarCode("b");
+				exprCat = Cat.fromScalarCode(Cat.BOOL);
 			}
 		}
 	}
@@ -818,12 +822,6 @@ public class ExprNode extends BaseNode {
 			return thisPtr;
 		}
 
-		public boolean isIntrisicCall() {
-			if (getName().getText().matches(ParseUnit.INTRINSIC_PREFIX + ".*"))
-				return true;
-			return false;
-		}
-
 		public SymbolEntry getQualifier() {
 			return qualifier;
 		}
@@ -838,7 +836,7 @@ public class ExprNode extends BaseNode {
 
 		Ident(int ttype, String ttext, boolean dr) {
 			super(ttype, ttext);
-			deref = dr;
+			postExpr = dr;
 		}
 
 		public Atom getName() {
@@ -887,6 +885,8 @@ public class ExprNode extends BaseNode {
 			// a variable be declared before it is referenced.
 
 			ParseUnit currUnit = ParseUnit.current();
+			if (ParseUnit.isIntrinsicCall(this.getName().getText()))
+				return super.pass2Begin();
 			if (this.getParent() instanceof ExprNode.Ident
 					&& ((ExprNode.Ident) this.getParent()).getSymbol() != null) {
 
@@ -905,7 +905,7 @@ public class ExprNode extends BaseNode {
 				}
 			}
 			boolean dbg = false;
-			if (this.getName().getText().matches(".*init"))
+			if (this.getName().getText().matches("hll.red"))
 				dbg = true;
 			if (symbol == null)
 				symbol = currUnit.getSymbolTable().resolveSymbol(getName(),
@@ -964,7 +964,32 @@ public class ExprNode extends BaseNode {
 
 		@Override
 		protected void pass2End() {
+			if (ParseUnit.isIntrinsicCall(this.getName().getText()))
+				return;
 			
+			if (qualifier == null) {
+				if (getName().getText().indexOf('.') != -1) {
+					String n = getName().getText();
+					n = n.substring(0, n.lastIndexOf('.'));
+					qualifier = ParseUnit.current().getSymbolTable().lookupName(n, false);
+					if (qualifier == null)
+						qualifier = ParseUnit.current().getSymbolTable().curScope().lookupName(n, true);
+
+					this.setQualifier(qualifier);
+
+				} 
+			}
+			if (symbol == null) {
+				symbol = ParseUnit.current().getSymbolTable().resolveSymbol(getName(),
+						ParseUnit.current().getSymbolTable().curScope());
+				if (symbol == null) {
+					ParseUnit.current().reportError(getName(),
+							"identifier is not declared in the current scope "
+							+ ParseUnit.current().getSymbolTable().curScope().getScopeName());
+				} else {
+					setSymbol(symbol);
+				}
+			}
 			if (symbol != null) {
 				if (symbol.node() instanceof DeclNode.Var
 						&& ((DeclNode.Var) symbol.node()).isConst())
@@ -999,6 +1024,7 @@ public class ExprNode extends BaseNode {
 
 			}
 		}
+		
 	}
 
 	// ExprNode.Typ (used for init expressions for meta parameters)
@@ -1097,11 +1123,10 @@ public class ExprNode extends BaseNode {
 						currUnit.getSymbolTable().curScope());
 				if (symbol == null) {
 					currUnit.reportError(ei.getName(),
-							"identifer is not declared in the current scope");
+							"identifier is not declared in the current scope "
+									+ ParseUnit.current().getSymbolTable().curScope().getScopeName());
 				} else {
 					ei.setSymbol(symbol);
-					// This prevents codegen collisions with parameters and locals with the same name.
-					//ei.getName().setText("this." + ei.getName().getText());
 				}
 			} else {
 				symbol = currUnit.getSymbolTable().lookupName(
@@ -1214,7 +1239,7 @@ public class ExprNode extends BaseNode {
 				exprCat = ((Cat.Arr) basecat).getBase();
 			} else if (basecat instanceof Cat.Scalar
 					&& ((Cat.Scalar) basecat).kind() == 's') {
-				exprCat = Cat.fromScalarCode("u1");
+				exprCat = Cat.fromScalarCode(Cat.UINT8);
 			}
 			if (exprCat == Cat.UNKNOWN) {
 				ParseUnit.current().reportError(getBase(),
@@ -1416,7 +1441,7 @@ public class ExprNode extends BaseNode {
 					break;
 				}
 			}
-			exprCat = Cat.VEC;
+			exprCat = Cat.VECTOR;
 		}
 
 		@Override
@@ -1427,13 +1452,16 @@ public class ExprNode extends BaseNode {
 
 	// ExprNode
 
-	static private final String LENGTH_CODE = "u2";
+	static private final String LENGTH_CODE = Cat.UINT16;
 
 	protected Cat exprCat = Cat.UNKNOWN;
 	protected boolean isConst = false;
 
 	// True when this expr or ident is to the right of a '.'
-	protected boolean deref = false;
+	protected boolean postExpr = false;
+	public boolean isPostExpr() {
+		return postExpr;
+	}
 
 	ExprNode(int ttype, String ttext) {
 		this.token = new Atom(ttype, ttext);

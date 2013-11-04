@@ -5,26 +5,21 @@ package com.amaret.pollen.translator;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.BaseNode;
 import com.amaret.pollen.parser.DeclNode;
+import com.amaret.pollen.parser.DeclNode.Class;
+import com.amaret.pollen.parser.DeclNode.Formal;
 import com.amaret.pollen.parser.ExprNode;
 import com.amaret.pollen.parser.IScope;
-import com.amaret.pollen.parser.ISymbolNode;
 import com.amaret.pollen.parser.ImportNode;
 import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.StmtNode;
-import com.amaret.pollen.parser.SymbolEntry;
 import com.amaret.pollen.parser.TypeNode;
+import com.amaret.pollen.parser.TypeNode.Usr;
 import com.amaret.pollen.parser.UnitNode;
 import com.amaret.pollen.parser.pollenParser;
-import com.amaret.pollen.parser.DeclNode.Class;
-import com.amaret.pollen.parser.DeclNode.Fcn;
-import com.amaret.pollen.parser.DeclNode.Formal;
-import com.amaret.pollen.parser.DeclNode.ITypeKind;
-import com.amaret.pollen.parser.TypeNode.Usr;
 
 public class UnitHeader {
 
@@ -77,9 +72,9 @@ public class UnitHeader {
         				title = true;
         			}
 					DeclNode.Formal f = (Formal) b;
-					gen.fmt.print("#define %1%2 (", gen.uname_target(), f.getName());
+					gen.getFmt().print("#define %1%2 (", gen.uname_target(), f.getName());
 					gen.aux.genExpr(f.getInit());
-					gen.fmt.print(")\n");
+					gen.getFmt().print(")\n");
 				}            	
 			}
 
@@ -104,27 +99,27 @@ public class UnitHeader {
     }
 
     private void genDecl$Const(DeclNode.Var decl) {
-        gen.fmt.print("#define %1%2 (", gen.uname_target(), decl.getName());
+        gen.getFmt().print("#define %1%2 (", gen.uname_target(), decl.getName());
         gen.aux.genExpr(decl.getInit());
-        gen.fmt.print(")\n");
+        gen.getFmt().print(")\n");
     }
     
     private void genDecl$Enum(DeclNode.Usr decl) {
     	if (!decl.isEnum())
     		return;
-        gen.fmt.print("typedef uint8 %1%2;\n", gen.uname_target(), decl.getName());
+        gen.getFmt().print("typedef uint8 %1%2;\n", gen.uname_target(), decl.getName());
         int k = 0;
         for (DeclNode.EnumVal ev : decl.getVals()) {
-            gen.fmt.print("#define %1%2_%3 %4\n", gen.uname_target(), decl.getName(), ev.getName(), k++);
+            gen.getFmt().print("#define %1%2_%3 %4\n", gen.uname_target(), decl.getName(), ev.getName(), k++);
         }
     }
     
     private void genDecl$Fcn(DeclNode.Fcn decl) {
-        gen.fmt.print("extern ");
+        gen.getFmt().print("extern ");
         TypeNode ft = decl.getTypeSpec();
         gen.aux.genTypeWithVarName(ft, gen.uname_target() + gen.aux.mkPollenCname(decl.cname()) + gen.aux.mkSuf(decl));
         gen.aux.genFcnArgs(decl.getFormals(), true, decl);
-        gen.fmt.print(";\n");
+        gen.getFmt().print(";\n");
     }
 
 	private void genDecl$HostVar(DeclNode.Var decl) {
@@ -138,10 +133,10 @@ public class UnitHeader {
 		
 		String dbg = decl.getName().getText();
 
-		gen.fmt.print("typedef ");
+		gen.getFmt().print("typedef ");
 		gen.aux.genTypeWithVarName(decl.getTypeSpec(), gen.uname_target() + decl.getName()
 				+ "__TYPE");
-		gen.fmt.print(";\n");
+		gen.getFmt().print(";\n");
 		String braces = "";
         if (decl instanceof DeclNode.Arr) {
         	for (ExprNode e : ((DeclNode.Arr)decl).getDim().getElems()) {
@@ -151,7 +146,7 @@ public class UnitHeader {
         
         String constStr = (!decl.isHostClassRef() && !decl.isClassScope()) ? "const " : ""; 
 		
-        gen.fmt.print("extern " + constStr + "%1__TYPE %1%2%3;\n", gen.uname_target()
+        gen.getFmt().print("extern " + constStr + "%1__TYPE %1%2%3;\n", gen.uname_target()
 				+ decl.getName(), gen.aux.mkSuf(decl),braces);
 
 	}
@@ -170,15 +165,15 @@ public class UnitHeader {
         
         for (DeclNode fld : fields) {
         	if (fld instanceof DeclNode.FcnRef) {
-        		gen.fmt.print("%ttypedef ");
+        		gen.getFmt().print("%ttypedef ");
         		String n = gen.aux.mkCname(((DeclNode.ITypeSpec) fld).getTypeSpec());
         		String s = gen.aux.genType$FcnRef((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), n, true); 
         		//gen.aux.genType(((DeclNode.ITypeSpec) fld).getTypeSpec(), "" + fld.getName());      
-        		gen.fmt.print("%1;\n", s);
+        		gen.getFmt().print("%1;\n", s);
         	}       
         }              
         
-        gen.fmt.print("%tstruct %1 {\n%+", clsStruct);
+        gen.getFmt().print("%tstruct %1 {\n%+", clsStruct);
         for (DeclNode fld : fields) {
         	
 			if (fld instanceof DeclNode.Var
@@ -188,29 +183,29 @@ public class UnitHeader {
 			if (fld instanceof DeclNode.FcnRef) {
 				String n = gen.aux.mkCname(((DeclNode.ITypeSpec) fld).getTypeSpec());
 				String s = gen.aux.genType$FcnRef((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), n, false);
-				gen.fmt.print("%t%1 %2", s, fld.getName());
+				gen.getFmt().print("%t%1 %2", s, fld.getName());
 			}
 			else
 				if (fld instanceof DeclNode.ITypeSpec && !(fld instanceof DeclNode.Fcn)) {
-					gen.fmt.print("%t");
+					gen.getFmt().print("%t");
 					gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "" + fld.getName());       		
 				}
     		if (fld instanceof DeclNode.Arr) {
     			for (BaseNode e : ((DeclNode.Arr)fld).getDim().getElems()) {
-    				gen.fmt.print("[");
+    				gen.getFmt().print("[");
     				if (e instanceof ExprNode && ((ExprNode)e).getConstExpr() != null)
     					 gen.aux.genExpr(((ExprNode) e).getConstExpr());
     				else 
     					ParseUnit.current().reportError(fld.getName(), "array dimensions must resolve to constant or preset values");
-    				gen.fmt.print("]");
+    				gen.getFmt().print("]");
     			}
     		}
     		if (!(fld instanceof DeclNode.Fcn))
-    			gen.fmt.print(";\n");
+    			gen.getFmt().print(";\n");
         }
-        gen.fmt.print("%-%t};\n"); 
-        gen.fmt.print("%ttypedef struct %1 %1;\n", clsStruct, clsStruct); 
-        gen.fmt.print("%ttypedef struct %1* %2;\n", clsStruct, clsStructPtr); 
+        gen.getFmt().print("%-%t};\n"); 
+        gen.getFmt().print("%ttypedef struct %1 %1;\n", clsStruct, clsStruct); 
+        gen.getFmt().print("%ttypedef struct %1* %2;\n", clsStruct, clsStructPtr); 
 
     }
     
@@ -222,13 +217,13 @@ public class UnitHeader {
         List<DeclNode> fields = decl.getFeatures();
         for (DeclNode fld : fields) {
         	if (fld instanceof DeclNode.FcnRef) {
-        		gen.fmt.print("%ttypedef ");
+        		gen.getFmt().print("%ttypedef ");
         		String n = gen.aux.mkCname(((DeclNode.ITypeSpec) fld).getTypeSpec());
         		String s = gen.aux.genType$FcnRef((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), n, true); 
-        		gen.fmt.print("%1;\n", s);
+        		gen.getFmt().print("%1;\n", s);
         	}       
         }              
-        gen.fmt.print("%tstruct %1 {\n%+", gen.uname_target());
+        gen.getFmt().print("%tstruct %1 {\n%+", gen.uname_target());
         String dbg = gen.uname_target();
         for (DeclNode fld : fields) {
 
@@ -238,24 +233,24 @@ public class UnitHeader {
         		continue;
 
         	if (!fld.isHost() && fld instanceof DeclNode.ITypeSpec && !(fld instanceof DeclNode.Fcn)) {
-        		gen.fmt.print("%t");     
+        		gen.getFmt().print("%t");     
 
         		boolean proMem = fld instanceof DeclNode.TypedMember && ((DeclNode.TypedMember)fld).isProtocolMember();
         		if (proMem) {
-        			gen.fmt.print("struct ");
+        			gen.getFmt().print("struct ");
         			gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "");
-        			gen.fmt.print("*"  + fld.getName().getText());
+        			gen.getFmt().print("*"  + fld.getName().getText());
         		}
         		else if (fld.isHostClassRef()) {
-        			gen.fmt.mark();
+        			gen.getFmt().mark();
         			gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "");
-        			String typeString = gen.fmt.release();
-        			gen.fmt.print("%1 %2",typeString.substring(0, typeString.length()-2), fld.getName().getText());
+        			String typeString = gen.getFmt().release();
+        			gen.getFmt().print("%1 %2",typeString.substring(0, typeString.length()-2), fld.getName().getText());
         		}
         		else if (fld instanceof DeclNode.FcnRef) {
         			String n = gen.aux.mkCname(((DeclNode.ITypeSpec) fld).getTypeSpec());
     				String s = gen.aux.genType$FcnRef((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), n, false);
-    				gen.fmt.print("%t%1 %2", s, fld.getName());
+    				gen.getFmt().print("%t%1 %2", s, fld.getName());
     			}
         		else {
         			String name = (fld instanceof DeclNode.Arr && !((DeclNode.Arr)fld).hasDim()) ? "* " : "";
@@ -265,18 +260,18 @@ public class UnitHeader {
         		if (fld instanceof DeclNode.Arr && ((DeclNode.Arr)fld).hasDim()) {
         			
         			for (BaseNode e : ((DeclNode.Arr)fld).getDim().getElems()) {
-        				gen.fmt.print("[");
+        				gen.getFmt().print("[");
         				if (e instanceof ExprNode.Const) 
         					gen.aux.genExpr((ExprNode) e);
-        				gen.fmt.print("]");
+        				gen.getFmt().print("]");
         			}
         		}
-        		gen.fmt.print(";\n");
+        		gen.getFmt().print(";\n");
         	}
         }
-        gen.fmt.print("%-%t};\n"); 
+        gen.getFmt().print("%-%t};\n"); 
         //gen.fmt.print("%ttypedef struct %1* %1;\n", gen.cname(), gen.cname());     
-        gen.fmt.print("%ttypedef struct %1 %1;\n", gen.uname_target(), gen.uname_target());   
+        gen.getFmt().print("%ttypedef struct %1 %1;\n", gen.uname_target(), gen.uname_target());   
 
 
     }
@@ -299,10 +294,10 @@ public class UnitHeader {
     	
     	if (gen.curUnit().isModule() && (!decl.isHost() || (decl instanceof DeclNode.TypedMember))) {
     		String qualifier = decl.isHostClassRef() ? "_" : ".";
-    		gen.fmt.print("#define " + gen.uname_target() + decl.getName() + gen.aux.mkSuf(decl) + " ");
+    		gen.getFmt().print("#define " + gen.uname_target() + decl.getName() + gen.aux.mkSuf(decl) + " ");
     		String cname = gen.uname_target().substring(0, gen.uname_target().length()-1);
-    		gen.fmt.print(cname + qualifier + decl.getName());
-    		gen.fmt.print("\n");
+    		gen.getFmt().print(cname + qualifier + decl.getName());
+    		gen.getFmt().print("\n");
     		if (decl.getTypeSpec() instanceof TypeNode.Usr) {
     			TypeNode.Usr t = (Usr) decl.getTypeSpec();
 				if (t.getSymbol() != null
@@ -319,24 +314,24 @@ public class UnitHeader {
 								&& !((DeclNode.Var) fld).isIntrinsicUsed())
 							continue;
 						
-	    	    		gen.fmt.print("#define " + gen.uname_target() + decl.getName() + "_" + fld.getName() + gen.aux.mkSuf(decl) + " ");
+	    	    		gen.getFmt().print("#define " + gen.uname_target() + decl.getName() + "_" + fld.getName() + gen.aux.mkSuf(decl) + " ");
 	    	    		cname = gen.uname_target().substring(0, gen.uname_target().length()-1);
-	    	    		gen.fmt.print(cname + qualifier + decl.getName() + deref + fld.getName());
-	    	    		gen.fmt.print("\n");
+	    	    		gen.getFmt().print(cname + qualifier + decl.getName() + deref + fld.getName());
+	    	    		gen.getFmt().print("\n");
 
 	    			}
 				}
     		}   		
     	}
     	else {
-    		gen.fmt.print("extern ");
+    		gen.getFmt().print("extern ");
     		gen.aux.genTypeWithVarName(decl.getTypeSpec(), gen.uname_target() + decl.getName() + gen.aux.mkSuf(decl));
     		if (decl instanceof DeclNode.Arr) {
     			for (ExprNode e : ((DeclNode.Arr)decl).getDim().getElems()) {
-    				gen.fmt.print("[]");
+    				gen.getFmt().print("[]");
     			}
     		}
-    		gen.fmt.print(";\n");
+    		gen.getFmt().print(";\n");
     	}
         
     }
@@ -362,7 +357,7 @@ public class UnitHeader {
     		// the unit type is a module
     		// the nested classes are first to resolve references to them in the module
 			gen.aux.genTitle("extern definition");
-            gen.fmt.print("extern struct %1%2%3", gen.uname_target(), " ", gen.uname_target().substring(0, gen.uname_target().length()-1) + ";\n"); 
+            gen.getFmt().print("extern struct %1%2%3", gen.uname_target(), " ", gen.uname_target().substring(0, gen.uname_target().length()-1) + ";\n"); 
             //gen.fmt.print("extern struct %1%2%3", gen.cname(), "* ", gen.cname().substring(0, gen.cname().length()-1) + ";\n"); 
 
             for (/*DeclNode decl*/ BaseNode b : unit.getFeatures()) {
@@ -405,7 +400,7 @@ public class UnitHeader {
             	break;
             }
         }
-    	gen.fmt.print("\n");
+    	gen.getFmt().print("\n");
     }
     
     private void genFcns(UnitNode unit) {
@@ -426,20 +421,7 @@ public class UnitHeader {
     			genDecl$Fcn(f);   			
     		}		
     	}
-    	gen.fmt.print("\n");
-    	for (Map.Entry<String, SymbolEntry> export : unit.getEntrySet()) {
-			ISymbolNode ex = export.getValue().node();
-			if (!(ex instanceof DeclNode.Fcn))
-				continue;
-			IScope local = export.getValue().scope();
-			DeclNode.Fcn f = (Fcn) ex;
-			
-			String exp = gen.aux.mkCname(f.getEnclosingScope()) + f.getName() + "__E";			
-			String loc = gen.aux.mkCname(local) + ex.getName() + "__E"; 
-			gen.fmt.print("#define %1 %2\n", loc, exp);
-
-    	}
-    	
+    	gen.getFmt().print("\n");
     }
     
     private void genHostVars(UnitNode unit) {
@@ -508,32 +490,32 @@ public class UnitHeader {
     private void genForwards(UnitNode unit) {
     	
     	gen.aux.genTitle("forward declarations for intrinsics");
-        gen.fmt.print("void %1pollen__print_bool(bool b);\n", gen.uname_target());
-        gen.fmt.print("void %1pollen__print_int(int32 i);\n", gen.uname_target());
-        gen.fmt.print("void %1pollen__print_uint(uint32 u);\n", gen.uname_target());
-        gen.fmt.print("void %1pollen__print_str(string s);\n", gen.uname_target());
-        gen.fmt.print("void %1pollen__print_x(void* print, void* val);\n", gen.uname_target());
+        gen.getFmt().print("void %1pollen__print_bool(bool b);\n", gen.uname_target());
+        gen.getFmt().print("void %1pollen__print_int(int32 i);\n", gen.uname_target());
+        gen.getFmt().print("void %1pollen__print_uint(uint32 u);\n", gen.uname_target());
+        gen.getFmt().print("void %1pollen__print_str(string s);\n", gen.uname_target());
+        gen.getFmt().print("void %1pollen__print_x(void* print, void* val);\n", gen.uname_target());
         
         // if assertions are turned on, generate pollen.assert
         if (ProcessUnits.isAsserts()) {
-            gen.fmt.print("%tvoid %1pollen__assert__E(bool b, string msg);\n", gen.uname_target());
+            gen.getFmt().print("%tvoid %1pollen__assert__E(bool b, string msg);\n", gen.uname_target());
         }       
 
         
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "reset") == null) {
-            gen.fmt.print("void %1pollen__reset__E();\n", gen.uname_target());
+            gen.getFmt().print("void %1pollen__reset__E();\n", gen.uname_target());
         }
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "ready") == null) {
-            gen.fmt.print("void %1pollen__ready__E();\n", gen.uname_target());
+            gen.getFmt().print("void %1pollen__ready__E();\n", gen.uname_target());
         }
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "shutdown") == null) {
-            gen.fmt.print("void %1pollen__shutdown__E();\n", gen.uname_target());
+            gen.getFmt().print("void %1pollen__shutdown__E();\n", gen.uname_target());
         }
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "wake") == null) {
-            gen.fmt.print("void %1pollen__wake__E(byte id);\n", gen.uname_target());
+            gen.getFmt().print("void %1pollen__wake__E(byte id);\n", gen.uname_target());
         }
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "hibernate") == null) {
-            gen.fmt.print("void %1pollen__hibernate__E(byte id);\n", gen.uname_target());
+            gen.getFmt().print("void %1pollen__hibernate__E(byte id);\n", gen.uname_target());
         }
     }
     
@@ -546,7 +528,7 @@ public class UnitHeader {
 			}
     		if (decl instanceof StmtNode.Inject) {
     			gen.aux.genExpr(((StmtNode.Inject)decl).getExpr());
-    			gen.fmt.print("\n");
+    			gen.getFmt().print("\n");
     		}
     	}
     	for (BaseNode decl : unit.getInject2()) {
@@ -556,7 +538,7 @@ public class UnitHeader {
 			}
     		if (decl instanceof StmtNode.Inject) {
     			gen.aux.genExpr(((StmtNode.Inject)decl).getExpr());
-    			gen.fmt.print("\n");
+    			gen.getFmt().print("\n");
     		}
     	}    	
     }

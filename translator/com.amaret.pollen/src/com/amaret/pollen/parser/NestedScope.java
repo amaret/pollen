@@ -2,8 +2,8 @@ package com.amaret.pollen.parser;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 public class NestedScope implements IScope {
 	

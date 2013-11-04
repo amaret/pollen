@@ -33,15 +33,15 @@ public class UnitBody {
 		gen.aux.genTypeWithVarName(fcn.getTypeSpec(), gen.uname_target()
 				+ gen.aux.mkPollenCname(fcn.cname()) + gen.aux.mkSuf(fcn));
 		gen.aux.genFcnArgs(body.getFormals(), true, fcn);
-		gen.fmt.print(" {\n%+");
+		gen.getFmt().print(" {\n%+");
 		
 		gen.aux.genLocals(body.getLocalVars());
 		for (StmtNode stmt : body.getStmts()) {
-			gen.fmt.print("%t");
+			gen.getFmt().print("%t");
 			gen.aux.genStmt(stmt);
-			gen.fmt.print("\n");
+			gen.getFmt().print("\n");
 		}
-		gen.fmt.print("%-}\n\n");
+		gen.getFmt().print("%-}\n\n");
 	}
 
 // unused
@@ -79,7 +79,7 @@ public class UnitBody {
     				title = true;
     			}
     			gen.aux.genExpr(((DeclNode.Inject) decl).getInjectExpr());
-    			gen.fmt.print("\n");
+    			gen.getFmt().print("\n");
     		}			
 		}
 
@@ -100,10 +100,10 @@ public class UnitBody {
 
 	private void genStrings(UnitNode unit) {
 		// this prints out the name of the instantiated file, if applicable
-		gen.fmt.print("static const char %1_s__fileName[] = \"%2\";\n", gen.uname_target(), 
+		gen.getFmt().print("static const char %1_s__fileName[] = \"%2\";\n", gen.uname_target(), 
 				unit.getUnitType().getName().getText() + ".p"); // unit.getFileName());
 		for (Map.Entry<String, Integer> ent : unit.getStrings()) {
-			gen.fmt.print("static const char %1_s__%2[] = %3;\n", gen.uname_target(),
+			gen.getFmt().print("static const char %1_s__%2[] = %3;\n", gen.uname_target(),
 					ent.getValue(), ent.getKey());
 		}
 	}

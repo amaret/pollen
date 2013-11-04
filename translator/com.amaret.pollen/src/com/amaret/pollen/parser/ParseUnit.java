@@ -42,12 +42,28 @@ public class ParseUnit {
 	public static final String EXPORT_PREFIX = "$$export";
 	public static final String INTRINSIC_PREFIX = "pollen__";
 	public static final String DEFAULT_LOOPVAR = INTRINSIC_PREFIX + "loopvar"; // for loops w/ undeclared loop variables
+	public static final String INTRINSIC_UNITVAR = INTRINSIC_PREFIX +"unitname";
 	public static final String CTOR_CLASS_TARGET = "new_";
 	public static final String CTOR_CLASS_HOST = "new_host";
 	public static final String CTOR_MODULE_TARGET = "targetInit";
 	public static final String CTOR_MODULE_HOST = "$$hostInit";
 	public static final String PRIVATE_INIT = "$$privateInit";
 	public static final String PRESET_INIT = INTRINSIC_PREFIX + "presets__";
+	public static final String KIND_EXTERN = "__E";
+	public static final String KIND_INTERN = "__I";
+	public static final String KIND_ARRAY = "__A";
+	public static final String KIND_VAR = "__V";
+	
+	public static boolean isIntrinsicCall(String s) {
+		if (!(s.matches(ParseUnit.INTRINSIC_PREFIX + ".*")))
+			return false;
+		if (s.equals(ParseUnit.INTRINSIC_PREFIX + "unitname"))
+			return false;
+		if (s.equals(ParseUnit.INTRINSIC_PREFIX + ParseUnit.DEFAULT_LOOPVAR))
+			return false;			
+		return true;
+	}
+	
 	
 	// info on parse time current type (under construction)
 	private pollenParser parser = null;
@@ -604,7 +620,7 @@ public class ParseUnit {
 	 */
 	public void reportError(BaseNode node, String msg) {
 		if (node instanceof ExprNode.Ident) {
-			if (((ExprNode.Ident) node).isIntrisicCall())
+			if (ParseUnit.isIntrinsicCall(((ExprNode.Ident) node).getName().getText()))
 				return;
 			msg = "'" + ((ExprNode.Ident) node).getName() + "': " + msg;
 		}
@@ -677,7 +693,7 @@ public class ParseUnit {
 	private void reportErrorConsole(String fileName, int line, int col,
 			String msg) {
 
-		String key = fileName + line + col + msg; // don't emit duplicate error
+		String key = fileName + line + msg; // don't emit duplicate error
 													// msgs.
 		if (!ParseUnit.isDebugMode() && errors.containsKey(key))
 			return;

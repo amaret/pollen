@@ -18,6 +18,7 @@ public class Formatter {
 	    private int col;
 	    private StringBuilder sb;
 	    private int mark = -1;
+	    private int debugMark = -1;
 	        
 	    public void append(String s) {
 	        sb.append(s);
@@ -56,6 +57,10 @@ public class Formatter {
 	                sb.append(args[3].toString());
 	                continue;
 	            }
+	        }
+	        if (debugMark != -1) {
+	        	String dbgStr = sb.substring(debugMark);
+	        	System.out.println("PRNDBG: " + dbgStr);
 	        }
 	    }
 
@@ -121,6 +126,38 @@ public class Formatter {
 	    
 	    public void print(String fmt, Object o1, Object o2, Object o3, Object o4) {
 	        doPrint(fmt, o1, o2, o3, o4);
+	    }
+	    public void print_dbg(Atom atom) {
+	    	debugMark = sb.length();
+	        doPrint(atom.getText(), null, null, null, null);
+	        debugMark = -1;
+	    }
+	    
+	    public void print_dbg(String fmt) {
+	    	debugMark = sb.length();
+	        doPrint(fmt, null, null, null, null);
+	        debugMark = -1;
+	    }
+	    public void print_dbg(String fmt, Object o1) {
+	    	debugMark = sb.length();
+	        doPrint(fmt, o1, null, null, null);
+	        debugMark = -1;
+	    }
+	    public void print_dbg(String fmt, Object o1, Object o2) {
+	    	debugMark = sb.length();
+	        doPrint(fmt, o1, o2, null, null);
+	        debugMark = -1;
+	    }
+	    public void print_dbg(String fmt, Object o1, Object o2, Object o3) {
+	    	debugMark = sb.length();
+	        doPrint(fmt, o1, o2, o3, null);
+	        debugMark = -1;
+	    }
+	    
+	    public void print_dbg(String fmt, Object o1, Object o2, Object o3, Object o4) {
+	    	debugMark = sb.length();
+	        doPrint(fmt, o1, o2, o3, o4);
+	        debugMark = -1;
 	    }
 	    
 	    public String release() {

@@ -8,11 +8,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
+import com.amaret.pollen.translator.Generator;
 
-public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrapper, DeclNode.ITypeKind {
+public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrapper, DeclNode.ITypeKind, IOutputName {
 	
     static private final int IMPORTS = 1;
     static private final int PKGNAME = 0;
@@ -84,6 +84,12 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     		presetList.add(s);
     	}   	
     }
+    public String getOutputNameHost(Generator gen, IScope sc, EnumSet<Flags> flags){		
+    	return gen.uname();    	
+    }
+	public String getOutputNameTarget(Generator gen, IScope sc, EnumSet<Flags> flags){
+		return this.getQualName().replace('.', '_');		
+	}
 
     /**
      * 
