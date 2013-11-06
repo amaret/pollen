@@ -93,13 +93,14 @@ public class Generator {
 		ParseUnit.current().reportError(curUnit, "Generator.getOutputName(): unimplemented feature");
 		return null;
 	}
-	public String getOutputQName(Object s, ISymbolNode n, IScope is, boolean thisPtr) {
+
+	public String getOutputQName(Object s, ISymbolNode n, IScope is, EnumSet<Flags> flags) {
 		if (s instanceof IOutputQualifiedName) {
 			if (aux.isHost()) {
-				return ((IOutputQualifiedName)s).getOutputQNameHost(this, n, is, thisPtr);
+				return ((IOutputQualifiedName)s).getOutputQNameHost(this, n, is, flags);
 			}
 			else {
-				return ((IOutputQualifiedName)s).getOutputQNameTarget(this, n, is, thisPtr);
+				return ((IOutputQualifiedName)s).getOutputQNameTarget(this, n, is, flags);
 			}
 		}
 		ParseUnit.current().reportError(curUnit, "Generator.getOutputQName(): unimplemented feature");

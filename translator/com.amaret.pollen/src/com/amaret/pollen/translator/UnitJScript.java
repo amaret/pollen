@@ -1,13 +1,16 @@
 package com.amaret.pollen.translator;
 
+import java.util.EnumSet;
 import java.util.List;
 
 import com.amaret.pollen.parser.BaseNode;
 import com.amaret.pollen.parser.BodyNode;
 import com.amaret.pollen.parser.Cat;
 import com.amaret.pollen.parser.DeclNode;
+import com.amaret.pollen.parser.DeclNode.Formal;
 import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
 import com.amaret.pollen.parser.ExprNode;
+import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.ImportNode;
 import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.StmtNode;
@@ -217,6 +220,17 @@ public class UnitJScript {
     				genDecl(decl);
     			}
     		}
+		if (unit.getUnitType().getMetaFormals() != null)
+			// initialize host variables to values from meta formals
+			for (BaseNode b : unit.getUnitType().getMetaFormals().getElems()) {
+				if (b instanceof DeclNode.Formal) {
+					DeclNode.Formal f = (Formal) b;
+					String s = gen.getOutputName(f, f.getDefiningScope(), EnumSet.noneOf(Flags.class));
+					gen.getFmt().print("%t%1 = ", s);
+					gen.aux.genExpr(f.getInit());
+					gen.getFmt().print(";\n");
+				}            	
+			}
     }
         
     private void genEpilogue(UnitNode unit) {

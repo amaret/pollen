@@ -917,7 +917,8 @@ metaParmGen
 	  
 	 |   builtinType id=IDENT ('=' primitiveLit { ctext = $primitiveLit.text; } )?
 	 		{
-	 			if (instantiateToDefaults || isVoidInstance) {
+	 		flags.add(Flags.META_ARG);
+	 		if (instantiateToDefaults || isVoidInstance) {
 		    		// instantiate to defaults
 		    		if (ctext.isEmpty()) {
 		    			if (isVoidInstance)
@@ -927,7 +928,6 @@ metaParmGen
 		    		}
 		    	}
 		    	else {
-		    	  flags.add(Flags.META_ARG);
 		    	  BaseNode b = (clientImport.getMeta() != null && clientImport.getMeta().size() >= $metaParmsGen::idx+1) 
 		    			? clientImport.getMeta().get($metaParmsGen::idx) : null ;
 		    			
