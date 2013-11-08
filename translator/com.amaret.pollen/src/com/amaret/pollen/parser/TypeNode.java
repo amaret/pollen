@@ -152,7 +152,7 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
         	return this.getOutputNameTarget(g, sc, flags);
         }
         public String getOutputNameTarget(Generator g, IScope sc, EnumSet<Flags> flags) {
-        	boolean isPtr = true; 
+        	boolean isCStructRef = true; 
         	boolean isTypedef = flags.contains(Flags.IS_TYPEDEF);
         	boolean addTypeMods = flags.contains(Flags.IS_DECL);
         	
@@ -183,22 +183,21 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 			
 			if (this.getParent() instanceof DeclNode) {
 				if (((DeclNode)this.getParent()).isHostClassRef()) {
-					// not a ptr deref 
-					isPtr = false;
+					isCStructRef = false;
 				}								
 			}
 			if (this.getParent() instanceof TypeNode.Arr && this.getParent().getParent() instanceof DeclNode.Arr) {
 				DeclNode.Arr a = (DeclNode.Arr) this.getParent().getParent();
 				if (a.isHost()) {
-					isPtr = false;
+					isCStructRef = false;
 				}
 			}
 			/*
-			 * ptr_suffix reflects which typedef is being used in c. For example:
+			 * isCStructRef reflects that a typedef is being used for the class or module struct. For example:
 			 * typedef struct pollen_events_AE pollen_events_AE;
-			 * typedef struct pollen_events_AE* pollen_events_AE_; //=> ptr_suffix is true
+			 * typedef struct pollen_events_AE* pollen_events_AE_; //use this typedef for a class
 			 */
-			String ptr_suffix = isPtr ? "_" : "";
+			String ptr_suffix = isCStructRef ? "_" : "";
 			if (s != null && s.node() != null) {
 				if (s.node() instanceof ImportNode) {
 					ImportNode i = (ImportNode) s.node();

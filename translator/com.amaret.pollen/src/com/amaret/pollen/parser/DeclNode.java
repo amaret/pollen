@@ -2278,6 +2278,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 	public boolean isHost() {
 		return flags.contains(Flags.HOST);
 	}
+	public void clearHost() {
+		flags.remove(Flags.HOST);
+	}
 
 	public boolean isClassRef() {
 		if (this instanceof DeclNode.TypedMember) {

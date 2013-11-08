@@ -491,7 +491,6 @@ public class Auxiliary {
 				}
 
 		}
-		//gen.fmt.print("\n");
 	}
 
 	private void genExpr$Hash(ExprNode.Hash expr) {
@@ -554,26 +553,11 @@ public class Auxiliary {
 		SymbolEntry qualifier = expr.getQualifier();
 		ISymbolNode qualifierNode = qualifier != null ? qualifier.node() : null;
 				
-		genName(snode, scopeOfDcln, qualifierNode, flags); 
+		String rtn = mkName(snode, scopeOfDcln, qualifierNode, flags);
+		gen.getFmt().print(rtn); 	
 	}
 
 	/**
-	 * Format the output name and print it out.
-	 * @param snode
-	 * @param scopeOfDcln
-	 * @param qualifierNode
-	 * @param flags
-	 */
-	private void genName(ISymbolNode snode, IScope scopeOfDcln,
-			ISymbolNode qualifierNode, EnumSet<Flags> flags) {
-
-		String rtn = mkName(snode, scopeOfDcln, qualifierNode, flags);
-		gen.getFmt().print(rtn); 	
-		return;
-		
-	}
-		
-		/**
 		 * Format the output name and return as a String. 
 		 * @param snode
 		 * @param scopeOfDcln
@@ -1334,7 +1318,7 @@ public class Auxiliary {
 	 */
 	void genTypeWithVarName(TypeNode type, String name) {
 		if (type instanceof TypeNode.Arr)
-			name = ""; // name output as part of type
+			name = ""; // name will be output as part of type
 		String s = mkTypeName(type) + (name == null ? "" : " " + name);
 		gen.getFmt().print("%1", s);
 	}

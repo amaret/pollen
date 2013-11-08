@@ -126,12 +126,34 @@ public class ExprNode extends BaseNode {
 
 		@Override
 		protected void pass2End() {
+			ParseUnit currUnit = ParseUnit.current();
 			isConst = !isAssign && getLeft().isConst() && getRight().isConst();
 			if (isAssign && getOp().getText().equals("=")
 					&& getRight() instanceof ExprNode.AggVal) {
 				exprCat = getLeft().getCat();
 				TypeRules.checkInit(exprCat, getRight());
 				return;
+			}
+			if (isAssign && getLeft() instanceof ExprNode.Ident) {
+				SymbolEntry se  = ((Ident) getLeft()).getSymbol();
+				if (se != null && se.node() instanceof DeclNode 						
+						&& ((DeclNode)se.node()).isHost()) {
+					// if a host variable is a target of an assignment in a target function
+					// strip the 'host' attribute
+					Tree tr = this.getParent();
+					while (tr != null && !(tr instanceof BodyNode)) {
+						tr = tr.getParent();
+					}
+					if (tr instanceof BodyNode) {
+						if (!((BodyNode)tr).getFcn().isHost()) {
+							((DeclNode)se.node()).clearHost();
+							currUnit.reportWarning(getLeft(), 
+								"host variable is the target of an assignment in a target function - host attribute stripped.");
+						}
+					}
+					
+				}
+				
 			}
 			Cat left = getSubExprCat(false);
 			Cat right = getSubExprCat(true);

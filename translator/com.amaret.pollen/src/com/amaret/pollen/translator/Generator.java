@@ -12,10 +12,8 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import com.amaret.pollen.parser.BaseNode;
 import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.IOutputName;
-import com.amaret.pollen.parser.IOutputNode;
 import com.amaret.pollen.parser.IOutputQualifiedName;
 import com.amaret.pollen.parser.IScope;
 import com.amaret.pollen.parser.ISymbolNode;
@@ -63,22 +61,6 @@ public class Generator {
 
 	public void setNestedClass(boolean nestedClass) {
 		this.nestedClass = nestedClass;
-	}
-	
-	public String getOutputNode(BaseNode b) {
-		String rtn = null;
-		if (b instanceof IOutputNode) { 
-			getFmt().mark();
-			if (aux.isHost()) {
-				((IOutputNode)b).outputNodeHost(this);
-			}
-			else {
-				((IOutputNode)b).outputNodeTarget(this);
-			}
-			rtn = getFmt().release();
-			rtn = !rtn.isEmpty() ? rtn : null;
-		}		
-		return rtn;
 	}
 
 	public String getOutputName(Object s, IScope sc, EnumSet<Flags> flags) {
@@ -144,6 +126,10 @@ public class Generator {
 		return uname;
 	}
 
+	/**
+	 * 
+	 * @return unit name formatted for target
+	 */
 	public String uname_target() {
 		return uname_target;
 	}
@@ -165,6 +151,10 @@ public class Generator {
         
 	}
 
+	/**
+	 * 
+	 * @return unit name formatted for host.
+	 */
 	public String uname_host() {
 		return uname_host;
 	}
@@ -224,8 +214,6 @@ public class Generator {
 
         File jsFile = ParseUnit.cacheFile(unit.getQualName(), "-prog.js");
         File progFile = ParseUnit.cacheFile(unit.getQualName(), "-prog.c");
-        File outFile = ParseUnit.cacheFile(unit.getQualName(), "-prog.out");
-
         boolean missingRun = unit.getFcnMap().get(ParseUnit.INTRINSIC_PREFIX + "run") == null;
         boolean noProg = unit.isHost() || missingRun;
         if (noProg) {

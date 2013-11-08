@@ -626,6 +626,20 @@ public class ParseUnit {
 		reportErrorConsole(node.getFileName(), node.getLine(), node
 				.getCharPositionInLine() + 1, msg);
 	}
+	/**
+	 * 
+	 * @param node
+	 * @param msg
+	 */
+	public void reportWarning(BaseNode node, String msg) {
+		if (node instanceof ExprNode.Ident) {
+			msg = "'" + ((ExprNode.Ident) node).getName() + "': " + msg;
+		}
+
+		reportErrorConsole(node.getFileName(), node.getLine(), node
+				.getCharPositionInLine() + 1, "(warning) " + msg);
+	}
+
 
 	/**
 	 * Consistency check - only emitted if debug is ON.
