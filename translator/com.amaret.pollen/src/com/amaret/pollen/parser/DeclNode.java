@@ -1662,8 +1662,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		 */
 		public void setMetaQualName() {
 			if (!qnameSet && !qname.isEmpty()) {
-				// getName().setText(getName().getText() + "_" + qname); // too
-				// complex
 				getName().setText(qname);
 				qnameSet = true;
 			}
@@ -1780,7 +1778,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 		@Override
 		public TypeInfo getTypeInfo() {
-			// TODO
 			return (null);
 		}
 

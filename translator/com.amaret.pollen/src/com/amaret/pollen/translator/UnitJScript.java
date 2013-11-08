@@ -317,8 +317,6 @@ public class UnitJScript {
 		String asName = imp.getName().getText();
 		String impName = imp.getUnitName().getText();
 		
-//		if (asName.equals("Digital13")) //  || asName.equals("PB5")) //nUnit.equals("MetaPin"))
-//			ParseUnit.setDebugMode(true);
 		if (ParseUnit.isDebugMode()) {
 			debugUse(imp, nUnit, asName, impName);			
 		}

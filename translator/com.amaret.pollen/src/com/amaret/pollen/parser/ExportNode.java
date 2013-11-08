@@ -252,8 +252,7 @@ public class ExportNode extends BaseNode implements ISymbolNode {
 
         if (path.length == 1) { // module export, not a function export
         	        	
-        	// TODO 
-        	// do I call enterExport() for the module in 'export m.foo' when there is no 'export m'?
+        	// Should I call enterExport() for the module in 'export m.foo' when there is no 'export m'?
         	// currently I set isExport() true but don't call enterExport().
         	
 

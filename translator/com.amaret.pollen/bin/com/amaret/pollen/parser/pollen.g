@@ -79,7 +79,6 @@ tokens {
     S_SWITCH;
     S_WHILE;
     T_ARR;
-    T_FCN;
     T_LST;
     T_USR;
     T_STD;
@@ -1002,11 +1001,11 @@ scope {
 }
    :   (meta! { $unitTypeDefinition::meta = $meta.tree; })  
      (
-         ('module') => moduleDefinition   		
+         	('module') => moduleDefinition   		
 	|     ('class') =>  classDefinition
-   |     ('protocol') => protocolDefinition 
-   |     ('composition') => compositionDefinition 
-   |     ('enum') => enumDefinition 
+   	|     ('protocol') => protocolDefinition 
+   	|     ('composition') => compositionDefinition 
+   	|     ('enum') => enumDefinition 
      )
    ;
 extendsClause

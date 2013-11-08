@@ -4,6 +4,7 @@
 package com.amaret.pollen.translator;
 
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 
 import com.amaret.pollen.driver.ProcessUnits;
@@ -12,6 +13,7 @@ import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.DeclNode.Class;
 import com.amaret.pollen.parser.DeclNode.Formal;
 import com.amaret.pollen.parser.ExprNode;
+import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.IScope;
 import com.amaret.pollen.parser.ImportNode;
 import com.amaret.pollen.parser.ParseUnit;
@@ -166,9 +168,7 @@ public class UnitHeader {
         for (DeclNode fld : fields) {
         	if (fld instanceof DeclNode.FcnRef) {
         		gen.getFmt().print("%ttypedef ");
-        		String n = gen.aux.mkCname(((DeclNode.ITypeSpec) fld).getTypeSpec());
-        		String s = gen.aux.genType$FcnRef((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), n, true); 
-        		//gen.aux.genType(((DeclNode.ITypeSpec) fld).getTypeSpec(), "" + fld.getName());      
+        		String s = gen.getOutputName((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), null, EnumSet.of(Flags.IS_TYPEDEF));
         		gen.getFmt().print("%1;\n", s);
         	}       
         }              
@@ -181,8 +181,7 @@ public class UnitHeader {
 					&& !((DeclNode.Var) fld).isIntrinsicUsed())
 				continue;
 			if (fld instanceof DeclNode.FcnRef) {
-				String n = gen.aux.mkCname(((DeclNode.ITypeSpec) fld).getTypeSpec());
-				String s = gen.aux.genType$FcnRef((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), n, false);
+        		String s = gen.getOutputName((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), null, EnumSet.noneOf(Flags.class));
 				gen.getFmt().print("%t%1 %2", s, fld.getName());
 			}
 			else
@@ -218,8 +217,7 @@ public class UnitHeader {
         for (DeclNode fld : fields) {
         	if (fld instanceof DeclNode.FcnRef) {
         		gen.getFmt().print("%ttypedef ");
-        		String n = gen.aux.mkCname(((DeclNode.ITypeSpec) fld).getTypeSpec());
-        		String s = gen.aux.genType$FcnRef((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), n, true); 
+        		String s = gen.getOutputName((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), null, EnumSet.of(Flags.IS_TYPEDEF));
         		gen.getFmt().print("%1;\n", s);
         	}       
         }              
@@ -248,8 +246,7 @@ public class UnitHeader {
         			gen.getFmt().print("%1 %2",typeString.substring(0, typeString.length()-2), fld.getName().getText());
         		}
         		else if (fld instanceof DeclNode.FcnRef) {
-        			String n = gen.aux.mkCname(((DeclNode.ITypeSpec) fld).getTypeSpec());
-    				String s = gen.aux.genType$FcnRef((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), n, false);
+            		String s = gen.getOutputName((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), null, EnumSet.noneOf(Flags.class));
     				gen.getFmt().print("%t%1 %2", s, fld.getName());
     			}
         		else {
@@ -290,7 +287,6 @@ public class UnitHeader {
     	
     	if (decl.isIntrinsic() && !decl.isIntrinsicUsed())
     		return;
-    	
     	
     	if (gen.curUnit().isModule() && (!decl.isHost() || (decl instanceof DeclNode.TypedMember))) {
     		String qualifier = decl.isHostClassRef() ? "_" : ".";

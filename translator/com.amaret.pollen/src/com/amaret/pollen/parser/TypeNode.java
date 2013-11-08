@@ -4,15 +4,19 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 
+import org.antlr.runtime.tree.Tree;
+
+import com.amaret.pollen.parser.DeclNode.Arr;
 import com.amaret.pollen.target.ITarget.TypeId;
 import com.amaret.pollen.target.ITarget.TypeInfo;
+import com.amaret.pollen.translator.Generator;
 
 public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 	
     // TypeNode.Arr
 	// NOTE currently Array specifiers on the type name are not implemented in the 
 	// grammar. 
-    static public class Arr extends TypeNode {
+    static public class Arr extends TypeNode implements IOutputName {
 
         static final private int BASE = 0;
         static final private int DIM = 1;
@@ -55,7 +59,39 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
         		return ((DeclNode.Arr)parent).hasDim();
             return getChildCount() > DIM;
         }
-        
+        public String getOutputNameHost(Generator g, IScope sc, EnumSet<Flags> flags) {
+        	return this.getOutputNameTarget(g, sc, flags);
+        }
+        public String getOutputNameTarget(Generator g, IScope sc, EnumSet<Flags> flags) {
+        	// formatted for the declaration. With current implementation (c target) only for local arrays.
+			TypeNode t = this;
+			String rtn = "";
+			while ((t = t.getBase()) != null) {
+				rtn = g.getOutputName(t, null, EnumSet.noneOf(Flags.class));
+			}
+			rtn += " ";
+			Tree tr = this.getParent();
+			while (tr != null && !(tr instanceof DeclNode.FcnTyp))
+				tr = tr.getParent();
+			if (tr instanceof DeclNode.FcnTyp)
+				rtn += "* ";
+			
+			if (this.getParent() instanceof DeclNode.Arr){
+				rtn = rtn + ((DeclNode.Arr) this.getParent()).getName().getText();
+			}
+			
+			if (this.hasDim()) {
+				for (ExprNode e : this.getDim().getElems()) {
+					rtn += "[";
+					g.getFmt().mark();
+					g.getAux().genExpr(e);
+					rtn += g.getFmt().release();
+					rtn += "]";
+				}
+			}
+			return rtn;
+        }
+
         @Override
         protected void pass2End() {
         }
@@ -97,7 +133,7 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
     }
     
     // TypeNode.Usr a user defined type
-    static public class Usr extends TypeNode {
+    static public class Usr extends TypeNode implements IOutputName {
 
         static final private int NAME = 0;
         private boolean isFunctionRef = false;
@@ -111,6 +147,106 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
         public boolean isFunctionRef() {
 			return isFunctionRef;
 		}
+        public String getOutputNameHost(Generator g, IScope sc, EnumSet<Flags> flags) {
+        	// currently host and target not disentangled, may be necessary at some point.
+        	return this.getOutputNameTarget(g, sc, flags);
+        }
+        public String getOutputNameTarget(Generator g, IScope sc, EnumSet<Flags> flags) {
+        	boolean isPtr = true; 
+        	boolean isTypedef = flags.contains(Flags.IS_TYPEDEF);
+        	boolean addTypeMods = flags.contains(Flags.IS_DECL);
+        	
+			SymbolEntry s = ((Usr) this).getSymbol();
+			TypeNode t = s.node() != null && s.node() instanceof DeclNode.Fcn ? ((DeclNode.Fcn)s.node()).getTypeSpec() : null;
+			String rtn = "";
+			if (isTypedef && t != null) { // this is for the typedef for function references
+				// for example, in the header file: typedef void (*test49_Event_uint8_EH_handle)(uint8);
+
+				String name = getOutputNameTarget(g, null, EnumSet.noneOf(Flags.class)); 
+				rtn = t instanceof TypeNode.Std ? ((TypeNode.Std) t)
+						.getIdent().getText()
+						: t instanceof TypeNode.Usr ? ((TypeNode.Usr) t).getName()
+								.getText() : "/* ?? unknown return type ?? */";
+				rtn = (rtn + " (*" + name + ")(");
+				String sep = "";
+				for (DeclNode.Formal arg : ((DeclNode.Fcn) s.node()).getFormals()) {
+					rtn += sep; 
+					sep = ",";
+					if (arg.getTypeCat() instanceof Cat.Scalar) 
+						rtn += (((Cat.Scalar) arg.getTypeCat()).mkType());
+					else
+						rtn += ("void*"); // can we do better?
+				}
+				rtn += ")";
+				return rtn;
+			}
+			
+			if (this.getParent() instanceof DeclNode) {
+				if (((DeclNode)this.getParent()).isHostClassRef()) {
+					// not a ptr deref 
+					isPtr = false;
+				}								
+			}
+			if (this.getParent() instanceof TypeNode.Arr && this.getParent().getParent() instanceof DeclNode.Arr) {
+				DeclNode.Arr a = (DeclNode.Arr) this.getParent().getParent();
+				if (a.isHost()) {
+					isPtr = false;
+				}
+			}
+			/*
+			 * ptr_suffix reflects which typedef is being used in c. For example:
+			 * typedef struct pollen_events_AE pollen_events_AE;
+			 * typedef struct pollen_events_AE* pollen_events_AE_; //=> ptr_suffix is true
+			 */
+			String ptr_suffix = isPtr ? "_" : "";
+			if (s != null && s.node() != null) {
+				if (s.node() instanceof ImportNode) {
+					ImportNode i = (ImportNode) s.node();
+
+					if (i.getUnit() == null) {
+						if (i.isTypeMetaArg())
+							rtn = i.getUnitName().getText();
+						else
+							rtn = Cat.Scalar
+									.codeFromString(((ImportNode) s.node())
+											.getUnitName().getText());
+					}  else {						
+
+						if (i.getUnit().isComposition()) {
+							// if the import is a composition, resolve down to the imported module.
+							UnitNode u = i.getUnit();
+							SymbolEntry se = u.lookupName(i.getUnitName().getText());
+							if (se.node() instanceof ImportNode) {
+								rtn = ((ImportNode) se.node()).getQualName().replace(".", "_")
+								+ ptr_suffix;
+							}
+						}
+						else {
+							rtn = i.getUnit()
+							.getQualName().replace(".", "_")
+							+ ptr_suffix;
+
+						}						
+					}
+					
+				} else {
+					if (s.node() instanceof DeclNode.Usr) {
+						if (s.scope() instanceof DeclNode.Usr) // nested
+							rtn = g.uname_target()
+							+ ((DeclNode.Usr) s.node()).getName().getText() + ptr_suffix;
+						else
+							rtn = g.uname_target();
+								
+					}
+					else
+						rtn = (g.uname_target() + ((Usr) this).getName().getText()).replace('.', '_');
+				}
+			}
+			if (addTypeMods) {
+				rtn = g.getAux().mkTypeMods(getModifiers()) + rtn;
+			}
+			return rtn;
+        }
 
 		public Atom getName() {
             return ((BaseNode) getChild(NAME)).getAtom();
@@ -209,31 +345,9 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
             return true;
         }
     }
-    
-    // TypeNode.Fcn
-    static public class Fcn extends TypeNode {
-
-        static final private int ARGS = 1;
-        static final private int BASE = 0;
         
-        Fcn(int ttype, String ttext, EnumSet<Flags> flags) {
-            super(ttype, ttext, flags);
-        }
-        
-        @SuppressWarnings("unchecked")
-        public List<TypeNode> getArgs() {
-            return ((ListNode<TypeNode>) getChild(ARGS)).getElems();
-        }
-
-        @Override
-        public TypeNode getBase() {
-            return (TypeNode) getChild(BASE);
-        }
-    }
-    
-    
     // TypeNode.Std
-    static public class Std extends TypeNode {
+    static public class Std extends TypeNode implements IOutputName {
 
         static final private int IDENT = 0;
         static final private HashMap<String,TypeId> tidMap = new HashMap<String,TypeId>();
@@ -254,9 +368,28 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
         Std(int ttype, String ttext, EnumSet<Flags> flags) {
 			super(ttype, ttext, flags);
 		}
+        public String getOutputNameHost(Generator g, IScope sc, EnumSet<Flags> flags) {
+        	boolean addTypeMods = flags.contains(Flags.IS_DECL);
+        	String rtn = getIdent().getText();
+			if (addTypeMods) {
+				rtn = g.getAux().mkTypeMods(getModifiers()) + rtn;
+			}
+			return rtn;
+        }
+        public String getOutputNameTarget(Generator g, IScope sc, EnumSet<Flags> flags) {
+        	boolean addTypeMods = flags.contains(Flags.IS_DECL);
+        	String rtn = getIdent().getText();
+			if (addTypeMods) {
+				rtn = g.getAux().mkTypeMods(getModifiers()) + rtn;
+			}
+			return rtn;
+        }
     	
         public Atom getIdent() {
             return ((BaseNode) getChild(IDENT)).getAtom();
+        }
+        public Atom getName() {
+        	return getIdent();
         }
         
     }
@@ -269,6 +402,10 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
     TypeNode(int ttype, String ttext, EnumSet<Flags> f) {
         this.token = new Atom(ttype, ttext);
         flags = f;
+    }
+    
+    public Atom getName() {
+    	return this.getAtom();
     }
         
     public TypeNode getBase() {

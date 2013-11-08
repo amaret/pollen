@@ -2,7 +2,6 @@ package com.amaret.pollen.translator;
 
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Stack;
 
 import org.antlr.runtime.tree.Tree;
 
@@ -12,9 +11,7 @@ import com.amaret.pollen.parser.BodyNode;
 import com.amaret.pollen.parser.Cat;
 import com.amaret.pollen.parser.Cat.Agg;
 import com.amaret.pollen.parser.DeclNode;
-import com.amaret.pollen.parser.DeclNode.Arr;
 import com.amaret.pollen.parser.DeclNode.Formal;
-import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.parser.ExprNode;
 import com.amaret.pollen.parser.ExprNode.Const;
 import com.amaret.pollen.parser.ExprNode.Ident;
@@ -30,7 +27,6 @@ import com.amaret.pollen.parser.StmtNode.Bind;
 import com.amaret.pollen.parser.StmtNode.Provided;
 import com.amaret.pollen.parser.SymbolEntry;
 import com.amaret.pollen.parser.TypeNode;
-import com.amaret.pollen.parser.TypeNode.Fcn;
 import com.amaret.pollen.parser.TypeNode.Usr;
 import com.amaret.pollen.parser.UnitNode;
 import com.amaret.pollen.parser.pollenParser;
@@ -49,22 +45,17 @@ public class Auxiliary {
 	static private final int DEFAULT_INARR = 2;
 	static private final int DEFAULT_INNEW = 3;
 
-	private Stack<Integer> arrSizes = new Stack<Integer>();
 	private boolean curSkip;
-	private String curTypeString;
 	private Generator gen;
 	private boolean isHost;
 	private boolean skipPost = false;
 	public boolean isSkipPost() {
 		return skipPost;
 	}
-
 	public void setSkipPost(boolean skipPost) {
 		this.skipPost = skipPost;
 	}
-
 	Auxiliary(Generator gen) {
-		arrSizes.push(0);
 		this.gen = gen;
 	}
 
@@ -96,9 +87,7 @@ public class Auxiliary {
             	gen.getFmt().print("new %1", mkName(is, defScope, null, EnumSet.noneOf(Flags.class)));
             }
             switch (context) {
-//            case DEFAULT_INSTR:
-//                gen.fmt.print("(this.$$cname+'.%1')", ts.getName());
-//                break;
+
             case DEFAULT_INARR:
                 gen.getFmt().print("($$cn+'['+$$idx+']')");
                 break;
@@ -161,7 +150,7 @@ public class Auxiliary {
 		}
 	}
 
-	void genExpr(ExprNode expr) {
+	public void genExpr(ExprNode expr) {
 		if (expr == null) {
 			gen.getFmt().print("/* ?? null expr ?? */");
 			return;
@@ -585,7 +574,7 @@ public class Auxiliary {
 	}
 		
 		/**
-		 * Format the output name and return as a String.
+		 * Format the output name and return as a String. 
 		 * @param snode
 		 * @param scopeOfDcln
 		 * @param qualifierNode
@@ -679,7 +668,10 @@ public class Auxiliary {
 		} else {
 			String s;
 			if (stmt.getBindToUnit() == null) {
-				s =  mkCname(typ);
+				if (typ instanceof TypeNode.Usr || typ instanceof TypeNode.Std) {
+					s = gen.getOutputName(typ, null, EnumSet.noneOf(Flags.class));
+				}
+				else s = "/* ?? unknown symbol ?? */";
 			} else {
 				s = stmt.getBindToUnit().getName().getText();
 				s = stmt.getBindToUnit().getPkgName().getText().replace('.', '_') + '_'  + s + '_';	
@@ -1131,8 +1123,9 @@ public class Auxiliary {
 
 	private void genStmt$Decl(StmtNode.Decl stmt) {
 		
+		
 		for (DeclNode.Var decl : stmt.getVars()) {
-			
+						
 			boolean arrayInit = decl instanceof DeclNode.Arr && ((DeclNode.Arr) decl).getInit() != null;
 			boolean arrayNoDim = arrayInit && !((DeclNode.Arr) decl).hasDim(); // e.g. uint8 arr[] = fcnReturningArray();
 			if (decl.getInit() != null) {
@@ -1340,218 +1333,31 @@ public class Auxiliary {
 	 *            e.g. Argtype argName
 	 */
 	void genTypeWithVarName(TypeNode type, String name) {
+		if (type instanceof TypeNode.Arr)
+			name = ""; // name output as part of type
+		String s = mkTypeName(type) + (name == null ? "" : " " + name);
+		gen.getFmt().print("%1", s);
+	}
+	/**
+	 * @param type
+	 * @return the type, formatted for output
+	 */
+	private String mkTypeName(TypeNode type) {
+			
 		
-		gen.getFmt().print("%1", genVarTypeVarName(type, name));
-	}
-
-	void genType(TypeNode type, String dtor, int arrSize) {
-		//int oldArrSize = curArrSize;
-		//curArrSize = arrSize;
-		arrSizes.push(arrSize);
-		genTypeWithVarName(type, dtor);
-		arrSizes.pop();
-		//curArrSize = oldArrSize;
-	}
-
-	/**
-	 * @param type
-	 * @param name printed if passed
-	 * @return
-	 */
-	private String genVarTypeVarName(TypeNode type, String name) {
-
-		String oldTypeString = curTypeString;
-		curTypeString = (name == null) ? "" : name;
 		TypeNode t = type;
-		boolean done = false;
-		do {
-			switch (t.getType()) {
-			case pollenParser.T_ARR:
-				TypeNode.Arr tarr = (TypeNode.Arr) t;
-				// TODO
-				/*
-				 * if (tarr.isDesc() && curArrSize == 0) { curTypeString =
-				 * "__ArrDesc__ " + curTypeString; done = true; break; }
-				 */
-				genType$Arr((TypeNode.Arr) t);
-				Tree tr = tarr.getParent();
-				while (tr != null && !(tr instanceof DeclNode.FcnTyp))
-					tr = tr.getParent();
-				if (tr instanceof DeclNode.FcnTyp)
-					curTypeString = "* " + curTypeString;
-					
-				break;
-			case pollenParser.T_FCN:
-				genType$Fcn((TypeNode.Fcn) t);
-				break;
-			case pollenParser.T_STD:
-				genType$Std((TypeNode.Std) t);
-				break;
-			case pollenParser.T_USR:
-
-				if (((TypeNode.Usr)t).isFunctionRef()) {
-					// note curTypeString is NOT just type but fcn name, sigh...
-					curTypeString = mkCname((TypeNode.Usr)t) + " " + curTypeString;
-					//curTypeString = ((TypeNode.Usr)t).getName().getText().replace('.', '_') + " " + curTypeString;
-				}
-				else
-					genType$Usr((TypeNode.Usr) t);
-				break;
-			}
-		} while (!done && (t = t.getBase()) != null);
-		String res = curTypeString;
-		curTypeString = oldTypeString;
-		return res;
-	}
-
-	void genType$Arr(TypeNode.Arr type) {
-
-		if (arrSizes.peek() > 0) {
-			curTypeString += "[";
-			curTypeString += arrSizes.peek();
-			curTypeString += "]";
-		} else if (type.hasDim()) {
-			for (ExprNode e : type.getDim().getElems()) {
-				curTypeString += "[";
-				gen.getFmt().mark();
-				genExpr(e);
-				curTypeString += gen.getFmt().release();
-				curTypeString += "]";
-			}
+		String rtn = "";
+		switch (t.getType()) {
+		case pollenParser.T_ARR:
+			rtn = (gen.getOutputName(t, null, EnumSet.noneOf(Flags.class)));		
+			break;
+		case pollenParser.T_STD:
+		case pollenParser.T_USR:
+			rtn = (gen.getOutputName(t, null, EnumSet.of(Flags.IS_DECL)));
+			break;
 		}
-		arrSizes.pop();
-		arrSizes.push(0);
+		return rtn;
 	}
-
-	void genType$Fcn(Fcn type) {
-		curTypeString = "(*" + curTypeString + ")(";
-		String sep = "";
-		for (TypeNode argT : type.getArgs()) {
-			curTypeString += sep;
-			sep = ",";
-			curTypeString += genVarTypeVarName(argT, null);
-		}
-		curTypeString += ")";
-	}
-
-	/**
-	 * This is called to generate the declaration and to create the typedef.
-	 * @param type
-	 * @param name
-	 * @param forTypedef TODO
-	 * @return
-	 */
-	String genType$FcnRef(TypeNode.Usr type, String name, boolean forTypedef) {
-		SymbolEntry s = type.getSymbol();
-		String typeString = "";
-
-		if (forTypedef) {
-			TypeNode t = ((DeclNode.Fcn) s.node()).getTypeSpec();
-			String rtn = t instanceof TypeNode.Std ? ((TypeNode.Std) t)
-					.getIdent().getText()
-					: t instanceof TypeNode.Usr ? ((TypeNode.Usr) t).getName()
-							.getText() : "/* ?? unknown return type ?? */";
-			typeString = rtn + " (*" + name + ")(";
-			String sep = "";
-			for (DeclNode.Formal arg : ((DeclNode.Fcn) s.node()).getFormals()) {
-				typeString += sep;
-				sep = ",";
-				if (arg.getTypeCat() instanceof Cat.Scalar) 
-					typeString += ((Cat.Scalar) arg.getTypeCat()).mkType(); 
-				else
-					typeString += "void*"; // can we do better?
-			}
-			typeString += ")";
-			return typeString;
-		}
-		return name;
-
-	}
-
-	void genType$Std(TypeNode.Std type) {
-		String sp = " ";
-		curTypeString = mkTypeMods(type.getModifiers()) + type.getIdent() + sp
-		+ curTypeString;
-	}
-
-	void genType$Usr(TypeNode.Usr type) {
-		String sp = " ";
-		String t = mkCname(type);
-
-		curTypeString = mkTypeMods(type.getModifiers()) + t + sp
-				+ curTypeString;
-	}
-	
-	String mkCname(TypeNode t) {
-		String lastChar = "_"; // TODO get rid of this when I change name printing!
-
-		String n = "";
-		if (t.getParent() instanceof DeclNode) {
-			n = ((DeclNode)t.getParent()).getName().getText();
-			if (((DeclNode)t.getParent()).isHostClassRef()) {
-				// this changes the defines so that it is not a ptr deref (sigh...)
-				lastChar = "";
-			}								
-		}
-		if (t.getParent() instanceof TypeNode.Arr && t.getParent().getParent() instanceof DeclNode.Arr) {
-			DeclNode.Arr a = (Arr) t.getParent().getParent();
-			n = a.getName().getText();
-			if (a.isHost())
-				lastChar = "";
-		}
-
-		if (t instanceof TypeNode.Std)
-			return ((TypeNode.Std) t).getIdent().getText();
-
-		if (t instanceof TypeNode.Usr) {
-			SymbolEntry s = ((Usr) t).getSymbol();
-
-			if (s != null && s.node() != null) {
-				if (s.node() instanceof ImportNode) {
-					ImportNode i = (ImportNode) s.node();
-					String qualifier = "";
-					if (i.getUnit() == null) {
-						if (i.isTypeMetaArg())
-							qualifier = i.getUnitName().getText();
-						else
-							qualifier = Cat.Scalar
-									.codeFromString(((ImportNode) s.node())
-											.getUnitName().getText());
-					}  else {						
-
-						if (i.getUnit().isComposition()) {
-							// if the import is a composition, resolve down to the imported module.
-							UnitNode u = i.getUnit();
-							SymbolEntry se = u.lookupName(i.getUnitName().getText());
-							if (se.node() instanceof ImportNode)
-								qualifier = ((ImportNode) se.node()).getQualName().replace(".", "_")
-								+ "_";
-						}
-						else {
-							qualifier = i.getUnit()
-							.getQualName().replace(".", "_")
-							+ lastChar;
-
-						}						
-					}
-					return qualifier; 
-				} else {
-					if (s.node() instanceof DeclNode.Usr) {
-						if (s.scope() instanceof DeclNode.Usr) // nested
-							return gen.uname_target()
-							+ ((DeclNode.Usr) s.node()).getName().getText() + lastChar;
-						else
-							return gen.uname_target();
-								
-					}
-					else
-						return (gen.uname_target() + ((Usr) t).getName().getText()).replace('.', '_');
-				}
-			}
-		}
-		return "/* ?? unknown symbol ?? */";
-	}
-
 
 	String mkPollenCname(String id) {
 		return id.startsWith("pollen.") ? ("pollen__" + id.substring(ParseUnit.INTRINSIC_PREFIX
@@ -1571,7 +1377,7 @@ public class Auxiliary {
 		}
 	}
 
-	String mkTypeMods(EnumSet<Flags> tmods) {
+	public String mkTypeMods(EnumSet<Flags> tmods) {
 		String res = "";
 
 		if (tmods.isEmpty()) {

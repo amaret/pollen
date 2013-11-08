@@ -240,7 +240,6 @@ public class Cat implements Cloneable {
         private List<Cat> argCats = new ArrayList<Cat>();
         private int minArgc = 0;
         private DeclNode.Fcn fcnD = null;
-        private TypeNode.Fcn fcnT = null;
         private String sigString = "";
 
         public Fcn(DeclNode.Fcn fcnD) {
@@ -266,24 +265,6 @@ public class Cat implements Cloneable {
         	minArgc = fcnD.getFormals().size();
         	this.fcnD = fcnD;
         }
-        public Fcn(TypeNode.Fcn fcnT, IScope sc) {
-        	bindAggScope(sc);      
-            retCat = Cat.fromType(fcnT.getBase(), false, aggScope);
-            for (TypeNode argT : fcnT.getArgs()) {
-                argCats.add(Cat.fromType(argT));
-            }
-            minArgc = fcnT.getArgs().size();
-            this.fcnT = fcnT;
-        }
-
-        public Fcn(TypeNode.Fcn fcnT) {
-            retCat = Cat.fromType(fcnT.getBase());
-            for (TypeNode argT : fcnT.getArgs()) {
-                argCats.add(Cat.fromType(argT));
-            }
-            minArgc = fcnT.getArgs().size();
-            this.fcnT = fcnT;
-        }
 
         public IScope aggScope() {
             return aggScope;
@@ -299,10 +280,6 @@ public class Cat implements Cloneable {
         
         public DeclNode.Fcn fcnD() {
             return fcnD;
-        }
-        
-        public TypeNode.Fcn fcnT() {
-            return fcnT;
         }
         
         public int maxArgc() {
@@ -349,9 +326,6 @@ public class Cat implements Cloneable {
                     	sigString +=  Cat.fromSymbolNode(sym.node(), sym.scope(), false, false).mkTypeStr();
                     else
                     	sigString += Cat.fromScalarString("void");
-                    break;
-                case pollenParser.T_FCN:
-                    // not legal here
                     break;
                 case pollenParser.T_STD:
                 	sigString +=  new Cat.Scalar(((TypeNode.Std) t).getIdent().getText()).mkTypeStr();
@@ -602,9 +576,6 @@ public class Cat implements Cloneable {
             	return Cat.fromSymbolNode(sym.node(), sym.scope(), isRef, isFcnRef );
             }
             else return Cat.fromScalarString("void");
-        case pollenParser.T_FCN:
-            Cat cat = new Cat.Fcn((TypeNode.Fcn) typeNode);
-            return cat;
         case pollenParser.T_STD:
             return new Cat.Scalar(((TypeNode.Std) typeNode).getIdent().getText());
         default:

@@ -216,7 +216,6 @@ public class ParseUnit {
 	 * 
 	 * @param inputPath
 	 * @param props
-	 *            TODO
 	 * @param pkgs
 	 * @param outputStream
 	 * @param errorStream
@@ -290,7 +289,6 @@ public class ParseUnit {
 				if (currSnode != null && currSnode instanceof UnitNode) {
 					currUnit = (UnitNode) currSnode;
 					currImport.bindUnit(currUnit);
-					boolean f = currUnit.isGeneratedMetaInstance();
 					Atom name = currImport.getName();
 					unit.defineSymbol(name, currImport);
 					currUnit.addClient(unit);

@@ -134,7 +134,7 @@ public class ProcessUnits {
 		pollenHelp += "\n" + "  -h\tThis help message.";
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.37";  // user release . internal rev . fix number
+	private static String  v = "0.2.38";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -253,7 +253,6 @@ public class ProcessUnits {
 	/**
 	 * Parse the pollen file and all its dependencies (imports). 
 	 * @param args
-	 * @param props TODO
 	 * @param outputStream
 	 * @param errorStream
 	 * @param infoStream
