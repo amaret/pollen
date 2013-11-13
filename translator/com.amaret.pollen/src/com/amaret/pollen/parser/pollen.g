@@ -786,20 +786,13 @@ meta
 //    If '{}' is passed, instantiate to defaults.
 //    This will be a void instance: no output.
 	:	{isMetaInstance}? 'meta'!	
-	      { metaFlags.add(Flags.META);}
-			//importList { $unitTypeDefinition::metaImports = $importList.tree; }
+	      	{ metaFlags.add(Flags.META);}
 			(braceOpen 
 				metaParmsGen
 			 braceClose) 
 			 
-	//|	'meta' // UNCALLED NOW
-	//		{ metaFlags.add(Flags.META);}
-	//		importList { $unitTypeDefinition::metaImports = $importList.tree; }
-	//		(braceOpen formalParameters braceClose)
-	// 	 		-> formalParameters
-	//
 	
-	|  { isMetaInstance = false;} -> LIST<ListNode>["LIST"] //{ $unitTypeDefinition::metaImports = (BaseNode)adaptor.create(NIL, "NIL") }
+	|  { isMetaInstance = false;} -> LIST<ListNode>["LIST"] 
 										
 	;
 	
@@ -853,9 +846,7 @@ metaParmGen
 	String ctext = "";
 	EnumSet<LitFlags> lf = EnumSet.noneOf(LitFlags.class);
 	if (isVoidInstance) {
-		//Atom v = new Atom(new CommonToken(pollenLexer.VOID, "void"));
-		//BaseNode bv = new BaseNode(v);
-		//clientImport.getMeta().add(bv);
+
 		metaFlags.add(Flags.VOID_INSTANCE);
 	}
 
@@ -899,7 +890,7 @@ metaParmGen
 		    			  name = ((TypeNode.Std) b).getIdent().getText();		    			
 		    		  }
 		    		  else if (b.getType() == pollenLexer.VOID) // deferred instantiation
-                     name = b.getText();
+                     				name = b.getText();
 		    		  else {
 		    			  throw new PollenFatalException("Meta type parameter requires type to instantiate");
 		    		  }
@@ -908,7 +899,7 @@ metaParmGen
 			 	    if (name.isEmpty()) { // no default supplied
 			 	  	    throw new PollenException("Missing actual parameter for meta type instantiation where no default value specified", input);
 			 	    }
-			 	   }		    		
+				}		    		
 		    	}
 
 	    	}
@@ -978,16 +969,14 @@ typeNameScalar			// scalar as in 'not array'
 	|	userTypeName
 	;
 userTypeName
-	// Note the commented out syntax from pollen vers 1 is obsolete (it was a hack to support value{Event} e)
-	//:	qualName metaArguments	-> ^(T_USR<TypeNode.Usr>["T_USR", featureFlags] qualName metaArguments)
-	:	qualName		-> ^(T_USR<TypeNode.Usr>["T_USR", typeMods] qualName)
+	:	qualName	-> ^(T_USR<TypeNode.Usr>["T_USR", typeMods] qualName)
 	;
 typeNameArray		
 	:	builtinType	-> ^(T_ARR<TypeNode.Arr>["T_ARR", typeMods] ^(T_STD<TypeNode.Std>["T_STD", typeMods] builtinType))
 	|	userTypeNameArr
 	;
 userTypeNameArr
-	:	qualName		-> ^(T_ARR<TypeNode.Arr>["T_ARR", typeMods] ^(T_USR<TypeNode.Usr>["T_USR", typeMods] qualName))
+	:	qualName	-> ^(T_ARR<TypeNode.Arr>["T_ARR", typeMods] ^(T_USR<TypeNode.Usr>["T_USR", typeMods] qualName))
 	;
 
 unitTypeDefinition
@@ -1024,8 +1013,8 @@ implementsClause
     	if (ti.getUnitFlags().contains(Flags.PROTOCOL))
     		throw new PollenException("\'implements\' clause is not supported for protocols", input);
     }
-    -> qualName
-    | -> NIL
+    	-> qualName
+    | 	-> NIL
     ;
 braceClose
     :    (NL!)* '}'! (NL!)*
@@ -1160,14 +1149,14 @@ exprNew
 exprUnary
 	:	primitiveLit
 	|	injectionCode
-	|	arrayLit						-> ^(E_VEC<ExprNode.Vec>["E_VEC"] arrayLit)
+	|	arrayLit				-> ^(E_VEC<ExprNode.Vec>["E_VEC"] arrayLit)
 	|	logicalNotOp expr	 		-> ^(E_UNARY<ExprNode.Unary>["E_UNARY"]  expr logicalNotOp)
-	|	bitwiseNotOp expr  		-> ^(E_UNARY<ExprNode.Unary>["E_UNARY"]  expr bitwiseNotOp)
+	|	bitwiseNotOp expr  			-> ^(E_UNARY<ExprNode.Unary>["E_UNARY"]  expr bitwiseNotOp)
 	|	'(' expr ')'				-> ^(E_PAREN<ExprNode.Paren>["E_PAREN"] expr)
-	|	MINUS expr					-> ^(E_UNARY<ExprNode.Unary>["E_UNARY"]  expr MINUS)
-	|	varOrFcnOrArray incDecOp -> ^(E_UNARY<ExprNode.Unary>["E_UNARY", true] varOrFcnOrArray incDecOp)
+	|	MINUS expr				-> ^(E_UNARY<ExprNode.Unary>["E_UNARY"]  expr MINUS)
+	|	varOrFcnOrArray incDecOp 		-> ^(E_UNARY<ExprNode.Unary>["E_UNARY", true] varOrFcnOrArray incDecOp)
 	|	varOrFcnOrArray
-	|	incDecOp varOrFcnOrArray -> ^(E_UNARY<ExprNode.Unary>["E_UNARY"] varOrFcnOrArray incDecOp)
+	|	incDecOp varOrFcnOrArray 		-> ^(E_UNARY<ExprNode.Unary>["E_UNARY"] varOrFcnOrArray incDecOp)
 	|	exprNew
 	;
 fcnDefinition
@@ -1187,7 +1176,7 @@ fcnDefinitionHost
 	   	fcnType_fcnName  formalParameterList fcnBody[$formalParameterList.tree]
 		{ 	featureFlags.add(Flags.PUBLIC); /* enforce */ 	
 			if (!featureFlags.contains(Flags.HOST))
-       		throw new PollenException("Composition features must be one of host functions, export statements, or enum definitions.", input);
+       				throw new PollenException("Composition features must be one of host functions, export statements, or enum definitions.", input);
 		}
 		-> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", featureFlags] 
 		
@@ -1309,11 +1298,11 @@ formalParameter
 }
 	: 	 'type' IDENT ( '=' t=typeName)?
 			{ pFlags.add(Flags.TYPE_META_ARG); } // meta formal arguments only
-		-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", pFlags] 
-			^(T_USR<TypeNode.Usr>["T_USR", pFlags] IDENT) 
-			IDENT ^(E_TYP<ExprNode.Typ>["E_TYP"] typeName)?)
-	|   typeName IDENT ( '=' expr)?
-		-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL"] typeName IDENT (expr)?)
+			-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", pFlags] 
+				^(T_USR<TypeNode.Usr>["T_USR", pFlags] IDENT) 
+				IDENT ^(E_TYP<ExprNode.Typ>["E_TYP"] typeName)?)
+	|   	typeName IDENT ( '=' expr)?
+			-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL"] typeName IDENT (expr)?)
 
 	;
 fcnArgumentList
@@ -1550,8 +1539,8 @@ varDeclaration
 varAttr
 	:	(	 'const' { typeMods.add(Flags.CONST); }
 		|	 'volatile' { typeMods.add(Flags.VOLATILE); }
-		|   'host' { typeMods.add(Flags.HOST); } 
-		|   'preset' { typeMods.add(Flags.PRESET); } 
+		|   	'host' { typeMods.add(Flags.HOST); } 
+		|   	'preset' { typeMods.add(Flags.PRESET); } 
 		)*
 	;
 varDecl
@@ -1566,9 +1555,10 @@ scope {
 	String ctor = (typeMods.contains(Flags.HOST)) ? ParseUnit.CTOR_CLASS_HOST : ParseUnit.CTOR_CLASS_TARGET;
 }
 	:	(typeName IDENT (ASSIGN expr)? ',') => varDeclList	
-	|  (typeName IDENT '[') => varArray 
-	|  (typeName '(' ) => varFcnRef 
-	|   (typeName varInit) => varDeclList
+	|  	(typeName IDENT '[') => varArray 
+	|  	(('(')? typeName '(' ) => varFcnRef 
+	|  	( ('(') typeName typeName '(' ) => varFcnRef2
+	|   	(typeName varInit) => varDeclList
 	|	 'new' qualName IDENT fcnArgumentList  // declaration of an instance ('new')
 		 { stmtFlags.add(Flags.NEW); } 
 		-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] ^(T_USR<TypeNode.Usr>["T_USR", typeMods] qualName)
@@ -1580,11 +1570,20 @@ scope {
 
 	;
 varFcnRef
-	: typeName fcnRefTypeList IDENT 
+	: 	( ('(') typeName fcnRefTypeList (')') IDENT 
+			|  typeName fcnRefTypeList  IDENT )
 		-> ^(D_FCN_REF<DeclNode.FcnRef>["D_FCN_REF", stmtFlags] typeName fcnRefTypeList IDENT) 
 	;
+varFcnRef2
+	: 	'(' rtnType typeName fcnRefTypeList ')' IDENT 
+		-> ^(D_FCN_REF<DeclNode.FcnRef>["D_FCN_REF", stmtFlags] typeName fcnRefTypeList IDENT rtnType) 
+	;        	
+rtnType 
+	:	typeName
+	;
+
 fcnRefTypeList
-	: '(' fcnRefTypes ')' -> fcnRefTypes
+	: 	'(' fcnRefTypes ')' -> fcnRefTypes
 	;
 fcnRefTypes
 	:	typeName (',' typeName)* 
@@ -1653,22 +1652,22 @@ varInit	// user defined type
 	: 	IDENT BIND expr { stmtFlags.add(Flags.PROTOCOL_MEMBER); }	
 		-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] {$varDecl::typ} IDENT expr?)
 	|	IDENT ASSIGN expr
-	-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] {$varDecl::typ} 
-		IDENT expr)
+		-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] {$varDecl::typ} 
+			IDENT expr)
 	|	IDENT 
-	-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] {$varDecl::typ} IDENT)
+		-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] {$varDecl::typ} IDENT)
 	;
 
 builtinType  returns [EnumSet<LitFlags> f]
     :   'bool'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.BOOL);}
     |   'byte'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.CHR);}
     |   'int8'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
-    |   'int16'	{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
-    |   'int32'   {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
-    |   'string'  {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.STR);}
-    |   'uint8'	{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
-    |   'uint16'	{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
-    |   'uint32'	{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'int16'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'int32'   		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'string'  		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.STR);}
+    |   'uint8'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'uint16'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'uint32'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
     ;
     
 qualName 

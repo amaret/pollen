@@ -976,6 +976,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		static final private int FCN = 0;
 		static final private int FORMALS = 1;
 		static final private int NAME = 2;
+		static final private int RTN = 3;
 
 		private boolean isVoid = false;
 
@@ -994,7 +995,12 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		public TypeNode getTypeSpec() {
 			return (TypeNode) getChild(FCN);
 		}
-
+		public TypeNode getReturnType() {			
+			if (getChildCount() > RTN) {
+				return ((TypeNode) getChild(RTN));
+			}
+			return null;			
+		}
 		public boolean isVoid() {
 			return isVoid;
 		}
