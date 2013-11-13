@@ -16,7 +16,6 @@ public class Driver {
 			rtn = pu.processUnits(args, System.out, System.err, System.err);
 			
 		} catch (Exception e) {
-			System.err.println("" + e);
             e.printStackTrace(System.err);
             System.exit(1);
 		}

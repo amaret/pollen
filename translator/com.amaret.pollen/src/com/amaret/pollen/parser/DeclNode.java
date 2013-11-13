@@ -46,6 +46,12 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				return "this->" + this.getName().getText();
 			}
 			IScope scopeOfDcln = sc;	
+//			if (this.getTypeCat().isFcnRef()) {
+//				DeclNode.Fcn f = (Fcn) ((Cat.Agg) this.getTypeCat()).aggScope();    
+//				DeclNode.Usr u = (Usr) f.getDefiningScope();
+//				String s = g.getOutputQName(f, u, u, EnumSet.noneOf(Flags.class));
+//				return s;				
+//			}
 			boolean localsScope = !(scopeOfDcln instanceof UnitNode || scopeOfDcln instanceof DeclNode.Usr);
 			if (localsScope) {
 				return this.getName().getText();
@@ -867,6 +873,28 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 		@Override
 		public void pass2End() {
+			Cat.Fcn c = (com.amaret.pollen.parser.Cat.Fcn) (this.getTypeCat() instanceof Cat.Fcn ? this.getTypeCat() : null);
+			if (c != null) {
+				for (Cat formalCat: c.argCats())  {
+					if (formalCat.isAggTyp()) {
+						String t = "";
+						if (((Cat.Agg) formalCat).isComposition())
+							t = "composition";
+						else if (((Cat.Agg) formalCat).isModule())
+							t = "module";
+						else if (((Cat.Agg) formalCat).isProtocol())
+							t = "protocol";
+						if (!t.isEmpty()) {
+							ParseUnit.current().reportError(
+									this,
+									"formal parameter type error for \'"
+											+ ((Cat.Agg) formalCat).aggName()
+											+ "\' (" + t + " not allowed as parameter type)");
+							continue;
+						}
+					}
+				}
+			}
 			ParseUnit.current().getSymbolTable().leaveScope();
 			ParseUnit.current().getCurrUnitNode().setHostScope(false);
 			super.pass2End();
@@ -1273,6 +1301,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 			SymbolEntry sym = curr.getUnitType().resolveSymbol(getTypeName());
 			ISymbolNode snode = sym != null ? sym.node() : null;
+			IScope sc = sym != null ? sym.scope() : null;
+			if (snode instanceof DeclNode.Fcn && sc instanceof DeclNode.Class) {
+				ParseUnit.current().reportError(this.getName(),
+						"Function references for class functions are not yet implemented");
+			}
 			isClassRef = (snode != null && snode instanceof ITypeKind && ((ITypeKind) snode)
 					.isClass());
 			isNestedClassRef = false;

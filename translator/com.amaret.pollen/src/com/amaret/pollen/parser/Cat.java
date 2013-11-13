@@ -52,14 +52,16 @@ public class Cat implements Cloneable {
 				if (dbg)
 				System.out.println(u.getQualName() + (u.isMeta() ? " is meta type " : "") + (u.isGeneratedMetaInstance() ? ", is generated meta instance" : ""));							
 			}
-			if (aggScope instanceof ImportNode) {
-				System.out.println(((ImportNode)aggScope).getQualName());
+			if (aggScope instanceof DeclNode.Fcn) {
+				//System.out.println(((DeclNode.Fcn)aggScope).getName().getText());
 			}
             this.aggScope = aggScope;
             this.defScope = defScope;
             this.isRef = isRef;
             this.isFcnRef = aggScope instanceof DeclNode.TypedMember 
             	? ((DeclNode.TypedMember) aggScope).isFcnRef() : false;
+            this.isFcnRef = aggScope instanceof DeclNode.Fcn && defScope instanceof BodyNode // fcnref as parameter 
+                    	? true : this.isFcnRef;
             this.isFcnRef |= fcnRef;
             this.isHostClassRef = aggScope instanceof DeclNode 
         		? ((DeclNode) aggScope).isHostClassRef(): false;

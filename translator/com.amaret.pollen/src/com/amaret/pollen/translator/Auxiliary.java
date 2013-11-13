@@ -817,11 +817,7 @@ public class Auxiliary {
 				SymbolEntry s = arg.getTypeSpec() instanceof TypeNode.Usr ? ((TypeNode.Usr) arg
 						.getTypeSpec()).getSymbol()
 						: null;
-				ISymbolNode is = s != null ? s.node() : null;
-				if (is instanceof DeclNode.Fcn) {
-					gen.getFmt().print("void* " + arg.getName());
-				} else
-					genTypeWithVarName(arg.getTypeSpec(), "" + arg.getName());
+				genTypeWithVarName(arg.getTypeSpec(), "" + arg.getName());
 			} else
 				gen.getFmt().print(arg.getName()); // javascript
 		}

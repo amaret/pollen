@@ -163,6 +163,7 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 				// for example, in the header file: typedef void (*test49_Event_uint8_EH_handle)(uint8);
 
 				String name = getOutputNameTarget(g, null, EnumSet.noneOf(Flags.class)); 
+				
 				rtn = t instanceof TypeNode.Std ? ((TypeNode.Std) t)
 						.getIdent().getText()
 						: t instanceof TypeNode.Usr ? ((TypeNode.Usr) t).getName()
@@ -174,8 +175,9 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 					sep = ",";
 					if (arg.getTypeCat() instanceof Cat.Scalar) 
 						rtn += (((Cat.Scalar) arg.getTypeCat()).mkType());
-					else
+					else {						
 						rtn += ("void*"); // can we do better?
+					}
 				}
 				rtn += ")";
 				return rtn;
@@ -296,7 +298,9 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 					
             // type members ok?
             if (symbol == null || !okFlag)  {
-            	ParseUnit.current().reportError(getName(), "not a type");
+            	ParseUnit.current().reportError(getName(), "not a type"); 
+            	// this causes null pointers later so kill it. No, killing it causes problems.
+            	//ParseUnit.current().reportFailure("Fatal type error.");
             }
             return snode;
         }
@@ -332,7 +336,7 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
             }
             
             String u = "In " + ParseUnit.current().getCurrUnitNode().getName().getText();          
-            String dbgStr2 = u + ", entering type " + dbgStr + " in DeclNode.Usr.pass1Begin() : ";
+            String dbgStr2 = u + ", entering type " + dbgStr + " into TypeNode symtab, in pass1Begin() : ";
             if (snode != null) {
             	String enc = snode.getDefiningScope().getEnclosingScope() != null ? snode.getDefiningScope().getEnclosingScope().getScopeName() + "." : "null.";
             	dbgStr2 +=  " scope " + enc + snode.getDefiningScope().getScopeName();

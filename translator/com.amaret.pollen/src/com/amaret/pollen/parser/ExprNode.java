@@ -516,11 +516,19 @@ public class ExprNode extends BaseNode {
 			// TODO
 			// signature matching, default parameter value insertion
 			// overload resolution
-			if (cat instanceof Cat.Agg
-					&& ((Cat.Agg) cat).aggScope() instanceof DeclNode.TypedMember) {
-				DeclNode.TypedMember tm = (DeclNode.TypedMember) ((Cat.Agg) cat)
-						.aggScope();
-				cat = tm.getFcnTypeCat();
+			if (cat instanceof Cat.Agg) { 
+				if (((Cat.Agg) cat).aggScope() instanceof DeclNode.TypedMember) {
+					// a call via a function reference
+					DeclNode.TypedMember tm = (DeclNode.TypedMember) ((Cat.Agg) cat)
+							.aggScope();
+					cat = tm.getFcnTypeCat();
+				}
+				else if (((Cat.Agg) cat).aggScope() instanceof DeclNode.Fcn) {
+					// a call via a fcn ref passed as parameter
+					DeclNode.Fcn df = (DeclNode.Fcn) ((Cat.Agg) cat)
+							.aggScope();
+					 cat = df.getTypeCat();
+				}
 			}
 
 			if (!(cat instanceof Cat.Fcn)) {
@@ -546,48 +554,27 @@ public class ExprNode extends BaseNode {
 
 			exprCat = fcncat.retCat();
 
-			// for now, skip check for calling through function references
-			// TODO figure out how to pass 'this' ptr for function ref class
-			// method calls
-			if (!(fcn != null && fcn.node() instanceof DeclNode.TypedMember)) {
-
-				int k = -1;
-
-				for (ExprNode e : getArgs()) {
-					k += 1;
-					Cat actualCat = e instanceof ExprNode.SubExprCat ? ((ExprNode.SubExprCat) e)
-							.getSubExprCat()
-							: e.getCat();
-					Cat formalCat = fcncat.argCats().get(k);
-					if (formalCat.isAggTyp()) {
-						if (((Cat.Agg) formalCat).isComposition()) {
-							// TODO do I need to resolve to the module, for an
-							// export?
-						}
-						if (((Cat.Agg) formalCat).isProtocol()) {
-							ParseUnit.current().reportError(
-									this,
-									"actual parameter type error for \'"
-											+ ((Cat.Agg) formalCat).aggName()
-											+ "\' (protocol not allowed)");
-							continue;
-						}
-
-					}
-
-					if (e instanceof ExprNode.AggVal) {
-						TypeRules.checkInit(formalCat, e);
-						continue;
-					}
-					if (TypeRules.preCheck(actualCat) != null) {
-						continue;
-					}
-					Cat res = TypeRules.checkBinary("=", formalCat, actualCat,
-							"formal / actual parameter type conflict");
-					if (res instanceof Cat.Error) {
-						ParseUnit.current().reportError(this.getName(),
-								((Cat.Error) res).getMsg());
-					}
+			//  May need tweaking for case that parameter type is a default instantiation meta
+			//  parameter for  a meta type and it is instantiated with a non-default type.
+			int k = -1;
+			for (ExprNode e : getArgs()) {
+				k += 1;
+				Cat actualCat = e instanceof ExprNode.SubExprCat ? ((ExprNode.SubExprCat) e)
+						.getSubExprCat()
+						: e.getCat();
+				Cat formalCat = fcncat.argCats().get(k);
+				if (e instanceof ExprNode.AggVal) {
+					TypeRules.checkInit(formalCat, e);
+					continue;
+				}
+				if (TypeRules.preCheck(actualCat) != null) {
+					continue;
+				}
+				Cat res = TypeRules.checkBinary("=", formalCat, actualCat,
+						"formal / actual parameter type conflict");
+				if (res instanceof Cat.Error) {
+					ParseUnit.current().reportError(this.getName(),
+							((Cat.Error) res).getMsg());
 				}
 			}
 
