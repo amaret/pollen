@@ -157,7 +157,7 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
         	boolean addTypeMods = flags.contains(Flags.IS_DECL);
         	
 			SymbolEntry s = ((Usr) this).getSymbol();
-			TypeNode t = s.node() != null && s.node() instanceof DeclNode.Fcn ? ((DeclNode.Fcn)s.node()).getTypeSpec() : null;
+			TypeNode t = s != null && s.node() != null && s.node() instanceof DeclNode.Fcn ? ((DeclNode.Fcn)s.node()).getTypeSpec() : null;
 			String rtn = "";
 			if (isTypedef && t != null) { // this is for the typedef for function references
 				// for example, in the header file: typedef void (*test49_Event_uint8_EH_handle)(uint8);
@@ -167,6 +167,7 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 				rtn = t instanceof TypeNode.Std ? ((TypeNode.Std) t)
 						.getIdent().getText()
 						: t instanceof TypeNode.Usr ? ((TypeNode.Usr) t).getName()
+		
 								.getText() : "/* ?? unknown return type ?? */";
 				rtn = (rtn + " (*" + name + ")(");
 				String sep = "";
@@ -182,7 +183,6 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 				rtn += ")";
 				return rtn;
 			}
-			
 			if (this.getParent() instanceof DeclNode) {
 				if (((DeclNode)this.getParent()).isHostClassRef()) {
 					isCStructRef = false;

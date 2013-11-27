@@ -15,6 +15,7 @@ import com.amaret.pollen.parser.ImportNode;
 import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.StmtNode;
 import com.amaret.pollen.parser.SymbolEntry;
+import com.amaret.pollen.parser.TypeNode;
 import com.amaret.pollen.parser.UnitNode;
 import com.amaret.pollen.parser.pollenParser;
 
@@ -186,6 +187,19 @@ public class UnitJScript {
     		return;
     	
     	if (decl.isHost() || isHostInit(decl)) {
+    		
+    		if (decl.isBound() && decl.getInit() != null) { // initialized protocol member
+    			ExprNode init = decl.getInit();
+    			TypeNode t = ((ExprNode.Typ) init).getTyp();
+    			UnitNode u = ((DeclNode.TypedMember) decl).getBindToUnit();
+    			String bindToUnit = "";
+    			if (u != null) {
+    				bindToUnit = u.getName().getText();
+    				bindToUnit = u.getPkgName().getText().replace('.', '_') + '_'  + bindToUnit + '_';	
+    			}
+    			gen.getAux().genBind(decl, t, bindToUnit );
+    			return;
+    		}
     		String qualifier = (decl.isClassScope()) ? "this" : gen.uname();
             gen.getFmt().print("%t%1.%2 = ", qualifier, decl.getName());
             genInit(decl);

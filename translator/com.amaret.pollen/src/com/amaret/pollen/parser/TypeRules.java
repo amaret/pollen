@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.amaret.pollen.parser.Cat.Agg;
+import com.amaret.pollen.parser.Cat.Arr;
+import com.amaret.pollen.parser.DeclNode.TypedMember;
+
 public class TypeRules {
 	private static final int OP_ADD     = 0x1;
 	private static final int OP_ASSIGN  = 0x2;
@@ -75,21 +79,6 @@ public class TypeRules {
 	}
 
 	static Cat checkBinary(String op, Cat left, Cat right, String err) {
-
-		//needed?
-
-		//        if (left.isProxy() && (right.isProxy() || right.isUnit())) {
-		//            return checkProxyBinding((Cat.Agg) left, (Cat.Agg) right);
-		//        }
-		//
-		//        if (op.equals("=")) {
-		//            if (left.ptrCnt() == 1 && right.ptrCnt() == 1 && left.isStruct() && right.isStruct()) {
-		//                return checkRefAssign((Cat.Agg) left, (Cat.Agg) right);
-		//            }
-		//            if (left.isStructRef() && right.isStruct()) {
-		//                return checkRefAssign((Cat.Agg) left, (Cat.Agg) right);
-		//            }
-		//        }
 
 		String r = right.mkCode();
 		String l = left.mkCode();
@@ -255,7 +244,113 @@ public class TypeRules {
             init.setCat(declCat);
         }
     }
+    /**
+     * Check operands of binding operator.           
+     * @param target_cat
+     * @param src
+     * @return true for okay, else false
+     */
+    public static Cat checkBind(Cat target_cat, TypeNode src) {
 
+    	boolean ok = true;
+    	
+    	if (target_cat == null || src == null) {
+    		return null;
+    	}
+    	String targn = (target_cat instanceof Cat.Agg) ? "\'" + ((Cat.Agg)target_cat).aggName() + "\' : " : "";
+    	if (!(target_cat instanceof Cat.Agg) || !((Cat.Agg)target_cat).isProtocolMember()) {
+    		ParseUnit.current().reportError(src, targn + "LHS of binding operator assignment must be a protocol member");
+    		ok = false;
+    	}
+
+    	Cat src_cat = null;
+
+    	src_cat = Cat.fromType(src); 
+    	if (!src_cat.isModule()) {
+    		// if this is 'from composition import mod' then the Cat 
+    		// will be for the composition. get Cat for mod.
+    		if (src_cat instanceof Cat.Agg && ((Agg) src_cat).aggScope() instanceof UnitNode
+    				&& src instanceof TypeNode.Usr) {
+    			SymbolEntry s = ((com.amaret.pollen.parser.TypeNode.Usr) src).getSymbol();
+    			if (s.node() instanceof ImportNode) {
+    				UnitNode u = ((ImportNode) s.node()).getUnit();
+    				SymbolEntry s2 = u.lookupName(((ImportNode) s.node()).getUnitName().getText());
+    				src_cat = (s2 != null) ? Cat.fromSymbolNode(s2.node(), s2.scope()) : src_cat;
+    			}
+    		}
+    		else
+    			ok = false;
+    	}
+
+    	// for compositions, need to pollen.use these imported units
+    	// if they are used as a bind target.
+    	UnitNode cur = ParseUnit.current().getCurrUnitNode();
+    	if (cur.isComposition()) {
+    		SymbolEntry s = ((TypeNode.Usr) src).getSymbol();
+    		ISymbolNode n = (s != null) ? s.node() : null;
+    		if (n != null && n instanceof ImportNode) {       				
+    			for (ImportNode imp : cur.getImports()) {
+    				if (imp == n) {
+    					imp.setProtocolBindTarget(true);
+    					break;
+    				}
+    			}
+    		}
+    	}
+
+    	String srcn = "\'" + src.getName().getText() + "\': ";
+    	if (!src_cat.isModule()) {
+    		ParseUnit.current().reportError(src, srcn + "RHS of binding operator assignment must be a module");    
+    		ok = false;
+    	}
+    	// check that a protocol is being bound to a module
+    	// in either a host fcn or a module body
+       	SymbolTable symtab = ParseUnit.current().getSymbolTable();
+		boolean scopeOk = (symtab.curScope() instanceof DeclNode.Usr && ((DeclNode.Usr) symtab
+				.curScope()).isModule()) || symtab.currScopeIsHostFcn();
+       	if (!scopeOk) {
+			ParseUnit.current().reportError(src, targn + "Protocol member binding can only occur in the body of a module or in a host function");     
+       	}    
+       	return (ok && scopeOk) ? src_cat : null;
+    }
+ 
+    /**
+     * 
+     * @param target DeclNode of the target of the peg operation
+     * @param src_cat Cat of the  source of the peg operation
+     * @param errorNode The node that should get the error message (line number)
+     */
+    public static void checkPeg(BaseNode target, Cat src_cat, BaseNode errorNode) {
+    	if (target == null) {
+    		System.out.println("TypeRules.checkPeg() bad parameter");
+    		return; 
+    	}  		
+    	if (!(target instanceof DeclNode.TypedMember)) {
+			ParseUnit.current().reportError(errorNode, "LHS of pegging operator assignment must be a typed member");   
+    	}
+    	else {
+    		DeclNode.TypedMember t = (TypedMember) target;
+    		if (!t.isClassRef())
+    			ParseUnit.current().reportError(errorNode, "LHS of pegging operator assignment must be a reference to a class");   
+    		if (t.isHost())
+    			ParseUnit.current().reportError(errorNode, "LHS of pegging operator assignment cannot be a host data member");   
+    	}
+    	if (!(src_cat instanceof Cat.Arr)) {
+    		ParseUnit.current().reportError(errorNode, "RHS of pegging operator assignment must be an array expression"); 
+    	} else {
+    		Cat cb = ((Arr) src_cat).getBase();
+    		boolean errorFlag = false;
+    		if (!(cb instanceof Cat.Scalar)) {
+    			errorFlag = true;
+    		} else {
+    			if (((Cat.Scalar)cb).rank() != 1)
+    				errorFlag = true;
+    		}
+    		if (errorFlag)
+        		ParseUnit.current().reportError(errorNode, "RHS of pegging operator assignment must be an array with element type of uint8, int8, or byte");        		       		
+    	}
+    	
+    }
 
 	public static void checkImplements(DeclNode.Usr implementor, SymbolEntry protocol) {
 
@@ -390,6 +485,7 @@ public class TypeRules {
 				mkBinary(OP_ASSIGN, "u4", "ua", "$1"),
 				mkBinary(OP_ASSIGN, "x.+", "F.+|v|x.+", "$1"),
 				mkBinary(OP_ASSIGN, "C.+|X.+", "C.+|X.+|v", "$1"),
+				mkBinary(OP_ASSIGN, "C.+", "u1|i1", "$1"),
 				mkBinary(OP_ASSIGN, "p|r|s|P.+|F.+|R.+|A.+", "\\1|v", "$1"),
 				mkBinary(OP_ASSIGN, "p", "p|s|v|P.+|R.+", "$1"),
 				mkBinary(OP_ASSIGN, "r", "R.+|S.+", "$1"),

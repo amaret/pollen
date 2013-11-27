@@ -22,12 +22,6 @@ public class Atom extends CommonToken {
 		fileName = pollenLexer.getFileName();
 	}
 
-	public Atom(int type) {
-		super(type);
-		line = pollenLexer.getLineNum();
-		fileName = pollenLexer.getFileName();
-	}
-
 	public Atom(Token oldToken) {
 		super(oldToken);
 		line = oldToken.getLine();
@@ -38,6 +32,10 @@ public class Atom extends CommonToken {
 
 	public String getFileName() {
 		return fileName;
+	}
+	
+	public boolean isSynthesizedToken() {
+		return (input == null); // useful to know because linenum is invalid
 	}
 
 	public void setFileName(String fileName) {

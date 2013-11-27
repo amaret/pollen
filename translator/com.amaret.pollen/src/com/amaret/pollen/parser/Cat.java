@@ -49,8 +49,8 @@ public class Cat implements Cloneable {
         	if (aggScope instanceof UnitNode) {
 				UnitNode u = (UnitNode) aggScope;	
 				boolean dbg = false;
-				if (dbg)
-				System.out.println(u.getQualName() + (u.isMeta() ? " is meta type " : "") + (u.isGeneratedMetaInstance() ? ", is generated meta instance" : ""));							
+				//if (dbg)
+				//System.out.println(u.getQualName() + (u.isMeta() ? " is meta type " : "") + (u.isGeneratedMetaInstance() ? ", is generated meta instance" : ""));							
 			}
 			if (aggScope instanceof DeclNode.Fcn) {
 				//System.out.println(((DeclNode.Fcn)aggScope).getName().getText());
@@ -152,6 +152,9 @@ public class Cat implements Cloneable {
         	if ((isFcnRef || isRef) && sc instanceof DeclNode.Fcn) {
         		return Cat.FCN_REF + ((DeclNode.Fcn) sc).getEnclosingScope().getScopeName() + "." + ((DeclNode.Fcn) sc).getName().getText();
         	}
+        	if (isClassRef && sc instanceof DeclNode.TypedMember)
+        		return Cat.CLASS + ((DeclNode.TypedMember) sc).getTypeUnit().getQualName(); 
+        	
         	if (sc instanceof DeclNode.TypedMember) {
         		return Cat.TYP_MEMBER + ((DeclNode.TypedMember) sc).getTypeUnit().getQualName();
             }
@@ -358,16 +361,11 @@ public class Cat implements Cloneable {
         	// which should match any numeric type, 
         	// e.g. 'uint8 Var == 0' should pass checks.
             codeMap.put("bool",     "b");
-            //codeMap.put("Char",     "u1");
             codeMap.put("byte",		"u1");
-            //codeMap.put("IArg",     "ia");
             codeMap.put("int8",     "i1");
             codeMap.put("int16",    "i2");
             codeMap.put("int32",    "i4");
-            //codeMap.put("Ptr",      "p");
-            //codeMap.put("Ref",      "r");
             codeMap.put("string",   "s");
-            //codeMap.put("UArg",     "ua");
             codeMap.put("uint8",    "u1");
             codeMap.put("uint16",   "u2");
             codeMap.put("uint32",   "u4");
@@ -393,6 +391,11 @@ public class Cat implements Cloneable {
         
         public int rank() {
             return rank;
+        }
+        public boolean isByte() {
+        	if (rank == 1)
+        		return true;
+        	return false;
         }
         
         private String mkStdType() {
@@ -493,7 +496,9 @@ public class Cat implements Cloneable {
     }
     
     static Cat fromScalarString(String typ) {
-        return new Cat.Scalar(typ);
+    	if (Cat.Scalar.codeFromString(typ) != null)
+    		return new Cat.Scalar(typ);
+    	return null;
     }
  
     static Cat fromSymbolNode(ISymbolNode snode, IScope defScope) {

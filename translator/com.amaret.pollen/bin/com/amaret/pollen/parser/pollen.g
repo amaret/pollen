@@ -47,7 +47,7 @@ tokens {
     E_PAREN;
     E_QUEST;
     E_SELF;
-    E_TYP;
+    E_TYP;  // synthesized; when I want a type name to be defined by an expr tree
     E_UNARY;
     E_VEC;
     EXPORT;
@@ -73,6 +73,7 @@ tokens {
     S_IF;
     S_INJ;
     S_PACKAGE;
+    S_PEG;
     S_PRINT;
     S_PROVIDED;
     S_RETURN;
@@ -175,44 +176,42 @@ tokens {
     }
     	/**
     	 * Synthesize tree to handle qualified pollen names in injected text. 
-		 * @param root
-		 * @param inject
-		 * @return the root of the synthesized tree.
-		 */
-		private BaseNode addInjectChild(BaseNode root, TypedInject inject) {
-			
-			root = (root == null) ? (BaseNode)adaptor.nil() : root;
-			if (inject.isName()) {
-       		BaseNode id =  (BaseNode)adaptor.becomeRoot(
-                            new ExprNode.Ident(E_IDENT, "E_IDENT")
-                            , (BaseNode) adaptor.nil());
-    			adaptor.addChild(root, id);
-    			adaptor.addChild(id, 
-    						(BaseNode)adaptor.create(pollenParser.IDENT, (inject.getText())));
+	* @param root
+	* @param inject
+	* @return the root of the synthesized tree.
+	*/
+    private BaseNode addInjectChild(BaseNode root, TypedInject inject) {
 
-    		}
-    		else {
-    				adaptor.addChild(root, 
-    						(BaseNode)adaptor.create(INJECT, (inject.getText())));
-    		}
-
-    		root = (BaseNode)adaptor.rulePostProcessing(root);
-    		return root;
-		}
-    	class TypedInject {
-    		private boolean isName = false;
-    		public boolean isName() {
-				return isName;
-			}
-			public String getText() {
-				return text;
-			}
-			private String text = "";
-    		public TypedInject(String str,boolean name) {
-    			text = str;
-    			isName = name;
-    		}
+    	root = (root == null) ? (BaseNode)adaptor.nil() : root;
+    	if (inject.isName()) {
+    		BaseNode id =  (BaseNode)adaptor.becomeRoot(
+    				new ExprNode.Ident(E_IDENT, "E_IDENT")
+    				, (BaseNode) adaptor.nil());
+    		adaptor.addChild(root, id);
+    		adaptor.addChild(id, 
+    				(BaseNode)adaptor.create(pollenParser.IDENT, (inject.getText())));
     	}
+    	else {
+    		adaptor.addChild(root, 
+    				(BaseNode)adaptor.create(INJECT, (inject.getText())));
+    	}
+    	root = (BaseNode)adaptor.rulePostProcessing(root);
+    	return root;
+    }
+    class TypedInject {
+    	private boolean isName = false;
+    	public boolean isName() {
+			return isName;
+	}
+	public String getText() {
+			return text;
+	}
+	private String text = "";
+    	public TypedInject(String str,boolean name) {
+    		text = str;
+    		isName = name;
+    	}
+    }
 
         	/**
         	 * Split the text that was injected into a list of IDENT and INJECT nodes.
@@ -370,13 +369,14 @@ unitPackage
 scope {
 	Object unitImports;
 }
-	:       stmtPackage
-	        importList {$unitPackage::unitImports = $importList.tree;}
-	        // these are the injects that go into the header file
-           stmtInjectionList
-           unitTypeDefinition
-           stmtInjectionList
-           pollenEOF
+	:       	stmtPackage
+	        	importList {$unitPackage::unitImports = $importList.tree;}	        	
+	        	importIntrinsicPrint
+           		stmtInjectionList //  the injects that go into the header file
+           		unitTypeDefinition
+           		stmtInjectionList
+           		pollenEOF
+           			-> stmtPackage importList stmtInjectionList unitTypeDefinition stmtInjectionList 
 	;
 pollenEOF
 	:	EOF!
@@ -426,11 +426,11 @@ classDefinition
 	      	}
 	      	name = qual.isEmpty() ? ti.getTypeName() : qual;
 	      }
-	   extendsClause
+	   	extendsClause
 		implementsClause
-		braceOpen classFeatureList[name]
+		braceOpen classFeatureList[name] braceClose
 		-> ^(D_CLASS<DeclNode.Class>["D_CLASS", ti.getUnitFlags(), qual] 
-		IDENT classFeatureList extendsClause implementsClause {$unitTypeDefinition::meta})//{$unitTypeDefinition::metaImports})
+			IDENT classFeatureList extendsClause implementsClause {$unitTypeDefinition::meta})
 		;
 classFeatureList[String n]
 @init {
@@ -439,12 +439,13 @@ classFeatureList[String n]
   EnumSet<Flags> ft = EnumSet.noneOf(Flags.class);
   ft.add(Flags.CONSTRUCTOR); 
 }
-	:	classFeature* classHostCtor[fh] classTargCtor[ft]	intrinsicVarsBraceClose[n] 
+	:	classFeature* classHostCtor[fh] classTargCtor[ft]	 intrinsicUnitName[n] intrinsicPrintProxy
 			-> ^(LIST<ListNode>["LIST"] 
-									classFeature* 
-									classHostCtor
-									classTargCtor
-									intrinsicVarsBraceClose)
+								classFeature* 
+								classHostCtor
+								classTargCtor
+								intrinsicUnitName
+								intrinsicPrintProxy)
 	;
 classFeature
 @init {
@@ -516,7 +517,7 @@ moduleDefinition
    	if (tl.size() > 0)
    	  ti = tl.get(tl.size()-1);
 }
-	:	   'module' IDENT
+	:    'module' IDENT
 	      { 
 	      	ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.MODULE));
 	      	if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().getText().equals("NIL")) {
@@ -527,22 +528,56 @@ moduleDefinition
 	      }
 	      extendsClause
 	      implementsClause
-			braceOpen moduleFeatureList[name]
+			braceOpen moduleFeatureList[name] braceClose
 			-> ^(D_MODULE<DeclNode.Usr>["D_MODULE", ti.getUnitFlags(), qual] 
 			IDENT moduleFeatureList extendsClause implementsClause {$unitTypeDefinition::meta}) 
 	;
 moduleFeatureList[String n]
 @init {
-  EnumSet<Flags> fh = EnumSet.noneOf(Flags.class);
-  fh.add(Flags.CONSTRUCTOR); fh.add(Flags.HOST);
-  EnumSet<Flags> ft = EnumSet.noneOf(Flags.class);
-  ft.add(Flags.CONSTRUCTOR); 
+  	EnumSet<Flags> fh = EnumSet.noneOf(Flags.class);
+  	fh.add(Flags.CONSTRUCTOR); fh.add(Flags.HOST);
+  	EnumSet<Flags> ft = EnumSet.noneOf(Flags.class);
+  	ft.add(Flags.CONSTRUCTOR); 
 }
-	:	moduleFeature*	moduleHostCtor[fh] moduleTargCtor[ft] intrinsicVarsBraceClose[n] 		
+	:	moduleFeature*	moduleHostCtor[fh] moduleTargCtor[ft] intrinsicUnitName[n] intrinsicPrintProxy
 			-> ^(LIST<ListNode>["LIST"] 
-						moduleFeature* moduleHostCtor moduleTargCtor intrinsicVarsBraceClose 
-					)
+				moduleFeature* 
+				moduleHostCtor 
+				moduleTargCtor 
+				intrinsicUnitName 
+				intrinsicPrintProxy
+			       )
 ;
+intrinsicPrintProxy
+	:	{ProcessUnits.doEmitPrintProxy()}? 
+			-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", EnumSet.of(Flags.INTRINSIC_VAR, Flags.BIND, Flags.PROTOCOL_MEMBER)] 				
+				^(T_USR<TypeNode.Usr>["T_USR", EnumSet.of(Flags.INTRINSIC_VAR)] 
+					IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL]
+				  ) 
+				IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] 				
+				 ^( E_TYP<ExprNode.Typ>["E_TYP"] 	
+				 	^(T_USR<TypeNode.Usr>["T_USR", EnumSet.noneOf(Flags.class)] 				 			 	
+				 		IDENT[ProcessUnits.getPollenPrint()]	)			 	  
+				   )
+			       )
+		 | -> NIL	
+	;
+/*
+ * This rule synthesizes a declaration of an intrincsic variable 'unit.name' which holds the name of the unit. 
+ * Can add more intrinsic variables in a similar fashion.
+ */
+intrinsicUnitName[String n]
+	:	{true}? -> ^(D_VAR<DeclNode.Var>["D_VAR", EnumSet.of(Flags.INTRINSIC_VAR)] 
+					^(T_STD<TypeNode.Std>["T_STD", EnumSet.of(Flags.INTRINSIC_VAR)]
+						QNAME["string"]
+					  ) 
+					IDENT[ParseUnit.INTRINSIC_UNITVAR] 
+					^(E_CONST<ExprNode.Const>["E_CONST", EnumSet.of(LitFlags.STR)]
+							STRING["\"" + n + "\""]
+					  )
+				      )
+		 | -> NIL							
+	;
 moduleHostCtor[EnumSet<Flags> fh]
 @init {
 	featureFlags = fh.clone();
@@ -572,31 +607,21 @@ moduleTargCtor[EnumSet<Flags> ft]
 							IDENT[ParseUnit.CTOR_MODULE_TARGET]) 
 						^(LIST<ListNode>["LIST"]) // empty parameters
 						^(D_FORMAL<DeclNode.Formal>["D_FORMAL", ft] 
-							^(T_USR<TypeNode.Usr>["T_USR", ft] IDENT[ti.getTypeName()]) IDENT["this"])
+							^(T_USR<TypeNode.Usr>["T_USR", ft] 
+								IDENT[ti.getTypeName()]) IDENT["this"])
 						^(FCNBODY<BodyNode>["FCNBODY"] ^(LIST<ListNode>["LIST"]) ^(LIST<ListNode>["LIST"]))
 						)
 	|	-> NIL
-	;
-
-/*
- * This rule synthesizes a declaration of an intrincic variable 'unit.name' which holds the name of the unit. 
- * Can add more intrinsic variables here.
- */
-intrinsicVarsBraceClose[String n]
-	:	(NL)* '}' (NL)* -> ^(D_VAR<DeclNode.Var>["D_VAR", EnumSet.of(Flags.INTRINSIC_VAR)] 
-									^(T_STD<TypeNode.Std>["T_STD", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME["string"]) 
-										IDENT["pollen__unitname"] 
-										^(E_CONST<ExprNode.Const>["E_CONST", EnumSet.of(LitFlags.STR)] STRING["\"" + n + "\""]))								
 	;
 moduleFeature
 @init {
 	featureFlags = EnumSet.noneOf(Flags.class);
 }
 	:   fcnDefinition
-   |   varDeclaration
+   	|   varDeclaration
 	|   enumDefinition
 	|   classDefinition
-	|	 injectionDecl
+	|   injectionDecl
     ;
 enumDefinition 
 @init{
@@ -664,7 +689,7 @@ protocolFeature
 }
     :   enumDefinition
     |   fcnDeclaration 
-    |	  injectionDecl
+    |   injectionDecl
     ;
 compositionDefinition
 @init{
@@ -703,10 +728,10 @@ compositionFeature
 }
  	:  stmtExport
  	|  stmtPreset
-   |  fcnDefinitionHost
-   |  enumDefinition
-   |  varDeclaration
-   |	injectionDecl
+   	|  fcnDefinitionHost
+   	|  enumDefinition
+   	|  varDeclaration
+   	|  injectionDecl
  	;
 stmtImport
 scope{
@@ -716,11 +741,11 @@ scope{
 @init{
 	String defaultPkg = "";
 	String path = this.getTokenStream().getSourceName();
-   int k = path.lastIndexOf(File.separator);
-   int j = path.lastIndexOf(File.separator, k-1);
-   j = j == -1 ? 0 : j+1;
-    // the default package is the containing directory
-    defaultPkg = path.substring(j, k);
+   	int k = path.lastIndexOf(File.separator);
+   	int j = path.lastIndexOf(File.separator, k-1);
+   	j = j == -1 ? 0 : j+1;
+    	// the default package is the containing directory
+    	defaultPkg = path.substring(j, k);
 }
  	   :    'from'! importFrom
     
@@ -731,6 +756,12 @@ scope{
     				defaultPkg = ProcessUnits.getPollenEnvPkg();
     				if ($stmtImport::qimp.isEmpty())
     					throw new PollenException("Missing module specification for pollen.environment", input);
+    			}
+    			else if ($qualName.text.equals("pollen.print")) {
+    				$stmtImport::qimp = ProcessUnits.getPollenPrint();
+    				defaultPkg = ProcessUnits.getPollenPrintPkg();
+    				if ($stmtImport::qimp.isEmpty())
+    				    	throw new PollenException("Missing module specification for pollen.print", input);
     			}
     			else {
     				$stmtImport::qimp = $qualName.text;
@@ -773,11 +804,54 @@ importAs
 	;
 
 importList
-	:  stmtImports
+	:  	stmtImports //importIntrinsicPrint
 	;
 stmtImports
-	:	stmtImport+ -> ^(LIST<ListNode>["LIST"]  stmtImport+ )
-	|	-> ^(LIST<ListNode>["LIST"])
+	:	stmtImport+  -> ^(LIST<ListNode>["LIST"]  stmtImport+)
+	|	-> ^(LIST<ListNode>["LIST"] )
+	;
+/*
+	NOTE first approaches to these rules got a stack overflow in org.antlr.analysis.SemanticContext.
+	See notes in Info/info.antlr
+	This rule synthesizes AST for intrinsic print when '-p' specifies a print implementation.
+	It creates subtrees on empty input which can confuse antlr. Works but extend with care.
+*/
+importIntrinsicPrint
+scope {
+	List<Object> l;
+}
+@init {
+	$importIntrinsicPrint::l = new ArrayList<Object>();	
+}
+
+@after {
+ 	for (Object o : $importIntrinsicPrint::l) {
+ 		if (o instanceof ImportNode) {
+ 			// add the instantiated import to unit imports
+ 			((CommonTree) $unitPackage::unitImports).addChild((ImportNode) o);			
+ 		}
+ 	}
+}
+	:	 m1=importPrintImpl  	{  $importIntrinsicPrint::l.add($m1.tree);}
+		 m2=importPrintProtocol	{  $importIntrinsicPrint::l.add($m2.tree);}	
+	;
+// synthesize the imports for the print implementation (from the -p option)
+// import the protocol and an implemenation
+importPrintImpl
+	:	{ProcessUnits.doImportPrint()}? 
+		   -> ^(IMPORT<ImportNode>["IMPORT",  EnumSet.noneOf(Flags.class)] 
+			IDENT[ProcessUnits.getPollenPrintPkg()] 
+			IDENT[ProcessUnits.getPollenPrint()]
+			NIL)	
+		|  -> NIL
+	;
+importPrintProtocol
+	:	{ProcessUnits.doImportPrint()}? 
+		   -> ^(IMPORT<ImportNode>["IMPORT",  EnumSet.noneOf(Flags.class)] 
+			IDENT["pollen.lang"] 
+			IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL]
+			NIL)	
+		|  -> NIL
 	;
 meta 
 @init {
@@ -792,10 +866,9 @@ meta
 			 braceClose) 
 			 
 	
-	|  { isMetaInstance = false;} -> LIST<ListNode>["LIST"] 
+	|  	{ isMetaInstance = false;} -> LIST<ListNode>["LIST"] 
 										
-	;
-	
+	;	
 metaParmsGen
 scope {
 	int idx;
@@ -990,7 +1063,7 @@ scope {
 }
    :   (meta! { $unitTypeDefinition::meta = $meta.tree; })  
      (
-         	('module') => moduleDefinition   		
+         	      ('module') => moduleDefinition   		
 	|     ('class') =>  classDefinition
    	|     ('protocol') => protocolDefinition 
    	|     ('composition') => compositionDefinition 
@@ -1279,17 +1352,7 @@ formalParameters
 	:	formalParameter (',' formalParameter)*  
 		-> ^(LIST<ListNode>["LIST"] formalParameter+)
 	|	
-		/* {  if (featureFlags.contains(Flags.CONSTRUCTOR)
-				&& (ti.getUnitFlags().contains(Flags.CLASS) || ti.getUnitFlags().contains(Flags.MODULE))) {
-	         // synth AST for empty constructors if none defined
-	         if (featureFlags.contains(Flags.HOST))
-	           hasHostConstructor = true;
-	         else
-	           hasTargetConstructor = true;
-	      }
-		}
-		*/
-	-> ^(LIST<ListNode>["LIST"])
+		-> ^(LIST<ListNode>["LIST"])
 	;
 
 formalParameter
@@ -1351,17 +1414,18 @@ stmt
 	typeMods = EnumSet.noneOf(Flags.class);
 	stmtFlags = EnumSet.noneOf(Flags.class);
 }
-	:  stmtDecl
-	|  stmtAssign
+	:  	stmtDecl
+	|  	stmtAssign
 	|	stmtBind
 	|	stmtBlock
 	|	stmtPrint
+	|	stmtPeg
 	|	stmtReturn
 	|	stmtBreak
-	|  stmtContinue
-	|  stmtFor
+	|  	stmtContinue
+	|  	stmtFor
 	|	stmtSwitch
-	|  stmtDoWhile
+	|  	stmtDoWhile
 	|	stmtIf
 	|	stmtProvided
 	|	stmtWhile 
@@ -1394,6 +1458,9 @@ stmtAssign
 stmtBind
 	:	varOrFcnOrArray BIND  userTypeName	 delim -> ^(S_BIND<StmtNode.Bind>["S_BIND"] varOrFcnOrArray  userTypeName)	
 	;
+stmtPeg
+	:	varOrFcnOrArray PEG  exprAssign	 delim -> ^(S_PEG<StmtNode.Peg>["S_PEG"] varOrFcnOrArray  exprAssign)	
+	;
 printList	
 	:		printItemList	-> ^(LIST<ListNode>["LIST"] printItemList)
 	;
@@ -1403,7 +1470,8 @@ printItemList
 	;
 printItem
 	:	primitiveLit	
-	|	qualName	-> ^(E_IDENT<ExprNode.Ident>["E_IDENT"] qualName)
+	//|	qualName	-> ^(E_IDENT<ExprNode.Ident>["E_IDENT"] qualName)
+	|	varOrFcnOrArray
 	;
 stmtPrint
 @init {
@@ -1645,11 +1713,13 @@ varInit2		// built in type
 	:	IDENT ASSIGN expr
 		-> ^(D_VAR<DeclNode.Var>["D_VAR", stmtFlags] {$varDecl::typ} 
 			IDENT expr)
-	| IDENT
+	| 	IDENT
 		-> ^(D_VAR<DeclNode.Var>["D_VAR", stmtFlags] {$varDecl::typ} IDENT)
 	;
-varInit	// user defined type
-	: 	IDENT BIND expr { stmtFlags.add(Flags.PROTOCOL_MEMBER); }	
+varInit		// user defined type
+	: 	IDENT BIND userTypeName { stmtFlags.add(Flags.PROTOCOL_MEMBER);  stmtFlags.add(Flags.BIND); }	
+		-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] {$varDecl::typ} IDENT ^( E_TYP<ExprNode.Typ>["E_TYP"] userTypeName )?)
+	|	IDENT PEG expr { stmtFlags.add(Flags.PEG); }	
 		-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] {$varDecl::typ} IDENT expr?)
 	|	IDENT ASSIGN expr
 		-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] {$varDecl::typ} 
@@ -1693,8 +1763,8 @@ qualNameConcat
 qualNameList 
 	:
 	(   '.'!     
-        IDENT! {$qualName::s += "." + $IDENT.text;}
-    )+	 
+        		IDENT! {$qualName::s += "." + $IDENT.text;}
+    	)+	 
 	; 
     		
 arrayLit		// anonymous arrays
@@ -1838,8 +1908,8 @@ INJECT
 
 ML_COMMENT	
 	 // Note the first has to have a min of 4 dashes to disambig w/ sl_comment
-      :  '----' ('-')* (' ' | '\t')* ('\n'|'\r') ( options {greedy=false;} : . )* '---' ('-')*('\n'|'\r')* { $channel=HIDDEN; }    
-    	|	'!--' ( options {greedy=false;} : . )*  '--!' ('\n'|'\r')* { $channel=HIDDEN; }
+    :  	'----' ('-')* (' ' | '\t')* ('\n'|'\r') ( options {greedy=false;} : . )* '---' ('-')*('\n'|'\r')* { $channel=HIDDEN; }    
+    |	'!--' ( options {greedy=false;} : . )*  '--!' ('\n'|'\r')* { $channel=HIDDEN; }
     ;
 
 SEMI
@@ -1859,10 +1929,10 @@ fragment H:        'a'..'f' | 'A'..'F' | '0'..'9' ;
 fragment E:        ('E' | 'e') (PLUS | MINUS)? (D)+ ;
 fragment LU:       'LU' | 'Lu' | 'lU' | 'lu' | 'UL' | 'uL' | 'Ul' | 'ul' | 'l' | 'u' | 'L' | 'U' ;
 
-INC		: '++';
-PLUS		: '+';
-DEC		: '--';
-MINUS		: ('-');
+INC		: 	'++';
+PLUS		: 	'+';
+DEC		: 	'--';
+MINUS		: 	('-');
 ASSIGN	:	'=';  // note ASSIGN must be first of eq ops or grammar error (won't be matched)
 BIND 		:	':=';
 ADD_EQ	:	'+=';
@@ -1870,19 +1940,20 @@ SUB_EQ	:	'-=';
 MUL_EQ	:	'*=';
 DIV_EQ	:	'\\=';
 BITOR_EQ	:	'|=';
-BITXOR_EQ:	'^=';
-BITAND_EQ:	'&=';
+BITXOR_EQ	:	'^=';
+BITAND_EQ	:	'&=';
 RSHFT_EQ	:	'>>=';
 LSHFT_EQ	:	'<<=';
 MOD_EQ	:	'%=';
-EQ			:	'==';
+PEG		:	'@=';
+EQ		:	'==';
 NOT_EQ	:	'!=';
 LT_EQ		:	'<=';
-GT_EQ		:	'>=';
+GT_EQ	:	'>=';
 LOG_NOT	:	'!';
 BIT_NOT	:	'~';
-GT			:  '>';
-LT			:	'<';
+GT		:  	'>';
+LT		:	'<';
 // injection blocks
 
 IJ_BEG:	 '+{';

@@ -1,6 +1,7 @@
 package com.amaret.pollen.translator;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 
@@ -9,14 +10,18 @@ import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.UniqueTag;
 
 import com.amaret.pollen.driver.ProcessUnits;
+import com.amaret.pollen.parser.BaseNode;
 import com.amaret.pollen.parser.Cat;
 import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.DeclNode.ITypeSpec;
 import com.amaret.pollen.parser.DeclNode.TypedMember;
 import com.amaret.pollen.parser.ExprNode;
+import com.amaret.pollen.parser.Flags;
+import com.amaret.pollen.parser.IScope;
 import com.amaret.pollen.parser.ISymbolNode;
 import com.amaret.pollen.parser.ImportNode;
 import com.amaret.pollen.parser.ParseUnit;
+import com.amaret.pollen.parser.SymbolEntry;
 import com.amaret.pollen.parser.TypeNode;
 import com.amaret.pollen.parser.TypeNode.Usr;
 import com.amaret.pollen.parser.UnitNode;
@@ -100,6 +105,38 @@ public class ProgCCode {
 
     private void genEpilogue() {
     	
+        gen.aux.genTitle("pollen.print");
+        
+        gen.getFmt().print("%tvoid %1pollen__print_bool(bool b) {\n%+", gen.uname_target());
+        genIntrinsicPrintCall("print_bool", "b");        
+        gen.getFmt().print("%-}\n");
+        
+        gen.getFmt().print("%tvoid %1pollen__print_int(int32 i) {\n%+", gen.uname_target());
+        genIntrinsicPrintCall("print_int", "i");
+        gen.getFmt().print("%-}\n");
+        
+        gen.getFmt().print("%tvoid %1pollen__print_uint(uint32 u) {\n%+", gen.uname_target());
+        genIntrinsicPrintCall("print_uint", "u");
+        gen.getFmt().print("%-}\n");
+        
+        gen.getFmt().print("%tvoid %1pollen__print_str(string s) {\n%+", gen.uname_target());
+        genIntrinsicPrintCall("print_str", "s");
+        gen.getFmt().print("%-}\n");
+        
+        //gen.getFmt().print("%tvoid %1pollen__print_x(void* print, void* val) {\n%+", gen.uname_target());
+        //gen.getFmt().print("%-}\n");
+        
+        // if assertions are turned on, generate pollen.assert
+        if (ProcessUnits.isAsserts()) {
+        	gen.aux.genTitle("pollen.assert(bool, string)");
+            gen.getFmt().print("%tvoid %1pollen__assert__E(bool b, string msg) {\n%+", gen.uname_target());
+            gen.getFmt().print("%tif (!b) {\n");
+            gen.getFmt().print("%t%t%1pollen__print_str(msg);\n", gen.uname_target());
+            gen.getFmt().print("%t%t%1pollen__print_str(\"\\n\");\n", gen.uname_target());            
+            gen.getFmt().print("%t%-}\n");
+            gen.getFmt().print("%-}\n");
+        }       
+        
     	gen.aux.genTitle("module functions");
         for (UnitDesc ud : units) {
             UnitNode u = ud.getUnit();
@@ -108,25 +145,6 @@ public class ProgCCode {
             }
         }
         
-        gen.aux.genTitle("pollen.print");
-        gen.getFmt().print("%tvoid %1pollen__print_bool(bool b) {\n%+", gen.uname_target());
-        gen.getFmt().print("%-}\n");
-        gen.getFmt().print("%tvoid %1pollen__print_int(int32 i) {\n%+", gen.uname_target());
-        gen.getFmt().print("%-}\n");
-        gen.getFmt().print("%tvoid %1pollen__print_uint(uint32 u) {\n%+", gen.uname_target());
-        gen.getFmt().print("%-}\n");
-        gen.getFmt().print("%tvoid %1pollen__print_str(string s) {\n%+", gen.uname_target());
-        gen.getFmt().print("%-}\n");
-        gen.getFmt().print("%tvoid %1pollen__print_x(void* print, void* val) {\n%+", gen.uname_target());
-        gen.getFmt().print("%-}\n");
-        
-        // if assertions are turned on, generate pollen.assert
-        if (ProcessUnits.isAsserts()) {
-        	gen.aux.genTitle("pollen.assert(bool, string)");
-            gen.getFmt().print("%tvoid %1pollen__assert__E(bool b, string msg) {\n%+", gen.uname_target());
-            gen.getFmt().print("%tif (!b) %1pollen__print_str(msg);\n", gen.uname_target());
-            gen.getFmt().print("%-}\n");
-        }       
         // Generate defaults for pollen.reset, pollen.ready, pollen.shutdown, pollen.wake, pollen.hibernate.
         // if they do not exist.
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "reset") == null) {
@@ -193,6 +211,26 @@ public class ProgCCode {
         gen.getFmt().print("%-}\n");
        
     }
+
+
+	/**
+	 * Emit the call to the print implementation.
+	 */
+	private void genIntrinsicPrintCall(String fcnCall, String parm) {
+		SymbolEntry s = gen.curUnit().getUnitType().getScopeDeleg().lookupName(ParseUnit.INTRINSIC_PRINT_PROXY);
+        ISymbolNode n = s != null ? s.node() : null;
+        if (n instanceof DeclNode.TypedMember &&  ((DeclNode.TypedMember)n).getBindToUnit() != null) {
+        	IScope sc = ((DeclNode.TypedMember)n).getBindToUnit().getUnitType();
+        	SymbolEntry fcn = ((DeclNode.TypedMember)n).getBindToUnit().getUnitType().getScopeDeleg().lookupName(fcnCall);
+			if (fcn != null) {
+				gen.getFmt().print(
+						"%t%1",
+						((DeclNode.TypedMember) n).getOutputQNameTarget(gen,
+								fcn.node(), sc, EnumSet.noneOf(Flags.class)));
+				gen.getFmt().print("(%1);\n", parm);
+			}
+        }
+	}
 
     public void generate(Value.Arr unitsArr) {
 
@@ -627,12 +665,27 @@ public class ProgCCode {
 		if (is instanceof ImportNode) 
 			is = ((ImportNode) is).getUnit().getUnitType();
 		
+		//System.out.println(is.getName().getText());
+    	String n = is.getName().getText();
+    	if (cat.aggScope() instanceof DeclNode)
+    		n = ((DeclNode)cat.aggScope()).getName().getText();
+    	
+		if (!(is instanceof DeclNode.Usr)) {
+			if (!cat.isHostClassRef() && cat.isClassRef()) {
+				ParseUnit.current().reportError((BaseNode) cat.aggScope(), "\'" + n + "\': non-host class reference cannot be initialized in a host context");
+			}
+			else {
+				System.out.println("genValAgg(): unexpected type");
+			}
+			return;
+		}
         
         DeclNode.Usr struct = (DeclNode.Usr) is;
         
         String name = vobj.getStr("$$uname");  
-        if (name.isEmpty())
-        	ParseUnit.current().reportError(gen.curUnit(), "javascript problem for " + struct.getName());
+        if (name.isEmpty()) {
+        	ParseUnit.current().reportError(gen.curUnit(), "script problem for " + n);
+        }
 
         genFldVals(struct, vobj, name);
 

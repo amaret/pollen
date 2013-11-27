@@ -7,9 +7,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.antlr.runtime.tree.BaseTree;
+import org.antlr.runtime.tree.Tree;
+
+import com.amaret.pollen.parser.Cat.Agg;
 import com.amaret.pollen.parser.ExprNode.Binary;
 import com.amaret.pollen.parser.ExprNode.Vec;
-import com.amaret.pollen.parser.StmtNode.Bind;
 import com.amaret.pollen.target.ITarget.TypeInfo;
 import com.amaret.pollen.translator.Generator;
 
@@ -46,12 +49,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				return "this->" + this.getName().getText();
 			}
 			IScope scopeOfDcln = sc;	
-//			if (this.getTypeCat().isFcnRef()) {
-//				DeclNode.Fcn f = (Fcn) ((Cat.Agg) this.getTypeCat()).aggScope();    
-//				DeclNode.Usr u = (Usr) f.getDefiningScope();
-//				String s = g.getOutputQName(f, u, u, EnumSet.noneOf(Flags.class));
-//				return s;				
-//			}
 			boolean localsScope = !(scopeOfDcln instanceof UnitNode || scopeOfDcln instanceof DeclNode.Usr);
 			if (localsScope) {
 				return this.getName().getText();
@@ -1098,7 +1095,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		private UnitNode bindToUnit = null; // the module to which this protocol
 											// member is bound
 		private TypeNode bindToTypeSpec = null; // typeSpec for that module
-		private UnitNode bindLocUnit = null; // module where binding takes place
+		private UnitNode bindLocation = null; // module where binding takes place
 
 		private NestedScope scopeDeleg = new NestedScope(this);
 		private Cat.Fcn fcnCat = null; // for function references
@@ -1110,9 +1107,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		public boolean isMetaPrimitive() {
 			return isMetaPrimitive;
 		}
-
 		public UnitNode getBindLocUnit() {
-			return bindLocUnit;
+			return bindLocation;
 		}
 		
 		public String getOutputQNameTarget(Generator g, ISymbolNode node, IScope sc, EnumSet<Flags> flags) {
@@ -1132,7 +1128,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			if (this.isProtocolMember()) {
 				// qualify to the binding unit
 				if (this.getBindToUnit() == null) {
-					ParseUnit.current().reportError(this, this.getName().getText() + ": unbound protocol member detected");
+					ParseUnit.current().reportError(this, "\'" + this.getName().getText() + "\' : unbound protocol member detected");
 				}
 				else 
 					qn = this.getBindToUnit().getQualName();
@@ -1154,6 +1150,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			qn = qn + "." + n + g.getAux().mkSuf(node);
 			return qn.replace('.', '_');
 		}
+		/**
+		 * node is the item. sc is the item scope.
+		 */
 		public String getOutputQNameHost(Generator g, ISymbolNode node, IScope sc, EnumSet<Flags> flags) {
 			boolean thisPtr = flags.contains(Flags.IS_THISPTR);			
 			String qn = "";
@@ -1351,7 +1350,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				flags.remove(Flags.PRESET);
 			}
 
-			// UnitNode typeUnit = null; // The UnitNode that contains the type
+			// UnitNode typeUnit: The UnitNode that contains the type
 			// of this typed member.
 			// For a nested type T in module M, that is the unit node for M.
 			boolean isTypeMetaArg = false;
@@ -1399,14 +1398,43 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			return false;
 		}
 
+		public void pass2End() {
+
+			if (!(this instanceof ITypeSpecInit)) {
+				return;
+			}
+			ITypeSpecInit tsi = (ITypeSpecInit) this;
+			ExprNode init = tsi.getInit();
+			if (isPegged()) {
+				TypeRules.checkPeg(this, init.getCat(), this);
+			} else if (isBound()) {
+				if (!(init instanceof ExprNode.Typ)) {
+					ParseUnit
+					.current()
+					.reportError(this,
+							"a protocol member must be bound to a module");
+				}
+				else  {
+					TypeNode t = ((ExprNode.Typ) init).getTyp();
+					Cat.Agg src_cat = (Agg) TypeRules.checkBind(getTypeCat(), t);
+					if (src_cat != null) {
+						BaseNode d = (BaseNode) src_cat.aggScope();
+						UnitNode u = (UnitNode) ((d instanceof UnitNode) ? d
+								: d instanceof DeclNode.Usr ? ((DeclNode.Usr) d)
+										.getUnit() : null);
+						this.bindModule(u, t); // bind it
+					}
+				}
+			}
+		}
+
 		/**
 		 * Connect the protocol member to its implementing module unit
 		 * (unitNode).
-		 * 
 		 * @param mt
 		 *            After binding, use this type for typeSpec
 		 */
-		public void bindModule(UnitNode mUnit, TypeNode mt, Bind bind) {
+		public void bindModule(UnitNode mUnit, TypeNode mt) {
 			if (this.isProtocolMember()) {
 				if (bindToUnit != null) {
 					ParseUnit
@@ -1419,7 +1447,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				bindToTypeSpec = mt;
 				typeCat = Cat.fromSymbolNode(bindToUnit, unit
 						.getDefiningScope());
-				bindLocUnit = ParseUnit.current().getCurrUnitNode();
+				bindLocation = ParseUnit.current().getCurrUnitNode();
 			}
 		}
 
@@ -2010,6 +2038,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				return qn;
 			
 			IScope scopeOfDcln = sc;
+
 			if (scopeOfDcln instanceof DeclNode.Usr && !((ITypeKind)scopeOfDcln).isClass()) {
 				scopeOfDcln = scopeOfDcln.getEnclosingScope();
 			}
@@ -2048,6 +2077,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			String qn = "";
 			ISymbolNode node = this;
 			IScope scopeOfDcln = sc;
+			boolean localsScope = !(scopeOfDcln instanceof UnitNode || scopeOfDcln instanceof DeclNode.Usr);
+			if (localsScope) {
+				return this.getName().getText();
+			}
 			if (scopeOfDcln instanceof DeclNode.Usr && !((ITypeKind)scopeOfDcln).isClass()) {
 				scopeOfDcln = scopeOfDcln.getEnclosingScope();
 			}
@@ -2362,7 +2395,20 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 	public boolean isPreset() {
 		return flags.contains(Flags.PRESET);
 	}
-
+	/**
+	 * 
+	 * @return true if the init expr pegs to an array expr ('@=')
+	 */
+	public boolean isPegged() {
+		return flags.contains(Flags.PEG);
+	}
+	/**
+	 * 
+	 * @return true if this init expression is a module binding (':=')
+	 */
+	public boolean isBound() {
+		return flags.contains(Flags.BIND);
+	}
 	public boolean isNew() {
 		return flags.contains(Flags.NEW);
 	}
@@ -2399,7 +2445,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			return;
 		}
 		ITypeSpecInit tsi = (ITypeSpecInit) this;
-		ExprNode init = tsi.getInit();
+		ExprNode init = tsi.getInit();		
+		if (isPegged())  {
+			TypeRules.checkPeg(this, init.getCat(), this);
+		}
+		
 		if (init == null) {
 			return;
 		}

@@ -276,9 +276,6 @@ public class ExprNode extends BaseNode {
 				String call = ei.getName().getText();
 				boolean chkHostScope = symtab.currScopeIsHostFcn() || isHostConstructorCall();
 				boolean dbg = false;
-
-				if (call.matches("pollen__assert"))
-					dbg = true;
 				
 				boolean skipLookup =  (call.matches(ParseUnit.INTRINSIC_PREFIX + ".*")) ? true : false;
 
@@ -914,8 +911,7 @@ public class ExprNode extends BaseNode {
 				}
 			}
 			boolean dbg = false;
-			if (this.getName().getText().matches("hll.red"))
-				dbg = true;
+
 			if (symbol == null)
 				symbol = currUnit.getSymbolTable().resolveSymbol(getName(),
 						true);
@@ -1059,6 +1055,14 @@ public class ExprNode extends BaseNode {
 		public void setSymbol(SymbolEntry symbol) {
 			this.symbol = symbol;
 		}
+		protected boolean pass1Begin() {
+			super.pass1Begin();
+
+			if (getTyp() != null)
+				getTyp().pass1Begin();
+			
+			return true;
+		}
 
 		@Override
 		protected boolean pass2Begin() {
@@ -1085,14 +1089,15 @@ public class ExprNode extends BaseNode {
 										.getScopeName());
 
 			}
+			if (symbol != null && symbol.node() != null) {
+				exprCat = symbol.node().getTypeCat();
+			}
 			return super.pass2Begin();
 		}
 
 		@Override
 		protected void pass2End() {
-			if (symbol != null && symbol.node() != null) {
-				exprCat = symbol.node().getTypeCat();
-			}
+
 		}
 	}
 

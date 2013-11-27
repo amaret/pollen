@@ -29,8 +29,9 @@ public class BaseNode extends CommonTree {
             }
         }
         pass1End();
+        
     }
-    
+   
     final void doPass2() {
        if (!pass2Begin()) {
             return;
@@ -46,7 +47,7 @@ public class BaseNode extends CommonTree {
     public Atom getAtom() {
         return (Atom) getToken();
     }
-    
+
     public String getFileName() {
         return fileName;
     }
@@ -77,5 +78,35 @@ public class BaseNode extends CommonTree {
         startIndex = start;
         stopIndex = stop;
     }
+	/**
+	 * For correct line numbers in error messages. 
+	 * Non-synthesized tokens have correct line num
+	 * whereas synthesized tokens all have the line num of EOF.
+	 * @param b a node
+	 * @return a node in the current subtree containing a non synthesized token or null if none exists.
+	 */
+	private BaseNode getNonSynthesizedNode(BaseNode b) {
+		if (b == null)
+			return null;
+		if (!b.getAtom().isSynthesizedToken())
+			return b;
+		if (b.getChildren() != null)
+			for (Object o : b.getChildren()) {
+				BaseNode n = getNonSynthesizedNode((BaseNode) o);
+				if (n != null) //&& !n.getAtom().isSynthesizedToken())
+					return n;
+			}
+		return null;
+	}
+	public int getLine() {
+		BaseNode b = getNonSynthesizedNode(this);
+		if (b != null) // && !b.getAtom().isSynthesizedToken())
+			return b.getToken().getLine();
+		// non-synthesized tokens have correct line num
+		// whereas synthesized tokens all have the line num of EOF
+		return super.getLine();
+	}
+
+
 
 }

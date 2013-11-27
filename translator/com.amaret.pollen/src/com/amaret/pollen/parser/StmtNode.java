@@ -7,7 +7,10 @@ import java.util.Set;
 
 import org.antlr.runtime.tree.Tree;
 
+import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.Cat.Agg;
+import com.amaret.pollen.parser.Cat.Arr;
+import com.amaret.pollen.parser.DeclNode.TypedMember;
 import com.amaret.pollen.parser.DeclNode.Var;
 import com.amaret.pollen.parser.ExprNode.Ident;
 
@@ -466,6 +469,14 @@ public class StmtNode extends BaseNode {
         
         @Override
         protected void pass2End() {
+        	if (ProcessUnits.getPollenPrint().isEmpty())
+        		ParseUnit.current().reportWarning(this, "a print statement with no '-p' option on the command line will be a no-op");
+        	if (toLog()) {
+        		ParseUnit.current().reportWarning(this, "\'print log\' is an unimplemented feature (print will go to stdout)");
+        	}
+        	if (toStderr())	{
+        		ParseUnit.current().reportWarning(this, "\'print err\' is an unimplemented feature (print will go to stdout)");
+        	}
 
         }
     }
@@ -505,14 +516,10 @@ public class StmtNode extends BaseNode {
 		        	if (expr instanceof ExprNode.Binary && ((ExprNode.Binary)expr).getLeft() instanceof ExprNode.Ident){
 		        		ExprNode.Ident ei = (Ident) ((ExprNode.Binary)expr).getLeft();
 		            	s = ei.getName().getText();
-		            	if (s.equals("timers"))
-		            		dbg = true;
 		        	} 
 					Cat valcat = (expr instanceof ExprNode.SubExprCat) ? ((ExprNode.SubExprCat) expr)
 							.getSubExprCat()
 							: expr.getCat();
-
-
 					
 					if (TypeRules.preCheck(valcat) == null) {
 						
@@ -528,7 +535,38 @@ public class StmtNode extends BaseNode {
 			}
         }
     }
-    
+    // StmtNode.Peg   To peg class references to byte arrays
+    static public class Peg extends StmtNode {
+
+        static final private int REF = 0;
+        static final private int ARR = 1;
+        
+        Peg(int ttype, String ttext) {
+            super(ttype, ttext);
+        }
+        public ExprNode getRef() {
+            return (ExprNode) getChild(REF);
+        }
+        public TypeNode getRefType() {
+        	if (!(getChild(REF) instanceof ExprNode.Ident))
+        		return null;
+        	ExprNode.Ident r = (Ident) getChild(REF);
+			DeclNode.TypedMember n = (TypedMember) (r.getSymbol() != null
+					&& r.getSymbol().node() instanceof DeclNode.TypedMember ? r
+					.getSymbol().node() : null);        	
+			return n != null ? n.getTypeSpec() : null;        	
+        }
+
+        public ExprNode getArr() {
+            return getChildCount() > ARR ? (ExprNode) getChild(ARR) : null;
+        }
+        protected void pass2End() {
+        	SymbolEntry sym = getRef().getSymbol();
+        	ISymbolNode snode = sym != null ? sym.node() : null;
+        	Cat c = this.getArr() != null ? this.getArr().getCat()  : null;
+        	TypeRules.checkPeg((BaseNode) snode, c, this);
+        }
+    }
     // StmtNode.Bind
     static public class Bind extends StmtNode {
 
@@ -552,71 +590,15 @@ public class StmtNode extends BaseNode {
         
         @Override
         protected void pass2End() {
+        	Cat src_cat = TypeRules.checkBind(getPro().getCat(), getValue());
         	SymbolEntry sym = getPro().getSymbol();
         	ISymbolNode snode = sym != null ? sym.node() : null;
-        	Cat right = null;
-        	if (getValue() != null && getPro() != null) {        		
-        		right = Cat.fromType(getValue()); 
-        		if (!right.isModule()) {
-        			// if this is 'from composition import mod' then the Cat 
-        			// will be for the composition. get Cat for mod.
-        			if (right instanceof Cat.Agg && ((Agg) right).aggScope() instanceof UnitNode
-        					&& getValue() instanceof TypeNode.Usr) {
-        				SymbolEntry s = ((com.amaret.pollen.parser.TypeNode.Usr) getValue()).getSymbol();
-        				if (s.node() instanceof ImportNode) {
-        					UnitNode u = ((ImportNode) s.node()).getUnit();
-        					SymbolEntry s2 = u.lookupName(((ImportNode) s.node()).getUnitName().getText());
-        					right = (s2 != null) ? Cat.fromSymbolNode(s2.node(), s2.scope()) : right;
-        				}
-        			}
-        		}
-        		
-        		// for compositions, need to pollen.use these imported units
-        		// if they are used as a bind target.
-        		UnitNode cur = ParseUnit.current().getCurrUnitNode();
-        		if (cur.isComposition()) {
-        			SymbolEntry s = ((TypeNode.Usr) getValue()).getSymbol();
-        			ISymbolNode n = (s != null) ? s.node() : null;
-        			if (n != null && n instanceof ImportNode) {       				
-        				for (ImportNode imp : cur.getImports()) {
-        					if (imp == n) {
-        						imp.setProtocolBindTarget(true);
-        						break;
-        					}
-        				}
-        			}
-        		}
+        	if (getValue() != null && getPro() != null && src_cat != null) { 
 
-        		if (snode == null || !(snode instanceof DeclNode.TypedMember) || !(((DeclNode.TypedMember)snode).isProtocolMember())) {
-        			ParseUnit.current().reportError(getPro(), "LHS of binding operator assignment must be a protocol member");   
-        			return;
-        		}
-        		if (right == null) {
-        			ParseUnit.current().reportError(getPro(), "RHS of binding operator assignment must be a module");     
-        			return;
-        		}
-        		if (!right.isModule()) {
-        			ParseUnit.current().reportError(getPro(), "RHS of binding operator assignment must be a module");    
-        			return;
-        		}
-   		
-        		BaseNode d = (BaseNode) ((Cat.Agg) right).aggScope();
+        		BaseNode d = (BaseNode) ((Cat.Agg) src_cat).aggScope();
         		UnitNode u = (UnitNode) ((d instanceof UnitNode) ? d : d instanceof DeclNode.Usr ? ((DeclNode.Usr)d).getUnit() : null);      			
-        		((DeclNode.TypedMember)snode).bindModule(u, getValue(), this); // bind it
-        		bindToUnit = ((DeclNode.TypedMember)snode).getBindToUnit();
-        		
-            	// check that a protocol is being bound to a module
-            	// in either a host fcn or a module body
-               	SymbolTable symtab = ParseUnit.current().getSymbolTable();
-               	boolean ok = false;
-               	ok = (symtab.curScope() instanceof DeclNode.Usr && ((DeclNode.Usr) symtab.curScope()).isModule());
-               	ok |= symtab.currScopeIsHostFcn();
-               	if (!ok) {
-        			ParseUnit.current().reportError(getPro(), "Protocol member binding can only occur in the body of a module or in a host function");     
-        			return;
-               	}             	
-
-        		right = Cat.fromType(getValue());
+        		((DeclNode.TypedMember)snode).bindModule(u, getValue()); // bind it
+        		bindToUnit = ((DeclNode.TypedMember)snode).getBindToUnit();     	
 
         	}  
 

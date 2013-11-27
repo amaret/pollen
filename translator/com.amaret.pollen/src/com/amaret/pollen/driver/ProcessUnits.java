@@ -6,6 +6,8 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Properties;
 
+import com.amaret.pollen.parser.DeclNode;
+import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.SymbolTable;
 import com.amaret.pollen.parser.UnitNode;
@@ -17,6 +19,8 @@ public class ProcessUnits {
 	private static String pollenRoot = "";
 	private static String pollenEnv = "";
 	private static String pollenEnvPkg = "";
+	private static String pollenPrint = "";
+	private static String pollenPrintPkg = "";
 	private static boolean gccAvr = false;
 	private static boolean asserts = false;
 	
@@ -37,6 +41,29 @@ public class ProcessUnits {
 	}
 	public static String getPollenEnv() {
 		return pollenEnv;
+	}
+	public static String getPollenPrint() {
+		return pollenPrint;
+	}
+	public static boolean doImportPrint() {
+		boolean currFileIsPrintProtocol = ParseUnit.current().getFileName()
+				.equals(ParseUnit.INTRINSIC_PRINT_PROTOCOL + ".p");
+		boolean currFileIsPrintImpl = ParseUnit.current().getFileName()
+				.equals(pollenPrint + ".p");
+		return !pollenPrint.isEmpty() && !currFileIsPrintProtocol
+				&& !currFileIsPrintImpl;
+	}
+	/**
+	 * This is the intrinsic protocol member which will be used in the emitted print methods.
+	 * Generate if '-p' specifies a print implementation.
+	 * @return
+	 */
+	public static boolean doEmitPrintProxy() {
+		boolean scopeOk = ParseUnit.current().getParseUnitFlags().contains(Flags.MODULE);
+		return !pollenPrint.isEmpty() && scopeOk;
+	}
+	public static String getPollenPrintPkg() {
+		return pollenPrintPkg;
 	}
 	public static String getWorkingDir() {
 		if (workingDir.isEmpty())
@@ -79,37 +106,53 @@ public class ProcessUnits {
 	}
 	/**
 	 * 
-	 * @param path - a absolute path for a bundle
+	 * @param bundlePath - a absolute path for a bundle
 	 * @return a HashMap of (package name, package path)
 	 */
-	private HashMap<String, String> getPackages(String path) {
+	private HashMap<String, String> getPackages(final String bundlePath) {
 		
 		// TODO finalize pollenRoot when migration to 'real pollen' is complete		
-		String bundleName = path.substring(path.lastIndexOf(File.separator)+1);
+		String bundleName = bundlePath.substring(bundlePath.lastIndexOf(File.separator)+1);
 		if (pollenRoot.isEmpty()
 				&& (bundleName.equals("pollen.core")					// OLD
 					|| bundleName.equals("pollen.api")))		// NEW (I think)
-			pollenRoot = path;
+			pollenRoot = bundlePath;
 	
 
-		File bundle = new File(path);
+		File bundle = new File(bundlePath);
 
-		HashMap<String, String>	map = new HashMap<String, String>();					
+		HashMap<String, String>	map = new HashMap<String, String>();	
+		
+		final FilenameFilter pollenFileFilter = new FilenameFilter() {
+			public boolean accept(File pathname, String s) {
+				// filter the case that we have <bundle>/<pollenfile> when <bundle>/<package>/<pollenfile> is required.
+				if (s.endsWith(".p") && bundlePath.equals(pathname))
+					return true;
+				return false;
+			}			
+		};
 
 		FilenameFilter filter = new FilenameFilter() {
 			public boolean accept(File pathname, String s) {
 				
 				File f = new File(pathname.getAbsolutePath() + File.separator + s);
-				if (f.isDirectory())
+				if (f.isDirectory()) { 
+					String[] pollenfiles = f.list(pollenFileFilter);
+					if (pollenfiles.length > 0) {
+						// a bundle contains a pollen file: should only contain packages
+						throw new Termination ("Invalid inputs: bundle \'" + s + "\' contains pollen file(s). Bundles should only contain packages.");					
+					}
 					return true;
+				}
 				return false;
 			}
 		};
 		String[] pkgs = bundle.list(filter);
 		if (pkgs != null) {
 			for (int i=0; i< pkgs.length; i++) {
-				if (!map.containsKey(pkgs[i]))
-					map.put(pkgs[i], path + File.separator + pkgs[i]);		
+				if (!map.containsKey(pkgs[i])) {
+					map.put(pkgs[i], bundlePath + File.separator + pkgs[i]);	
+				}
 			}			
 		}	
 		return map;
@@ -125,16 +168,20 @@ public class ProcessUnits {
 	}
 	private String helpMessage() {
 
-		String pollenHelp = "Usage: java -jar pollen.jar <options> <bundles> <pollen file>\nOptions include:";
+		String pollenHelp = "Usage: java -jar pollen.jar <options> <bundles> <pollen file> // input files can be in any order \nOptions include:";
 		pollenHelp += "\n" + "  -o <directory>";
 		pollenHelp += "\n" + "\tSpecifies output directory for pollen output. \n\tFor \'<path>/dir/pollenfile\' the default is \'<path>/dir_out.\'";
 		pollenHelp += "\n" + "  -e <pollen path>";
 		pollenHelp += "\n" + "\tSpecifies fully qualified path to a pollen module that will";
 		pollenHelp += "\n" + "\tbe substituted for \'pollen.environment\' in import statements.";
+		pollenHelp += "\n" + "  -p <pollen path>";
+		pollenHelp += "\n" + "\tSpecifies fully qualified path to a pollen module that will";
+		pollenHelp += "\n" + "\timplement the protocol \'PrintP.p\' found in \'pollen.lang\'.";
+		pollenHelp += "\n" + "\tThis implementation will be used in pollen \'print\' statements.";
 		pollenHelp += "\n" + "  -h\tThis help message.";
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.41";  // user release . internal rev . fix number
+	private static String  v = "0.2.42";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -185,6 +232,18 @@ public class ProcessUnits {
 				pollenEnv = emod.substring(emod.lastIndexOf(File.separator)+1);
 				continue;
 			}
+			if (p.equals("-p")) {
+				String emod = (args.length > (++i) ? args[i] : "");
+				if (emod.isEmpty())	
+					continue;
+				if (isRelativePath(emod))	
+					emod = System.getProperty("user.dir" + File.separator + emod);
+				if (!(new File(emod + ".p")).exists())
+					throw new Termination ("Invalid -p usage: must specifiy a fully qualified module for pollen.print");								
+				pollenPrintPkg = this.putModule(inputs, emod);
+				pollenPrint = emod.substring(emod.lastIndexOf(File.separator)+1);
+				continue;
+			}
 			if (p.equals("-gccAvr")) { 	// UNDOCUMENTED, for testing: runs gccavr
 				ProcessUnits.setGccAvr(true);
 				continue;
@@ -217,8 +276,6 @@ public class ProcessUnits {
 			}			
 			// else 'p' is a bundle
 			inputs.packages.putAll(this.getPackages(p));
-			
-
 		}
 		if (!setWorkingDir && !inputPath.isEmpty()) { // initialize default working directory
 			String wdir = inputPath.substring(0, inputPath.lastIndexOf(File.separator));

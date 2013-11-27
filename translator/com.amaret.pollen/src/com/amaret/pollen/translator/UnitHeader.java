@@ -486,18 +486,16 @@ public class UnitHeader {
     private void genForwards(UnitNode unit) {
     	
     	gen.aux.genTitle("forward declarations for intrinsics");
-        gen.getFmt().print("void %1pollen__print_bool(bool b);\n", gen.uname_target());
-        gen.getFmt().print("void %1pollen__print_int(int32 i);\n", gen.uname_target());
-        gen.getFmt().print("void %1pollen__print_uint(uint32 u);\n", gen.uname_target());
-        gen.getFmt().print("void %1pollen__print_str(string s);\n", gen.uname_target());
-        gen.getFmt().print("void %1pollen__print_x(void* print, void* val);\n", gen.uname_target());
-        
-        // if assertions are turned on, generate pollen.assert
-        if (ProcessUnits.isAsserts()) {
-            gen.getFmt().print("%tvoid %1pollen__assert__E(bool b, string msg);\n", gen.uname_target());
-        }       
-
-        
+//        gen.getFmt().print("void %1pollen__print_bool(bool b);\n", gen.uname_target());
+//        gen.getFmt().print("void %1pollen__print_int(int32 i);\n", gen.uname_target());
+//        gen.getFmt().print("void %1pollen__print_uint(uint32 u);\n", gen.uname_target());
+//        gen.getFmt().print("void %1pollen__print_str(string s);\n", gen.uname_target());
+//        gen.getFmt().print("void %1pollen__print_x(void* print, void* val);\n", gen.uname_target());
+//        
+//        // if assertions are turned on, generate pollen.assert
+//        if (ProcessUnits.isAsserts()) {
+//            gen.getFmt().print("%tvoid %1pollen__assert__E(bool b, string msg);\n", gen.uname_target());
+//        }             
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "reset") == null) {
             gen.getFmt().print("void %1pollen__reset__E();\n", gen.uname_target());
         }

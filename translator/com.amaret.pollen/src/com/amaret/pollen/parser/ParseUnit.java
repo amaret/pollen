@@ -28,6 +28,8 @@ public class ParseUnit {
 	private PrintStream info;
 	private static ParseUnit currParse;
 	private static File currFile;
+	private static String pollenFile; // the .p file supplied to pollen translator
+	private static String pollenPkg;
 	private UnitNode currUnitNode = null;
 	private SymbolTable symbolTable;
 	private Properties properties;
@@ -43,6 +45,8 @@ public class ParseUnit {
 	public static final String INTRINSIC_PREFIX = "pollen__";
 	public static final String DEFAULT_LOOPVAR = INTRINSIC_PREFIX + "loopvar"; // for loops w/ undeclared loop variables
 	public static final String INTRINSIC_UNITVAR = INTRINSIC_PREFIX +"unitname";
+	public static final String INTRINSIC_PRINT_PROTOCOL= "PrintP";
+	public static final String INTRINSIC_PRINT_PROXY = "$$printProxy";
 	public static final String CTOR_CLASS_TARGET = "new_";
 	public static final String CTOR_CLASS_HOST = "new_host";
 	public static final String CTOR_MODULE_TARGET = "targetInit";
@@ -57,14 +61,30 @@ public class ParseUnit {
 	public static boolean isIntrinsicCall(String s) {
 		if (!(s.matches(ParseUnit.INTRINSIC_PREFIX + ".*")))
 			return false;
-		if (s.equals(ParseUnit.INTRINSIC_PREFIX + "unitname"))
+		if (s.equals(ParseUnit.INTRINSIC_UNITVAR))
 			return false;
 		if (s.equals(ParseUnit.INTRINSIC_PREFIX + ParseUnit.DEFAULT_LOOPVAR))
 			return false;			
 		return true;
 	}
-	
-	
+	public static String getPollenFile() {
+		return pollenFile;
+	}
+	private static void setPollenFile(String pollenFile) {	
+		if (pollenFile.endsWith(".p")) {
+			pollenFile = pollenFile.substring(0,pollenFile.lastIndexOf('.'));
+		}
+		if (pollenFile.indexOf(File.separatorChar) != -1)
+			pollenFile = pollenFile.substring(pollenFile.lastIndexOf(File.separatorChar)+1);
+		ParseUnit.pollenFile = pollenFile;		
+	}
+	public static String getPollenPkg() {
+		return pollenPkg;
+	}
+	private static void setPollenPkg(String pollenPkg) {
+		ParseUnit.pollenPkg = ParseUnit.mkPackageName(pollenPkg);
+	}
+		
 	// info on parse time current type (under construction)
 	private pollenParser parser = null;
 	
@@ -154,6 +174,8 @@ public class ParseUnit {
 			PrintStream errorStream, PrintStream infoStream, SymbolTable symtab) {
 
 		path = inputPath;
+		ParseUnit.setPollenFile(inputPath);
+		ParseUnit.setPollenPkg(inputPath);
 		properties = props;
 		out = outputStream;
 		err = errorStream;
@@ -252,7 +274,7 @@ public class ParseUnit {
 						+ "\' detected");
 		}
 
-		impChain.push(unit.getQualName());
+		impChain.push(unit.getQualName());  
 
 		for (ImportNode currImport : unit.getImports()) {
 
@@ -690,7 +712,7 @@ public class ParseUnit {
 	}
 	
 	public void reportJavascriptError(String msg) {
-		err.printf("%s: %s\n", "javascript problem", msg);
+		err.printf("%s: %s\n", "javascript", msg);
 		errorCount += 1;
 	}
 

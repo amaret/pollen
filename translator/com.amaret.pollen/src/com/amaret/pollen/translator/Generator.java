@@ -43,9 +43,7 @@ public class Generator {
 	public Auxiliary getAux() {
 		return aux;
 	}
-	public boolean isHostJS() {
-		return true;
-	}
+
 	public boolean isTargetC() {
 		return true;
 	}
@@ -147,8 +145,7 @@ public class Generator {
         curUnit = unit;
         uname = unit.getName().getText();
         uname_target = unit.getPkgName().getText().replace('.', '_') + '_'  + uname + '_';	
-        uname_host = unit.getPkgName().getText() + '.'  + uname;	
-        
+        uname_host = unit.getPkgName().getText() + '.'  + uname;	    		       
 	}
 
 	/**
