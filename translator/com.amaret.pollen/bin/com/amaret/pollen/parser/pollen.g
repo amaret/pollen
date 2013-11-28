@@ -467,17 +467,18 @@ classHostCtor[EnumSet<Flags> fh]
 	}
 	
 }
-	: 				{!hasHostConstructor }? ->
-						^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", fh] 
-						^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
-							^(T_LST<TypeNode.Lst>["T_LST", fh] 
-								^(LIST<ListNode>["LIST"] ^(T_USR<TypeNode.Usr>["T_USR", fh] IDENT[ti.getTypeName()]))) 								
-							IDENT[ParseUnit.CTOR_CLASS_HOST]) 
-						^(LIST<ListNode>["LIST"]) // empty parameters
-						^(D_FORMAL<DeclNode.Formal>["D_FORMAL", fh] 
-							^(T_USR<TypeNode.Usr>["T_USR", fh] IDENT[ti.getTypeName()]) IDENT["this"])
-						^(FCNBODY<BodyNode>["FCNBODY"] ^(LIST<ListNode>["LIST"]) ^(LIST<ListNode>["LIST"]))
-						)	
+	: 	{!hasHostConstructor }? ->
+			^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", fh] 
+			^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
+				^(T_LST<TypeNode.Lst>["T_LST", fh] 
+					^(LIST<ListNode>["LIST"] ^(T_USR<TypeNode.Usr>["T_USR", fh] IDENT[ti.getTypeName()]))) 								
+				IDENT[ParseUnit.CTOR_CLASS_HOST]) 
+			^(LIST<ListNode>["LIST"]) // empty parameters
+			^(D_FORMAL<DeclNode.Formal>["D_FORMAL", fh] 
+				^(T_USR<TypeNode.Usr>["T_USR", fh] IDENT[ti.getTypeName()]) 
+					IDENT["this"])
+			^(FCNBODY<BodyNode>["FCNBODY"] ^(LIST<ListNode>["LIST"]) ^(LIST<ListNode>["LIST"]))
+			)	
 	| -> NIL
 	;
 classTargCtor[EnumSet<Flags> ft]
@@ -488,17 +489,18 @@ classTargCtor[EnumSet<Flags> ft]
 		ft.add(Flags.CONSTRUCTOR);
 	}
 }
-	:				{!hasTargetConstructor}? ->
-				 		^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", ft] 
-						^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
-							^(T_LST<TypeNode.Lst>["T_LST", ft] 
-								^(LIST<ListNode>["LIST"] ^(T_USR<TypeNode.Usr>["T_USR", ft] IDENT[ti.getTypeName()]))) 
-							IDENT[ParseUnit.CTOR_CLASS_TARGET]) 
-						^(LIST<ListNode>["LIST"]) // empty parameters
-						^(D_FORMAL<DeclNode.Formal>["D_FORMAL", ft] 
-							^(T_USR<TypeNode.Usr>["T_USR", ft] IDENT[ti.getTypeName()]) IDENT["this"])
-						^(FCNBODY<BodyNode>["FCNBODY"] ^(LIST<ListNode>["LIST"]) ^(LIST<ListNode>["LIST"]))
-						)
+	:	{!hasTargetConstructor}? ->
+				^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", ft] 
+				^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
+					^(T_LST<TypeNode.Lst>["T_LST", ft] 
+						^(LIST<ListNode>["LIST"] ^(T_USR<TypeNode.Usr>["T_USR", ft] IDENT[ti.getTypeName()]))) 
+					IDENT[ParseUnit.CTOR_CLASS_TARGET]) 
+				^(LIST<ListNode>["LIST"]) // empty parameters
+				^(D_FORMAL<DeclNode.Formal>["D_FORMAL", ft] 
+					^(T_USR<TypeNode.Usr>["T_USR", ft] IDENT[ti.getTypeName()]) 
+						IDENT["this"])
+				^(FCNBODY<BodyNode>["FCNBODY"] ^(LIST<ListNode>["LIST"]) ^(LIST<ListNode>["LIST"]))
+				)
 	|	-> NIL
 	;
 moduleDefinition 
@@ -1123,7 +1125,7 @@ multDivModOp
 	:	'*'	|	'/'	|	'%'
 	;
 logicalNotOp	
-	: LOG_NOT
+	: 	LOG_NOT
 	;
 bitwiseNotOp	
 	:	BIT_NOT
@@ -1225,8 +1227,8 @@ exprUnary
 	|	arrayLit				-> ^(E_VEC<ExprNode.Vec>["E_VEC"] arrayLit)
 	|	logicalNotOp expr	 		-> ^(E_UNARY<ExprNode.Unary>["E_UNARY"]  expr logicalNotOp)
 	|	bitwiseNotOp expr  			-> ^(E_UNARY<ExprNode.Unary>["E_UNARY"]  expr bitwiseNotOp)
-	|	'(' expr ')'				-> ^(E_PAREN<ExprNode.Paren>["E_PAREN"] expr)
 	|	MINUS expr				-> ^(E_UNARY<ExprNode.Unary>["E_UNARY"]  expr MINUS)
+	|	'(' expr ')'				-> ^(E_PAREN<ExprNode.Paren>["E_PAREN"]  expr)
 	|	varOrFcnOrArray incDecOp 		-> ^(E_UNARY<ExprNode.Unary>["E_UNARY", true] varOrFcnOrArray incDecOp)
 	|	varOrFcnOrArray
 	|	incDecOp varOrFcnOrArray 		-> ^(E_UNARY<ExprNode.Unary>["E_UNARY"] varOrFcnOrArray incDecOp)
@@ -1375,8 +1377,7 @@ fcnArguments
 	:	exprList
 	;
 varOrFcnOrArray
-	:	exprNew //'new' typeName fcnArgumentList fieldOrArrayAccess?
-		//-> ^(E_NEW<ExprNode.New>["E_NEW"] typeName fcnArgumentList fieldOrArrayAccess?)
+	:	exprNew 
 	|	'@' IDENT fcnArgumentList fieldOrArrayAccess? 
 		-> ^(E_SELF<ExprNode.Self>["E_SELF"] 
 			^(E_CALL<ExprNode.Call>["E_CALL"] ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT) fcnArgumentList fieldOrArrayAccess?))
@@ -1582,8 +1583,8 @@ stmtDecl
 stmtDeclAttr
 	:	(	 'const' { typeMods.add(Flags.CONST); }
 		|	 t='volatile' { ParseUnit.current().reportError($t, "invalid function local variable attribute"); }
-		|   t='host' { ParseUnit.current().reportError($t, "invalid function local variable attribute"); } 
-		|   t='preset' { ParseUnit.current().reportError($t, "invalid function local variable attribute"); } 
+		|   	t='host' { ParseUnit.current().reportError($t, "invalid function local variable attribute"); } 
+		|  	 t='preset' { ParseUnit.current().reportError($t, "invalid function local variable attribute"); } 
 		)*
 	;
 fieldDeclaration    
@@ -1751,7 +1752,6 @@ scope {
 }
 @after {
 	handleIntrinsics((CommonTree) $qualName::qtree);
-	//System.out.println("qualName: " + $qualName::s);
 }      
     :	   qualNameConcat  { $qualName::qtree = $qualNameConcat.tree; }
     ;
@@ -1823,9 +1823,9 @@ inject
 	BaseNode r = (BaseNode)adaptor.nil();
 }
 	:	c=INJECT  {           
-            $c.setText(getInject($c.getText()));
-           	createInjectNodes(r, $c.getText());           
-        }
+            		$c.setText(getInject($c.getText()));
+           			createInjectNodes(r, $c.getText());           
+        		}
 	-> ^(LIST<ListNode>["LIST"] {r})
 	;
 injectionCode
@@ -1879,6 +1879,7 @@ HEX_LIT
 OCT_LIT
 	:	'0' O+
 	;
+	/*
 REAL_LIT
 	:	(MINUS)? D+ E ('l' | 'L')?
 	|	(MINUS)? D+ '.' D* (E)? ('l' | 'L')?
@@ -1886,6 +1887,14 @@ REAL_LIT
 INT_LIT
 	:	(MINUS)? D+ (LU)? 
 	;
+	*/
+REAL_LIT
+	:	D+ E ('l' | 'L')?
+	|	D+ '.' D* (E)? ('l' | 'L')?
+	;
+INT_LIT
+	:	D+ (LU)? 
+	;	
 CHAR
     :   '\'' (('\\' ~'\n') | ~('\\' | '\'' | '\n')) '\''
     ;

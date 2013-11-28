@@ -115,9 +115,9 @@ public class ParseUnit {
 	}
 
 	public static boolean isDebugMode() {
-		return false;
+		//return false;
 		//return true;
-		//return debugMode;
+		return debugMode;
 	}
 
 	static public enum Property {
@@ -439,8 +439,8 @@ public class ParseUnit {
 		String ciname = clientImport != null ? clientImport.getQualName()
 				: "<none>";
 
-		//setDebugMode(false);
-		setDebugMode(true);
+		setDebugMode(false);
+		//setDebugMode(true);
 		checkParseUnit(inputPath, clientImport, cname, ciname);
 		File f = new File(inputPath);
 		if (!f.exists()) {
