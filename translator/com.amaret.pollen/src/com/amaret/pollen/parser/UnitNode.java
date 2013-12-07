@@ -321,7 +321,10 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     void init() {
     	filePath = ParseUnit.current().getCurrPath();
     }
-    
+    /**
+     * Only valid currently during parsing.
+     * @return true if in a host scope.
+     */
     public boolean isHostScope() {
     	if (isHost())
     		return true;

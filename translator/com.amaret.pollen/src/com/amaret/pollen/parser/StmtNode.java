@@ -469,7 +469,7 @@ public class StmtNode extends BaseNode {
         
         @Override
         protected void pass2End() {
-        	if (ProcessUnits.getPollenPrint().isEmpty())
+        	if (ProcessUnits.getPollenPrint().isEmpty() && !ParseUnit.current().getCurrUnitNode().isHostScope())
         		ParseUnit.current().reportWarning(this, "a print statement with no '-p' option on the command line will be a no-op");
         	if (toLog()) {
         		ParseUnit.current().reportWarning(this, "\'print log\' is an unimplemented feature (print will go to stdout)");
