@@ -22,13 +22,13 @@ public class ListNode<T> extends BaseNode {
 	
     @Override
     protected boolean pass1Begin() {
-//    	List<T> l = getElems();
-//    	boolean doPass1 = true;
-//    	for (T it : l) {
-//    		doPass1 = ((BaseNode) it).pass1Begin();    	 
-//    		if (!doPass1)
-//    			return false;
-//    	}
+    	List<T> l = getElems();
+    	boolean doPass1 = true;
+    	for (T it : l) {
+    		doPass1 = ((BaseNode) it).pass1Begin();    	 
+    		if (!doPass1)
+    			return false;
+    	}
         return true;
     }
     

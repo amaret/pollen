@@ -855,6 +855,7 @@ public class Auxiliary {
 	void genLocals(List<DeclNode.Var> localVars) {
 		// locals are first declared without initializers.
 		// later on they are initialized with assign statements.
+		// TODO this doesn't always work - why is it ever done? Take this out?
 		for (DeclNode.Var var : localVars) {
 			if (isHost()) {
 				gen.getFmt().print("%tvar %1", var.getName());
@@ -871,6 +872,11 @@ public class Auxiliary {
 					TypeNode t = var instanceof DeclNode.Arr ? ((DeclNode.Arr) var)
 							.getTypeArr() : var.getTypeSpec();
 					genTypeWithVarName(t, "" + var.getName());
+					// must initialize const on the declaration
+					if (var.isConst() && var.getInit() != null) {
+						gen.getFmt().print(" = ");
+						genExpr(var.getInit());
+					}
 					gen.getFmt().print(";\n");
 				}
 			}
@@ -1138,6 +1144,10 @@ public class Auxiliary {
 			boolean arrayInit = decl instanceof DeclNode.Arr && ((DeclNode.Arr) decl).getInit() != null;
 			boolean arrayNoDim = arrayInit && !((DeclNode.Arr) decl).hasDim(); // e.g. uint8 arr[] = fcnReturningArray();
 			
+			if (decl.isConst() && !arrayInit)
+				continue; // const arrays need another tweak I suspect, then can eliminate this arrayInit check
+				// actually perhaps just eliminate genlocals
+			
 			if (decl.getInit() != null) {
 				if (decl.isPegged()) {
 					gen.getFmt().print("%1 = ", decl.getName());
@@ -1147,7 +1157,7 @@ public class Auxiliary {
 					genExpr(decl.getInit());
 					gen.getFmt().print(";");
 				}
-				else if (isHost() || !arrayInit) {
+				else if ((isHost() || !arrayInit)) {
 					gen.getFmt().print("%1 = ", decl.getName());
 					genExpr(decl.getInit());
 					gen.getFmt().print(";");

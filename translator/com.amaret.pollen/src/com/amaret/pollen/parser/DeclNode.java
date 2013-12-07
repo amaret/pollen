@@ -356,11 +356,22 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				ISymbolNode node = se != null ? se.node() : null;
 				if (node instanceof DeclNode.Var) {
 					DeclNode.Var v = (Var) node;
-					if (!(v.isConst() || v.isPreset()))
+					boolean errFlag = !(v.isConst() || v.isPreset());
+					if (!this.isHost() && errFlag)
+						errFlag = !v.isHost();
+					String errMsg = "";
+					// A host array must have const or preset dimensions.
+					// A target array must have const or preset or host dimensions.
+					if (errFlag) {
+						errMsg = "if specified, array dimensions must be constant or preset";
+						if (!this.isHost()) {
+							errMsg += " or host";
+						}
+					}
+					if (errFlag)
 						ParseUnit
 						.current()
-						.reportError(this.getName(),
-								"if specified, array dimensions must be constant or preset");
+						.reportError(this.getName(), errMsg);
 				}
 			}
 		}
@@ -804,11 +815,12 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			}
 
 			IScope scopeToUse = currUnit.getSymbolTable().curScope();
-			if (((Usr) currUnit.getSymbolTable().curScope()).getScopeDeleg()
+			IScope is = currUnit.getSymbolTable().curScope();
+			if (is instanceof DeclNode.Usr && ((Usr) is).getScopeDeleg()
 					.lookupName(name.getText()) != null)
 				currUnit.reportError(name,
 						"identifier already defined in the current scope");
-			if (((Usr) currUnit.getSymbolTable().curScope()).getScopeHost()
+			if (is instanceof DeclNode.Usr && ((Usr) is).getScopeHost()
 					.lookupName(name.getText()) != null)
 				currUnit.reportError(name,
 						"identifier already defined in the current scope");
