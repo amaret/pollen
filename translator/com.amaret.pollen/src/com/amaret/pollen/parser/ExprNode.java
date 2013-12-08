@@ -679,7 +679,7 @@ public class ExprNode extends BaseNode {
 				currUnit.getCurrUnitNode().addString(vs);
 				exprCat = Cat.fromScalarCode(Cat.STRING);
 			} else if (vs.startsWith("'")) {
-				if (vs.length() > 1) {
+				if (vs.length() > 3) {
 					this.getLitFlags().add(LitFlags.STR);
 					this.getLitFlags().remove(LitFlags.CHR);
 					currUnit

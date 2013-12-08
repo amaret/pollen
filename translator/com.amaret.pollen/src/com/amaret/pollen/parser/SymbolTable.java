@@ -14,6 +14,8 @@ public class SymbolTable {
     }
 
     public void enterScope(IScope scope) {
+    	String enc = curScope == null ? "null" : curScope.getScopeName();
+    	//System.out.println("SymbolTable.enterScope: enclosing " + enc + ", entering " + scope.getScopeName());
         scope.setEnclosingScope(curScope);
         curScope = scope;
     }
