@@ -3,9 +3,12 @@ function $$alignof() {
 }
 
 function $$printf() {
-    var args = [];
-    args.push(arguments[0]);
-    for (var i = 1; i < arguments.length; i++) {
+    var out = Packages.com.amaret.pollen.parser.ParseUnit.current().getOutputStream();
+
+    var res = [];
+    var result = "";
+
+    for (var i = 0; i < arguments.length; i++) {
         var a = arguments[i]
         if (typeof a == 'number') {
             a = Math.round(a) == a ? java.lang.Long(a) : java.lang.Double(a)
@@ -13,10 +16,10 @@ function $$printf() {
         else if (typeof a == 'object' && a != null) {
             a = a.toString()
         }
-        args.push(a)
+	result += a
     }
-    var out = Packages.com.amaret.pollen.parser.ParseUnit.current().getOutputStream();
-    out.printf.apply(out, args)
+    res.push(result);
+    out.printf.apply(out, res)
 }
 function debug_line(where, obj) {
         //$$printf("DBG:" + where + " for unit " + obj.$name + "\n")
@@ -185,6 +188,7 @@ $$Struct.prototype.toString = function() {
     return "struct " + this.$$qname;
 }
 
+// used for functions
 function $$Ref( t ) {
     this.$$category = '$$Ref';
     this.$$text = t;
@@ -215,6 +219,8 @@ $$Struct.prototype.toString = function() {
     return "struct " + this.$$qname;
 }
 
+// legacy, unused. 
+// In Em, triggered by '&' Em operator.
 $$Ref.prototype.toString = function() {
     return "&" + this.$$text;
 }

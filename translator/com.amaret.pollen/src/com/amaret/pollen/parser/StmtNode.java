@@ -466,6 +466,15 @@ public class StmtNode extends BaseNode {
         public List<ExprNode> getArgs() {
             return ((ListNode<ExprNode>) getChild(ARGS)).getElems();
         }
+//        @SuppressWarnings("unchecked")
+//        protected boolean pass1Begin() {
+//            return ((ListNode<ExprNode>) getChild(ARGS)).doPass1Begin();
+//        }
+//        
+//        @SuppressWarnings("unchecked")
+//        protected boolean pass2Begin() {
+//        	 return ((ListNode<ExprNode>) getChild(ARGS)).doPass2Begin();
+//        }
         
         @Override
         protected void pass2End() {

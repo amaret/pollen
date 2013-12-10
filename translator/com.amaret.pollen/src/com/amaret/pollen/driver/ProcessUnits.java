@@ -181,7 +181,7 @@ public class ProcessUnits {
 		pollenHelp += "\n" + "  -h\tThis help message.";
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.46";  // user release . internal rev . fix number
+	private static String  v = "0.2.47";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
