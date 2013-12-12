@@ -266,6 +266,10 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
         return getSymbolTable().entrySet();
     }
 
+    /**
+     * Currently used for serious errors only... so avoid javascript aborts, for example
+     * @return
+     */
     public int getErrorCount() {
         return errorCount;
     }
@@ -314,7 +318,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     }
 
     
-    void incErrorCount() {
+    public void incErrorCount() {
         this.errorCount += 1;
     }
 

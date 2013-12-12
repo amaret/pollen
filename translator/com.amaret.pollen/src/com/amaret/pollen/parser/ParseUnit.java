@@ -21,7 +21,8 @@ public class ParseUnit {
 
 	private String path;
 	private ArrayList<String> paths = new ArrayList<String>();
-	private int errorCount;
+	private static int errorCount;
+	private static int seriousErrorCount;
 	private ANTLRFileStream in;
 	private PrintStream out;
 	private PrintStream err;
@@ -148,9 +149,19 @@ public class ParseUnit {
 		this.currUnitNode = currUnitNode;
 	}
 
-	public int getErrorCount() {
-		return 0;
-		// return errorCount;
+	/**
+	 * @return total of all errors
+	 */
+	public static int getErrorCount() {
+		//return 0;
+		return errorCount;
+	}
+	/**
+	 * Used for serious errors only... so avoid javascript aborts, for example
+	 * @return
+	 */
+	public static int getSeriousErrorCount() {
+		return seriousErrorCount;
 	}
 
 	public String getCurrPath() {
@@ -184,6 +195,7 @@ public class ParseUnit {
 		packages = pkgs;
 		impChain = new Stack<String>();
 		errorCount = 0;
+		seriousErrorCount = 0;
 		errors = new HashMap<String, String>();
 		unitMap = new HashMap<String, UnitNode>();
 		out.printf("%s", ProcessUnits.version() + "\n");
@@ -632,6 +644,17 @@ public class ParseUnit {
 		}
 		return p;
 	}
+	/**
+	 * Calling this will mean the javascript for this unit will not be called. 
+	 * It means the error will cause rhino to abort with a stack trace.
+	 * @param node
+	 * @param msg
+	 */
+	public void reportSeriousError(BaseNode node, String msg) {
+		ParseUnit.current().getCurrUnitNode().incErrorCount();
+		seriousErrorCount+=1;
+		reportError(node, msg);
+	}
 
 	/**
 	 * 
@@ -693,6 +716,17 @@ public class ParseUnit {
 		fname = fname != null ? fname : getPackageName() + "." + getFileName();
 		msg = quote + fname + quote + ": " + msg;
 		reportErrorConsole(fname, 0, 0, msg);
+	}
+	/**
+	 * Calling this will mean the javascript for this unit will not be called. 
+	 * It means the error will cause rhino to abort with a stack trace.
+	 * @param token
+	 * @param msg
+	 */
+	public void reportSeriousError(CommonToken token, String msg) {
+		ParseUnit.current().getCurrUnitNode().incErrorCount();
+		seriousErrorCount+=1;
+		reportError(token, msg);
 	}
 
 	/**

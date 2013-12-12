@@ -357,7 +357,7 @@ public class ExprNode extends BaseNode {
 
 					if (fcn == null)
 						currUnit
-						.reportError(
+						.reportSeriousError(
 								currUnit.getCurrUnitNode(),
 								"'"
 										+ call
@@ -377,7 +377,7 @@ public class ExprNode extends BaseNode {
 							if (f != fcn.node()) {
 								fcn = null;
 								currUnit
-								.reportError(
+								.reportSeriousError(
 										currUnit.getCurrUnitNode(),
 										"'"
 												+ call
@@ -735,7 +735,7 @@ public class ExprNode extends BaseNode {
 					symbols[i] = currUnit.getSymbolTable().resolveSymbol(
 							((ExprNode.Ident) e).getName());
 					if (symbols[i] == null) {
-						currUnit.reportError(e,
+						currUnit.reportSeriousError(e,
 								"identifier is not declared in the current scope "
 										+ currUnit.getSymbolTable().curScope()
 												.getScopeName());
@@ -893,14 +893,22 @@ public class ExprNode extends BaseNode {
 			ParseUnit currUnit = ParseUnit.current();
 			if (ParseUnit.isIntrinsicCall(this.getName().getText()))
 				return super.pass2Begin();
-			if (this.getParent() instanceof ExprNode.Ident
-					&& ((ExprNode.Ident) this.getParent()).getSymbol() != null) {
+			
+			// if this is a postfix expr, get the correct parent for scope for lookup.
+			// it may be parent for postfix field after call or array, or it may be grandparent for postfix call after call or array.
+			ExprNode postFixParent = (ExprNode) ((this.getParent() instanceof ExprNode.Ident
+					&& ((ExprNode.Ident) this.getParent()).getSymbol() != null) ? this.getParent() : this.getParent() instanceof ExprNode.Call
+							&& this.getParent().getParent() instanceof ExprNode.Ident
+							&& ((ExprNode.Ident) this.getParent().getParent()).getSymbol() != null ? this.getParent().getParent() : null);
+						
+			if (postFixParent != null) {
 
 				// This is an access after an indexed expr or call, such as
 				// 'arr[i].fld'.
 				// lookup scope for 'fld' is the type for arr.
 
-				IScope sc = ((ExprNode.Ident) this.getParent()).getSymbol()
+				postExpr = true;
+				IScope sc = ((ExprNode.Ident) postFixParent).getSymbol()
 						.derefScope(false);
 				symbol = sc.lookupName(getName().getText());
 				if (symbol != null && symbol.node() instanceof DeclNode) {
@@ -916,7 +924,7 @@ public class ExprNode extends BaseNode {
 				symbol = currUnit.getSymbolTable().resolveSymbol(getName(),
 						true);
 			if (symbol == null) {
-				currUnit.reportError(currUnit.getCurrUnitNode(), "'"
+				currUnit.reportSeriousError(currUnit.getCurrUnitNode(), "'"
 						+ this.getName().getText()
 						+ "': identifier is not declared in the current scope "
 						+ currUnit.getSymbolTable().curScope().getScopeName());
@@ -988,7 +996,7 @@ public class ExprNode extends BaseNode {
 				symbol = ParseUnit.current().getSymbolTable().resolveSymbol(getName(),
 						ParseUnit.current().getSymbolTable().curScope());
 				if (symbol == null) {
-					ParseUnit.current().reportError(getName(),
+					ParseUnit.current().reportSeriousError(getName(),
 							"identifier is not declared in the current scope "
 							+ ParseUnit.current().getSymbolTable().curScope().getScopeName());
 				} else {
@@ -1136,7 +1144,7 @@ public class ExprNode extends BaseNode {
 				symbol = currUnit.getSymbolTable().resolveSymbol(ei.getName(),
 						currUnit.getSymbolTable().curScope());
 				if (symbol == null) {
-					currUnit.reportError(ei.getName(),
+					currUnit.reportSeriousError(ei.getName(),
 							"identifier is not declared in the current scope "
 									+ ParseUnit.current().getSymbolTable().curScope().getScopeName());
 				} else {

@@ -8,11 +8,13 @@ import java.util.List;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.UniqueTag;
+import org.mozilla.javascript.NativeFunction;
 
 import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.BaseNode;
 import com.amaret.pollen.parser.Cat;
 import com.amaret.pollen.parser.DeclNode;
+import com.amaret.pollen.parser.DeclNode.FcnRef;
 import com.amaret.pollen.parser.DeclNode.ITypeSpec;
 import com.amaret.pollen.parser.DeclNode.TypedMember;
 import com.amaret.pollen.parser.ExprNode;
@@ -533,9 +535,10 @@ public class ProgCCode {
     		gen.getFmt().print("%+");
 
     		for (DeclNode decl : unit.getFeatures()) {
+    			
     			switch (decl.getType()) {
     			case pollenParser.D_VAR:
-    			case pollenParser.D_ARR:
+    			case pollenParser.D_ARR:    	
     				DeclNode.Var v = (DeclNode.Var) decl;
     				if (v.isIntrinsic() && !v.isIntrinsicUsed())
     					continue;
@@ -544,7 +547,15 @@ public class ProgCCode {
     					genUnitVar(ud, v);
     				}
     				break;
+    			case pollenParser.D_FCN_REF:
+    				DeclNode.Var v1 = (DeclNode.Var) decl;
+    				if (v1.isIntrinsic() && !v1.isIntrinsicUsed())
+    					continue;				
+					gen.getFmt().print("%t");
+					genUnitVar(ud, v1);
+	   				break;
     			}
+    			
     		}
     		gen.getFmt().print("%-};\n");
     	}
@@ -554,7 +565,9 @@ public class ProgCCode {
 
     	String n =  decl.getName().getText();
     	
-        Object obj = ud.getUnitObj().getAny(n);
+        Object obj;
+
+		obj = ud.getUnitObj().getAny(n);
         if (obj == Value.UNDEF) {
             ParseUnit.current().reportError(decl.getName(), "private variable has never been assigned");
             return;
@@ -565,7 +578,7 @@ public class ProgCCode {
 
         Object val = Value.toVal(obj);
         
-        // Now this is initializing fields of structs (values embedded in {}). Name assignments not needed.
+        // Old code. Now this is initializing fields of structs (values embedded in {}). Name assignments not needed.
 //        String cname = gen.cname() + decl.getName() + gen.aux.mkSuf(decl);        
 //        gen.aux.genType(decl.getTypeSpec(), cname);
 //        gen.fmt.print(" = ");
@@ -630,7 +643,41 @@ public class ProgCCode {
         	if (val instanceof Number 
         			|| val instanceof UniqueTag) // latter happens when dynamic new() is the init expression (non-host)
         		vobj = null;
-            genValAgg((Cat.Agg) cat, cast, (Value.Obj) vobj);
+        	if (cat.isFcnRef() ) {       		
+        		// For variables, function refs are DeclNode.FcnRef but for parameters
+        		// they are simply DeclNode.TypedMember. So can't assume aggScope is a FcnRef.
+        		BaseNode b = (BaseNode) ((Cat.Agg) cat).aggScope();
+				boolean isHost = b instanceof DeclNode ? ((DeclNode) b).isHost() : false;
+
+				String fn =	b instanceof DeclNode ? ((DeclNode) b).getName().getText() : "";
+        			
+				if (vobj instanceof Value.Obj
+						&& "$$Ref".equals(((Value.Obj) val).getProp("$$category"))) {
+					// this is a host function ref initialized to a target function
+					vobj = (Value.Obj) val;
+					Object n = Value.toVal(((Value.Obj) vobj).getProp("$$text"));
+					gen.getFmt().print("%1", n.toString());
+				}   
+				else { 
+					gen.getFmt().print("%1", "null");
+					if (vobj != null) {  // Okay: null could mean the host initializing function was never called. 
+						if (isHost) {
+							// This is a host function ref initialized to a host function.
+							// disallowed for a number of reasons. The value the host reference is to be assigned to 
+							// has lost its name and there is no non-standard way to get it. 
+							// See http://stackoverflow.com/questions/3178892/get-function-name-in-javascript
+							// Also it's not meaningful code in the host context. 
+							ParseUnit.current().reportError(b, fn + ": initializing a host function reference to a host function is not allowed");
+						}
+						else {
+							// Hello, this makes no sense.
+							ParseUnit.current().reportError(b, fn + ": initializing a non-host function reference to a host function is not allowed");        				
+						}   
+					}
+				}
+        	}
+        	else
+        		genValAgg((Cat.Agg) cat, cast, (Value.Obj) vobj);
         }
         else if (cat instanceof Cat.Arr) {
             genValArr((Cat.Arr) cat, (TypeNode.Arr) cast, vobj);

@@ -1466,7 +1466,7 @@ printList
 	:		printItemList	-> ^(LIST<ListNode>["LIST"] printItemList)
 	;
 printItemList
-	:	printItem	( ',' printItem) *	-> printItem+
+	:	printItem	( '+'  printItem) *	-> printItem+
 	|	-> NIL
 	;
 printItem

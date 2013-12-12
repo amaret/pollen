@@ -551,8 +551,8 @@ public class Auxiliary {
 		}
 		if (expr.getQualifier() == null && expr.getName().getText().indexOf('.') != -1)
 			System.out.println("ExprIdent: no qualifier symbol for " + expr.getName().getText());
-		if (expr.getName().getText().equals("i")) {
-			//System.out.println("xyz");			
+		if (expr.getName().getText().equals("stop")) {
+			System.out.println("xyz");			
 		}
 
 		ISymbolNode snode = sym.node();

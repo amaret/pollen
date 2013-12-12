@@ -181,7 +181,7 @@ public class ProcessUnits {
 		pollenHelp += "\n" + "  -h\tThis help message.";
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.47";  // user release . internal rev . fix number
+	private static String  v = "0.2.48";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -333,19 +333,19 @@ public class ProcessUnits {
 	protected int translateUnit(HashMap<String, UnitNode> unitMap) throws Exception {
 		
 		
-		int rtn = ParseUnit.current().getErrorCount();
+		int rtn = ParseUnit.current().getCurrUnitNode().getErrorCount();
 		if (rtn == 0) {
 			UnitNode curUnit = ParseUnit.current().getCurrUnitNode();
 			Generator g = new Generator();
 			g.genUnits(curUnit, unitMap);
 			
-            if (ParseUnit.current().getErrorCount() > 0) {
+            if (ParseUnit.current().getCurrUnitNode().getErrorCount() > 0) {
                 return 1;
             }
             
             g.genProg(curUnit);
             
-            if (ParseUnit.current().getErrorCount() > 0) {
+            if (ParseUnit.getSeriousErrorCount() > 0) {
                 return 1;
             }
             return 0;            

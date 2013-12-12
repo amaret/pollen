@@ -3,6 +3,7 @@
  */
 package com.amaret.pollen.translator;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
@@ -152,9 +153,9 @@ public class UnitHeader {
 				+ decl.getName(), gen.aux.mkSuf(decl),braces);
 
 	}
+	
     private void genDecl$Class(DeclNode.Class decl) {
-    	
-        
+    	    
         List<DeclNode> fields = decl.getFeatures();
         
         IScope outer = decl.getEnclosingScope();
@@ -165,13 +166,7 @@ public class UnitHeader {
         String clsStruct = (qual.isEmpty()) ? gen.uname_target().substring(0, gen.uname_target().length()-1) : gen.uname_target() + qual;
         String clsStructPtr = (qual.isEmpty()) ?  gen.uname_target() :  gen.uname_target() + qual + "_";
         
-        for (DeclNode fld : fields) {
-        	if (fld instanceof DeclNode.FcnRef) {
-        		gen.getFmt().print("%ttypedef ");
-        		String s = gen.getOutputName((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), null, EnumSet.of(Flags.IS_TYPEDEF));
-        		gen.getFmt().print("%1;\n", s);
-        	}       
-        }              
+        emitFcnRefTypedefs(fields);              
         
         gen.getFmt().print("%tstruct %1 {\n%+", clsStruct);
         for (DeclNode fld : fields) {
@@ -207,6 +202,23 @@ public class UnitHeader {
         gen.getFmt().print("%ttypedef struct %1* %2;\n", clsStruct, clsStructPtr); 
 
     }
+
+	/**
+	 * @param fields
+	 */
+	private void emitFcnRefTypedefs(List<DeclNode> fields) {
+		List<String> fcnrefTypeDefs = new ArrayList<String>();
+		for (DeclNode fld : fields) {        	
+        	if (fld instanceof DeclNode.FcnRef) {
+        		String s = gen.getOutputName((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), null, EnumSet.of(Flags.IS_TYPEDEF));
+        		if (!fcnrefTypeDefs.contains(s)) { // must be unique or c gives error
+        			fcnrefTypeDefs.add(s);
+            		gen.getFmt().print("%ttypedef ");
+            		gen.getFmt().print("%1;\n", s);
+        		}
+        	}       
+        }
+	}
     
     private void genDecl$Module(DeclNode.Usr decl) {
     	
@@ -214,13 +226,14 @@ public class UnitHeader {
     		return;
         
         List<DeclNode> fields = decl.getFeatures();
-        for (DeclNode fld : fields) {
-        	if (fld instanceof DeclNode.FcnRef) {
-        		gen.getFmt().print("%ttypedef ");
-        		String s = gen.getOutputName((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), null, EnumSet.of(Flags.IS_TYPEDEF));
-        		gen.getFmt().print("%1;\n", s);
-        	}       
-        }              
+        emitFcnRefTypedefs(fields);  
+//        for (DeclNode fld : fields) {
+//        	if (fld instanceof DeclNode.FcnRef) {
+//        		gen.getFmt().print("%ttypedef ");
+//        		String s = gen.getOutputName((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), null, EnumSet.of(Flags.IS_TYPEDEF));
+//        		gen.getFmt().print("%1;\n", s);
+//        	}       
+//        }              
         gen.getFmt().print("%tstruct %1 {\n%+", gen.uname_target());
         String dbg = gen.uname_target();
         for (DeclNode fld : fields) {
@@ -230,7 +243,11 @@ public class UnitHeader {
         			&& !((DeclNode.Var) fld).isIntrinsicUsed())
         		continue;
 
-        	if (!fld.isHost() && fld instanceof DeclNode.ITypeSpec && !(fld instanceof DeclNode.Fcn)) {
+        	// host items are often const in which case they are not fields of the module struct and 'excludeHost' is true.
+        	// Some host items are not const, eg function references (this list may expand).
+        	boolean excludeHost = fld.isHost() && !(fld instanceof DeclNode.FcnRef);
+        	
+        	if (!excludeHost && fld instanceof DeclNode.ITypeSpec && !(fld instanceof DeclNode.Fcn)) {
         		gen.getFmt().print("%t");     
 
         		boolean proMem = fld instanceof DeclNode.TypedMember && ((DeclNode.TypedMember)fld).isProtocolMember();
@@ -247,7 +264,7 @@ public class UnitHeader {
         		}
         		else if (fld instanceof DeclNode.FcnRef) {
             		String s = gen.getOutputName((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), null, EnumSet.noneOf(Flags.class));
-    				gen.getFmt().print("%t%1 %2", s, fld.getName());
+    				gen.getFmt().print("%1 %2", s, fld.getName());
     			}
         		else {
         			String name = (fld instanceof DeclNode.Arr && !((DeclNode.Arr)fld).hasDim()) ? "* " : "";
@@ -548,6 +565,7 @@ public class UnitHeader {
     	}
 
     	for (DeclNode decl : unit.getFeatures()) {
+    		
     		if (decl.isHost() && !(decl instanceof DeclNode.TypedMember)) {
     			continue;
     		}

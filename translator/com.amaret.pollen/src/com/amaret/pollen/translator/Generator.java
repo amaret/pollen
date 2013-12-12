@@ -225,14 +225,16 @@ public class Generator {
         ProgJScript jsProg = new ProgJScript(this);
         jsProg.generate(uses, unit);
         writeFile(jsFile, getFmt().toBytes(), true);
-        Value.Arr unitsArr = (Value.Arr) Script.execute(getFmt().toString(), "$units", jsFile.getAbsolutePath());
+        if (ParseUnit.getSeriousErrorCount() == 0) {
+        	Value.Arr unitsArr = (Value.Arr) Script.execute(getFmt().toString(), "$units", jsFile.getAbsolutePath());
 
-        getFmt().reset();
-        ProgCCode targProg = new ProgCCode(this);
-        targProg.generate(unitsArr);
-        writeFile(progFile, getFmt().toBytes(), true);
+        	getFmt().reset();
+        	ProgCCode targProg = new ProgCCode(this);
+        	targProg.generate(unitsArr);
+        	writeFile(progFile, getFmt().toBytes(), true);
+        }
 
-        if (cur.getErrorCount() > 0) {
+        if (ParseUnit.getSeriousErrorCount() > 0) {
             return;
         }
         
