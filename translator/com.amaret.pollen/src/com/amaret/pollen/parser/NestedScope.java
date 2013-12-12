@@ -42,7 +42,11 @@ public class NestedScope implements IScope {
 
     @Override
 	public boolean defineSymbol(Atom name, ISymbolNode node) {
+    	
+    	
 	    if (symbolTable.containsKey(name.getText())) {
+	    	if (name.getText().equals(ParseUnit.DEFAULT_LOOPVAR)) // ok
+	    		return true;
 	        return false;
 	    }
 		symbolTable.put(name.getText(), new SymbolEntry(definingScope, node));

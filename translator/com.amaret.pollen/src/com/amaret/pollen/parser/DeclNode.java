@@ -569,11 +569,14 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			if (sc == null)
 				return this.getName().getText();	
 			boolean thisPtr = flags.contains(Flags.IS_THISPTR);
+			boolean postExpr = flags.contains(Flags.IS_POSTEXPR);
 //			boolean dbg = false;
 //			System.out.println(this.getName().getText());
 //			if (this.getName().getText().equals("enable"))
 //				dbg = true;
-			
+			if (postExpr) {
+				return this.getName().getText();
+			}	
 			IScope scopeOfDcln = sc;
 			if (scopeOfDcln instanceof ImportNode && ((ImportNode) scopeOfDcln).isExport()) {
 				// an exported function

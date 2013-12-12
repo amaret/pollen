@@ -536,8 +536,8 @@ public class Auxiliary {
 		if (expr.isPostExpr())
 			flags.add(Flags.IS_POSTEXPR);
 		
-		boolean dbg = false;
-		String s = expr.getName().getText();
+		//boolean dbg = false;
+		//String s = expr.getName().getText();
 		//System.out.println(s);
 		
 
@@ -552,7 +552,7 @@ public class Auxiliary {
 		if (expr.getQualifier() == null && expr.getName().getText().indexOf('.') != -1)
 			System.out.println("ExprIdent: no qualifier symbol for " + expr.getName().getText());
 		if (expr.getName().getText().equals("stop")) {
-			System.out.println("xyz");			
+			//System.out.println("xyz");			
 		}
 
 		ISymbolNode snode = sym.node();

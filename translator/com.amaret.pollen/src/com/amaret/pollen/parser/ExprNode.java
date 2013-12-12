@@ -894,21 +894,21 @@ public class ExprNode extends BaseNode {
 			if (ParseUnit.isIntrinsicCall(this.getName().getText()))
 				return super.pass2Begin();
 			
-			// if this is a postfix expr, get the correct parent for scope for lookup.
-			// it may be parent for postfix field after call or array, or it may be grandparent for postfix call after call or array.
-			ExprNode postFixParent = (ExprNode) ((this.getParent() instanceof ExprNode.Ident
+			// if this is a post expr (it is to the right of '.'), get the correct parent for scope for lookup.
+			// it may be parent for field after call or array, or it may be grandparent for call after call or array.
+			ExprNode postExprParent = (ExprNode) ((this.getParent() instanceof ExprNode.Ident
 					&& ((ExprNode.Ident) this.getParent()).getSymbol() != null) ? this.getParent() : this.getParent() instanceof ExprNode.Call
 							&& this.getParent().getParent() instanceof ExprNode.Ident
 							&& ((ExprNode.Ident) this.getParent().getParent()).getSymbol() != null ? this.getParent().getParent() : null);
 						
-			if (postFixParent != null) {
+			if (postExprParent != null) {
 
 				// This is an access after an indexed expr or call, such as
 				// 'arr[i].fld'.
 				// lookup scope for 'fld' is the type for arr.
 
 				postExpr = true;
-				IScope sc = ((ExprNode.Ident) postFixParent).getSymbol()
+				IScope sc = ((ExprNode.Ident) postExprParent).getSymbol()
 						.derefScope(false);
 				symbol = sc.lookupName(getName().getText());
 				if (symbol != null && symbol.node() instanceof DeclNode) {
