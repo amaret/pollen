@@ -1670,14 +1670,17 @@ scope{
 	:	typeNameArray { $varArray::typArrSpec = $typeNameArray.tree; }
 		IDENT 
 		varArraySpec { $varArray::varArrSpec = $varArraySpec.tree; } 
-		('=' initializer)? 
-	->  ^(D_ARR<DeclNode.Arr>["D_ARR", stmtFlags] 
-		typeNameArray 
-		IDENT varArraySpec initializer?)
+		varArrayInit[stmtFlags]?
+			->  ^(D_ARR<DeclNode.Arr>["D_ARR", stmtFlags] 
+				typeNameArray 
+				IDENT varArraySpec varArrayInit?)
 	;	
-
 varArraySpec
 	:	('[' varDim ']')+	->   ^(LIST<ListNode>["LIST"] varDim+)
+	;
+varArrayInit[EnumSet<Flags> f]
+	:	('=' initializer) 				-> initializer
+	|	(PEG initializer) {f.add(Flags.PEG);} 	-> initializer
 	;
 varDim
 @init {

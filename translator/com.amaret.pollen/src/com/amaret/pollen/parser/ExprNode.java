@@ -87,6 +87,9 @@ public class ExprNode extends BaseNode {
 				else
 					e = ((ExprNode.Self)e).getMember();
 			}
+			else if (e instanceof ExprNode.Binary) {
+				return e.getCat();
+			}
 			for (int i = e.getChildren().size() - 1; i > 0; i--) {
 				if (!(e.getChild(i) instanceof ExprNode))
 					continue;
