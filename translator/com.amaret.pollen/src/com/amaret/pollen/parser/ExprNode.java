@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.antlr.runtime.tree.Tree;
 
+import com.amaret.pollen.parser.DeclNode.Arr;
 import com.amaret.pollen.parser.DeclNode.Fcn;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 
@@ -851,6 +852,11 @@ public class ExprNode extends BaseNode {
 		public Atom getName() {
 			return (Atom) ((BaseNode) getChild(NAME)).getToken();
 		}
+		public boolean hasIndexExpr() {
+			if (this.getChildCount() > 1 && this.getChild(1) instanceof ExprNode.Index) 
+				return true;
+			return false;
+		}
 
 		/**
 		 * 
@@ -1413,6 +1419,11 @@ public class ExprNode extends BaseNode {
 				e = (ExprNode) e.getChild(i);
 				if (e instanceof ExprNode.Ident)
 					return e.getCat();
+			}
+			if (getOperand() instanceof ExprNode.Ident && ((ExprNode.Ident)getOperand()).hasIndexExpr()) {
+				ExprNode.Ident id = (Ident) getOperand();
+				if (id.getCat() instanceof Cat.Arr)
+					return ((Cat.Arr)id.getCat()).getBase();
 			}
 			return getOperand().getCat();
 		}
