@@ -1582,8 +1582,8 @@ stmtDecl
    ;
 stmtDeclAttr
 	:	(	 'const' { typeMods.add(Flags.CONST); }
-		|	 t='volatile' { ParseUnit.current().reportError($t, "invalid function local variable attribute"); }
-		|   	t='host' { ParseUnit.current().reportError($t, "invalid function local variable attribute"); } 
+		|	 'volatile' { typeMods.add(Flags.VOLATILE); }
+		|   	 t='host' { ParseUnit.current().reportError($t, "invalid function local variable attribute"); } 
 		|  	 t='preset' { ParseUnit.current().reportError($t, "invalid function local variable attribute"); } 
 		)*
 	;
