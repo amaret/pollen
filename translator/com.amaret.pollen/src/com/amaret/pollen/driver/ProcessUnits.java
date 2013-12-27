@@ -176,7 +176,7 @@ public class ProcessUnits {
 		pollenHelp += "\n" + "\tbe substituted for \'pollen.environment\' in import statements.";
 		pollenHelp += "\n" + "  -p <pollen path>";
 		pollenHelp += "\n" + "\tSpecifies fully qualified path to a pollen module that will";
-		pollenHelp += "\n" + "\timplement the protocol \'PrintP.p\' found in \'pollen.lang\'.";
+		pollenHelp += "\n" + "\timplement the protocol \'PrintProtocol.p\' found in \'pollen.lang\'.";
 		pollenHelp += "\n" + "\tThis implementation will be used in pollen \'print\' statements.";
 		pollenHelp += "\n" + "  -h\tThis help message.";
 		return pollenHelp;    

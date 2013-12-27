@@ -47,7 +47,7 @@ public class ParseUnit {
 	public static final String INTRINSIC_PREFIX = "pollen__";
 	public static final String DEFAULT_LOOPVAR = INTRINSIC_PREFIX + "loopvar"; // for loops w/ undeclared loop variables
 	public static final String INTRINSIC_UNITVAR = INTRINSIC_PREFIX +"unitname";
-	public static final String INTRINSIC_PRINT_PROTOCOL= "PrintP";
+	public static final String INTRINSIC_PRINT_PROTOCOL= "PrintProtocol";
 	public static final String INTRINSIC_PRINT_PROXY = "$$printProxy";
 	public static final String CTOR_CLASS_TARGET = "new_";
 	public static final String CTOR_CLASS_HOST = "new_host";
