@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
 
@@ -208,31 +209,108 @@ public class ParseUnit {
 	public String getProperty(String key) {
 		return properties.getProperty(key);
 	}
+	
+	// A global preset map which tracks which variables were 'preset' (outside of dcln scope).
+    private List<ISymbolNode> presetList;
+    private Map<String, List<ISymbolNode>> presetMap = new HashMap<String, List<ISymbolNode>>();
+    private String makePresetMapKey(SymbolEntry se) {
+    	String enc = se.scope().getEnclosingScope() != null ? se.scope().getEnclosingScope().getScopeName() + "." : "";    	
+    	return enc + se.scope().getScopeName() + "." + se.node().getName().getText();
+    }
+    
+    // Map the presets to initial expressions 
+    private Map<String, ExprNode> presetExprs = new HashMap<String, ExprNode>();
+    
+    public ExprNode getPresetExpr(SymbolEntry se) {
+    	if (se == null || !(se.node() instanceof DeclNode))
+    		return null;
+    	String key = this.makePresetMapKey(se); 
+    	return presetExprs.get(key);
+    }
+    /**
+     * Put the preset expr and symbol in the presetExprMap. 
+     * Note preset expr could be for protocol member binding.
+     * @param se
+     * @param e
+     * @return null if first inserted or the previous mapping expr node
+     */
+    public ExprNode putPresetExpr(SymbolEntry se, ExprNode e) {
+    	if (se == null || !(se.node() instanceof DeclNode))
+    		return null;
+    	String key = makePresetMapKey(se); //e.nameForHashing(e);
+    	ExprNode rtn = null;
+    	if (presetExprs.containsKey(key))
+    		rtn = presetExprs.put(key, e);
+    	else 
+    		presetExprs.put(key, e);
+    	return rtn;
+    	
+    }
+    /**
+     * @param se
+     * @return true if this symbol was preset to a value in a preset initializer
+     */
+    public boolean isPreset(SymbolEntry se) {
+    	if (se == null || !(se.node() instanceof DeclNode))
+    		return false;
+    	String key = this.makePresetMapKey(se);
+    	if (presetMap.get(key) != null) {
+    		((DeclNode) se.node()).setPreset(true); // can happen for >1 AST for same file
+    		return true;
+    	}
+    	return false;
+    }
+    /**
+     * Variables can be declared in one unit and accessed in another - but only in 'preset' initializers. 
+     * When that is detected, enter the variable in the current unit map, where current unit is the unit of 
+     * variable declaration.
+     * This needs to be done multiple times potentially because the same file may have more than one AST, 
+     * due to imports. This code makes sure that DeclNodes in all ASTs for a single variable have the preset flag set. 
+     * @param se
+     */
+    private void addToPresetMap(SymbolEntry se) {
+    	if (se == null || se.node() == null || se.scope() == null)
+    		return;
+    	// the complexity is due to the fact that there may be >1 versions of a node
+    	// because there may be >1 unit trees for the same unit, depending on imports.
+    	String key = this.makePresetMapKey(se);
+    	if (presetMap.get(key) != null) {
+    		presetMap.get(key).add(se.node());
+    	}
+    	else {
+    		presetList = new ArrayList<ISymbolNode>();
+    		presetList.add(se.node());
+    		presetMap.put(key, presetList);
+    	}
+		for (ISymbolNode is : presetMap.get(key)) {
+			if (is instanceof DeclNode)
+				((DeclNode)is).setPreset(true);
+		}
+    }
+    /**
+     * Check if this symbol should be / is in the preset map.
+     * If current code is a preset initializer the symbol 
+     * will be entered in the presetMap. 
+     * @param symbol
+     * @return return true if preset false otherwise
+     */
+	public boolean initPreset(SymbolEntry symbol) {
+		ISymbolNode node = symbol != null ? symbol.node() : null;
+
+		if (node instanceof DeclNode) {
+			boolean inPreset = currUnitNode.isComposition() && ParseUnit.current().getSymbolTable().insidePresetInitializer();
+			if (inPreset) {
+				ParseUnit.current().addToPresetMap(symbol);
+				return true;
+			}
+			return isPreset(symbol);
+		}
+		return false;
+	}
 
 	public void enterUnit(String qualname, UnitNode unit) {
 		if (!unit.isVoid()) { // deferred instantiation ('{}')
 			UnitNode tmp = unitMap.put(qualname, unit);
-			if (tmp != null) {
-		    	// the complexity is due to the fact that there may be >1 versions of a node
-		    	// because there may be >1 unit trees for the same unit, depending on imports.
-				// So figure out if two nodes are actually dupes, but from separate parses.
-				if (tmp.getPresetList().size() > 0 && unit.getPresetList().size() == 0) {
-					unit.getPresetList().addAll(tmp.getPresetList());
-				}
-				else
-				for (StmtNode.Assign st : tmp.getPresetList()) {
-					String filename = st.getFileName();
-					boolean found = false;
-					for (StmtNode.Assign su : unit.getPresetList()) {
-						if (su.getFileName().equals(filename)) {
-							found = true;
-							break;
-						}
-					}
-					if (!found)
-						unit.addToPresetList(st);					
-				}
-			}
 			if (!unit.getUnitType().getMetaQualName().isEmpty()) {
 				String pkg = qualname.substring(0,
 						qualname.lastIndexOf(".") + 1);

@@ -397,10 +397,6 @@ stmtPackage
 stmtExport
     :   'export' qualName delim -> ^(EXPORT<ExportNode>["EXPORT"] qualName)
     ;
-stmtPreset
-    :   'preset' varOrFcnOrArray ASSIGN exprAssign delim
-		-> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN_PRESET"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] ASSIGN varOrFcnOrArray exprAssign))
-    ;
 classDefinition  
 @init{
 		ti = new TypeInfo();
@@ -728,8 +724,7 @@ compositionFeature
 @init {
 	featureFlags = EnumSet.noneOf(Flags.class);
 }
- 	:  stmtExport
- 	|  stmtPreset
+ 	:  stmtExport 	
    	|  fcnDefinitionHost
    	|  enumDefinition
    	|  varDeclaration
@@ -1268,7 +1263,9 @@ catch [PollenException re] {
 }
 fcnAttr
 	:	(	'public' { featureFlags.add(Flags.PUBLIC); } 
-		|	'host' { featureFlags.add(Flags.HOST); } )*
+		|	'host' { featureFlags.add(Flags.HOST); } 
+		|	'preset' { featureFlags.add(Flags.PRESET); } 
+		)*
 	;
 fcnBody[CommonTree formals]
   :	braceOpen (stmts)  braceClose  -> ^(FCNBODY<BodyNode>["FCNBODY"] {$formals} stmts) 
@@ -1306,6 +1303,25 @@ fcnType_fcnName
 			^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
 				^(LIST<ListNode>["LIST"] typeName)) 
 				qualName)      // int myfcn()
+	|	{(featureFlags.contains(Flags.PRESET)) && input.LT(1).getText().equals(ti.getTypeName()) }? 
+		typeName	         
+		{ 
+		  String n;
+		  featureFlags.remove(Flags.PUBLIC);
+		  featureFlags.add(Flags.HOST);
+		  if (!ti.getUnitFlags().contains(Flags.COMPOSITION)) {
+		  	ParseUnit.current().reportError(ti.getTypeName(), "\'preset\' initializer only allowed in compositions: initializer ignored"); 
+		  	featureFlags.remove(Flags.PRESET);
+		  	n = "preset";
+		  }
+		  else {
+		  	n = ParseUnit.PRESET_INIT;
+		  }
+		}
+		-> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"] 
+			^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
+			^(LIST<ListNode>["LIST"] ^(T_STD<TypeNode.Std>["T_STD", featureFlags] VOID["void"]))) 
+			IDENT[ParseUnit.PRESET_INIT]) 		  
 	|	{input.LT(1).getText().equals(ti.getTypeName()) && !(ti.getUnitFlags().contains(Flags.CLASS)) }? 
 		typeName	         
 		{ 
@@ -1584,7 +1600,6 @@ stmtDeclAttr
 	:	(	 'const' { typeMods.add(Flags.CONST); }
 		|	 'volatile' { typeMods.add(Flags.VOLATILE); }
 		|   	 t='host' { ParseUnit.current().reportError($t, "invalid function local variable attribute"); } 
-		|  	 t='preset' { ParseUnit.current().reportError($t, "invalid function local variable attribute"); } 
 		)*
 	;
 fieldDeclaration    
@@ -1609,7 +1624,6 @@ varAttr
 	:	(	 'const' { typeMods.add(Flags.CONST); }
 		|	 'volatile' { typeMods.add(Flags.VOLATILE); }
 		|   	'host' { typeMods.add(Flags.HOST); } 
-		|   	'preset' { typeMods.add(Flags.PRESET); } 
 		)*
 	;
 varDecl
@@ -1687,8 +1701,8 @@ varDim
   EnumSet<LitFlags> fl = EnumSet.noneOf(LitFlags.class);
   fl.add(LitFlags.NUM); fl.add(LitFlags.INT);
 }
-	:  expr  
-	| -> ^(E_CONST<ExprNode.Const>["E_CONST", fl] INT_LIT["-1"]) // an array without dimensions (in c, flexible)
+	:  	expr  
+	| 	-> ^(E_CONST<ExprNode.Const>["E_CONST", fl] INT_LIT["-1"]) // an array without dimensions (in c, flexible)
 	;
 initializer
 	: expr // restrict

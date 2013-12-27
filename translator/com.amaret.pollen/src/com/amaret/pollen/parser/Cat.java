@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
+import com.amaret.pollen.parser.DeclNode.TypedMember;
 
 
 public class Cat implements Cloneable {
@@ -72,6 +73,7 @@ public class Cat implements Cloneable {
         	this.isClassRef |= aggScope instanceof DeclNode.Class && isRef;
         	this.isProtocolMember = aggScope instanceof DeclNode 
         		? ((DeclNode) aggScope).isProtocolMember(): false;
+
         }
         public boolean isProtocolMember() {
 			return isProtocolMember;
@@ -137,6 +139,7 @@ public class Cat implements Cloneable {
             return "??";       	
         }
         private String mkCodeFromScope(IScope sc) {
+        	
         	if (sc instanceof UnitNode)
         		return mkCodeFromScope(((UnitNode) sc).getUnitType());
         	
@@ -156,7 +159,11 @@ public class Cat implements Cloneable {
         		return Cat.CLASS + ((DeclNode.TypedMember) sc).getTypeUnit().getQualName(); 
         	
         	if (sc instanceof DeclNode.TypedMember) {
-        		return Cat.TYP_MEMBER + ((DeclNode.TypedMember) sc).getTypeUnit().getQualName();
+        		DeclNode.TypedMember tm = (TypedMember) sc;
+        		if (!tm.isMetaPrimitive())
+        			return Cat.TYP_MEMBER + ((DeclNode.TypedMember) sc).getTypeUnit().getQualName();
+        		else
+        			return tm.getTypeCat().mkCode();
             }
             return super.mkCode();
         	
@@ -507,6 +514,8 @@ public class Cat implements Cloneable {
 
     static Cat fromSymbolNode(ISymbolNode snode, IScope defScope, boolean isRef, boolean isFcnRef) {
     	
+    	//System.out.println("Cat.fromSymbolNode(): " + snode.getName().getText());
+    	
         if (snode instanceof UnitNode) {
             return new Cat.Agg((UnitNode) snode, defScope, false, false);
         }
@@ -564,6 +573,7 @@ public class Cat implements Cloneable {
     }
     
     static Cat fromType(TypeNode typeNode, boolean isRef, IScope sc) {
+    	//System.out.println("Cat.fromTypeNode(): " + typeNode.getName().getText());
         switch (typeNode.getType()) {
         case pollenParser.T_ARR:
             return new Cat.Arr((TypeNode.Arr) typeNode);

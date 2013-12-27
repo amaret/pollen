@@ -17,6 +17,7 @@ import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.DeclNode.FcnRef;
 import com.amaret.pollen.parser.DeclNode.ITypeSpec;
 import com.amaret.pollen.parser.DeclNode.TypedMember;
+import com.amaret.pollen.parser.DeclNode.Var;
 import com.amaret.pollen.parser.ExprNode;
 import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.IScope;
@@ -34,18 +35,20 @@ import com.amaret.pollen.target.ITarget;
 
 public class ProgCCode {
 
-    private class FwdAgg {
-        String cname;
-        Value.Obj vobj;
-        DeclNode.Class cls;
-        String tname;
-        TypeNode.Arr tarr;
-        Cat basecat;
-    }
+
     /**
-     * HashMap of <unit, Value.Obj> for units for which target c will be generated. 
+     * HashMap of <unit, Value.Obj> for unitDescs for which target c will be generated. 
      */
-    HashMap<String, UnitDesc> unitDescs = new HashMap<String, UnitDesc>();
+    HashMap<String, UnitDesc> unitDescsMap = new HashMap<String, UnitDesc>();
+    /**
+     * target 'c' code is generated for these units.
+     */
+    private List<UnitDesc> unitDescs = new ArrayList<UnitDesc>();   
+    
+    public List<UnitDesc> getUnitDescriptors() {
+		return unitDescs;
+	}
+
     private class UnitDesc {
         private UnitNode unit;
         private Value.Obj unitObj;
@@ -54,7 +57,7 @@ public class ProgCCode {
         	setUnit(u);
         	setUnitObj(uo);
         	if (insertUnitDescs)
-        		unitDescs.put(u.getQualName(), this);
+        		unitDescsMap.put(u.getQualName(), this);
         }
 
 		/**
@@ -89,18 +92,21 @@ public class ProgCCode {
 //     legacy, unused.
 //     fwdAggList and fwdAggDecls are added to when fwdAggNames is non-empty.
 //     this could be useful for complex arrays so I'm keeping it.
+//    private class FwdAgg {
+//        String cname;
+//        Value.Obj vobj;
+//        DeclNode.Class cls;
+//        String tname;
+//        TypeNode.Arr tarr;
+//        Cat basecat;
+//    }
 //    private HashSet<String> fwdAggNames = new HashSet<String>();
 //    private ArrayList<FwdAgg> fwdAggList = new ArrayList<FwdAgg>();
 //    private ArrayList<FwdAgg> fwdAggDecls = new ArrayList<FwdAgg>();
     
     private Generator gen;
-    /**
-     * target 'c' code is generated for these units.
-     */
-    private List<UnitDesc> units = new ArrayList<UnitDesc>();
-    
-    
-    public ProgCCode(Generator gen) {
+
+	public ProgCCode(Generator gen) {
         this.gen = gen;
     }
 
@@ -140,7 +146,7 @@ public class ProgCCode {
         }       
         
     	gen.aux.genTitle("module functions");
-        for (UnitDesc ud : units) {
+        for (UnitDesc ud : this.getUnitDescriptors()) {
             UnitNode u = ud.getUnit();
             if (u.isTarget() && !u.isEnum()) {
                 gen.getFmt().print("#include \"../../%1/%2/%2.c\"\n", u.getPkgName(), u.getName());
@@ -184,12 +190,12 @@ public class ProgCCode {
         gen.aux.genTitle("main()");
         gen.getFmt().print("int main() {\n%+");
         gen.getFmt().print("%t%1pollen__reset__E();\n", gen.uname_target());
-        for (UnitDesc ud : units) {
+        for (UnitDesc ud : getUnitDescriptors()) {
             if (ud.getUnit().lookupFcn(ParseUnit.CTOR_MODULE_TARGET) != null) {
                 genSingleFcnCall(ParseUnit.CTOR_MODULE_TARGET, ud.getUnit());
             }
         }
-        for (UnitDesc ud : units) {
+        for (UnitDesc ud : getUnitDescriptors()) {
             UnitNode u = ud.getUnit();
             if (u == gen.getMainUnit())
             	continue;
@@ -201,7 +207,7 @@ public class ProgCCode {
         
         gen.getFmt().print("%t%1pollen__run__E();\n", gen.uname_target());
         
-        for (UnitDesc ud : units) {
+        for (UnitDesc ud : getUnitDescriptors()) {
             UnitNode u = ud.getUnit();
             if (u == gen.getMainUnit())
             	continue;
@@ -245,7 +251,7 @@ public class ProgCCode {
             UnitNode u = cur.findUnit(uobj.getStr("$name"));
             if (uobj.getBool("pollen$used")) {
                 ud = new UnitDesc(u, uobj, true);
-                units.add(ud); // will get c code generated from these
+                getUnitDescriptors().add(ud); // will get c code generated from these
             }
             else {
             	if (u.isComposition()) {
@@ -258,7 +264,7 @@ public class ProgCCode {
         String part1 = gen.getFmt().toString();
         gen.getFmt().reset();
         
-        genModules();
+        genTargetUnits();
         genEpilogue();
         String part3 = gen.getFmt().toString();
         gen.getFmt().reset();
@@ -293,6 +299,7 @@ public class ProgCCode {
         	}
         }
         gen.getFmt().print("%-%t}");
+
     }
 
 //    private void genFwdAggs() {
@@ -362,9 +369,9 @@ public class ProgCCode {
 //    }
     
 
-    private void genModules() {
+    private void genTargetUnits() {
 
-        for (UnitDesc ud : units) {
+        for (UnitDesc ud : getUnitDescriptors()) {
 
             UnitNode unit = ud.getUnit();
             
@@ -379,7 +386,7 @@ public class ProgCCode {
     private void genPrologue() {
         gen.getFmt().print("#define pollen__target_name %1\n", ParseUnit.current().getProperty(ITarget.P_NAME));       
         gen.getFmt().print("#include <pollen.lang/std.h>\n\n");
-        for (UnitDesc ud : units) {
+        for (UnitDesc ud : getUnitDescriptors()) {
       
             UnitNode unit = ud.getUnit();
             if (unit.isTarget()) {
@@ -388,7 +395,7 @@ public class ProgCCode {
             }
         }
         gen.aux.genTitle("unit headers");
-        for (UnitDesc ud : units) {
+        for (UnitDesc ud : getUnitDescriptors()) {
             UnitNode u = ud.getUnit();
             if (u.isTarget()) {
                 gen.aux.genHeaderInclude(u.getQualName());
@@ -415,7 +422,7 @@ public class ProgCCode {
             	
                 if (protoMem.getBindLocUnit() != null) {
             		String qname = protoMem.getDefiningScope().getScopeName() + "." + protoMem.getName().getText();
-            		UnitDesc udsc = unitDescs.get(protoMem.getBindLocUnit().getQualName());
+            		UnitDesc udsc = unitDescsMap.get(protoMem.getBindLocUnit().getQualName());
             		val = udsc.getUnitObj().getAny(qname);
                 }        
                 if (val == Value.UNDEF) {
@@ -472,8 +479,11 @@ public class ProgCCode {
 
     private void genHostVal(UnitDesc ud, DeclNode.Var decl) {
     	
-    	if (!decl.isHost())
+    	if (!decl.isHost()) 
     		return;
+    	
+//    	System.out.println("host " + decl.getDefiningScope().getScopeName() + "." + decl.getName().getText());
+//    	System.out.println(decl.toStringTree());
 
         Object val = ud.getUnitObj().getAny(decl.getName());
         if (val == Value.UNDEF) {
@@ -526,6 +536,13 @@ public class ProgCCode {
     				break;
     			}
     		}
+    	else
+        for (DeclNode fld : unit.getFeatures()) {
+        	SymbolEntry se = fld.getDefiningScope() != null ? fld.getDefiningScope().lookupName(fld.getName().getText()) : null;
+        	if (fld instanceof DeclNode.Var && ParseUnit.current().isPreset(se)) {
+        		genHostVal(ud, (Var) fld);
+        	}
+        }
     	String n = gen.uname_target();
 		
     	if (!unit.isClass() && !unit.isEnum()) {
@@ -593,13 +610,13 @@ public class ProgCCode {
         		// Get the binding from the bind unit
         		
         		String qname = decl.getDefiningScope().getScopeName() + "." + decl.getName().getText();
-        		UnitDesc udsc = unitDescs.get(((TypedMember) decl).getBindLocUnit().getQualName());
+        		UnitDesc udsc = unitDescsMap.get(((TypedMember) decl).getBindLocUnit().getQualName());
         		if (udsc != null) {
         			obj = udsc.getUnitObj().getAny(qname);
         			val = Value.toVal(obj);
         		}
 //        		else {
-//        			udsc = unitDescs.get(((TypedMember) decl).getBindToUnit().getQualName());
+//        			udsc = unitDescsMap.get(((TypedMember) decl).getBindToUnit().getQualName());
 //        			obj = udsc.getUnitObj().getAny(((TypedMember) decl).getBindToUnit().getQualName());
 //        			val = Value.toVal(obj);
 //

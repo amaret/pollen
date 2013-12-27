@@ -93,8 +93,8 @@ public class Auxiliary {
             case DEFAULT_INARR:
                 gen.getFmt().print("($$cn+'['+$$idx+']')");
                 break;
-            case DEFAULT_INMOD:
-                gen.getFmt().print("('%1')", gen.uname_target() + ts.getName() + gen.aux.mkSuf((ISymbolNode)ts));
+            case DEFAULT_INMOD:            	
+            	gen.getFmt().print("('%1')", gen.uname_target() + ts.getName() + gen.aux.mkSuf((ISymbolNode)ts));
                 break;
             case DEFAULT_INNEW:
                 break;
@@ -259,6 +259,23 @@ public class Auxiliary {
 		ExprNode left = expr.getLeft();
 		ExprNode right = expr.getRight();
 		String op = expr.getOp().getText();
+		
+		// Check for modifications of preset variables outside of preset assignments
+		if (expr.isAssign() && left instanceof ExprNode.Ident) {
+			SymbolEntry se = ((ExprNode.Ident)left).getSymbol() != null ? ((ExprNode.Ident)left).getSymbol() : null;
+			BaseNode b = expr;
+			ISymbolNode node = se != null ? se.node() : null;
+			//System.out.println(node != null ? se.scope().getScopeName() + "." + node.getName().getText() + " " + node.toString() : "null");
+			if (node instanceof DeclNode && ParseUnit.current().isPreset(se)) {
+				while (b != null && !(b instanceof DeclNode.Fcn))
+					b = (BaseNode) b.getParent();
+				if (!(b instanceof DeclNode.Fcn) || !((DeclNode.Fcn)b).isPresetInitializer()) {
+					ParseUnit.current().reportError(expr, "\'" + ((DeclNode)node).getName().getText() + "\': a variable that is assigned within a preset initializer cannot be the target of an assignment outside of a preset initializer: assignment ignored");	
+					return;
+				}
+			}
+
+		}
 
 		if (expr.isAssign() && isHost() && (expr.hasLeftIndexExpr())) { 
 			ExprNode.Index idxExpr = expr.getLeftIndexExpr();
@@ -551,9 +568,9 @@ public class Auxiliary {
 		}
 		if (expr.getQualifier() == null && expr.getName().getText().indexOf('.') != -1)
 			System.out.println("ExprIdent: no qualifier symbol for " + expr.getName().getText());
-		if (expr.getName().getText().equals("stop")) {
-			//System.out.println("xyz");			
-		}
+//		if (expr.getName().getText().equals("Compos.ProtoMem.arr.inc")) {
+//			System.out.println("xyz");			
+//		}
 
 		ISymbolNode snode = sym.node();
 		IScope scopeOfDcln = sym.scope();
@@ -650,6 +667,7 @@ public class Auxiliary {
 			bindToUnit = (stmt.getBindToUnit() == null) ? "" : stmt.getBindToUnit().getName().getText();
 			bindToUnit = stmt.getBindToUnit().getPkgName().getText().replace('.', '_') + '_'  + bindToUnit + '_';	
 		}
+		BaseNode b = ParseUnit.current().getPresetExpr(proMem.getSymbol());
 		ISymbolNode n = (proMem != null && proMem.getSymbol() != null) ? proMem.getSymbol().node()
 				: null;		
 		genBind(n, typ, bindToUnit);
@@ -1144,6 +1162,10 @@ public class Auxiliary {
 			boolean arrayInit = decl instanceof DeclNode.Arr && ((DeclNode.Arr) decl).getInit() != null;
 			boolean arrayNoDim = arrayInit && !((DeclNode.Arr) decl).hasDim(); // e.g. uint8 arr[] = fcnReturningArray();
 			
+			if (decl instanceof DeclNode.Arr)
+				// must do this here because knowing a dimension is preset can happen after the decl is parsed
+				((DeclNode.Arr) decl).checkDims();
+			
 			if (decl.isConst() && !arrayInit)
 				continue; // const arrays need another tweak I suspect, then can eliminate this arrayInit check
 				// actually perhaps just eliminate genlocals
@@ -1157,12 +1179,13 @@ public class Auxiliary {
 					genExpr(decl.getInit());
 					gen.getFmt().print(";");
 				}
-				else if ((isHost() || !arrayInit)) {
+				else if ((isHost() || !arrayInit)) {					
 					gen.getFmt().print("%1 = ", decl.getName());
 					genExpr(decl.getInit());
 					gen.getFmt().print(";");
 				}
 				else { // target array initialization
+					
 					if (arrayNoDim) {
 						// declare as ptr and index like array						
 						TypeNode t = ((DeclNode.Arr) decl).getTypeArr().getBase();

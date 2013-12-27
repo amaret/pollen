@@ -10,6 +10,7 @@ import org.antlr.runtime.tree.Tree;
 import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.Cat.Agg;
 import com.amaret.pollen.parser.Cat.Arr;
+import com.amaret.pollen.parser.DeclNode.Class;
 import com.amaret.pollen.parser.DeclNode.TypedMember;
 import com.amaret.pollen.parser.DeclNode.Var;
 import com.amaret.pollen.parser.ExprNode.Ident;
@@ -29,45 +30,32 @@ public class StmtNode extends BaseNode {
         public ExprNode getExpr() {
             return (ExprNode) getChild(EXPR);
         }
-        public boolean isPreset() {
-        	return this.token.getText().equals("S_ASSIGN_PRESET");
-        }
+
         public void pass2End() {
         	UnitNode u = ParseUnit.current().getCurrUnitNode();
-        	if (u.isComposition()) {
-        		ExprNode.Binary b = this.getExpr() instanceof ExprNode.Binary ? ((ExprNode.Binary) this
-        				.getExpr())
-        				: null;
-        		ExprNode.Ident preset = (Ident) (b != null
-        				&& b.getLeft() instanceof ExprNode.Ident ? b.getLeft()
-        						: null);
-        		if (preset != null) {       			        			
-        			SymbolEntry symbol = preset.getSymbol(); 
-        			ISymbolNode node = symbol != null ? symbol.node() : null;
-        			if (node != null && node instanceof DeclNode.Var) {
-        				if (!((DeclNode.Var)node).isPreset()) {
-        					ParseUnit.current().reportError(node.getName(), "a variable can be initialized with a preset statement only if it is declared with the 'preset' modifier");
+        	ExprNode.Binary b = this.getExpr() instanceof ExprNode.Binary ? ((ExprNode.Binary) this
+        			.getExpr())
+        			: null;
+        	ExprNode.Ident preset = (Ident) (b != null
+        			&& b.getLeft() instanceof ExprNode.Ident ? b.getLeft()
+        					: null);
+        	if (preset != null) {       			        			
+        		boolean f = ParseUnit.current().initPreset(preset.getSymbol());
+        		if (f) {
+        			ParseUnit.current().putPresetExpr(preset.getSymbol(), b.getRight());
+        			if (preset.getSymbol().node() instanceof DeclNode.Var) {
+        				DeclNode.Var v = (Var) preset.getSymbol().node();
+        				ExprNode e = b.getRight();
+        				if (!(e instanceof ExprNode.Const) && preset.getSymbol().scope() instanceof DeclNode.Class) {
+        					ParseUnit.current().reportError(v.getName(), "in a \'preset\' initializer a class variable can be initialized only to a constant");
         				}
-        				else {
-        					DeclNode.Var v = (Var) node;
-        					v.getUnit().addToPresetList(this); 
-        					preset.getName().stripQualifiers();
-        					ExprNode e = b.getRight();
-        					if (!(e instanceof ExprNode.Const)) {
-        						if (e instanceof ExprNode.Ident) {
-        							SymbolEntry se = ((ExprNode.Ident)e).getSymbol();
-        							ISymbolNode sn = se != null ? se.node() : null;
-        							if (!(sn instanceof DeclNode.Var) || (sn instanceof DeclNode.Var && !((DeclNode.Var)sn).isConst()))
-        								ParseUnit.current().reportError(node.getName(), "a variable can be initialized with a preset statement only to a constant value");
-        						}
-        					}
-
-        				}        				
         			}
+
         		}
 
         	}
         }
+
     }
     // StmtNode.Inject
     static public class Inject extends StmtNode {
@@ -602,7 +590,21 @@ public class StmtNode extends BaseNode {
         	Cat src_cat = TypeRules.checkBind(getPro().getCat(), getValue());
         	SymbolEntry sym = getPro().getSymbol();
         	ISymbolNode snode = sym != null ? sym.node() : null;
-        	if (getValue() != null && getPro() != null && src_cat != null) { 
+        	ParseUnit.current().initPreset(sym);
+        	boolean isPreset = ParseUnit.current().isPreset(sym);
+        	if (isPreset) {
+        		ExprNode e = ParseUnit.current().putPresetExpr(sym, getPro());
+        		if (e != null)
+        			ParseUnit.current().reportWarning(this, "more than one binding for protocol member encountered. Order of binding is indeterminate.");
+        	}
+        	boolean isBoundInsidePresetInitializer = ParseUnit.current().getSymbolTable().insidePresetInitializer();
+        	boolean accessOK = isPreset && !isBoundInsidePresetInitializer
+        		? false : true;
+        	if (!accessOK) {
+        		ParseUnit.current().reportError(this, "invalid binding of protocol member. A protocol member bound in a \'preset\' initializer cannot be bound outside of a \'preset\' initializer.");
+        	}
+
+        	if (accessOK && getValue() != null && getPro() != null && src_cat != null) { 
 
         		BaseNode d = (BaseNode) ((Cat.Agg) src_cat).aggScope();
         		UnitNode u = (UnitNode) ((d instanceof UnitNode) ? d : d instanceof DeclNode.Usr ? ((DeclNode.Usr)d).getUnit() : null);      			

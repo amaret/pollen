@@ -323,11 +323,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				ParseUnit.current().reportError(this.getName(),
 						"Objects as array elements must have class type");
 
-			if (!this.isHost() && u.isComposition()) {
+			if (!this.isHost() && u.isComposition() && (this.getDefiningScope() instanceof DeclNode.Usr)) {
 				ParseUnit.current().reportError(this.getName(),
 						"compositions can only declare host variables");
 			}
-			checkDims();
+			//checkDims(); // moved to codegen
 
 			ExprNode.Vec v = checkInits();
 
@@ -340,9 +340,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		}
 
 		/**
-		 * 
+		 * Check for legal dimension specifier
 		 */
-		private void checkDims() {
+		public void checkDims() {
 			List<ExprNode> dim = getDim().getElems();
 			if (dim.size() > 1) {
 				// TODO handle > 1 dimension
@@ -353,15 +353,19 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			// this condition means we had '[x]' instead of '[constExpr]'
 			if (dim.get(0) instanceof ExprNode.Ident) {
 				SymbolEntry se = ((ExprNode.Ident)dim.get(0)).getSymbol();
+				ParseUnit.current().initPreset(se);
 				ISymbolNode node = se != null ? se.node() : null;
 				if (node instanceof DeclNode.Var) {
 					DeclNode.Var v = (Var) node;
-					boolean errFlag = !(v.isConst() || v.isPreset());
+					SymbolEntry se2 = v.getDefiningScope().lookupName(v.getName().getText());
+					boolean errFlag = !(v.isConst() || ParseUnit.current().isPreset(se2));
 					if (!this.isHost() && errFlag)
 						errFlag = !v.isHost();
 					String errMsg = "";
-					// A host array must have const or preset dimensions.
-					// A target array must have const or preset or host dimensions.
+					// A host array must have constant or preset dimensions.
+					// A target array must have constant or preset or host dimensions.
+					// Note that constant can mean a variable set to a numeric literal: 
+					// at init time, the literal value will be used. 
 					if (errFlag) {
 						errMsg = "if specified, array dimensions must be constant or preset";
 						if (!this.isHost()) {
@@ -389,8 +393,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			List<ExprNode> dim = getDim().getElems();
 
 			int dims = dim.get(0) instanceof ExprNode
-					&& ((ExprNode) dim.get(0)).getConstExpr() != null ? Integer
-					.valueOf(((ExprNode) dim.get(0)).getConstExpr().getValue()
+					&& ((ExprNode) dim.get(0)).getConstInitialValue() != null ? Integer
+					.valueOf(((ExprNode) dim.get(0)).getConstInitialValue().getValue()
 							.getText()) : -1;
 
 			if (exprs > 0 && exprs > dims)
@@ -779,6 +783,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				cname();
 			return cls;
 		}
+		public boolean isPresetInitializer() {
+			return flags.contains(Flags.PRESET);
+		}
 
 		@Override
 		public Atom getName() {
@@ -1025,17 +1032,13 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		@Override
 		protected boolean pass1Begin() {
 			super.pass1Begin();
-			ParseUnit currUnit = ParseUnit.current();
-			// TODO lookup fcn and get return type (void?)
-			// TODO: create signature set
-
 			return true;
 		}
 
 		@Override
 		protected void pass1End() {
 			UnitNode u = ParseUnit.current().getCurrUnitNode();
-			if (!this.isHost() && u.isComposition()) {
+			if (!this.isHost() && u.isComposition() && (this.getDefiningScope() instanceof DeclNode.Usr)) {
 				ParseUnit.current().reportError(this.getName(),
 						"compositions can only declare host variables");
 			}
@@ -1179,6 +1182,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				return (g.uname() + "." + node.getName());
 			
 			if (this.isProtocolMember()) {
+				// An access to protocol member from outside its dcln scope
+				if (sc instanceof DeclNode.Usr && sc != g.curUnit().getUnitType()) {
+					qn = ((DeclNode.Usr)sc).getOutputNameHost(g, sc, flags);	
+					return qn + node.getName().getText();
+				}				
 				// qualify to the binding unit
 				if (this.getBindToUnit() == null) {
 					ParseUnit.current().reportError(this, "Unbound protocol member detected");
@@ -1203,7 +1211,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			if (scopeOfDcln instanceof DeclNode.Class) {
 				return qn + "." + s;
 			}
-			return "";
+			return "/* unimplemented TypedMember case */";  // ??
 			
 		}
 
@@ -1314,7 +1322,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		protected boolean pass1Begin() {
 			super.pass1Begin();
 			UnitNode curr = ParseUnit.current().getCurrUnitNode();
-			if (!this.isHost() && curr.isComposition()) {
+			if (!this.isHost() && curr.isComposition()  && (this.getDefiningScope() instanceof DeclNode.Usr)) {
 				ParseUnit.current().reportError(this.getName(),
 						"compositions can only declare host variables");
 			}
@@ -1596,13 +1604,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		private boolean qnameSet = false;
 		private boolean featuresCheck = false;
 
-		public DeclNode.Usr copy() {
-			DeclNode.Usr newU = new DeclNode.Usr(token.getType(), token
-					.getText(), flags, "");
-			qname = this.qname;
-			return newU;
-		}
-
 		public NestedScope getScopeHost() {
 			return scopeHost;
 		}
@@ -1656,7 +1657,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			if (scopeOfDcln == g.curUnit()) {
 				rtn = g.uname() + "." + name;
 			} else {
-				rtn = "$units['" + qn + "']." + name;
+				rtn = "$units['" + qn + "']." + (this.isNestedClass() ? name : "");
 			}
 			return rtn;
 		}
@@ -2018,7 +2019,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 		static final private int NAME = 1;
 		static final private int TYPE = 0;
-		static final private int INIT = 2;
+		static final public int INIT = 2;
 
 		boolean intrinsicUsed = false;
 
@@ -2206,52 +2207,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			return (TypeNode) getChild(TYPE);
 		}
 
-		public ExprNode.Const getPresetValue() {
-			if (!this.isPreset())
-				return null;
-			ExprNode.Const rslt = null;
-			for (StmtNode.Assign su : getUnit().getPresetList()) {
-
-				ExprNode.Binary ex = (Binary) (su.getExpr() instanceof ExprNode.Binary ? su
-						.getExpr()
-						: null);
-				if (ex != null && ex.isAssign()) {
-					ExprNode.Ident target = ex.getLeft() instanceof ExprNode.Ident ? ((ExprNode.Ident) ex
-							.getLeft())
-							: null;
-					if (target == null)
-						continue;
-					if (!(target.getName().getText()).equals(getName()
-							.getText()))
-						continue;
-					ExprNode src = ex.getRight();
-					// TODO add EnumVal
-					rslt = src instanceof ExprNode.Const ? ((ExprNode.Const) src)
-							: null;
-					if (rslt == null && src instanceof ExprNode.Ident) {
-						SymbolEntry se = ((ExprNode.Ident) src).getSymbol();
-						ISymbolNode node = se != null ? se.node() : null;
-						if (node instanceof DeclNode.Var
-								&& ((DeclNode.Var) node).isConst()) {
-							src = ((DeclNode.Var) node).getInit();
-							rslt = src instanceof ExprNode.Const ? ((ExprNode.Const) src)
-									: null;
-						}
-
-					}
-					if (rslt != null)
-						break;
-				}
-
-			}
-			if (rslt == null
-					// postpone error check until all units have been seen (codegen)
-					&& ParseUnit.current().getCurrUnitNode().isCodegen())
-				ParseUnit.current().reportError(getName(), "Invalid preset");
-			return rslt;
-
-		}
-
 		@Override
 		public Cat getTypeCat() {
 			if (typeCat == null && this.getTypeSpec() instanceof TypeNode.Usr) {
@@ -2269,6 +2224,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		protected boolean pass1Begin() {
 			super.pass1Begin();
 			ParseUnit currUnit = ParseUnit.current();
+			
+			if (currUnit.getCurrUnitNode().isComposition()) {
+				
+			}
 
 			if (isPublic()) {
 				currUnit
@@ -2296,7 +2255,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		public void pass2End() {
 
 			UnitNode u = ParseUnit.current().getCurrUnitNode();
-			if (!this.isHost() && u.isComposition()) {
+			if (!this.isHost() && u.isComposition()  && (this.getDefiningScope() instanceof DeclNode.Usr)) {
 				ParseUnit.current().reportError(this.getName(),
 						"compositions can only declare host variables");
 			}
@@ -2407,8 +2366,19 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		return flags.contains(Flags.CONST);
 	}
 
-	public boolean isPreset() {
+	/**
+	 * Private for a reason. Use ParseUnit.isPreset().
+	 * @return
+	 */
+	private boolean isPreset() {
 		return flags.contains(Flags.PRESET);
+	}
+	
+	public void setPreset(boolean val) {
+		if (val)
+			flags.add(Flags.PRESET);
+		else
+			flags.remove(Flags.PRESET);
 	}
 	/**
 	 * 
@@ -2433,13 +2403,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		ParseUnit currUnit = ParseUnit.current();
 		unit = currUnit.getCurrUnitNode();
 		Atom name = getName();
-
-		if (this.isPreset() && !(this instanceof DeclNode.Var)) {
-			currUnit
-					.reportError(name,
-							"modifier \'preset\' is only applicable to simple variables (will be ignored)");
-			this.flags.remove(Flags.PRESET);
-		}
 
 		if (currUnit.getSymbolTable().defineSymbol(name, this) == false) {
 			currUnit.reportError(name,

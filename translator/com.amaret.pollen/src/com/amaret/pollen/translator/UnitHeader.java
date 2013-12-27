@@ -16,9 +16,11 @@ import com.amaret.pollen.parser.DeclNode.Formal;
 import com.amaret.pollen.parser.ExprNode;
 import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.IScope;
+import com.amaret.pollen.parser.ISymbolNode;
 import com.amaret.pollen.parser.ImportNode;
 import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.StmtNode;
+import com.amaret.pollen.parser.SymbolEntry;
 import com.amaret.pollen.parser.TypeNode;
 import com.amaret.pollen.parser.TypeNode.Usr;
 import com.amaret.pollen.parser.UnitNode;
@@ -166,7 +168,7 @@ public class UnitHeader {
         String clsStruct = (qual.isEmpty()) ? gen.uname_target().substring(0, gen.uname_target().length()-1) : gen.uname_target() + qual;
         String clsStructPtr = (qual.isEmpty()) ?  gen.uname_target() :  gen.uname_target() + qual + "_";
         
-        emitFcnRefTypedefs(fields);              
+        genFcnRefTypeDefs(fields);              
         
         gen.getFmt().print("%tstruct %1 {\n%+", clsStruct);
         for (DeclNode fld : fields) {
@@ -185,14 +187,8 @@ public class UnitHeader {
 					gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "" + fld.getName());       		
 				}
     		if (fld instanceof DeclNode.Arr) {
-    			for (BaseNode e : ((DeclNode.Arr)fld).getDim().getElems()) {
-    				gen.getFmt().print("[");
-    				if (e instanceof ExprNode && ((ExprNode)e).getConstExpr() != null)
-    					 gen.aux.genExpr(((ExprNode) e).getConstExpr());
-    				else 
-    					ParseUnit.current().reportError(fld.getName(), "array dimensions must resolve to constant or preset values");
-    				gen.getFmt().print("]");
-    			}
+    			((DeclNode.Arr)fld).checkDims();
+    			genArrDims(fld);
     		}
     		if (!(fld instanceof DeclNode.Fcn))
     			gen.getFmt().print(";\n");
@@ -204,9 +200,46 @@ public class UnitHeader {
     }
 
 	/**
+	 * Used for host and target class arrays. Used for module target arrays only (not host). 
+	 * @param fld
+	 */
+	private void genArrDims(DeclNode fld) {
+		boolean isClass = fld.getDefiningScope() instanceof DeclNode.Class ? true : false;
+		//System.out.println("genArrDims " + fld.toStringTree());
+		for (BaseNode e : ((DeclNode.Arr)fld).getDim().getElems()) {
+			gen.getFmt().print("[");
+			boolean isPreset = false;
+			if (e instanceof ExprNode.Ident) {
+				if (ParseUnit.current().isPreset(((ExprNode.Ident)e).getSymbol())) {
+					isPreset = true;
+					e = ParseUnit.current().getPresetExpr(((ExprNode.Ident)e).getSymbol());
+				}
+				else {
+					// if the arr dim is a variable initialized to a constant, use that constant as the dim value.
+					SymbolEntry se = ((ExprNode.Ident)e).getSymbol();
+					ISymbolNode node = se != null ? se.node() : null;
+					if (node instanceof DeclNode.Var) {
+						e = ((DeclNode.Var)node).getInit();
+					}
+				}
+			}
+			if (e instanceof ExprNode && ((ExprNode)e).getConstInitialValue() != null)
+				 gen.aux.genExpr(((ExprNode) e).getConstInitialValue());
+			else {
+				String msg = isClass ? "for arrays defined in class scope, " : "for non-host arrays defined in module scope, ";
+				// note these errors not raised for host arrays in modules because the issue doesn't exist on the host/module side.
+				ParseUnit.current().reportError(fld.getName(), msg + "array dimensions must resolve to compile time constant values");
+				if (isPreset) 
+					ParseUnit.current().reportError(fld.getName(), msg + "when array dimensions are set by variables initialized in \'preset\' initializers, those variables must be preset to constant values");
+			}
+			gen.getFmt().print("]");
+		}
+	}
+
+	/**
 	 * @param fields
 	 */
-	private void emitFcnRefTypedefs(List<DeclNode> fields) {
+	private void genFcnRefTypeDefs(List<DeclNode> fields) {
 		List<String> fcnrefTypeDefs = new ArrayList<String>();
 		for (DeclNode fld : fields) {        	
         	if (fld instanceof DeclNode.FcnRef) {
@@ -226,14 +259,7 @@ public class UnitHeader {
     		return;
         
         List<DeclNode> fields = decl.getFeatures();
-        emitFcnRefTypedefs(fields);  
-//        for (DeclNode fld : fields) {
-//        	if (fld instanceof DeclNode.FcnRef) {
-//        		gen.getFmt().print("%ttypedef ");
-//        		String s = gen.getOutputName((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), null, EnumSet.of(Flags.IS_TYPEDEF));
-//        		gen.getFmt().print("%1;\n", s);
-//        	}       
-//        }              
+        genFcnRefTypeDefs(fields);            
         gen.getFmt().print("%tstruct %1 {\n%+", gen.uname_target());
         String dbg = gen.uname_target();
         for (DeclNode fld : fields) {
@@ -272,13 +298,17 @@ public class UnitHeader {
         			gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), name);
         		}
         		if (fld instanceof DeclNode.Arr && ((DeclNode.Arr)fld).hasDim()) {
-        			
-        			for (BaseNode e : ((DeclNode.Arr)fld).getDim().getElems()) {
-        				gen.getFmt().print("[");
-        				if (e instanceof ExprNode.Const) 
-        					gen.aux.genExpr((ExprNode) e);
-        				gen.getFmt().print("]");
-        			}
+        			genArrDims(((DeclNode.Arr)fld));
+//        			for (BaseNode e : ((DeclNode.Arr)fld).getDim().getElems()) {
+//        				gen.getFmt().print("[");
+//        				if (e instanceof ExprNode.Const) {
+//        					gen.aux.genExpr((ExprNode) e);
+//        				}
+//        				else {
+//        					ParseUnit.current().reportError(fld, "non-host module arrays with specified dimensions must have dimensions which are compile time constants");
+//        				}
+//        				gen.getFmt().print("]");
+//        			}
         		}
         		gen.getFmt().print(";\n");
         	}
@@ -471,12 +501,12 @@ public class UnitHeader {
         
         genForwards(unit);
         
-        genInject(unit);             
-        
+        genInject(unit);    
+                
         genClasses(unit);
         
         genHostVars(unit);
-        
+          
         genFcns(unit);
   
         genEnums(unit);

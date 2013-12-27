@@ -1,5 +1,7 @@
 package com.amaret.pollen.parser;
 
+import com.amaret.pollen.parser.StmtNode.Block;
+
 
 public class SymbolTable {
 
@@ -74,16 +76,45 @@ public class SymbolTable {
     	// This indicates use of host scope for lookup.
     	boolean isHost = false; 
     	if (sc instanceof BodyNode
-    			|| sc instanceof DeclNode.Fcn) {
+    			|| sc instanceof DeclNode.Fcn 
+    			|| sc instanceof Block) {
     		do {
     			isHost |= (sc instanceof DeclNode.Fcn 
     	    			&& ((DeclNode.Fcn) sc).isHost());
     			sc = sc.getEnclosingScope();
+    			if (isHost)
+    				break;
     		}
     		while ((sc instanceof BodyNode 
-    				|| sc instanceof DeclNode.Fcn));
+    				|| sc instanceof DeclNode.Fcn 
+        			|| sc instanceof Block));
     	}
     	return isHost;
+    }
+    /**
+     * Any item initialized in a preset initializer is flagged as a preset item.
+     * @return true if current scope is inside a preset initializer. 
+     */
+    public boolean insidePresetInitializer() {
+    	ParseUnit currUnit = ParseUnit.current();
+    	SymbolTable symtab = currUnit.getSymbolTable();
+    	IScope sc = symtab.curScope();
+    	boolean insidePreset = false; 
+    	if (sc instanceof BodyNode
+    			|| sc instanceof DeclNode.Fcn 
+    			|| sc instanceof Block) {
+    		do {
+    			insidePreset |= (sc instanceof DeclNode.Fcn 
+    	    			&& ((DeclNode.Fcn) sc).isPresetInitializer());
+    			sc = sc.getEnclosingScope();
+    			if (insidePreset)
+    				break;
+    		}
+    		while ((sc instanceof BodyNode 
+    				|| sc instanceof DeclNode.Fcn 
+        			|| sc instanceof Block));
+    	}
+    	return insidePreset;
     }
 
 

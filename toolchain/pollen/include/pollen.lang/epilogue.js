@@ -21,11 +21,15 @@ for (var i = $units.length - 1; i >= 0; i--) {
         u.pollen__presets__();
     }
 }
-
-for (var i = $units.length - 1; i >= 0; i--) {
+// note that the order below calls main_unit hostInit last
+// this causes the more top level composition initializers to 
+// run last, thus taking precedence.
+for (var i = 0; i < $units.length;  i++) {
+//for (var i = $units.length - 1; i >= 0; i--) {
     var u = $units[i];
     if ('$$hostInit' in u) {
         debug_line("  HOST INIT, calling hostInit ", u)
         u.$$hostInit();
     }
 }
+

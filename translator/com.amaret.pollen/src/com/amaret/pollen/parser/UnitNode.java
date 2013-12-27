@@ -65,25 +65,6 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     private Cat typeCat = null;
     private boolean hostScope = false;
     
-    private List<StmtNode.Assign> presetList = new ArrayList<StmtNode.Assign>();
-    public List<StmtNode.Assign> getPresetList() {
-		return presetList;
-	}
-    public void addToPresetList(StmtNode.Assign s) {
-    	// the complexity is due to the fact that there may be >1 versions of a node
-    	// because there may be >1 unit trees for the same unit, depending on imports.
-    	String filename = s.getFileName();
-    	boolean found = false;
-    	for (StmtNode.Assign su : this.getPresetList()) {
-    		if (su.getFileName().equals(filename)) {
-    			found = true;
-    			break;
-    		}
-    	}
-    	if (!found) {
-    		presetList.add(s);
-    	}   	
-    }
     public String getOutputNameHost(Generator gen, IScope sc, EnumSet<Flags> flags){		
     	return gen.uname();    	
     }
@@ -216,6 +197,24 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
         exprConstStringTable = null;
         symbolTable = null;
         typeCat = null;
+    }
+    private String nameForHashing(UnitNode u) {
+    	// include the meta qualifier in the equals calculation
+    	return u.getQualName() + u.getUnitType().getMetaQualName();
+    }
+    public boolean equals(Object o) {
+    	if (!(o instanceof UnitNode))
+    		return false;
+    	if (o == this)
+    		return true;
+    	String n1 = nameForHashing((UnitNode) o);
+    	String n2 = nameForHashing(this);
+    	if (n1.equals(n2))
+    		return true;
+    	return false;
+    }
+    public int hashCode() {
+    	return nameForHashing(this).hashCode();
     }
     public int findString(String s) {
         Integer id = exprConstStringTable.get(s);

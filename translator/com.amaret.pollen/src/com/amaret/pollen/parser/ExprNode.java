@@ -8,6 +8,7 @@ import org.antlr.runtime.tree.Tree;
 import com.amaret.pollen.parser.DeclNode.Arr;
 import com.amaret.pollen.parser.DeclNode.Fcn;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
+import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
 
 public class ExprNode extends BaseNode {
 
@@ -893,6 +894,7 @@ public class ExprNode extends BaseNode {
 				exprCat = Cat.fromSymbolNode(symbol.node(), symbol.scope());
 			return exprCat;
 		}
+		
 
 		@Override
 		protected boolean pass2Begin() {
@@ -927,7 +929,6 @@ public class ExprNode extends BaseNode {
 					symbol = (accessible) ? symbol : null;
 				}
 			}
-			boolean dbg = false;
 
 			if (symbol == null)
 				symbol = currUnit.getSymbolTable().resolveSymbol(getName(),
@@ -946,35 +947,25 @@ public class ExprNode extends BaseNode {
 																			// if
 																			// used
 				// check for proper access (public /private )
-				UnitNode unitDcln = null;
-				if (symbol.scope() instanceof DeclNode.Usr)
-					unitDcln = ((DeclNode.Usr) symbol.scope()).getUnit();
-				if (symbol.node() instanceof DeclNode
-						&& ((DeclNode) symbol.node()).isPublic()) // don't check
-					unitDcln = null;
-				if (!(symbol.node() instanceof BaseNode))
-					unitDcln = null;
-				if (unitDcln != null) {
+				UnitNode unitDcln = (symbol.scope() instanceof DeclNode.Usr) ? ((DeclNode.Usr) symbol
+						.scope()).getUnit() : null;
+				unitDcln = (symbol.node() instanceof DeclNode && ((DeclNode) symbol
+						.node()).isPublic()) ? null : unitDcln; // don't check
+				unitDcln = unitDcln == ParseUnit.current().getCurrUnitNode() ? null
+						: unitDcln; // don't check
+				unitDcln = (!(symbol.node() instanceof BaseNode)) ? null
+						: unitDcln; // don't check
+				unitDcln = symbol.node() instanceof DeclNode.TypedMember
+						&& ((DeclNode.TypedMember) symbol.node())
+								.isProtocolMember() ? null : unitDcln;
+				if (unitDcln != null) {       // 
 					boolean accessOK = false;
-					accessOK = symbol.node() instanceof DeclNode.TypedMember
-							&& ((DeclNode.TypedMember) symbol.node())
-									.isProtocolMember();
-					if (!accessOK) {
-						accessOK = symbol.node() instanceof DeclNode.Var
-								&& ((DeclNode.Var) symbol.node()).isPreset();
-						if (accessOK) {
-							BaseNode b = this;
-							while (b != null && !(b instanceof StmtNode.Assign)) {
-								b = (BaseNode) b.getParent();
-							}
-							if (b instanceof StmtNode.Assign) {
-								accessOK = ((StmtNode.Assign) b).isPreset();
-							} else
-								accessOK = false;
-						}
+
+					if (currUnit.getSymbolTable().insidePresetInitializer()) {
+						accessOK = true;
 					}
-					if (unitDcln != ParseUnit.current().getCurrUnitNode()
-							&& !accessOK)
+
+					if (!accessOK)
 						ParseUnit.current().reportError(
 								this.getName(),
 								"private member cannot be accessed outside its declaring scope (which was "
@@ -1041,8 +1032,8 @@ public class ExprNode extends BaseNode {
 //						if (!staticAccess)
 							thisPtr = true; // a class var accessed within a method belonging to its class
 					}
-				}
-				exprCat = symbol.node().getTypeCat();
+				}				
+				exprCat = this.getCat(); //symbol.node().getTypeCat();
 
 			}
 		}
@@ -1498,6 +1489,29 @@ public class ExprNode extends BaseNode {
 	public boolean isPostExpr() {
 		return postExpr;
 	}
+	// hashcode(), equals()
+    public String nameForHashing(ExprNode e) {
+    	String n = "";
+    	if (e.getSymbol() != null && e.getSymbol().node() != null) {
+    		n +=  e.getSymbol().node().getDefiningScope().getScopeName() + "." + e.getSymbol().node().getName().getText() + "_";
+    	}
+    	n += e.getToken().getText() + "_" + e.getToken().getLine() + "_" + e.getToken().getCharPositionInLine();    	
+    	return n;
+    }
+    public boolean equals(Object o) {
+    	if (!(o instanceof ExprNode))
+    		return false;
+    	if (o == this)
+    		return true;
+    	String n1 = nameForHashing((ExprNode) o);
+    	String n2 = nameForHashing(this);
+    	if (n1.equals(n2))
+    		return true;
+    	return false;
+    }
+    public int hashCode() {
+    	return nameForHashing(this).hashCode();
+    }
 
 	ExprNode(int ttype, String ttext) {
 		this.token = new Atom(ttype, ttext);
@@ -1516,9 +1530,9 @@ public class ExprNode extends BaseNode {
 	}
 
 	/**
-	 * @return if this expression resolves to an ExprNode.Const return that node else return null.
+	 * @return if this expression is initialized to a constant value node return that node else return null.
 	 */
-	public ExprNode.Const getConstExpr() {
+	public ExprNode.Const getConstInitialValue() {
 		// TODO handle EnumVal
 		ExprNode.Const rtn = null;
 		if (this instanceof ExprNode.Const) 
@@ -1527,16 +1541,8 @@ public class ExprNode extends BaseNode {
 			if (this instanceof ExprNode.Ident) {
 				SymbolEntry se = ((ExprNode.Ident)this).getSymbol();
 				ISymbolNode node = se != null ? se.node() : null;
-				if (node instanceof DeclNode.Var) {
-					rtn = ((DeclNode.Var)node).getPresetValue();
-   				if (rtn instanceof ExprNode.Const) 
-   					return rtn;
-				}
-				if (node != null
-						&& (((DeclNode.Var) node).isConst() || ((DeclNode.Var) node)
-								.isPreset())
-						&& ((DeclNode.Var) node).getInit() instanceof ExprNode.Const) {
-					return (Const) ((DeclNode.Var) node).getInit();
+				if (node instanceof ITypeSpecInit && ((ITypeSpecInit)node).getInit() instanceof ExprNode.Const) {
+					return (Const) ((ITypeSpecInit)node).getInit();					
 				}
 			}
 		}

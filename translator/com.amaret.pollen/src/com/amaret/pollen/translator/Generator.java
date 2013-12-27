@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.IOutputName;
 import com.amaret.pollen.parser.IOutputQualifiedName;
@@ -31,7 +32,7 @@ import com.amaret.pollen.target.ITarget;
 public class Generator {
 
 	private UnitNode curUnit;
-	boolean nestedClass = false;
+	private DeclNode.Class nestedClass = null;
 	private UnitNode mainUnit;
 	private static String uname;
 	private String uname_host;
@@ -50,15 +51,17 @@ public class Generator {
 	
 	public Generator() {}
 	public boolean isNestedClass() {
-		return nestedClass;
+		return nestedClass != null;
 	}
 	
 	public boolean isHost() {
 		return aux.isHost();
 	}
-
-	public void setNestedClass(boolean nestedClass) {
-		this.nestedClass = nestedClass;
+	public void setNestedClass(DeclNode.Class cls) {
+		nestedClass = cls;
+	}
+	public DeclNode.Class getNestedClass() {
+		return nestedClass;
 	}
 
 	public String getOutputName(Object s, IScope sc, EnumSet<Flags> flags) {
@@ -88,10 +91,10 @@ public class Generator {
 	}
 	
 	/**
-	 * @param unit The pollen file
+	 * @param main The pollen file
 	 * @param units All dependent units
 	 */
-	public void genUnits(UnitNode unit, HashMap<String, UnitNode> units) throws Exception {
+	public void genUnits(UnitNode main, HashMap<String, UnitNode> units) throws Exception {
 		
 		for (UnitNode u : units.values()) {
 			if (!u.isVoid()) {
@@ -100,13 +103,13 @@ public class Generator {
 		}
 
 		for (UnitNode u : units.values()) {
-			
 			if (u.isVoid())
 				continue;
 
 			if (ParseUnit.isDebugMode()) {	
 				System.out.println("GENUNIT " + u.getQualName());
 			}
+
 			setupUnit(u);
 			genHeader();
 			genBody();
@@ -163,7 +166,11 @@ public class Generator {
 		// TODO Auto-generated method stub
 		
 	}
-    private void genJScript() throws Exception {
+    /**
+     * called by genUnits().
+     * @throws Exception
+     */
+	private void genJScript() throws Exception {
     	if (!curUnit.isProtocol()) {
         //if (!curUnit.isComposition() && !curUnit.isProtocol()) {
         //if (curUnit.isModule() || curUnit.isClass() || curUnit.isEnum()) {
@@ -174,12 +181,21 @@ public class Generator {
             writeFile(file, getFmt().toBytes());
         }
     }
-    void findUses(UnitNode unit, Set<UnitNode> uses) {
+	/**
+	 * Follow imports recursively starting at unit to get units that are used.
+	 * Add used unit to Set<UnitNode> if not already there.
+	 * 
+	 * @param unit
+	 * @param Set<UnitNode> uses
+	 */
+    private void findUses(UnitNode unit, Set<UnitNode> uses) {
         for (ImportNode imp : unit.getImports()) {
-        	if (imp.getUnit() != null)
+        	if (imp.getUnit() != null) 
         		findUses(imp.getUnit(), uses);
         }
-        uses.add(unit);
+        if (!uses.contains(unit) && !unit.isProtocol() ) {
+        	uses.add(unit); 
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -244,7 +260,7 @@ public class Generator {
 
 
 	/**
-	 * 
+	 * Called by genUnits().
 	 */
 	private void genBody() throws Exception {
         if ((curUnit.isModule() || curUnit.isClass()) && !curUnit.isHost()) {
@@ -258,7 +274,7 @@ public class Generator {
 	
 
 	/**
-	 * 
+	 * Called by genUnits().
 	 */
 	private void genHeader() throws Exception {
 		if ((curUnit.isModule() || curUnit.isClass() || curUnit.isEnum())
