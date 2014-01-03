@@ -686,17 +686,23 @@ public class ProgCCode {
 				boolean isHost = b instanceof DeclNode ? ((DeclNode) b).isHost() : false;
 
 				String fn =	b instanceof DeclNode ? ((DeclNode) b).getName().getText() : "";
-        			
-				if (vobj instanceof Value.Obj
+				Value.Obj valObj = (Obj) (Value.toVal(val) instanceof Value.Obj ? Value.toVal(val) : null);
+				String strVal = valObj != null && vobj != null ? ((Value.Obj) Value.toVal(val)).getStr("$$text") : ParseUnit.JAVASCRIPT_OBJECT_NOT_FOUND;
+				
+				if (val instanceof Value.Obj
 						&& "$$Ref".equals(((Value.Obj) val).getProp("$$category"))) {
 					// this is a host function ref initialized to a target function
 					vobj = (Value.Obj) val;
 					Object n = Value.toVal(((Value.Obj) vobj).getProp("$$text"));
 					gen.getFmt().print("%1", n.toString());
 				}   
+				else if (!strVal.equals(ParseUnit.JAVASCRIPT_OBJECT_NOT_FOUND)) {					
+					gen.getFmt().print("%1", strVal);								
+				}
 				else { 
 					gen.getFmt().print("%1", "null");
 					if (vobj != null) {  // Okay: null could mean the host initializing function was never called. 
+
 						if (isHost) {
 							// This is a host function ref initialized to a host function.
 							// disallowed for a number of reasons. The value the host reference is to be assigned to 
@@ -705,10 +711,11 @@ public class ProgCCode {
 							// Also it's not meaningful code in the host context. 
 							ParseUnit.current().reportError(b, fn + ": initializing a host function reference to a host function is not allowed");
 						}
-						else {
+						else {							
 							// Hello, this makes no sense.
 							ParseUnit.current().reportError(b, fn + ": initializing a non-host function reference to a host function is not allowed");        				
-						}   
+						}  
+
 					}
 				}
         	}

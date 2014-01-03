@@ -88,17 +88,17 @@ public class Value {
         public String getStr(String name) {
         	Object o = obj.get(name, obj.getPrototype());
         	if (o == Scriptable.NOT_FOUND) {
-        		ParseUnit.current().reportJavascriptError("object not found");
+        		return ParseUnit.JAVASCRIPT_OBJECT_NOT_FOUND;
         	}
         	else if (o instanceof String) 
         		return ((String) o);
         	else if (o == null) {
         		ParseUnit.current().reportJavascriptError("object is null");
-        		return null;
+        		return ParseUnit.JAVASCRIPT_OBJECT_NOT_FOUND;
         	}
         	else
         		ParseUnit.current().reportJavascriptError("object has unrecognized type");
-        	return "";
+        	return ParseUnit.JAVASCRIPT_OBJECT_NOT_FOUND;
         }
     }
     

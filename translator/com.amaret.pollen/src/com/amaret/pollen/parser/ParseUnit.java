@@ -59,6 +59,7 @@ public class ParseUnit {
 	public static final String KIND_INTERN = "__I";
 	public static final String KIND_ARRAY = "__A";
 	public static final String KIND_VAR = "__V";
+	public static final String JAVASCRIPT_OBJECT_NOT_FOUND = "/* object not found */";
 	
 	public static boolean isIntrinsicCall(String s) {
 		if (!(s.matches(ParseUnit.INTRINSIC_PREFIX + ".*")))
