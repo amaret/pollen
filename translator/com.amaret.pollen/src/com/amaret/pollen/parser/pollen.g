@@ -621,8 +621,25 @@ moduleFeature
 	|   classDefinition
 	|   injectionDecl
     ;
+    /*varDecl
+scope {
+  // Use 'typ' to rewrite the tree so that for AST x, 
+  // 'int x' and 'int y = 3, x, z' has the same structure.
+  Object typ; //CommonTree typ; only Object works, for some reason.
+}
+@init {
+	$varDecl::typ = null;
+	stmtFlags.addAll(typeMods);
+	String ctor = (typeMods.contains(Flags.HOST)) ? ParseUnit.CTOR_CLASS_HOST : ParseUnit.CTOR_CLASS_TARGET;
+}
+    
+    */
 enumDefinition 
+scope {
+  int val;
+}
 @init{
+                        $enumDefinition::val = -1;
 		ti = new TypeInfo();
 		ti.setUnitFlags(metaFlags); 
 		metaFlags = EnumSet.noneOf(Flags.class);		
@@ -648,9 +665,21 @@ enumDefinition
 enumList
 	:	enumElement (',' (delim)? enumElement)* -> ^(LIST<ListNode>["LIST"] enumElement+)
 	;
+// assign defaults for missing values
 enumElement
-	:	IDENT ASSIGN INT_LIT  -> ^(D_ENUMVAL<DeclNode.EnumVal>["D_ENUMVAL", ti.getUnitFlags()] ^(IDENT INT_LIT))
-	|	IDENT	-> ^(D_ENUMVAL IDENT)
+@init {
+	String ctext = "";
+}
+	:	IDENT ASSIGN INT_LIT  
+			{ $enumDefinition::val = Integer.valueOf($INT_LIT.text); 
+			   $enumDefinition::val++; 	}
+			-> ^(D_ENUMVAL<DeclNode.EnumVal>["D_ENUMVAL", ti.getUnitFlags()] IDENT INT_LIT)
+	|	IDENT	
+			{ 
+			  if ($enumDefinition::val == -1) $enumDefinition::val = 0; 
+			  ctext = Integer.toString($enumDefinition::val++);
+			}
+			-> ^(D_ENUMVAL<DeclNode.EnumVal>["D_ENUMVAL", ti.getUnitFlags()] IDENT INT_LIT[ctext])
 	;
 protocolDefinition
 @init{
@@ -1016,7 +1045,10 @@ metaParmGen
 			 	 }
 		 		}
 	 		}
-		-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", flags]  ^(T_STD<TypeNode.Std>["T_STD", EnumSet.noneOf(Flags.class)] builtinType) IDENT ^(E_CONST<ExprNode.Const>["E_CONST", lf] IDENT[ctext]))
+		-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", flags]  
+			^(T_STD<TypeNode.Std>["T_STD", EnumSet.noneOf(Flags.class)] builtinType) 
+				IDENT 
+				^(E_CONST<ExprNode.Const>["E_CONST", lf] IDENT[ctext]))
 	;
 catch [PollenFatalException e] {
     ParseUnit.current().reportFailure(e);

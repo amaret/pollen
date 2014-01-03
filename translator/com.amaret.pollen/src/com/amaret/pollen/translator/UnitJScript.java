@@ -9,6 +9,7 @@ import com.amaret.pollen.parser.Cat;
 import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.DeclNode.Formal;
 import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
+import com.amaret.pollen.parser.DeclNode.Usr;
 import com.amaret.pollen.parser.ExprNode;
 import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.ImportNode;
@@ -111,11 +112,11 @@ public class UnitJScript {
     }
     
     private void genDecl$Enum(DeclNode.Usr decl) {
-        int k = 0;
         if (!decl.isEnum()) 
         	return;
         for (DeclNode.EnumVal ev : decl.getVals()) {
-            gen.getFmt().print("%t%1.%2 = %3;\n", gen.uname(), ev.getName(), k++);
+			String s = gen.getOutputName(ev, ev.getDefiningScope(), EnumSet.noneOf(Flags.class));
+			gen.getFmt().print("%t%1 = %2;\n", s, ev.getVal().getText());
         }
     }
 
@@ -243,16 +244,21 @@ public class UnitJScript {
     private void genDecls(UnitNode unit) {
     	if (unit == null)
     		return;
-    	if (unit.isComposition())
-    		return;
+    	if (unit.isComposition()) { // compositions: only generate decl for enums
+    		for (DeclNode idecl : unit.getFeatures()) {
+    			if (idecl instanceof DeclNode.Usr && ((DeclNode.Usr) idecl).isEnum()) {
+    				genDecl$Enum((Usr) idecl);
+    			}
+    			return;
+    		}
+    	}
     	genDecls(unit.getContainingUnit());
     	genDecls(unit.getImplementedUnit());
     	String n = unit.getQualName();
     	genDecl(unit.getUnitType());
   
-    	if (!unit.isClass())
-    		for (DeclNode decl : unit.getFeatures()) {
-    			
+    	if (!unit.isClass()) 
+    		for (DeclNode decl : unit.getFeatures()) {    			
     			if (!isPrivateInit(decl) && isHostInit(decl)) {
     				genDecl(decl);
     			}
@@ -292,12 +298,9 @@ public class UnitJScript {
             }
         }
         
-        if (unit.isTarget())
-        	genDecls(unit);
+        genDecls(unit);
         
-        
-
-        if (!unit.isClass())
+        if (!unit.isClass() && !unit.isProtocol())
         	for (BaseNode d: unit.getFeatures()) {
         		if (d instanceof DeclNode.Fcn) {
         			genBody(((DeclNode.Fcn)d).getBody());

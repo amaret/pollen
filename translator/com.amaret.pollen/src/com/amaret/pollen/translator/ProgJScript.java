@@ -27,7 +27,7 @@ public class ProgJScript {
 
     void includeUnits(Set<UnitNode> uses) {
         for (UnitNode unit : uses) {
-            if (unit.isModule() || unit.isClass() || unit.isEnum() || unit.isComposition()) {
+            if (unit.isModule() || unit.isClass() || unit.isEnum() || unit.isComposition() || unit.isProtocol()) {
             	//ParseUnit.setDebugMode(true);
             	if (ParseUnit.isDebugMode())
             		System.out.println("   INCLUDE .js for " + unit.getQualName());

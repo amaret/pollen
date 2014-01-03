@@ -14,6 +14,7 @@ import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.BaseNode;
 import com.amaret.pollen.parser.Cat;
 import com.amaret.pollen.parser.DeclNode;
+import com.amaret.pollen.parser.DeclNode.EnumVal;
 import com.amaret.pollen.parser.DeclNode.FcnRef;
 import com.amaret.pollen.parser.DeclNode.ITypeSpec;
 import com.amaret.pollen.parser.DeclNode.TypedMember;
@@ -249,12 +250,13 @@ public class ProgCCode {
             Value.Obj uobj = unitsArr.getObj(i);
             UnitDesc ud;
             UnitNode u = cur.findUnit(uobj.getStr("$name"));
+
             if (uobj.getBool("pollen$used")) {
                 ud = new UnitDesc(u, uobj, true);
                 getUnitDescriptors().add(ud); // will get c code generated from these
             }
             else {
-            	if (u.isComposition()) {
+            	if (u.isComposition() || u.isProtocol()) {           		
             		ud = new UnitDesc(u, uobj, true); // host only
             	}
             }
@@ -389,11 +391,13 @@ public class ProgCCode {
         for (UnitDesc ud : getUnitDescriptors()) {
       
             UnitNode unit = ud.getUnit();
+            
             if (unit.isTarget()) {
                 gen.setupUnit(unit);
                 genProtocolMembers(unit, ud);
             }
         }
+
         gen.aux.genTitle("unit headers");
         for (UnitDesc ud : getUnitDescriptors()) {
             UnitNode u = ud.getUnit();
@@ -401,51 +405,57 @@ public class ProgCCode {
                 gen.aux.genHeaderInclude(u.getQualName());
             }
         }
+        for (String k : unitDescsMap.keySet()) {
+        	UnitDesc u = unitDescsMap.get(k);
+        	this.genProgCCodeEnumVals(u.getUnit());       	
+        }
     }
 
     private void genProtocolMembers(UnitNode unit, UnitDesc ud) {
-        
-        for (DeclNode decl : unit.getFeatures()) {
 
-            if (!(decl instanceof DeclNode.TypedMember)) {
-                continue;
-            }
-            
-            DeclNode.TypedMember protoMem = (DeclNode.TypedMember) decl;
-            
-            if (!(protoMem.isProtocolMember()))
-            	continue;
-            
-            Object val = ud.getUnitObj().getAny(protoMem.getName());
-   
-            if (val == Value.UNDEF) {
-            	
-                if (protoMem.getBindLocUnit() != null) {
-            		String qname = protoMem.getDefiningScope().getScopeName() + "." + protoMem.getName().getText();
-            		UnitDesc udsc = unitDescsMap.get(protoMem.getBindLocUnit().getQualName());
-            		val = udsc.getUnitObj().getAny(qname);
-                }        
-                if (val == Value.UNDEF) {
-                	ParseUnit.current().reportError(protoMem.getName(), "protocol member has never been bound");
-                	return;
-                }
-            }
-            String qn;
-            if (!(val instanceof NativeObject || val instanceof NativeArray)) {
-            	return;
-            	//qn = val.toString(); // A Double, for example
-            }
-            else 
-            	qn = ((Value.Obj) Value.toVal(val)).getStr("$name");
-            String pcn = gen.uname_target() + protoMem.getName() + '_';
-            String dcn = qn.replace('.', '_') + '_';
-            gen.aux.genTitle("protocol member " + gen.curUnit().getQualName() + '.' + protoMem.getName() + " delegates " + qn);
-            gen.aux.genHeaderInclude(qn);
-            genProtocolMemDefines(protoMem.getTypeUnit(), pcn, dcn);
-        }
+    	for (DeclNode decl : unit.getFeatures()) {
+
+
+    		if (!(decl instanceof DeclNode.TypedMember)) {
+    			continue;
+    		}
+
+    		DeclNode.TypedMember protoMem = (DeclNode.TypedMember) decl;
+
+    		if (!(protoMem.isProtocolMember()))
+    			continue;
+
+    		Object val = ud.getUnitObj().getAny(protoMem.getName());
+
+    		if (val == Value.UNDEF) {
+
+    			if (protoMem.getBindLocUnit() != null) {
+    				String qname = protoMem.getDefiningScope().getScopeName() + "." + protoMem.getName().getText();
+    				UnitDesc udsc = unitDescsMap.get(protoMem.getBindLocUnit().getQualName());
+    				val = udsc.getUnitObj().getAny(qname);
+    			}        
+    			if (val == Value.UNDEF) {
+    				ParseUnit.current().reportError(protoMem.getName(), "protocol member has never been bound");
+    				return;
+    			}
+    		}
+    		String qn;
+    		if (!(val instanceof NativeObject || val instanceof NativeArray)) {
+    			return;
+    			//qn = val.toString(); // A Double, for example
+    		}
+    		else 
+    			qn = ((Value.Obj) Value.toVal(val)).getStr("$name");
+    		String pcn = gen.uname_target() + protoMem.getName() + '_';
+    		String dcn = qn.replace('.', '_') + '_';
+    		gen.aux.genTitle("protocol member " + gen.curUnit().getQualName() + '.' + protoMem.getName() + " delegates " + qn);
+    		gen.aux.genHeaderInclude(qn);
+    		genProtocolMemberDefines(protoMem.getTypeUnit(), pcn, dcn);
+    	}
+
     }
     
-    private void genProtocolMemDefines(UnitNode protocol, String pcn, String dcn) {
+    private void genProtocolMemberDefines(UnitNode protocol, String pcn, String dcn) {
         
     	for (DeclNode idecl : protocol.getFeatures()) {
 
@@ -454,15 +464,26 @@ public class ProgCCode {
             }
 
             gen.getFmt().print("#define %3%1%2 %4%1%2\n", idecl.getName(), gen.aux.mkSuf(idecl), pcn, dcn);
-            
-            if (idecl instanceof DeclNode.Usr) {
-            	if (((DeclNode.Usr) idecl).isEnum()) {
-            		for (DeclNode.EnumVal ev : ((DeclNode.Usr) idecl).getVals()) {
-            			gen.getFmt().print("#define %3%1%2 %4%1%2\n", ev.getName(), "", pcn, dcn);
-            		}
-            	}
-            }
+           
         }
+    }
+
+
+	/**
+	 * These are the enums defined in compositions or protocols
+	 * @param idecl
+	 */
+    private void genProgCCodeEnumVals(UnitNode unit) {
+    	if (unit.isComposition() || unit.isProtocol())
+    		for (DeclNode idecl : unit.getFeatures()) {
+    			if (idecl instanceof DeclNode.Usr && ((DeclNode.Usr) idecl).isEnum()) {
+    				for (DeclNode.EnumVal ev : ((DeclNode.Usr) idecl).getVals()) {
+    					String s = gen.getOutputName(ev, ev.getDefiningScope(), EnumSet.noneOf(Flags.class));
+    					gen.getFmt().print("#define %1 %2\n", s, ev.getVal().getText());
+    				}
+    			}
+    		}
+
     }
     
     private void genSingleFcnCall(String fcnName, UnitNode un) {
@@ -470,11 +491,9 @@ public class ProgCCode {
     	List<DeclNode.Fcn> fl = u.lookupFcn(fcnName);
     	DeclNode.Fcn f = fl.get(0);
     	String suf = f.isPublic() ? "E" : "I";
-
     	if (u.lookupFcn(fcnName) != null) {
     		gen.getFmt().print("%t%1_%2__" + suf + "();\n", u.getQualName().replace('.', '_'), gen.aux.mkPollenCname(fcnName));
     	}
-
     }
 
     private void genHostVal(UnitDesc ud, DeclNode.Var decl) {

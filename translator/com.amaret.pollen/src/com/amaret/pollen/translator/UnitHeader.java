@@ -113,9 +113,9 @@ public class UnitHeader {
     	if (!decl.isEnum())
     		return;
         gen.getFmt().print("typedef uint8 %1%2;\n", gen.uname_target(), decl.getName());
-        int k = 0;
         for (DeclNode.EnumVal ev : decl.getVals()) {
-            gen.getFmt().print("#define %1%2_%3 %4\n", gen.uname_target(), decl.getName(), ev.getName(), k++);
+			String s = gen.getOutputName(ev, ev.getDefiningScope(), EnumSet.noneOf(Flags.class));
+			gen.getFmt().print("#define %1 %2\n", s, ev.getVal().getText());
         }
     }
     

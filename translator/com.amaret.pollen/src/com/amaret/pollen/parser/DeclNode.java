@@ -432,14 +432,17 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 	// DeclNode.EnumVal
 	static public class EnumVal extends DeclNode implements IOutputName {
+		
+		static private final int VAL = 1;
 
 		EnumVal(int ttype, String ttext, EnumSet<Flags> f) {
 			super(ttype, ttext, f);
 		}
 
-		Atom getVal() {
+		public Atom getVal() {
 			// grammar requires integer literal
-			return ((BaseNode) this.getChild(0)).getAtom();
+			// Note parser synthesizes if value is missing
+			return ((BaseNode) this.getChild(VAL)).getAtom();
 		}
 
 		public boolean isPublic() {
@@ -476,11 +479,19 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				return qn;
 
 			IScope scopeOfDcln = sc;
-			if (scopeOfDcln instanceof DeclNode.Usr && !((ITypeKind)scopeOfDcln).isClass()) {
-				scopeOfDcln = scopeOfDcln.getEnclosingScope();
+			String enumName = "";
+			if (scopeOfDcln instanceof DeclNode.Usr) {
+				if (((ITypeKind)scopeOfDcln).isEnum()) {
+					enumName = ((DeclNode.Usr) scopeOfDcln).getName().getText() + "_";
+					scopeOfDcln = scopeOfDcln.getEnclosingScope();
+				}
+				if (!(scopeOfDcln instanceof UnitNode) && !((ITypeKind)scopeOfDcln).isClass()) {
+					scopeOfDcln = scopeOfDcln.getEnclosingScope();
+				}
+				if (scopeOfDcln == g.curUnit()) 
+					return (g.uname() + "." + enumName + this.getName().getText());
 			}
-			if (scopeOfDcln == g.curUnit()) 
-				return (g.uname() + "." + this.getName().getText());
+
 
 			qn = (scopeOfDcln instanceof UnitNode ? ((UnitNode) scopeOfDcln)
 					.getQualName()
@@ -490,7 +501,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 			if (scopeOfDcln instanceof DeclNode.Class && !thisPtr && isClassRef())
 				qn = g.uname();
-			return "$units['" + qn + "']." + this.getName().getText();
+			return "$units['" + qn + "']." + enumName + this.getName().getText();
 		}
 	}
 

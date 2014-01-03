@@ -106,6 +106,7 @@ public class Generator {
 			if (u.isVoid())
 				continue;
 
+			//ParseUnit.setDebugMode(true);
 			if (ParseUnit.isDebugMode()) {	
 				System.out.println("GENUNIT " + u.getQualName());
 			}
@@ -171,7 +172,7 @@ public class Generator {
      * @throws Exception
      */
 	private void genJScript() throws Exception {
-    	if (!curUnit.isProtocol()) {
+    	//if (!curUnit.isProtocol()) {
         //if (!curUnit.isComposition() && !curUnit.isProtocol()) {
         //if (curUnit.isModule() || curUnit.isClass() || curUnit.isEnum()) {
             File file = ParseUnit.cacheFile(curUnit.getQualName(), ".js");
@@ -179,7 +180,7 @@ public class Generator {
             UnitJScript unitJScript = new UnitJScript(this);
             unitJScript.generate(curUnit);
             writeFile(file, getFmt().toBytes());
-        }
+        //}
     }
 	/**
 	 * Follow imports recursively starting at unit to get units that are used.
@@ -193,7 +194,7 @@ public class Generator {
         	if (imp.getUnit() != null) 
         		findUses(imp.getUnit(), uses);
         }
-        if (!uses.contains(unit) && !unit.isProtocol() ) {
+        if (!uses.contains(unit)) {// && !unit.isProtocol() ) {
         	uses.add(unit); 
         }
     }
