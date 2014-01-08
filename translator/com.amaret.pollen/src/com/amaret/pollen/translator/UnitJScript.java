@@ -6,12 +6,17 @@ import java.util.List;
 import com.amaret.pollen.parser.BaseNode;
 import com.amaret.pollen.parser.BodyNode;
 import com.amaret.pollen.parser.Cat;
+import com.amaret.pollen.parser.Cat.Fcn;
 import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.DeclNode.Formal;
+import com.amaret.pollen.parser.DeclNode.ITypeInfo;
+import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
 import com.amaret.pollen.parser.DeclNode.Usr;
 import com.amaret.pollen.parser.ExprNode;
 import com.amaret.pollen.parser.Flags;
+import com.amaret.pollen.parser.IScope;
+import com.amaret.pollen.parser.ISymbolNode;
 import com.amaret.pollen.parser.ImportNode;
 import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.StmtNode;
@@ -98,8 +103,11 @@ public class UnitJScript {
        case pollenParser.D_ENUM:
             genDecl$Enum((DeclNode.Usr) decl);
             break;
-        case pollenParser.D_FCN_DEF:
+       case pollenParser.D_FCN_DEF:
             genDecl$Fcn((DeclNode.Fcn) decl);
+            break;
+       case pollenParser.D_FCN_REF:
+    	    genDecl$FcnRef((DeclNode.FcnRef) decl);
             break;
        case pollenParser.D_CLASS:
             genDecl$Class((DeclNode.Class) decl);
@@ -120,11 +128,31 @@ public class UnitJScript {
         }
     }
 
+    private void genDecl$FcnRef(DeclNode.FcnRef decl) {
+    	String n = decl.getName().getText().replace('.', '_');
+    	Cat.Fcn catf = (Fcn) decl.getFcnTypeCat();
+    	DeclNode.Fcn fcn = catf != null ? catf.fcnD() : null;
+    	if (fcn != null) {
+    		if (fcn.getDefiningScope() instanceof ITypeKind && ((ITypeKind)fcn.getDefiningScope()).isProtocol())
+    			return; // can't initialize to a protocol function
+    		if (fcn.isHost()) {
+    			ParseUnit.current().reportError(decl, "host functions are not allowed as values for function references");
+    			return;
+    		}
+    		gen.getAux().setHost(false); // this is a host context but the name is generated for target context.
+    		String s = gen.getOutputQName(decl, fcn, fcn.getDefiningScope(), EnumSet.noneOf(Flags.class ));
+    		gen.getAux().setHost(true);
+    		gen.getFmt().print("%t%1.%2 = new $$Ref('%3');\n", gen.uname(), n, s);
+    	}
+    }
     private void genDecl$Fcn(DeclNode.Fcn decl) {
         if (!decl.isHost()) {
-            String suf = decl.isPublic() ? "E" : "I";
             String n = decl.getName().getText().replace('.', '_');
-            gen.getFmt().print("%t%1.%2 = new $$Ref('%3%2__%4');\n", gen.uname(), n, gen.uname_target(), suf);
+            gen.getAux().setHost(false); // this is a host context but the name is generated for target context.
+            String s = gen.getOutputQName(decl, (ISymbolNode) decl.getEnclosingScope(),decl.getDefiningScope(), EnumSet.noneOf(Flags.class ));
+            gen.getAux().setHost(true);
+            gen.getFmt().print("%t%1.%2 = new $$Ref('%3');\n", gen.uname(), n, s);
+            //gen.getFmt().print_dbg("%t%1.%2 = new $$Ref('%3%2__%4');\n", gen.uname(), n, gen.uname_target(), suf);
         }
     }
     
@@ -191,10 +219,11 @@ public class UnitJScript {
     	if (decl.isIntrinsic() && !decl.isIntrinsicUsed())
     		return;
     	
-    	boolean dbg = true;
-    	if(decl.getName().getText().equals("blueInitialValue"))
-    		dbg = false;
-    	
+//    	boolean dbg = true;
+//    	if(decl.getName().getText().equals("blueInitialValue"))
+//    		dbg = false;
+    	if (decl.getDefiningScope() == null)
+    		return;
     	SymbolEntry se = decl.getDefiningScope().lookupName(decl.getName().getText());
     	boolean isClassScope = decl.getDefiningScope() instanceof DeclNode.Class;
     	if (ParseUnit.current().isPreset(se) && isClassScope) {

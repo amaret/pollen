@@ -1438,7 +1438,7 @@ varOrFcnOrArray
 	|	qualName fieldOrArrayAccess? -> ^(E_IDENT<ExprNode.Ident>["E_IDENT"] qualName fieldOrArrayAccess?)
 	;
 fieldOrArrayAccess
-	:	 (fieldAccess | arrayAccess)+
+	:	 (fieldAccess | arrayAccess fcnArgumentList?)+
 	;
 fieldAccess
 	:	'.'	IDENT fcnArgumentList	
@@ -1447,7 +1447,7 @@ fieldAccess
 	|	'.'	IDENT 	-> ^(E_IDENT<ExprNode.Ident>["E_IDENT", true] IDENT)
 	;
 arrayAccess
-	:	'['	(exprList)?	']'	-> ^(E_INDEX<ExprNode.Index>["E_INDEX"] exprList?)
+	:	'['	(exprList)?	']'  	-> ^(E_INDEX<ExprNode.Index>["E_INDEX"] exprList? ) //fcnArgumentList?
 	;
 	
 	

@@ -809,6 +809,8 @@ public class ExprNode extends BaseNode {
 	static public class Ident extends ExprNode implements SubExprCat {
 
 		static final private int NAME = 0;
+		static final private int INDEX = 1;  // only for Ident for arrays
+		static final private int ARGS = 2;   // only for Ident for arrays of function pointers
 
 		protected SymbolEntry symbol = null; // for obj.field symbol is for
 												// 'field'
@@ -854,9 +856,21 @@ public class ExprNode extends BaseNode {
 			return (Atom) ((BaseNode) getChild(NAME)).getToken();
 		}
 		public boolean hasIndexExpr() {
-			if (this.getChildCount() > 1 && this.getChild(1) instanceof ExprNode.Index) 
+			if (this.getChildCount() > INDEX && this.getChild(INDEX) instanceof ExprNode.Index) 
 				return true;
 			return false;
+		}
+		public boolean isCallThruFcnPtrArray() {
+			
+			if (hasIndexExpr() && this.getChildCount() > ARGS && this.getChild(ARGS) instanceof ListNode) // this list is arguments
+				return true;
+			return false;
+		}
+		@SuppressWarnings("unchecked")
+		public List<ExprNode> getArgs() {
+			if (this.getChildCount() <= ARGS)
+				return null;
+			return ((ListNode<ExprNode>) getChild(ARGS)).getElems();
 		}
 
 		/**

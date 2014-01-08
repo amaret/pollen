@@ -22,6 +22,7 @@ import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.IScope;
 import com.amaret.pollen.parser.ISymbolNode;
 import com.amaret.pollen.parser.ImportNode;
+import com.amaret.pollen.parser.ListNode;
 import com.amaret.pollen.parser.LitFlags;
 import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.StmtNode;
@@ -51,9 +52,17 @@ public class Auxiliary {
 	private Generator gen;
 	private boolean isHost;
 	private boolean skipPost = false;
+	/**
+	 * Used to avoid recursive calls to genExprPost() when we know we have an index expr.
+	 * @return
+	 */
 	public boolean isSkipPost() {
 		return skipPost;
 	}
+	/**
+	 * Used to avoid recursive calls to genExprPost() when we know we have an index expr.
+	 * @param skipPost
+	 */
 	public void setSkipPost(boolean skipPost) {
 		this.skipPost = skipPost;
 	}
@@ -196,7 +205,7 @@ public class Auxiliary {
 						break;
 
 					}
-				}
+				}				
 			}
 		}
 	}
@@ -231,9 +240,14 @@ public class Auxiliary {
 			// else error?				
 			break;
 		case pollenParser.E_IDENT:
+			if (((ExprNode.Ident) expr).isCallThruFcnPtrArray() && !isSkipPost()) {
+				this.genExprCallThruFcnPtrArray((Ident) expr);
+				break;
+			}
 			genExpr$Ident((ExprNode.Ident) expr);
-			if (!isSkipPost())
+			if (!isSkipPost()) {
 				genExprPost(expr);
+			}
 			break;
 		case pollenParser.E_INDEX:
 			genExpr$Index((ExprNode.Index) expr);
@@ -274,7 +288,13 @@ public class Auxiliary {
 					return;
 				}
 			}
-
+			if (node instanceof DeclNode.FcnRef && right instanceof ExprNode.Ident) {
+				se = ((ExprNode.Ident)right).getSymbol() != null ? ((ExprNode.Ident)right).getSymbol() : null;
+				ISymbolNode fnode = se != null ? se.node() : null;
+				if (fnode instanceof DeclNode.Fcn && ((DeclNode.Fcn)fnode).isHost()) {
+					ParseUnit.current().reportError((BaseNode) node, "host functions are not allowed as values for function references");
+				}
+			}			
 		}
 
 		if (expr.isAssign() && isHost() && (expr.hasLeftIndexExpr())) { 
@@ -380,6 +400,20 @@ public class Auxiliary {
 		genExpr(expr.getName());
 		
 		genCallArgs(expr);
+	}
+	private void genExprCallThruFcnPtrArray(ExprNode.Ident expr) {
+		if (!expr.isCallThruFcnPtrArray())
+			return; //oops
+		gen.getFmt().print("(*"); 
+		genExpr$Ident((ExprNode.Ident) expr);
+		genExprPost(expr);
+		String sep = "";
+		gen.getFmt().print(")"); 
+		for (ExprNode arg : ((ExprNode.Ident)expr).getArgs()) {
+			gen.getFmt().print(sep);
+			sep = ", ";						
+			genExpr(arg);			
+		}				
 	}
 
 	/**
@@ -552,6 +586,8 @@ public class Auxiliary {
 			flags.add(Flags.IS_THISPTR);
 		if (expr.isPostExpr())
 			flags.add(Flags.IS_POSTEXPR);
+		if (expr.isCallThruFcnPtrArray())
+			flags.add(Flags.IS_FCNPTR_ARR_CALL);
 		
 		//boolean dbg = false;
 		//String s = expr.getName().getText();
@@ -568,7 +604,7 @@ public class Auxiliary {
 		}
 		if (expr.getQualifier() == null && expr.getName().getText().indexOf('.') != -1)
 			System.out.println("ExprIdent: no qualifier symbol for " + expr.getName().getText());
-//		if (expr.getName().getText().equals("Compos.ProtoMem.arr.inc")) {
+//		if (expr.getName().getText().equals("on_functions")) {
 //			System.out.println("xyz");			
 //		}
 

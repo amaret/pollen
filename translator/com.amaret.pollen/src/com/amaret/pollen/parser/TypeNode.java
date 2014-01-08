@@ -281,6 +281,8 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
         private ISymbolNode enterName(String toEnter) {
         	
             SymbolEntry symbol = ParseUnit.current().getSymbolTable().lookupName(toEnter);
+            if (symbol == null)
+            	symbol = ParseUnit.current().getSymbolTable().lookupName(toEnter, true);
             ISymbolNode snode = symbol != null ? symbol.node() : null;
             if (symbol != null)
             	symbolMap.put(toEnter, symbol);   

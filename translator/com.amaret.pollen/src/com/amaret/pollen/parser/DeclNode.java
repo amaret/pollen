@@ -2164,6 +2164,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 			String n = this.getName().getText();
 			qn = qn + "." + n + g.getAux().mkSuf(this);
+			//qn = flags.contains(Flags.IS_FCNPTR_ARR_CALL) ? "(*" + qn + ")" : qn;
 			return qn.replace('.', '_');
 		}
 

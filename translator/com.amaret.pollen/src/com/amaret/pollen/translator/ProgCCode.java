@@ -671,6 +671,9 @@ public class ProgCCode {
             if (val instanceof Number) {
                 genValNum(cast, (Number) val);
             }
+            else if (val instanceof UniqueTag) { // something that should not be printed out
+            	gen.getFmt().print("%1", "null");
+            }
             else {
                 gen.getFmt().print("%1", val.toString());
             }
@@ -688,7 +691,6 @@ public class ProgCCode {
 				String fn =	b instanceof DeclNode ? ((DeclNode) b).getName().getText() : "";
 				Value.Obj valObj = (Obj) (Value.toVal(val) instanceof Value.Obj ? Value.toVal(val) : null);
 				String strVal = valObj != null && vobj != null ? ((Value.Obj) Value.toVal(val)).getStr("$$text") : ParseUnit.JAVASCRIPT_OBJECT_NOT_FOUND;
-				
 				if (val instanceof Value.Obj
 						&& "$$Ref".equals(((Value.Obj) val).getProp("$$category"))) {
 					// this is a host function ref initialized to a target function
