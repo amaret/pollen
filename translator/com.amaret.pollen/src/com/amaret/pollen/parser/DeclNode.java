@@ -235,7 +235,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		}
 
 		/**
-		 * Return the base type spec for the array.
+		 * Return the element type TypeNode for the array.
 		 */
 		@Override
 		public TypeNode getTypeSpec() {
@@ -243,6 +243,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			return t.getBase();
 		}
 
+		/**
+		 * Return the Cat.Arr for the array.
+		 */
 		@Override
 		public Cat getTypeCat() {
 			if (typeCat == null) {

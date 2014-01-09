@@ -237,19 +237,23 @@ public class UnitHeader {
 	}
 
 	/**
+	 * Note the field can be either a function reference variable dcln or an array of same.
 	 * @param fields
 	 */
 	private void genFcnRefTypeDefs(List<DeclNode> fields) {
-		List<String> fcnrefTypeDefs = new ArrayList<String>();
-		for (DeclNode fld : fields) {        	
-        	if (fld instanceof DeclNode.FcnRef) {
-        		String s = gen.getOutputName((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), null, EnumSet.of(Flags.IS_TYPEDEF));
-        		if (!fcnrefTypeDefs.contains(s)) { // must be unique or c gives error
-        			fcnrefTypeDefs.add(s);
-            		gen.getFmt().print("%ttypedef ");
-            		gen.getFmt().print("%1;\n", s);
-        		}
-        	}       
+		List<String> fcnrefTypeDefs = new ArrayList<String>();		
+		for (DeclNode fld : fields) {     
+			if (fld instanceof DeclNode.ITypeSpec) {
+				TypeNode t = ((DeclNode.ITypeSpec) fld).getTypeSpec();
+				if (t instanceof TypeNode.Usr && ((TypeNode.Usr)t).isFunctionRef()) {
+					String s = gen.getOutputName(t, null, EnumSet.of(Flags.IS_TYPEDEF));
+					if (!fcnrefTypeDefs.contains(s)) { // must be unique or c gives error
+						fcnrefTypeDefs.add(s);
+						gen.getFmt().print("%ttypedef ");
+						gen.getFmt().print("%1;\n", s);
+					}
+				}  
+			}
         }
 	}
     
@@ -588,9 +592,6 @@ public class UnitHeader {
     	boolean title = false;
     	
     	if (unit.isClass()) {
-//    		gen.aux.genTitle("DATA MEMBERS");
-//            gen.fmt.print("extern %1%2",gen.cname(), unit.getName() /*+"_ptr "*/);
-//            gen.fmt.print(" %1%2",gen.cname(), unit.getName() + ";\n");
             return;
     	}
 

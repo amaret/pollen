@@ -517,9 +517,8 @@ public class ParseUnit {
 	 * @param client
 	 *            client unit (for meta type instantiation)
 	 * @param clientImport
-	 *            client unit import (for meta type instantiation, has meta
-	 *            parameters) Client parameters are null for non-meta
-	 *            instantiation parse.
+	 *            client unit ImportNode (from import statement, for meta type instantiation, has meta
+	 *            parameters) Client parameters are null for non-meta instantiation parse.
 	 * @return AST (UnitNode)
 	 * @throws Exception
 	 */
