@@ -58,6 +58,7 @@ public class Formatter {
 	                continue;
 	            }
 	        }
+
 	        if (debugMark != -1) {
 	        	String dbgStr = sb.substring(debugMark);
 	        	System.out.println("PRNDBG: " + dbgStr);

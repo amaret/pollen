@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeObject;
+import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.UniqueTag;
 import org.mozilla.javascript.NativeFunction;
 
@@ -519,7 +520,7 @@ public class ProgCCode {
         	}
         }
         
-        if (!decl.isHostClassRef() && !decl.isClassScope())
+        if (!decl.isHostClassRef() && !decl.isClassScope() && !decl.isHostNonConst())
         	gen.getFmt().print("const ");
         
         gen.getFmt().print("%1__TYPE %1%2", gen.uname_target() + decl.getName(), gen.aux.mkSuf(decl));
@@ -703,22 +704,10 @@ public class ProgCCode {
 				}
 				else { 
 					gen.getFmt().print("%1", "null");
-					if (vobj != null) {  // Okay: null could mean the host initializing function was never called. 
-
-						if (isHost) {
-							// This is a host function ref initialized to a host function.
-							// disallowed for a number of reasons. The value the host reference is to be assigned to 
-							// has lost its name and there is no non-standard way to get it. 
-							// See http://stackoverflow.com/questions/3178892/get-function-name-in-javascript
-							// Also it's not meaningful code in the host context. 
-							ParseUnit.current().reportError(b, fn + ": initializing a host function reference to a host function is not allowed");
-						}
-						else {							
-							// Hello, this makes no sense.
-							ParseUnit.current().reportError(b, fn + ": initializing a non-host function reference to a host function is not allowed");        				
-						}  
-
+					if (vobj instanceof Undefined) {       // too confusing
+						//ParseUnit.current().reportError(b, fn + ": value not found");
 					}
+					// should I do something if vobj is not Undefined??
 				}
         	}
         	else

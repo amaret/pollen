@@ -149,7 +149,7 @@ public class UnitHeader {
         	}
         }
         
-        String constStr = (!decl.isHostClassRef() && !decl.isClassScope()) ? "const " : ""; 
+        String constStr = (!decl.isHostClassRef() && !decl.isClassScope() && !decl.isHostNonConst()) ? "const " : ""; 
 		
         gen.getFmt().print("extern " + constStr + "%1__TYPE %1%2%3;\n", gen.uname_target()
 				+ decl.getName(), gen.aux.mkSuf(decl),braces);
@@ -237,8 +237,8 @@ public class UnitHeader {
 	}
 
 	/**
-	 * Note the field can be either a function reference variable dcln or an array of same.
-	 * @param fields
+	 * Note the field type which is typedef'd can be either a function reference variable type or base type of an array of same.
+	 * @param fields. DeclNodes for the class or module
 	 */
 	private void genFcnRefTypeDefs(List<DeclNode> fields) {
 		List<String> fcnrefTypeDefs = new ArrayList<String>();		
@@ -265,7 +265,6 @@ public class UnitHeader {
         List<DeclNode> fields = decl.getFeatures();
         genFcnRefTypeDefs(fields);            
         gen.getFmt().print("%tstruct %1 {\n%+", gen.uname_target());
-        String dbg = gen.uname_target();
         for (DeclNode fld : fields) {
 
         	if (fld instanceof DeclNode.Var

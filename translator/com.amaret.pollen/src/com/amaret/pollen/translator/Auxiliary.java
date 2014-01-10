@@ -11,6 +11,7 @@ import com.amaret.pollen.parser.BodyNode;
 import com.amaret.pollen.parser.Cat;
 import com.amaret.pollen.parser.Cat.Agg;
 import com.amaret.pollen.parser.Cat.Arr;
+import com.amaret.pollen.parser.Cat.Fcn;
 import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.DeclNode.Formal;
 import com.amaret.pollen.parser.ExprNode;
@@ -196,11 +197,12 @@ public class Auxiliary {
 						//if (!isHost())
 							genExpr2(e, eType);
 						break;
-					case pollenParser.E_IDENT:
-					case pollenParser.E_CALL:
+					case pollenParser.E_IDENT:					
 						gen.getFmt().print("->");
 						genExpr2(e, eType);
 						break;
+					case pollenParser.E_CALL:
+						boolean dbg = true;
 					default:
 						break;
 
@@ -291,7 +293,18 @@ public class Auxiliary {
 			if (node instanceof DeclNode.FcnRef && right instanceof ExprNode.Ident) {
 				se = ((ExprNode.Ident)right).getSymbol() != null ? ((ExprNode.Ident)right).getSymbol() : null;
 				ISymbolNode fnode = se != null ? se.node() : null;
-				if (fnode instanceof DeclNode.Fcn && ((DeclNode.Fcn)fnode).isHost()) {
+				Cat cat = null;
+				if (fnode instanceof DeclNode)
+					cat = ((DeclNode)fnode).getTypeCat();
+				boolean srcIsHost = false;
+				if (cat != null && (cat.isFcn() || cat.isFcnRef())) {
+					srcIsHost = ((DeclNode) fnode).isHost();
+				}
+				if (srcIsHost) {
+					// This is a function ref initialized to a host function.
+					// disallowed for a number of reasons. The value the reference is to be assigned to 
+					// has lost its name and there is no non-standard way to get it. 
+					// See http://stackoverflow.com/questions/3178892/get-function-name-in-javascript
 					ParseUnit.current().reportError((BaseNode) node, "host functions are not allowed as values for function references");
 				}
 			}			
@@ -604,7 +617,7 @@ public class Auxiliary {
 		}
 		if (expr.getQualifier() == null && expr.getName().getText().indexOf('.') != -1)
 			System.out.println("ExprIdent: no qualifier symbol for " + expr.getName().getText());
-//		if (expr.getName().getText().equals("on_functions")) {
+//		if (expr.getName().getText().equals("on")) {
 //			System.out.println("xyz");			
 //		}
 
@@ -680,7 +693,7 @@ public class Auxiliary {
 
 	private void genExpr$New(ExprNode.New expr) {
 		
-		if (!expr.getCall().isHostConstructorCall()) {
+		if (!expr.getCall().isConstructorCallOnHostVar()) {
         	ParseUnit.current().reportError(expr.getCall().getName(), "non-host invocations of 'new()' are not yet implemented");        	
         }
 		genExpr$Call(expr.getCall());
@@ -839,8 +852,23 @@ public class Auxiliary {
 					gen.aux.genCallArgs(((ExprNode.New)e).getCall());   
 					gen.getFmt().print(initElem2);
 				}
-				else 
+				else {
+					if (e instanceof ExprNode.Ident) {
+						SymbolEntry sym = ((ExprNode.Ident)e).getSymbol();
+						ISymbolNode node = sym != null ? sym.node() : null;
+						IScope sc = sym != null ? sym.scope() : null;
+						if (node instanceof DeclNode.Fcn && sc instanceof DeclNode.Class) {
+							ParseUnit.current().reportError(e, "cannot use a class function as an initializing value in an array");
+						}
+						else if (node instanceof DeclNode.TypedMember && se != null && se.node() instanceof DeclNode) {
+							if (((DeclNode.TypedMember)node).isHost() != ((DeclNode)se.node()).isHost()) {
+								ParseUnit.current().reportError(expr, "array and its array initializers must all be host or all be target");
+							}
+						}
+						
+					}
 					genExpr(e);
+				}
 			}
 			gen.getFmt().print(" ");
 			if (braces)

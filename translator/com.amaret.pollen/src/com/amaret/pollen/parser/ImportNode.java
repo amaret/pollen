@@ -119,6 +119,7 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
      * @return true if instantiating type is a primitive, e.g. 'uint8'
      */
     public boolean isTypeMetaArgPrimitive() {
+    	String s = Cat.Scalar.codeFromString(this.getUnitName().getText());
     	if (isTypeMetaArg() && Cat.Scalar.codeFromString(this.getUnitName().getText()) != null) {
     		// primitive type
     		return true;

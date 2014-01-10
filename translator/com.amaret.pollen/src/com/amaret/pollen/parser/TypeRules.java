@@ -79,6 +79,10 @@ public class TypeRules {
 	}
 
 	static Cat checkBinary(String op, Cat left, Cat right, String err) {
+		
+		if (left.isFcnRef() && right.isClassFcn()) {
+			return mkResult(null, left, right, "class function references are not implemented");
+		}
 
 		String r = right.mkCode();
 		String l = left.mkCode();

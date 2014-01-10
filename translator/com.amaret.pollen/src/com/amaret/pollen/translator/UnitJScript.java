@@ -98,7 +98,6 @@ public class UnitJScript {
     }
     
     private void genDecl(DeclNode decl) {
-    	// TODO handle function references
        switch (decl.getType()) {
        case pollenParser.D_ENUM:
             genDecl$Enum((DeclNode.Usr) decl);
@@ -220,7 +219,7 @@ public class UnitJScript {
     		return;
     	
 //    	boolean dbg = true;
-//    	if(decl.getName().getText().equals("blueInitialValue"))
+//    	if(decl.getName().getText().equals("elements"))
 //    		dbg = false;
     	if (decl.getDefiningScope() == null)
     		return;

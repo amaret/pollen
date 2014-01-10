@@ -44,6 +44,7 @@ public class Cat implements Cloneable {
         private boolean isClassRef;
         private boolean isProtocolMember;
         private boolean isFcnRef;
+        private boolean isClassFcn;
 
 
         private Agg(IScope aggScope, IScope defScope, boolean isRef, boolean fcnRef) {
@@ -73,7 +74,11 @@ public class Cat implements Cloneable {
         	this.isClassRef |= aggScope instanceof DeclNode.Class && isRef;
         	this.isProtocolMember = aggScope instanceof DeclNode 
         		? ((DeclNode) aggScope).isProtocolMember(): false;
+        	this.isClassFcn = aggScope instanceof DeclNode.Fcn && isFcnRef ? ((DeclNode.Fcn)aggScope).isClassScope() : false;
 
+        }
+        public boolean isClassFcn() {
+        	return isClassFcn;
         }
         public boolean isProtocolMember() {
 			return isProtocolMember;
@@ -93,8 +98,7 @@ public class Cat implements Cloneable {
         public boolean isFcnRef() {
 			return isFcnRef;
 		}
-        
-        
+              
         public boolean isProtocol() {
         	return aggScope instanceof ITypeKind ? ((ITypeKind) aggScope).isProtocol() : false;
         }
@@ -355,6 +359,9 @@ public class Cat implements Cloneable {
         
         public Cat retCat() {
             return retCat;
+        }
+        public boolean isClassFcn() {
+        	return fcnD().isClassScope();
         }
     }
     
@@ -630,22 +637,28 @@ public class Cat implements Cloneable {
     }
         
     public boolean isTypedMember() {
-        return this instanceof Cat.Agg && ((Cat.Agg) this).aggScope instanceof DeclNode.TypedMember;
+    	return false;      
     }
     public boolean isProtocolMember() {        
-    	return this instanceof Cat.Agg && ((Cat.Agg) this).isProtocolMember();       
+    	return false;             
     }
     public boolean  isHostClassRef() {        
-    	return this instanceof Cat.Agg && ((Cat.Agg) this).isHostClassRef();       
+    	return false;             
     }
     public boolean isTargetClassRef() {        
-    	return this instanceof Cat.Agg && ((Cat.Agg) this).isTargetClassRef();       
+    	return false;      
     }
     public boolean isClassRef() {        
-    	return this instanceof Cat.Agg && ((Cat.Agg) this).isClassRef();       
+    	return false;    
+    }
+    public boolean isClassFcn() {
+    	return false;
     }
     public boolean isFcnRef() {        
-    	return this instanceof Cat.Agg && ((Cat.Agg) this).isFcnRef();       
+    	return false;    
+    }
+    public boolean isFcn() {
+    	return this instanceof Cat.Fcn; 
     }
     public boolean isModule() {
     	boolean rtn = false;

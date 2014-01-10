@@ -1048,9 +1048,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			super.pass1Begin();
 			return true;
 		}
-
+		
 		@Override
 		protected void pass1End() {
+			
 			UnitNode u = ParseUnit.current().getCurrUnitNode();
 			if (!this.isHost() && u.isComposition() && (this.getDefiningScope() instanceof DeclNode.Usr)) {
 				ParseUnit.current().reportError(this.getName(),
@@ -2307,8 +2308,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		this.token = new Atom(ttype, ttext);
 	}
 
-	boolean query(EnumSet<Flags> q) {
-		return (flags.contains(q));
+	boolean flagsContains(Flags f) {
+		return (flags.contains(f));
 	}
 
 	public UnitNode getUnit() {
@@ -2339,8 +2340,15 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 	public boolean isHost() {
 		return flags.contains(Flags.HOST);
 	}
+	// initialization for arrays of typed members can use assignment. Just output as non const.
+	public boolean isHostNonConst() {
+		return flags.contains(Flags.HOST_NONCONST);
+	}
 	public void clearHost() {
-		flags.remove(Flags.HOST);
+		if (this instanceof DeclNode.TypedMember || this instanceof DeclNode.FcnRef)
+			flags.add(Flags.HOST_NONCONST);
+		else
+			flags.remove(Flags.HOST);
 	}
 
 	public boolean isClassRef() {

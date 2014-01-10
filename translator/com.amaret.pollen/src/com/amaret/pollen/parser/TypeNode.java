@@ -7,6 +7,7 @@ import java.util.List;
 import org.antlr.runtime.tree.Tree;
 
 import com.amaret.pollen.parser.DeclNode.Arr;
+import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.target.ITarget.TypeId;
 import com.amaret.pollen.target.ITarget.TypeInfo;
 import com.amaret.pollen.translator.Generator;
@@ -277,8 +278,20 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
             }
             return symbol; 
         }
-        
-        private ISymbolNode enterName(String toEnter) {
+        ITypeKind typeKind = null;
+        /**
+         * Query for isClass, isProtocol etc.
+         * @return null if not supported
+         */
+        public ITypeKind getTypeKind() {
+			return typeKind;
+		}
+
+		private ISymbolNode enterName(String toEnter) {
+			
+//			boolean dbg = true;
+//			if (toEnter.equals("ClsFuncRef.foo"))
+//				dbg = false;
         	
             SymbolEntry symbol = ParseUnit.current().getSymbolTable().lookupName(toEnter);
             if (symbol == null)
@@ -289,6 +302,9 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
             
             boolean okFlag = false;  // ok to be used as a type
             if (snode != null) {
+            	if (snode instanceof ITypeKind)
+            		typeKind = (ITypeKind) snode;
+            		
             	okFlag = (snode instanceof DeclNode.Formal && ((DeclNode.Formal) snode)
             			.isTypeMetaArg()) ? true : snode instanceof ImportNode ? true : false; 
 				okFlag = okFlag || snode instanceof DeclNode.ITypeInfo
@@ -300,6 +316,7 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 					
             // type members ok?
             if (symbol == null || !okFlag)  {
+            	// note can happen if the type is declared after it is ref'd: e.g. a FunctionReference var to a later declared function.
             	ParseUnit.current().reportError(getName(), "not a type"); 
             	// this causes null pointers later so kill it. No, killing it causes problems.
             	//ParseUnit.current().reportFailure("Fatal type error.");

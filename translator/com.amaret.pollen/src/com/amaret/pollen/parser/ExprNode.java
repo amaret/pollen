@@ -153,7 +153,7 @@ public class ExprNode extends BaseNode {
 						if (!((BodyNode)tr).getFcn().isHost()) {
 							((DeclNode)se.node()).clearHost();
 							currUnit.reportWarning(getLeft(), 
-								"host variable is the target of an assignment in a target function - host attribute stripped.");
+								"host variable is the target of an assignment in a target function.");
 						}
 					}
 					
@@ -211,7 +211,7 @@ public class ExprNode extends BaseNode {
 		 * 
 		 * @return true if this is a constructor call on a host variable (call to a host constructor).
 		 */
-		public boolean isHostConstructorCall() {
+		public boolean isConstructorCallOnHostVar() {
 			if (this.getParent() instanceof ExprNode.New && this.getParent().getParent() instanceof DeclNode) {
 				DeclNode d = (DeclNode) this.getParent().getParent();
 				return d.isHostClassRef();				
@@ -279,7 +279,7 @@ public class ExprNode extends BaseNode {
 				ExprNode.Ident ei = (ExprNode.Ident) getName();
 				
 				String call = ei.getName().getText();
-				boolean chkHostScope = symtab.currScopeIsHostFcn() || isHostConstructorCall();
+				boolean chkHostScope = symtab.currScopeIsHostFcn() || isConstructorCallOnHostVar();
 				boolean dbg = false;
 				
 				boolean skipLookup =  (call.matches(ParseUnit.INTRINSIC_PREFIX + ".*")) ? true : false;
@@ -296,7 +296,7 @@ public class ExprNode extends BaseNode {
 						fcn = sc.lookupName(ei.getName().getText());
 						if (fcn != null && fcn.node() instanceof DeclNode) {
 							DeclNode d = (DeclNode) fcn.node();
-							boolean accessible = d.query(EnumSet.of(Flags.PUBLIC));
+							boolean accessible = d.flagsContains(Flags.PUBLIC);
 							accessible |= (d.getUnit() == currUnit
 									.getCurrUnitNode());
 							fcn = (accessible) ? fcn : null;
@@ -516,7 +516,6 @@ public class ExprNode extends BaseNode {
 				return;
 			}
 			// TODO
-			// signature matching, default parameter value insertion
 			// overload resolution
 			if (cat instanceof Cat.Agg) { 
 				if (((Cat.Agg) cat).aggScope() instanceof DeclNode.TypedMember) {
@@ -556,6 +555,7 @@ public class ExprNode extends BaseNode {
 
 			exprCat = fcncat.retCat();
 
+			
 			//  May need tweaking for case that parameter type is a default instantiation meta
 			//  parameter for  a meta type and it is instantiated with a non-default type.
 			int k = -1;
@@ -572,6 +572,9 @@ public class ExprNode extends BaseNode {
 				if (TypeRules.preCheck(actualCat) != null) {
 					continue;
 				}
+				boolean dbg = actualCat.isClassFcn();
+				if (dbg)
+					dbg = false;
 				Cat res = TypeRules.checkBinary("=", formalCat, actualCat,
 						"formal / actual parameter type conflict");
 				if (res instanceof Cat.Error) {
@@ -903,9 +906,20 @@ public class ExprNode extends BaseNode {
 
 		}
 
+		
 		public Cat getCat() {
-			if (exprCat == Cat.UNKNOWN && symbol != null)
-				exprCat = Cat.fromSymbolNode(symbol.node(), symbol.scope());
+			
+			if (exprCat == Cat.UNKNOWN && symbol != null) {
+				ISymbolNode node = symbol.node();
+				if (node instanceof DeclNode.TypedMember)
+					exprCat = Cat.fromSymbolNode(symbol.node(), symbol.scope());
+				else
+				if (node instanceof DeclNode && ((DeclNode)node).getTypeCat() != null) {
+					exprCat = ((DeclNode)node).getTypeCat(); // has more info and is more accurate than Cat.fromSymbolNode			
+				}
+				else 
+					exprCat = Cat.fromSymbolNode(symbol.node(), symbol.scope());
+			}
 			return exprCat;
 		}
 		
@@ -938,7 +952,7 @@ public class ExprNode extends BaseNode {
 				symbol = sc.lookupName(getName().getText());
 				if (symbol != null && symbol.node() instanceof DeclNode) {
 					DeclNode d = (DeclNode) symbol.node();
-					boolean accessible = d.query(EnumSet.of(Flags.PUBLIC));
+					boolean accessible = d.flagsContains(Flags.PUBLIC);
 					accessible |= (d.getUnit() == currUnit.getCurrUnitNode());
 					symbol = (accessible) ? symbol : null;
 				}
@@ -1329,8 +1343,13 @@ public class ExprNode extends BaseNode {
 						.getTypeSpec());
 			} else if (this.getChild(0) instanceof ExprNode.Call) {
 				
+				boolean isHost = ((ExprNode.Call) this.getChild(0)).isConstructorCallOnHostVar();
+				if (ParseUnit.current().getSymbolTable().currScopeIsHostFcn() && !isHost) {
+					ParseUnit.current().reportSeriousError(this, "non-host objects cannot be initialized via 'new' in host contexts");
+				}
+				
 				// check: if this is a host class ref, it must be initialized in a host context
-				SymbolEntry se = ((ExprNode.Call) this.getChild(0)).getSymbol();
+				SymbolEntry se = ((ExprNode.Call) this.getChild(0)).getQualifier();
 				ISymbolNode sn = se != null ? se.node() : null;
 				if (sn instanceof DeclNode) {
 					boolean okForHostNew = ParseUnit.current().getSymbolTable()
@@ -1352,9 +1371,7 @@ public class ExprNode extends BaseNode {
 						((Cat.Error) exprCat).getMsg());
 				return;
 			}
-			boolean dbg;
-			if (exprCat == null)
-				dbg = true;
+
 			isConst = false;
 		}
 	}
