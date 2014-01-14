@@ -21,8 +21,28 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 
         static final private int BASE = 0;
         static final private int DIM = 1;
+        boolean referenceElems = false;  // element type is references to object (not instances)
+        SymbolEntry baseSymbol = null;   
         
-        Arr(int ttype, String ttext, EnumSet<Flags> flags) {
+        
+        public SymbolEntry getBaseSymbol() {
+			return baseSymbol;
+		}
+
+		public void setBaseSymbol(SymbolEntry baseSymbol) {
+
+			this.baseSymbol = baseSymbol;
+		}
+
+		public boolean isReferenceElems() {
+			return referenceElems;
+		}
+
+		public void setReferenceElems(boolean referenceElems) {
+			this.referenceElems = referenceElems;
+		}
+
+		Arr(int ttype, String ttext, EnumSet<Flags> flags) {
             super(ttype, ttext, flags);
         }
         
@@ -138,6 +158,7 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 
         static final private int NAME = 0;
         private boolean isFunctionRef = false;
+        private boolean isClassRef = false;
         
         private HashMap<String,SymbolEntry> symbolMap = new HashMap<String,SymbolEntry>();
         
@@ -148,7 +169,11 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
         public boolean isFunctionRef() {
 			return isFunctionRef;
 		}
-        public String getOutputNameHost(Generator g, IScope sc, EnumSet<Flags> flags) {
+        public boolean isClassRef() {
+			return isClassRef;
+		}
+
+		public String getOutputNameHost(Generator g, IScope sc, EnumSet<Flags> flags) {
         	// currently host and target not disentangled, may be necessary at some point.
         	return this.getOutputNameTarget(g, sc, flags);
         }
@@ -313,6 +338,7 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
             }
             
             isFunctionRef = snode instanceof DeclNode.Fcn;
+            isClassRef = snode instanceof ITypeKind ? ((ITypeKind)snode).isClass() : false;
 					
             // type members ok?
             if (symbol == null || !okFlag)  {

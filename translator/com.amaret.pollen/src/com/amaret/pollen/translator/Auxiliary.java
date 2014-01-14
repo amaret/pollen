@@ -15,9 +15,11 @@ import com.amaret.pollen.parser.Cat.Fcn;
 import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.DeclNode.Formal;
 import com.amaret.pollen.parser.ExprNode;
+import com.amaret.pollen.parser.ExprNode.Call;
 import com.amaret.pollen.parser.ExprNode.Const;
 import com.amaret.pollen.parser.ExprNode.Ident;
 import com.amaret.pollen.parser.ExprNode.Index;
+import com.amaret.pollen.parser.ExprNode.New;
 import com.amaret.pollen.parser.ExprNode.Quest;
 import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.IScope;
@@ -53,6 +55,7 @@ public class Auxiliary {
 	private Generator gen;
 	private boolean isHost;
 	private boolean skipPost = false;
+	private static int varSuf = 0;
 	/**
 	 * Used to avoid recursive calls to genExprPost() when we know we have an index expr.
 	 * @return
@@ -124,7 +127,7 @@ public class Auxiliary {
 				gen.getFmt().print("-1");
 			}
 			Cat base = arrCat.getBase();
-			if (base.isAggTyp() && ((Cat.Agg) base).aggScope() instanceof DeclNode.Usr) {
+			if (!base.isRef() && base.isAggTyp() && ((Cat.Agg) base).aggScope() instanceof DeclNode.Usr) {
 				// this is an array of objects
 				String s = "obj = new " + gen.uname() + "." + (((Cat.Agg) base).aggScope()).getScopeName() +  "(); obj." + ParseUnit.CTOR_CLASS_HOST + "(); return obj";
 				gen.getFmt().print(", function($$cn,$$idx){" + s + ";}, ");				
@@ -271,7 +274,7 @@ public class Auxiliary {
 	}
 
 	private void genExpr$Binary(ExprNode.Binary expr) {
-
+		
 		ExprNode left = expr.getLeft();
 		ExprNode right = expr.getRight();
 		String op = expr.getOp().getText();
@@ -311,6 +314,7 @@ public class Auxiliary {
 		}
 
 		if (expr.isAssign() && isHost() && (expr.hasLeftIndexExpr())) { 
+			
 			ExprNode.Index idxExpr = expr.getLeftIndexExpr();
 			setSkipPost(true);
 			genExpr(idxExpr.getBase());
@@ -360,17 +364,20 @@ public class Auxiliary {
 
 		genExpr(left);
 		if (right instanceof ExprNode.New) { 
+			gen.getFmt().print(" = ");
+			genHostNew(right);
+			return;
 			// class host constructors are a bit special
-			ExprNode.Call c = ((ExprNode.New) right).getCall();
-			if (c.getCalledFcn() != null) {
-				SymbolEntry se = c.getCalledFcn();
-				ISymbolNode node = se != null ? se.node() : null;
-				if (node != null
-						&& node.getName().getText().equals(ParseUnit.CTOR_CLASS_HOST)) {
-					gen.getFmt().print(".%1()", ParseUnit.CTOR_CLASS_HOST);
-					return;
-				}
-			}
+//			ExprNode.Call c = ((ExprNode.New) right).getCall();
+//			if (c.getCalledFcn() != null) {
+//				SymbolEntry se = c.getCalledFcn();
+//				ISymbolNode node = se != null ? se.node() : null;
+//				if (node != null
+//						&& node.getName().getText().equals(ParseUnit.CTOR_CLASS_HOST)) {
+//					gen.getFmt().print_dbg(".%1()", ParseUnit.CTOR_CLASS_HOST);
+//					return;
+//				}
+//			}
 		}
 
 		String addrOf = "";
@@ -378,13 +385,14 @@ public class Auxiliary {
 		if (cl instanceof Cat.Agg) {
 			Cat.Agg leftCat = (Agg) cl;
 			if (leftCat.isClassRef() && !(cr instanceof Cat.Scalar)
-					&& !isHost())
+					&& !isHost() && !cr.isRef())
 				addrOf = "&";
 			gen.getFmt().print(" %1 %2", op, addrOf);
 		} else {
 			if (cl instanceof Cat.Arr) {
 				if (expr.isAssign() && expr.hasLeftIndexExpr()
-						&& cr.isClassRef())
+						&& cr.isClassRef()
+						&& !cl.isClassRef()) // a deref
 					deref = "*";
 				gen.getFmt().print(" %1 %2", op, deref);
 			} else {
@@ -398,7 +406,7 @@ public class Auxiliary {
 	private void genExpr$Call(ExprNode.Call expr) {
 
 				
-		String n = expr.getName() instanceof ExprNode.Ident ? ((ExprNode.Ident) expr.getName()).getName().getText() : "";
+ 		String n = expr.getName() instanceof ExprNode.Ident ? ((ExprNode.Ident) expr.getName()).getName().getText() : "";
 		//System.out.println("genExprCall: " + n);
 
 		if (n.equals(ParseUnit.INTRINSIC_PREFIX + "assert")) {				
@@ -409,7 +417,10 @@ public class Auxiliary {
 					ParseUnit.current().reportWarning(expr, "\'assert\' message will not print if \'-p\' option is unspecified");
 			}
 		}
-				
+		if (n.equals(ParseUnit.CTOR_CLASS_HOST)) {
+			this.genHostNew(expr);
+			return;
+		}				
 		genExpr(expr.getName());
 		
 		genCallArgs(expr);
@@ -469,15 +480,16 @@ public class Auxiliary {
 			// a cast may be necessary.
 			if (formals != null && arg.getCat().isClassRef()) {
 				
-				String argTypeName = ((Cat.Agg)arg.getCat()).aggName();
-				
-				Formal f = formals.get(argc);
-				if (f.getTypeCat().isClassRef()) {
-					String formalTypeName = ((Cat.Agg)f.getTypeCat()).aggName();
-					if (!(argTypeName.equals(formalTypeName))) { // CAST
-						gen.getFmt().print("(");
-						genTypeWithVarName(f.getTypeSpec(), null);
-						gen.getFmt().print(")&");
+				if (arg.getCat() instanceof Cat.Agg) {
+					String argTypeName = ((Cat.Agg)arg.getCat()).aggName();
+					Formal f = formals.get(argc);
+					if (f.getTypeCat().isClassRef()) {
+						String formalTypeName = ((Cat.Agg)f.getTypeCat()).aggName();
+						if (!(argTypeName.equals(formalTypeName))) { // CAST
+							gen.getFmt().print("(");
+							genTypeWithVarName(f.getTypeSpec(), null);
+							gen.getFmt().print(")&");
+						}
 					}
 				}
 			}
@@ -603,8 +615,8 @@ public class Auxiliary {
 			flags.add(Flags.IS_FCNPTR_ARR_CALL);
 		
 		//boolean dbg = false;
-		//String s = expr.getName().getText();
-		//System.out.println(s);
+//		String s = expr.getName().getText();
+//		System.out.println(s);
 		
 
 		SymbolEntry sym = expr.getSymbol();
@@ -794,7 +806,7 @@ public class Auxiliary {
 	}
 
 	private void genExpr$Vec(ExprNode.Vec expr, boolean braces) {
-
+		
 		boolean newFlg = expr.getCat() != Cat.VECTOR;
 		SymbolEntry se = expr.getSymbol();
 		boolean isArrayInit = (se != null && se.node() != null
@@ -841,16 +853,19 @@ public class Auxiliary {
 							+ "']."
 							+ name
 							: gen.uname()
-									+ "."
-									+ (((Cat.Agg) base).aggScope())
-											.getScopeName();
-					//System.out.println(n);
+							+ "."
+							+ (((Cat.Agg) base).aggScope())
+							.getScopeName();
+
+					genHostNew(e);
 					
-					String initElem1 = "(function() {obj = new " + n +  "(); obj." + ParseUnit.CTOR_CLASS_HOST ;
-					String initElem2 = "; return obj;}) ()";
-					gen.getFmt().print(initElem1);
-					gen.aux.genCallArgs(((ExprNode.New)e).getCall());   
-					gen.getFmt().print(initElem2);
+
+
+					//					String initElem1 = "(function() {obj = new " + n +  "(); obj." + ParseUnit.CTOR_CLASS_HOST ;
+					//					String initElem2 = "; return obj;}) ()";
+					//					gen.getFmt().print_dbg(initElem1);
+					//					gen.aux.genCallArgs(((ExprNode.New)e).getCall());   
+					//					gen.getFmt().print(initElem2);
 				}
 				else {
 					if (e instanceof ExprNode.Ident) {
@@ -877,6 +892,22 @@ public class Auxiliary {
 
 		if (newFlg && isHost()) {
 			gen.getFmt().print(")");
+		}
+	}
+	/**
+	 * @param e can be ExprNode.Call or ExprNode.New
+	 */
+	public void genHostNew(ExprNode e) {
+		Cat.Agg cat = e.getCat().isAggTyp() ? (Agg) e.getCat() : null;
+		ISymbolNode node = (ISymbolNode) (cat != null && cat.aggScope() instanceof ISymbolNode ? cat.aggScope() : null);
+		if (node != null) {
+			// E.g. : new $units['pollen.event.Event'].Event().new_host
+			String s = "new " + mkName(node, cat.defScope(), null, EnumSet.noneOf(Flags.class));
+			s += !(node instanceof DeclNode.Usr && ((DeclNode.Usr)node).isNestedClass()) ? (((Cat.Agg) cat).aggScope()).getScopeName() : "";
+			s += "()." +  ParseUnit.CTOR_CLASS_HOST;
+			gen.getFmt().print( s );	
+			ExprNode.Call call = (Call) (e instanceof ExprNode.New ? ((New) e).getCall() : e);
+			genCallArgs(call);
 		}
 	}
 
@@ -1389,10 +1420,13 @@ public class Auxiliary {
 			TypeNode t = ((BodyNode) body).getFcn().getTypeSpec();
 			if (t instanceof TypeNode.Usr) {
 				ExprNode.Ident ei = (Ident) ((expr.getVals().get(0)) instanceof ExprNode.Ident ? (expr.getVals().get(0)) : null);
+				
 				SymbolEntry se;
 				if (ei != null) {
-					se = ei.getSymbol();
-					addrOf = se != null && !(se.node() instanceof DeclNode.TypedMember) && !isHost() ? " &" : "";
+					Cat cat = ei.getCat();
+//					se = ei.getSymbol();
+//					addrOf = se != null && !(se.node() instanceof DeclNode.TypedMember) && !isHost() ? " &" : "";
+					addrOf = !(cat.isClassRef() || cat.isRef() || cat.isFcnRef()) && !isHost() ? " &" : "";
 				}
 				
 				se = ((TypeNode.Usr)t).getSymbol();

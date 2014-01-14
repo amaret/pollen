@@ -58,6 +58,10 @@ public class Formatter {
 	                continue;
 	            }
 	        }
+	        
+//	        String dbg = sb.toString();
+//	        if (dbg.contains(".set"))
+//	        	dbg = null;
 
 	        if (debugMark != -1) {
 	        	String dbgStr = sb.substring(debugMark);

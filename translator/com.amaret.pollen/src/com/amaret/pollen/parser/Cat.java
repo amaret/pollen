@@ -47,6 +47,13 @@ public class Cat implements Cloneable {
         private boolean isClassFcn;
 
 
+        /**
+         * When a UnitNode is aggScope it indicates a metatype.
+         * @param aggScope
+         * @param defScope
+         * @param isRef
+         * @param fcnRef
+         */
         private Agg(IScope aggScope, IScope defScope, boolean isRef, boolean fcnRef) {
         	if (aggScope instanceof UnitNode) {
 				UnitNode u = (UnitNode) aggScope;	
@@ -54,27 +61,32 @@ public class Cat implements Cloneable {
 				//if (dbg)
 				//System.out.println(u.getQualName() + (u.isMeta() ? " is meta type " : "") + (u.isGeneratedMetaInstance() ? ", is generated meta instance" : ""));							
 			}
-			if (aggScope instanceof DeclNode.Fcn) {
-				//System.out.println(((DeclNode.Fcn)aggScope).getName().getText());
+
+			if (aggScope instanceof ImportNode) {
+				System.out.println("Cat.Agg(): import where unit was expected");				
+			}
+			IScope agg = aggScope;
+			if (aggScope instanceof UnitNode) {
+				agg = ((UnitNode)aggScope).getUnitType();
 			}
             this.aggScope = aggScope;
             this.defScope = defScope;
             this.isRef = isRef;
-            this.isFcnRef = aggScope instanceof DeclNode.TypedMember 
-            	? ((DeclNode.TypedMember) aggScope).isFcnRef() : false;
-            this.isFcnRef = aggScope instanceof DeclNode.Fcn && defScope instanceof BodyNode // fcnref as parameter 
+            this.isFcnRef = agg instanceof DeclNode.TypedMember 
+            	? ((DeclNode.TypedMember) agg).isFcnRef() : false;
+            this.isFcnRef = agg instanceof DeclNode.Fcn && defScope instanceof BodyNode // fcnref as parameter 
                     	? true : this.isFcnRef;
             this.isFcnRef |= fcnRef;
-            this.isHostClassRef = aggScope instanceof DeclNode 
-        		? ((DeclNode) aggScope).isHostClassRef(): false;
-        	this.isTargetClassRef = aggScope instanceof DeclNode 
-        		? ((DeclNode) aggScope).isTargetClassRef(): false;
-        	this.isClassRef = aggScope instanceof DeclNode 
-        		? ((DeclNode) aggScope).isClassRef(): false;
-        	this.isClassRef |= aggScope instanceof DeclNode.Class && isRef;
-        	this.isProtocolMember = aggScope instanceof DeclNode 
-        		? ((DeclNode) aggScope).isProtocolMember(): false;
-        	this.isClassFcn = aggScope instanceof DeclNode.Fcn && isFcnRef ? ((DeclNode.Fcn)aggScope).isClassScope() : false;
+            this.isHostClassRef = agg instanceof DeclNode 
+        		? ((DeclNode) agg).isHostClassRef(): false;
+        	this.isTargetClassRef = agg instanceof DeclNode 
+        		? ((DeclNode) agg).isTargetClassRef(): false;
+        	this.isClassRef = agg instanceof DeclNode 
+        		? ((DeclNode) agg).isClassRef(): false;
+        	this.isClassRef |= agg instanceof DeclNode.Class && isRef;
+        	this.isProtocolMember = agg instanceof DeclNode 
+        		? ((DeclNode) agg).isProtocolMember(): false;
+        	this.isClassFcn = agg instanceof DeclNode.Fcn && isFcnRef ? ((DeclNode.Fcn)agg).isClassScope() : false;
 
         }
         public boolean isClassFcn() {
@@ -86,7 +98,9 @@ public class Cat implements Cloneable {
         public boolean isClassRef() {
 			return isClassRef;
 		}
-
+        public boolean isRef() {
+        	return isRef || isClassRef;
+        }
 		public boolean isTargetClassRef() {
 			return isTargetClassRef;
 		}
@@ -201,7 +215,17 @@ public class Cat implements Cloneable {
         
         private Arr(TypeNode.Arr tarr) {
             this.tarr = tarr;
-            this.baseCat = Cat.fromType(tarr.getBase());
+            if (tarr.isReferenceElems() && tarr.getBaseSymbol() != null){
+            	// array of object references
+            	SymbolEntry sym = tarr.getBaseSymbol();
+            	ISymbolNode node = sym.node();
+    			if (node != null && node instanceof ImportNode) {
+    				node = ((ImportNode)node).getUnit().getUnitType();
+    			}
+            	this.baseCat = Cat.fromSymbolNode(node, sym.scope(), true, false );
+            }
+            else
+            	this.baseCat = Cat.fromType(tarr.getBase());
         }
         
         public Cat getBase() {
@@ -231,6 +255,9 @@ public class Cat implements Cloneable {
         }
         @Override protected String mkTypeStr() {
         	return getBase().code() + "$arr";
+        }
+        public boolean isClassRef() {      
+        	return getType().isReferenceElems();  
         }
         	
     }
@@ -262,7 +289,8 @@ public class Cat implements Cloneable {
 
         	// TODO 
         	// handle multiple returns
-        	retCat = Cat.fromType(fcnD.getTypeSpec());
+
+        	retCat = mkRetCat(fcnD);
 
         	for (DeclNode.Formal arg : fcnD.getFormals()) {
         		argCats.add(Cat.fromType(arg.getTypeSpec()));
@@ -270,10 +298,20 @@ public class Cat implements Cloneable {
         	minArgc = fcnD.getFormals().size();
         	this.fcnD = fcnD;
         }
+        
+        private Cat mkRetCat(DeclNode.Fcn f) {
+        	TypeNode t = f.getTypeSpec();
+        	Cat ret;
+        	if (t instanceof TypeNode.Usr && ((TypeNode.Usr)t).isClassRef())
+        		ret = fromType(t, true, ParseUnit.current().getSymbolTable().curScope());
+        	else
+        		ret = Cat.fromType(t);
+        	return ret;
+        }
         public Fcn(DeclNode.Fcn fcnD, IScope sc) {
         	
         	bindAggScope(sc);  
-        	retCat = Cat.fromType(fcnD.getTypeSpec());
+        	retCat = mkRetCat(fcnD);
 
         	for (DeclNode.Formal arg : fcnD.getFormals()) {
         		argCats.add(Cat.fromType(arg.getTypeSpec(), false, aggScope));
@@ -524,7 +562,7 @@ public class Cat implements Cloneable {
     	//System.out.println("Cat.fromSymbolNode(): " + snode.getName().getText());
     	
         if (snode instanceof UnitNode) {
-            return new Cat.Agg((UnitNode) snode, defScope, false, false);
+            return new Cat.Agg((UnitNode) snode, defScope, isRef, false);
         }
         else if (snode instanceof DeclNode.Usr) {
             return new Cat.Agg((DeclNode.Usr) snode, defScope, isRef, false);
@@ -545,7 +583,7 @@ public class Cat implements Cloneable {
 //				UnitNode u = ((ImportNode) snode).getUnit();
 //				SymbolEntry s2 = u.lookupName(((ImportNode) snode).getUnitName().getText());
 //				return fromSymbolNode(s2.node(), defScope);
-        	return fromSymbolNode(((ImportNode) snode).getUnit(), defScope);
+        	return fromSymbolNode(((ImportNode) snode).getUnit(), defScope, isRef, false);
         }
         else if (snode instanceof DeclNode.TypedMember) {
             return new Cat.Agg((DeclNode.TypedMember) snode, defScope, false, false);
@@ -576,11 +614,12 @@ public class Cat implements Cloneable {
         }
     }    
     public static Cat fromType(TypeNode typeNode) {
+    	//boolean isRef = typeNode instanceof TypeNode.Usr ? ((TypeNode.Usr)typeNode).isClassRef() : false;
         return fromType(typeNode, false, ParseUnit.current().getSymbolTable().curScope());
     }
     
     static Cat fromType(TypeNode typeNode, boolean isRef, IScope sc) {
-    	//System.out.println("Cat.fromTypeNode(): " + typeNode.getName().getText());
+    	//System.out.println("Cat.fromTypeNode(): " + typeNode.getName().getText() + (typeNode.getType() == pollenParser.T_ARR ? " array" : ""));
         switch (typeNode.getType()) {
         case pollenParser.T_ARR:
             return new Cat.Arr((TypeNode.Arr) typeNode);
@@ -656,6 +695,12 @@ public class Cat implements Cloneable {
     }
     public boolean isFcnRef() {        
     	return false;    
+    }
+    public boolean isRef() {
+    	if (this instanceof Cat.Arr){
+    		return this.isClassRef();
+    	}
+    	return false;
     }
     public boolean isFcn() {
     	return this instanceof Cat.Fcn; 

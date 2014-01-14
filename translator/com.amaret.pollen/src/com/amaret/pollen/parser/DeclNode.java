@@ -225,6 +225,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		static final private int NAME = 1;
 		static final private int DIM = 2;
 		static final private int INIT = 3;
+		private boolean initToNull = false;
 
 		Arr(int ttype, String ttext, EnumSet<Flags> flags) {
 			super(ttype, ttext, flags);
@@ -325,6 +326,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 					&& !((DeclNode.Usr) node).isClass())
 				ParseUnit.current().reportError(this.getName(),
 						"Objects as array elements must have class type");
+			getTypeArr().setBaseSymbol(se);
 
 			if (!this.isHost() && u.isComposition() && (this.getDefiningScope() instanceof DeclNode.Usr)) {
 				ParseUnit.current().reportError(this.getName(),
@@ -333,13 +335,32 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			//checkDims(); // moved to codegen
 
 			ExprNode.Vec v = checkInits();
-
+			
+			
+			TypeNode.Arr arrt = this.getTypeArr();
+			SymbolEntry se2 = arrt.getBaseSymbol();
+			ISymbolNode node2 = se2 != null ? se2.node() : null;
+			if (node2 instanceof ITypeKind && (((ITypeKind)node2).isClass() || ((ITypeKind)node2).isProtocol())) {
+				if (!this.isHost() )
+					// If this is an array of references, set flag in the TypeNode of the base type.
+					arrt.setReferenceElems(true);
+				this.clearHost();  // C const arrays get a warning if you assign an element of a const array to a non const variable
+			}
+			
 			if (v != null) {
 				SymbolEntry symbol = ParseUnit.current().getSymbolTable()
 						.resolveSymbol(getName());
 				v.setSymbol(symbol);
 			}
 			super.pass2End();
+		}
+		/**
+		 * 
+		 * @return true if elements are references to class or protocol type (not instances)
+		 */
+		public boolean isReferenceElems() {
+			TypeNode.Arr arrt = this.getTypeArr();
+			return arrt.isReferenceElems();
 		}
 
 		/**
@@ -410,6 +431,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				ExprNode e = v.getVals().get(0);
 				for (int i = exprs; i < dims; i++) {
 					v.getVals().add(e);
+				}				
+				ExprNode.Const vc = e.getConstInitialValue();
+				if (vc != null && vc.getValue().getText().equals("null")) {
+					initToNull = true; // an array of references
 				}
 			}
 			return v;
@@ -2345,10 +2370,15 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		return flags.contains(Flags.HOST_NONCONST);
 	}
 	public void clearHost() {
-		if (this instanceof DeclNode.TypedMember || this instanceof DeclNode.FcnRef)
-			flags.add(Flags.HOST_NONCONST);
-		else
-			flags.remove(Flags.HOST);
+		if (isHost()) {
+			// declaring as const is limiting... E.g.
+			// C const arrays get a warning if you assign an element of a const array to a non const variable.
+			// So these items are handled as host variables but not generated as const
+			if (this instanceof DeclNode.TypedMember || this instanceof DeclNode.FcnRef || this instanceof DeclNode.Arr)
+				flags.add(Flags.HOST_NONCONST);
+			else
+				flags.remove(Flags.HOST);
+		}
 	}
 
 	public boolean isClassRef() {

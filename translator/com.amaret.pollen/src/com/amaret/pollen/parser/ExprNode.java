@@ -911,6 +911,9 @@ public class ExprNode extends BaseNode {
 			
 			if (exprCat == Cat.UNKNOWN && symbol != null) {
 				ISymbolNode node = symbol.node();
+    			if (node != null && node instanceof ImportNode) {
+    				node = ((ImportNode)node).getUnit().getUnitType();
+    			}
 				if (node instanceof DeclNode.TypedMember)
 					exprCat = Cat.fromSymbolNode(symbol.node(), symbol.scope());
 				else
@@ -1191,6 +1194,7 @@ public class ExprNode extends BaseNode {
 			if (symbol != null && symbol.node() instanceof DeclNode.Var
 					&& ((DeclNode.Var) symbol.node()).isConst())
 				isConst = true;
+
 			exprCat = symbol.node().getTypeCat();
 		}
 	}

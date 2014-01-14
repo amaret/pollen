@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.amaret.pollen.parser.BodyNode;
 import com.amaret.pollen.parser.DeclNode;
+import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.StmtNode;
 import com.amaret.pollen.parser.UnitNode;
 
@@ -40,6 +41,9 @@ public class UnitBody {
 			gen.getFmt().print("%t");
 			gen.aux.genStmt(stmt);
 			gen.getFmt().print("\n");
+		}
+		if (fcn.isConstructor() && fcn.getName().getText().equals(ParseUnit.CTOR_CLASS_TARGET)) {
+			gen.getFmt().print("%treturn this;\n");
 		}
 		gen.getFmt().print("%-}\n\n");
 	}

@@ -44,6 +44,9 @@ public class UnitJScript {
 
         DeclNode.Class cls = fcn.getFcnClass();
         // note classes are generated with javascript 'prototype'
+        
+        boolean class_ctor = fcn.cname().matches(".*" +ParseUnit.CTOR_CLASS_HOST);
+        String rtn = class_ctor ? "this" : "$$text";
     
         boolean dbg = false;
         if (dbg) {
@@ -92,7 +95,7 @@ public class UnitJScript {
         	}
         
         if (fcn.isHost()) {
-            gen.getFmt().print("%treturn $$text;\n");
+            gen.getFmt().print("%treturn %1;\n", rtn);
         }
         gen.getFmt().print("%-%t}\n");
     }
@@ -515,9 +518,9 @@ public class UnitJScript {
         else if ( cat instanceof Cat.Agg && ((Cat.Agg) cat).isHostClassRef()) {
         	
             gen.aux.genDefault(ts.getTypeCat(), ts);
-            
+                      
             if (init instanceof ExprNode.New) {
-            	DeclNode d = (DeclNode) ts;
+            	DeclNode d = (DeclNode) ts;            	
             	gen.getFmt().print("; %2.%3.%1", ParseUnit.CTOR_CLASS_HOST, gen.uname(), d.getName() );
             	gen.aux.genCallArgs(((ExprNode.New)init).getCall());            	
             }
@@ -532,9 +535,6 @@ public class UnitJScript {
         }
         else if (tc.startsWith(Cat.CLASS)) {
             gen.aux.genDefault(ts.getTypeCat(), ts);
-//            Cat.Agg c = (Agg) (ts.getTypeCat() instanceof Cat.Agg ? ts.getTypeCat() : null);
-//            String cls = c != null ? c.aggScope().getScopeName() : "";
-//            gen.fmt.print(" %1.%2 = %3.%4", gen.uname(), ts.getName(), gen.uname(), cls);
         }
         else {
             gen.aux.genExpr(init);
