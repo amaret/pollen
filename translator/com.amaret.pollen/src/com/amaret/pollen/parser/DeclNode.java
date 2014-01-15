@@ -43,6 +43,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		public String getOutputQNameHost(Generator g, ISymbolNode node, IScope sc, EnumSet<Flags> flags) {
 			
 			return this.getOutputQNameTarget(g, node, sc, flags); // untested
+			
 		}
 		
 		public String getOutputQNameTarget(Generator g, ISymbolNode node, IScope sc, EnumSet<Flags> flags) {
@@ -349,6 +350,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			if (!this.isHost() && u.isComposition() && (this.getDefiningScope() instanceof DeclNode.Usr)) {
 				ParseUnit.current().reportError(this.getName(),
 						"compositions can only declare host variables");
+			}
+			if (this.isHost()) {
+				ExprNode.Const ex = this.getFirstDim().getConstInitialValue();
+				if (ex != null && ex.getValue().getText().equals("-1") && this.getInit() == null)
+					ParseUnit.current().reportError(this, this.getName().getText() + ": host arrays must be declared with dimension, initializer, or both");
 			}
 			//checkDims(); // moved to codegen
 
@@ -1636,6 +1642,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		Class(int ttype, String ttext, EnumSet<Flags> flags, String qn) {
 			super(ttype, ttext, flags, qn);
 		}
+		
 
 	}
 

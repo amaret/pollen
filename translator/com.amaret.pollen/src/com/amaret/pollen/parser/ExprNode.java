@@ -1158,12 +1158,17 @@ public class ExprNode extends BaseNode {
 		protected boolean pass2Begin() {
 			// this used to be pass1Begin() but that creates a requirement 
 			// that a variable be declared before it is referenced.
-
+			
 			ParseUnit currUnit = ParseUnit.current();
 
 			if (!currUnit.getCurrUnitNode().getUnitType().isClass()) {
-				currUnit.reportError(this,
-						"\'@\' can only be used in \'class\' methods");
+				// If the class is nested, the unit type may be the containing module. So check further.
+				Tree t = this.getParent();
+				while(!(t == null || t instanceof DeclNode.Usr))
+					t = t.getParent();
+				if (!(t instanceof DeclNode.Class))
+					currUnit.reportError(this,
+							"\'@\' can only be used in \'class\' methods");
 			}
 
 			// do the lookup of the deref'd member here, where the self context
