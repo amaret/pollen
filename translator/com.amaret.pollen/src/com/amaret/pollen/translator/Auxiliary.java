@@ -356,7 +356,7 @@ public class Auxiliary {
 				gen.getFmt().print("), (");
 				genExpr(right);
 				gen.getFmt().print("), (");
-				genTypeWithVarName(rightCat.getType().getBase(), null);
+				genTypeWithVarName(rightCat.getType().getBase(), null, EnumSet.noneOf(Flags.class));
 				gen.getFmt().print("))");
 				return;
 			}
@@ -407,7 +407,7 @@ public class Auxiliary {
 
 				
  		String n = expr.getName() instanceof ExprNode.Ident ? ((ExprNode.Ident) expr.getName()).getName().getText() : "";
-		//System.out.println("genExprCall: " + n);
+		//System.out.println("genExprCall: " + expr.toStringTree());
 
 		if (n.equals(ParseUnit.INTRINSIC_PREFIX + "assert")) {				
 			if (!ProcessUnits.isAsserts())
@@ -487,9 +487,11 @@ public class Auxiliary {
 						String formalTypeName = ((Cat.Agg)f.getTypeCat()).aggName();
 						if (!(argTypeName.equals(formalTypeName))) { // CAST
 							gen.getFmt().print("(");
-							genTypeWithVarName(f.getTypeSpec(), null);
+							genTypeWithVarName(f.getTypeSpec(), null, EnumSet.noneOf(Flags.class));
 							gen.getFmt().print(")&");
 						}
+						else if (((Cat.Agg)arg.getCat()).isHostClassRef())
+							gen.getFmt().print("&");
 					}
 				}
 			}
@@ -659,6 +661,11 @@ public class Auxiliary {
 				return rtn;
 			}
 			
+			if (qualifierNode instanceof DeclNode.Formal && !(snode instanceof DeclNode.Fcn)) {
+				scopeOfDcln = qualifierNode.getDefiningScope();
+				return (gen.getOutputQName(qualifierNode, snode, scopeOfDcln, flags));
+			}
+			
 			if (qualifierNode instanceof DeclNode.TypedMember) {
 				return (gen.getOutputQName(qualifierNode, snode, scopeOfDcln, flags)); 	
 			}		
@@ -666,9 +673,11 @@ public class Auxiliary {
 			if (snode == gen.curUnit()) {
 				return(gen.getOutputName(snode, snode.getDefiningScope(), flags));
 			}
+
 			if (snode instanceof DeclNode.Usr) {
 				return (gen.getOutputName(snode, scopeOfDcln, flags)); 				
 			}
+
 			if (snode instanceof DeclNode.Var) {
 				return (gen.getOutputName(snode, scopeOfDcln, flags)); 				
 			}
@@ -778,7 +787,7 @@ public class Auxiliary {
 				gen.getFmt().print("%1", expr.getTypeSpec().getTypeInfo().size);
 			} else {
 				gen.getFmt().print("sizeof(");
-				genTypeWithVarName(expr.getTypeSpec(), null);
+				genTypeWithVarName(expr.getTypeSpec(), null, EnumSet.noneOf(Flags.class));
 				gen.getFmt().print(")");
 			}
 			break;
@@ -787,7 +796,7 @@ public class Auxiliary {
 				gen.getFmt().print("%1", expr.getTypeSpec().getTypeInfo().align);
 			} else {
 				gen.getFmt().print("offsetof (cls { char c; ");
-				genTypeWithVarName(expr.getTypeSpec(), "t");
+				genTypeWithVarName(expr.getTypeSpec(), "t", EnumSet.noneOf(Flags.class));
 				gen.getFmt().print("; }, t)");
 			}
 			break;
@@ -924,7 +933,7 @@ public class Auxiliary {
 		if (args.size() == 0) {
 			if (thisPtr.isMethod()) {	// to access class data
 				gen.getFmt().print("( ");
-				genTypeWithVarName(thisPtr.getTypeSpec(), "" + thisPtr.getName());
+				genTypeWithVarName(thisPtr.getTypeSpec(), "" + thisPtr.getName(), EnumSet.noneOf(Flags.class));
 				gen.getFmt().print(" )");
 				return;
 			}
@@ -937,7 +946,7 @@ public class Auxiliary {
 		
 		if (thisPtr.isMethod()) {	// to access class data
 			sep = ", ";
-			genTypeWithVarName(thisPtr.getTypeSpec(), "" + thisPtr.getName());
+			genTypeWithVarName(thisPtr.getTypeSpec(), "" + thisPtr.getName(), EnumSet.noneOf(Flags.class));
 		}
 
 		for (DeclNode.Formal arg : args) {
@@ -947,7 +956,7 @@ public class Auxiliary {
 				SymbolEntry s = arg.getTypeSpec() instanceof TypeNode.Usr ? ((TypeNode.Usr) arg
 						.getTypeSpec()).getSymbol()
 						: null;
-				genTypeWithVarName(arg.getTypeSpec(), "" + arg.getName());
+				genTypeWithVarName(arg.getTypeSpec(), "" + arg.getName(), EnumSet.noneOf(Flags.class));
 			} else
 				gen.getFmt().print(arg.getName()); // javascript
 		}
@@ -984,7 +993,7 @@ public class Auxiliary {
 					gen.getFmt().print("%t");
 					TypeNode t = var instanceof DeclNode.Arr ? ((DeclNode.Arr) var)
 							.getTypeArr() : var.getTypeSpec();
-					genTypeWithVarName(t, "" + var.getName());
+					genTypeWithVarName(t, "" + var.getName(), EnumSet.noneOf(Flags.class));
 					// must initialize const on the declaration
 					if (var.isConst() && var.getInit() != null) {
 						gen.getFmt().print(" = ");
@@ -1284,13 +1293,13 @@ public class Auxiliary {
 					if (arrayNoDim) {
 						// declare as ptr and index like array						
 						TypeNode t = ((DeclNode.Arr) decl).getTypeArr().getBase();
-						genTypeWithVarName(t, "* " + decl.getName());
+						genTypeWithVarName(t, "* " + decl.getName(), EnumSet.noneOf(Flags.class));
 					}
 					else  {
 						// in c, 'int arr[2] = {1,2};' cannot be split into 2 statements.
 						// Special case to prevent that splitting.
 						TypeNode t = ((DeclNode.Arr) decl).getTypeArr();
-						genTypeWithVarName(t, "" + decl.getName());
+						genTypeWithVarName(t, "" + decl.getName(), EnumSet.noneOf(Flags.class));
 
 					}
 					gen.getFmt().print(" = ");
@@ -1484,26 +1493,30 @@ public class Auxiliary {
 
 	/**
 	 * Enter here for print of type AND var name (if passed).
+	 * Used with declarations: 'type varname'
 	 * 
 	 * @param type
-	 * @param name
+	 * @param name can be null
 	 *            e.g. Argtype argName
+	 * @param flags TODO
 	 */
-	void genTypeWithVarName(TypeNode type, String name) {
+	void genTypeWithVarName(TypeNode type, String name, EnumSet<Flags> flags) {
 		
 		if (type instanceof TypeNode.Arr) {
 			Cat.Arr c = (Arr) Cat.fromType(type);
 			if (c.getType().hasDim())
 				name = ""; // name will be output as part of type
 		}
-		String s = mkTypeName(type) + (name == null ? "" : " " + name);
+		String s = mkTypeName(type, flags) + (name == null ? "" : " " + name);
 		gen.getFmt().print("%1", s);
 	}
 	/**
+	 * 
 	 * @param type
+	 * @param flags 
 	 * @return the type, formatted for output
 	 */
-	private String mkTypeName(TypeNode type) {
+	private String mkTypeName(TypeNode type, EnumSet<Flags> flags) {
 			
 		
 		TypeNode t = type;
@@ -1514,7 +1527,8 @@ public class Auxiliary {
 			break;
 		case pollenParser.T_STD:
 		case pollenParser.T_USR:
-			rtn = (gen.getOutputName(t, null, EnumSet.of(Flags.IS_DECL)));
+			flags.add(Flags.IS_DECL);
+			rtn = (gen.getOutputName(t, null, flags));
 			break;
 		}
 		return rtn;

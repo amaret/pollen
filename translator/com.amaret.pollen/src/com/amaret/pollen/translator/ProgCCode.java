@@ -833,7 +833,7 @@ public class ProgCCode {
         long lg = num.longValue();
         double d = num.doubleValue();
         gen.getFmt().print("(");
-        gen.aux.genTypeWithVarName(cast, null);
+        gen.aux.genTypeWithVarName(cast, null, EnumSet.noneOf(Flags.class));
         gen.getFmt().print(")");
         if (d != lg) {
             gen.getFmt().print("%1", num);

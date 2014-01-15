@@ -19,7 +19,7 @@ import com.amaret.pollen.translator.Generator;
 public class DeclNode extends BaseNode implements ISymbolNode {
 
 	// DeclNode.Formal (parameter)
-	static public class Formal extends DeclNode implements ITypeSpecInit, IOutputName {
+	static public class Formal extends DeclNode implements ITypeSpecInit, IOutputName, IOutputQualifiedName {
 
 		static final private int TYPE = 0;
 		static final private int NAME = 1;
@@ -39,6 +39,24 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			if (flags.contains(Flags.TYPE_META_ARG))
 				return true;
 			return false;
+		}
+		public String getOutputQNameHost(Generator g, ISymbolNode node, IScope sc, EnumSet<Flags> flags) {
+			
+			return this.getOutputQNameTarget(g, node, sc, flags); // untested
+		}
+		
+		public String getOutputQNameTarget(Generator g, ISymbolNode node, IScope sc, EnumSet<Flags> flags) {
+			IScope scopeOfDcln = sc;	
+			boolean localsScope = !(scopeOfDcln instanceof UnitNode || scopeOfDcln instanceof DeclNode.Usr);
+			String rtn = "";
+			if (localsScope) {
+				rtn = this.getName().getText(); 
+				rtn += this.getTypeCat().isRef() ? "->" : ".";
+			} // else error?			
+			if (node instanceof DeclNode.Var) {
+				rtn += ((DeclNode.Var)node).getOutputNameTarget(g, node.getDefiningScope(), EnumSet.of(Flags.IS_POSTEXPR));
+			} 
+			return rtn; 
 		}
 		public String getOutputNameTarget(Generator g, IScope sc, EnumSet<Flags> flags) {
 
@@ -613,10 +631,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				return this.getName().getText();	
 			boolean thisPtr = flags.contains(Flags.IS_THISPTR);
 			boolean postExpr = flags.contains(Flags.IS_POSTEXPR);
-//			boolean dbg = false;
-//			System.out.println(this.getName().getText());
-//			if (this.getName().getText().equals("enable"))
-//				dbg = true;
 			if (postExpr) {
 				return this.getName().getText();
 			}	

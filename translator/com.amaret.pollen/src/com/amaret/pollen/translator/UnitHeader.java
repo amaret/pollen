@@ -122,7 +122,7 @@ public class UnitHeader {
     private void genDecl$Fcn(DeclNode.Fcn decl) {
         gen.getFmt().print("extern ");
         TypeNode ft = decl.getTypeSpec();
-        gen.aux.genTypeWithVarName(ft, gen.uname_target() + gen.aux.mkPollenCname(decl.cname()) + gen.aux.mkSuf(decl));
+        gen.aux.genTypeWithVarName(ft, gen.uname_target() + gen.aux.mkPollenCname(decl.cname()) + gen.aux.mkSuf(decl), EnumSet.noneOf(Flags.class));
         gen.aux.genFcnArgs(decl.getFormals(), true, decl);
         gen.getFmt().print(";\n");
     }
@@ -135,12 +135,13 @@ public class UnitHeader {
 		if (decl.isConst()) {
 			return;
 		}
-		
-		String dbg = decl.getName().getText();
-
+				
 		gen.getFmt().print("typedef ");
+		EnumSet<Flags> f = EnumSet.noneOf(Flags.class);
+		if (decl.isClassRef())
+			f.add(Flags.IS_CLASSREF_TYPEDEF);
 		gen.aux.genTypeWithVarName(decl.getTypeSpec(), gen.uname_target() + decl.getName()
-				+ "__TYPE");
+				+ "__TYPE", f);
 		gen.getFmt().print(";\n");
 		String braces = "";
         if (decl instanceof DeclNode.Arr) {
@@ -184,7 +185,7 @@ public class UnitHeader {
 			else
 				if (fld instanceof DeclNode.ITypeSpec && !(fld instanceof DeclNode.Fcn)) {
 					gen.getFmt().print("%t");
-					gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "" + fld.getName());       		
+					gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "" + fld.getName(), EnumSet.noneOf(Flags.class));       		
 				}
     		if (fld instanceof DeclNode.Arr) {
     			((DeclNode.Arr)fld).checkDims();
@@ -246,7 +247,7 @@ public class UnitHeader {
 			if (fld instanceof DeclNode.ITypeSpec) {
 				TypeNode t = ((DeclNode.ITypeSpec) fld).getTypeSpec();
 				if (t instanceof TypeNode.Usr && ((TypeNode.Usr)t).isFunctionRef()) {
-					String s = gen.getOutputName(t, null, EnumSet.of(Flags.IS_TYPEDEF));
+					String s = gen.getOutputName(t, null, EnumSet.of(Flags.IS_FCNREF_TYPEDEF));
 					if (!fcnrefTypeDefs.contains(s)) { // must be unique or c gives error
 						fcnrefTypeDefs.add(s);
 						gen.getFmt().print("%ttypedef ");
@@ -282,12 +283,12 @@ public class UnitHeader {
         		boolean proMem = fld instanceof DeclNode.TypedMember && ((DeclNode.TypedMember)fld).isProtocolMember();
         		if (proMem) {
         			gen.getFmt().print("struct ");
-        			gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "");
+        			gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "", EnumSet.noneOf(Flags.class));
         			gen.getFmt().print("*"  + fld.getName().getText());
         		}
         		else if (fld.isHostClassRef()) {
         			gen.getFmt().mark();
-        			gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "");
+        			gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "", EnumSet.noneOf(Flags.class));
         			String typeString = gen.getFmt().release();
         			gen.getFmt().print("%1 %2",typeString.substring(0, typeString.length()-2), fld.getName().getText());
         		}
@@ -298,7 +299,7 @@ public class UnitHeader {
         		else {
         			String name = (fld instanceof DeclNode.Arr && !((DeclNode.Arr)fld).hasDim()) ? "* " : "";
         			name += fld.getName().getText();
-        			gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), name);
+        			gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), name, EnumSet.noneOf(Flags.class));
         		}
         		if (fld instanceof DeclNode.Arr && ((DeclNode.Arr)fld).hasDim()) {
         			genArrDims(((DeclNode.Arr)fld));
@@ -371,7 +372,7 @@ public class UnitHeader {
     	}
     	else {
     		gen.getFmt().print("extern ");
-    		gen.aux.genTypeWithVarName(decl.getTypeSpec(), gen.uname_target() + decl.getName() + gen.aux.mkSuf(decl));
+    		gen.aux.genTypeWithVarName(decl.getTypeSpec(), gen.uname_target() + decl.getName() + gen.aux.mkSuf(decl), EnumSet.noneOf(Flags.class));
     		if (decl instanceof DeclNode.Arr) {
     			for (ExprNode e : ((DeclNode.Arr)decl).getDim().getElems()) {
     				gen.getFmt().print("[]");

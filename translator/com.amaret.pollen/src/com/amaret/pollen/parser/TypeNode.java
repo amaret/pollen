@@ -177,9 +177,12 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
         	// currently host and target not disentangled, may be necessary at some point.
         	return this.getOutputNameTarget(g, sc, flags);
         }
+		/**
+		 * IScope sc - not used, can pass null.
+		 */
         public String getOutputNameTarget(Generator g, IScope sc, EnumSet<Flags> flags) {
         	boolean isCStructRef = true; 
-        	boolean isTypedef = flags.contains(Flags.IS_TYPEDEF);
+        	boolean isTypedef = flags.contains(Flags.IS_FCNREF_TYPEDEF) || flags.contains(Flags.IS_CLASSREF_TYPEDEF);
         	boolean addTypeMods = flags.contains(Flags.IS_DECL);
         	
 			SymbolEntry s = ((Usr) this).getSymbol();
@@ -210,7 +213,7 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 				return rtn;
 			}
 			if (this.getParent() instanceof DeclNode) {
-				if (((DeclNode)this.getParent()).isHostClassRef()) {
+				if (((DeclNode)this.getParent()).isHostClassRef()) { 
 					isCStructRef = false;
 				}								
 			}
@@ -258,9 +261,11 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 					
 				} else {
 					if (s.node() instanceof DeclNode.Usr) {
-						if (s.scope() instanceof DeclNode.Usr) // nested
-							rtn = g.uname_target()
-							+ ((DeclNode.Usr) s.node()).getName().getText() + ptr_suffix;
+						if (s.scope() instanceof DeclNode.Usr) { // nested
+							rtn  = g.getOutputName(s.node(), /*((DeclNode.Usr)s.scope()).getEnclosingScope()*/ s.scope(), EnumSet.noneOf(Flags.class));
+							rtn += ptr_suffix; // g.uname_target()
+							//+ ((DeclNode.Usr) s.node()).getName().getText() + ptr_suffix;
+						}
 						else
 							rtn = g.uname_target();
 								

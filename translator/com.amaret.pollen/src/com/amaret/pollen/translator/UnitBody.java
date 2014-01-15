@@ -4,11 +4,13 @@
 package com.amaret.pollen.translator;
 
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
 import com.amaret.pollen.parser.BodyNode;
 import com.amaret.pollen.parser.DeclNode;
+import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.StmtNode;
 import com.amaret.pollen.parser.UnitNode;
@@ -32,7 +34,7 @@ public class UnitBody {
 		}
 		
 		gen.aux.genTypeWithVarName(fcn.getTypeSpec(), gen.uname_target()
-				+ gen.aux.mkPollenCname(fcn.cname()) + gen.aux.mkSuf(fcn));
+				+ gen.aux.mkPollenCname(fcn.cname()) + gen.aux.mkSuf(fcn), EnumSet.noneOf(Flags.class));
 		gen.aux.genFcnArgs(body.getFormals(), true, fcn);
 		gen.getFmt().print(" {\n%+");
 		
