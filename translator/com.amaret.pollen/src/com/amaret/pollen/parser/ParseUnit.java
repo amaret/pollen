@@ -39,6 +39,8 @@ public class ParseUnit {
 	private HashMap<String, UnitNode> unitMap;
 	private HashMap<String, String> packages;
 	private HashMap<String, String> errors;
+	
+	
 	private List<String> metaModules = new ArrayList<String>();
 	static private boolean debugMode = false;
 	
@@ -70,6 +72,71 @@ public class ParseUnit {
 			return false;			
 		return true;
 	}
+	/*
+	 * For meta instantiations.
+	 * Given, in the Test context:
+	 *   from pollen.hardware import HandlerProtocol as HP
+	 *   from pollen.data import Queue {HP} as HandlerQueue
+	 * This results in an import in the Queue context (Queue is 'meta {type E} class Queue')
+	 * created by the parser:
+	 *   from pollen.data import HP as E
+	 * It needs to be corrected to 
+	 *   from pollen.hardware import HandlerProtocol as E
+	 *   
+	 * These maps support these fixups.
+	 * Used by the parser.
+	 */
+	protected class ImportsMaps {	// one of these per unit
+		private HashMap<String, String> typeToPackageMap;        
+		private HashMap<String, String> asNameToTypeMap;        
+		private HashMap<String, String> asNameToPackageMap;  
+		protected ImportsMaps() {
+			typeToPackageMap = new HashMap<String, String>();
+			asNameToPackageMap = new HashMap<String, String>();	
+			asNameToTypeMap = new HashMap<String, String>();
+		}
+		protected void addTypeNamesToPackageMaps(String t,String asName, String pkg) {
+			typeToPackageMap.put(t,pkg);
+			if (asName != null) {
+				asNameToPackageMap.put(asName, pkg);
+				asNameToTypeMap.put(asName, t);
+			}
+		}
+		protected String getPackage(String key) {
+			String ret = (asNameToTypeMap.get(key)) != null ? asNameToPackageMap.get(key) : typeToPackageMap.get(key);
+			return ret;
+		}
+		protected String getTypeName(String key) {
+			// If there is no entry in the map, this key must be the type name.
+			String ret = asNameToTypeMap.get(key) != null ? asNameToTypeMap.get(key) : key;
+			return ret;
+		}
+	}
+	private HashMap<String, ImportsMaps> importedTypes = new HashMap<String, ImportsMaps>();  // one per unit
+	/**
+	 * Supports fixups to meta parameters, see nested class ImportsMaps.
+	 * @param type
+	 * @param asName
+	 * @param pkg
+	 */
+	public void addToImportsMaps(String type, String asName, String pkg) {
+		String key = ParseUnit.mkPackageName(getCurrPath()) + "." + ParseUnit.mkUnitName(getCurrPath());
+		//System.out.println("in unit " + key + " add 'import " + pkg + "." + type + " as " + asName + "'");
+		if (!importedTypes.containsKey(key))
+			importedTypes.put(key, new ImportsMaps());
+		importedTypes.get(key).addTypeNamesToPackageMaps(type, asName, pkg);		
+	}
+	public String getTypeName(String key, String n) {
+		if (!importedTypes.containsKey(key))
+			importedTypes.put(key, new ImportsMaps());
+		return importedTypes.get(key).getTypeName(n);		
+	}
+	public String getPackage(String key, String t) {
+		if (!importedTypes.containsKey(key))
+			importedTypes.put(key, new ImportsMaps());
+		return importedTypes.get(key).getPackage(t);
+	}
+
 	public static String getPollenFile() {
 		return pollenFile;
 	}
@@ -455,6 +522,7 @@ public class ParseUnit {
 
 				} catch (Termination te) {
 					reportError(currImport, te.getMessage());
+					System.exit(1);
 				}
 			}
 
@@ -516,27 +584,26 @@ public class ParseUnit {
 	 *            pollen file
 	 * @param client
 	 *            client unit (for meta type instantiation)
-	 * @param clientImport
+	 * @param theImport
 	 *            client unit ImportNode (from import statement, for meta type instantiation, has meta
 	 *            parameters) Client parameters are null for non-meta instantiation parse.
 	 * @return AST (UnitNode)
 	 * @throws Exception
 	 */
 	private UnitNode parseUnit(String inputPath, UnitNode client,
-			ImportNode clientImport) throws Exception {
+			ImportNode theImport) throws Exception {
 
-		String cname = client != null ? client.getQualName() : "<no import>";
-		String ciname = clientImport != null ? clientImport.getQualName()
+		String clientName = client != null ? client.getQualName() : "<no import>";
+		String theImportName = theImport != null ? theImport.getQualName()
 				: "<none>";
 
 		setDebugMode(false);
 		//setDebugMode(true);
-		checkParseUnit(inputPath, clientImport, cname, ciname);
+		checkParseUnit(inputPath, theImport, clientName, theImportName);
 		File f = new File(inputPath);
 		if (!f.exists()) {
-			reportError(getPackageName() + "." + getFileName(),
-					"Missing file \'" + ParseUnit.mkUnitName(inputPath) + "\'");
-			return null;
+			reportFailure(
+					"Missing file \'" + getPackageName() + "/" + ParseUnit.mkUnitName(inputPath) + ".p\'\n");
 		}
 
 		paths.add(inputPath);
@@ -547,7 +614,7 @@ public class ParseUnit {
 
 		AtomStream tokens = new AtomStream(lexer);
 		tokens.discardOffChannelTokens(true);
-		parser = new pollenParser(tokens, client, clientImport);
+		parser = new pollenParser(tokens, client, theImport);
 
 		parser.setTreeAdaptor((TreeAdaptor) new BaseNodeAdaptor());
 		pollenParser.unit_return result = parser.unit();
@@ -580,6 +647,7 @@ public class ParseUnit {
 		enterUnit(unit.getQualName(), unit);
 		parseImports(unit);
 		checkUnit(unit);
+
 		paths.remove(paths.size() - 1);
 
 		return unit;
@@ -588,16 +656,16 @@ public class ParseUnit {
 	static private List<String> metaInstancePaths = new ArrayList<String>();
 	/**
 	 * @param inputPath
-	 * @param clientImport
-	 * @param client
-	 * @param ciname
+	 * @param theImport		import stmt in client for imported type
+	 * @param client		importing client
+	 * @param theImportName	name of imported type
 	 */
-	private void checkParseUnit(String inputPath, ImportNode clientImport,
-			String client, String ciname) {
+	private void checkParseUnit(String inputPath, ImportNode theImport,
+			String client, String theImportName) {
 		
-		if (clientImport != null && clientImport.getMeta() != null) {
+		if (theImport != null && theImport.getMeta() != null) {
 			String n = client.indexOf('.') != -1 ? client.substring(0, client.lastIndexOf('.')) : client;
-			n = client + "/" + n + "." + clientImport.getName();
+			n = client + "/" + n + "." + theImport.getName();
 			//System.out.println("metaInstancePath: " + n + ", inputPath " + inputPath);
 
 			if (metaInstancePaths.contains(n) && isDebugMode()) // I no longer think this is an error 
@@ -610,15 +678,15 @@ public class ParseUnit {
 		
 		if (isDebugMode()) {
 			String dbgStr = "  START parseUnit() : ";
-			String asName = clientImport != null ? " as " + clientImport.getName().getText() : "";
+			String asName = theImport != null ? " as " + theImport.getName().getText() : "";
 			dbgStr += "parse \'" + ParseUnit.mkPackageName(inputPath) + "."
 					+ ParseUnit.mkUnitName(inputPath)
 					+ "\', imported in client \'" + client
-					+ "\' with \'import " + ciname  + asName + "\' statement";
-			if (clientImport != null && clientImport.getMeta() != null) {
+					+ "\' with \'import " + theImportName  + asName + "\' statement";
+			if (theImport != null && theImport.getMeta() != null) {
 				dbgStr += ", meta args ";
 				String comma = "";
-				for (BaseNode b : clientImport.getMeta()) {
+				for (BaseNode b : theImport.getMeta()) {
 					dbgStr += comma;
 					if (b.getType() != pollenParser.NIL)
 						dbgStr += b.getText() + "." + b.getChild(0).getText();

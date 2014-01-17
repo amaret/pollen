@@ -144,7 +144,7 @@ public class Cat implements Cloneable {
             if (aggScope instanceof UnitNode) {
                 return ((UnitNode) aggScope).getQualName();
             }
-            if (aggScope instanceof DeclNode.TypedMember) {
+            if (aggScope instanceof DeclNode.TypedMember && ((DeclNode.TypedMember) aggScope).getTypeUnit() != null) {
                 return ((DeclNode.TypedMember) aggScope).getTypeUnit().getQualName();
             }
             if (aggScope instanceof DeclNode.Usr) {

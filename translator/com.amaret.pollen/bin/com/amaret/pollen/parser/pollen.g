@@ -763,6 +763,7 @@ stmtImport
 scope{
 	String qpkg;
 	String qimp;
+	String asName;
 }
 @init{
 	String defaultPkg = "";
@@ -796,6 +797,9 @@ scope{
          (metaArguments)?
          importAs 
          delim) 
+         {
+         	ParseUnit.current().addToImportsMaps($stmtImport::qimp, $stmtImport::asName, defaultPkg);
+         }
          -> ^(IMPORT<ImportNode>["IMPORT"] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs metaArguments?)
     ;
 catch [PollenException re] {
@@ -807,6 +811,9 @@ catch [PollenException re] {
 importFrom
 @init{
 }
+@after{
+ }
+    
     :   	(q1=qualName 
     		{	
     			$stmtImport::qpkg = ($q1.text.equals("pollen.environment")) ? ProcessUnits.getPollenEnvPkg() : $q1.text;
@@ -821,11 +828,18 @@ importFrom
     				throw new PollenException("Missing module specification for pollen.environment", input);
     		}  
          (metaArguments)?
-         importAs delim) -> ^(IMPORT<ImportNode>["IMPORT"] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs metaArguments?)
-    	
+         importAs delim) 
+         {
+         	ParseUnit.current().addToImportsMaps($stmtImport::qimp, $stmtImport::asName, $stmtImport::qpkg);
+         }
+         -> ^(IMPORT<ImportNode>["IMPORT"] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs metaArguments?)
+	
     ;
 importAs
-	:	'as' qualName -> qualName
+	:	'as' q1=qualName 
+			{ $stmtImport::asName = $q1.text; }
+		-> qualName
+		
 	|	-> NIL
 	;
 
@@ -957,9 +971,9 @@ metaParmGen
 			{ 
 			   flags.add(Flags.TYPE_META_ARG); 
 			   // get 'as' name
-				as = $IDENT.text;
-		    	// get 'from' pkg
-		    	for (ImportNode imp: client.getImports()) {
+			   as = $IDENT.text;
+		    	   // get 'from' pkg
+  		    	   for (ImportNode imp: client.getImports()) {
 		    		if (clientImport.getName().getText().equals(imp.getName().getText())) {
 		    			from = imp.getFrom().getText();
 		    			break;
@@ -983,7 +997,21 @@ metaParmGen
 		    		  // get instantiation value
 		    		  
 		    		  if (b instanceof TypeNode.Usr) {
-		    			  name = ((TypeNode.Usr) b).getName().getText();		    			
+		    			  name = ((TypeNode.Usr) b).getName().getText();	
+		    			   String handlerName = ""; 
+                    		    		   int i = name.indexOf('.');
+                    		    		   if (i != -1) { // type is a function ref: "HP.handler"
+                    		    		   	// handler name ignored for now
+                    		    			handlerName = "." + name.substring(i+1);   // the fcn name, 'handler'  
+                    		    			name = name.substring(0, i);  // HP, the unit type                  		    				              		    				  
+                    		    		    }
+		    			  // fixups
+		    			  String n = ParseUnit.current().getTypeName(client.getQualName(), name);
+		    			  String f = ParseUnit.current().getPackage(client.getQualName(),name);
+		    			  if (n != null) {
+		    			      name = n;
+		    			      from = f != null ? f : from;		    			      
+		    			  }		
 		    		  }
 		    		  else if (b instanceof TypeNode.Std) {
 		    			  name = ((TypeNode.Std) b).getIdent().getText();		    			
@@ -1438,6 +1466,7 @@ varOrFcnOrArray
 	|	qualName fieldOrArrayAccess? -> ^(E_IDENT<ExprNode.Ident>["E_IDENT"] qualName fieldOrArrayAccess?)
 	;
 fieldOrArrayAccess
+// the function arg list is for arrays of function references
 	:	 (fieldAccess | arrayAccess fcnArgumentList?)+
 	;
 fieldAccess
@@ -1447,7 +1476,7 @@ fieldAccess
 	|	'.'	IDENT 	-> ^(E_IDENT<ExprNode.Ident>["E_IDENT", true] IDENT)
 	;
 arrayAccess
-	:	'['	(exprList)?	']'  	-> ^(E_INDEX<ExprNode.Index>["E_INDEX"] exprList? ) //fcnArgumentList?
+	:	'['	(exprList)?	']'  -> ^(E_INDEX<ExprNode.Index>["E_INDEX"] exprList? ) 
 	;
 	
 	
@@ -1741,7 +1770,7 @@ initializer
 	| '{' initializer_list ','? '}' -> initializer_list
 	;
 initializer_list
-	: initializer (',' initializer)* ->  ^(E_VEC<ExprNode.Vec>["E_VEC"]  ^(LIST<ListNode>["LIST"] initializer+))
+	: initializer (',' NL* initializer)* ->  ^(E_VEC<ExprNode.Vec>["E_VEC"]  ^(LIST<ListNode>["LIST"] initializer+))
 	;
 varDeclList  // int x, y=3, z=3, a
 @init {
