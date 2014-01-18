@@ -1714,13 +1714,14 @@ scope {
 
 	;
 varFcnRef
-	: 	( ('(') typeName fcnRefTypeList (')') IDENT 
-			|  typeName fcnRefTypeList  IDENT )
-		-> ^(D_FCN_REF<DeclNode.FcnRef>["D_FCN_REF", stmtFlags] typeName fcnRefTypeList IDENT) 
+	: 	( ('(') typeName fcnRefTypeList (')') IDENT (ASSIGN expr)?
+			|  typeName fcnRefTypeList  IDENT (ASSIGN expr)? )
+		-> ^(D_FCN_REF<DeclNode.FcnRef>["D_FCN_REF", stmtFlags] typeName fcnRefTypeList IDENT expr?) 
 	;
 varFcnRef2
-	: 	'(' rtnType typeName fcnRefTypeList ')' IDENT 
-		-> ^(D_FCN_REF<DeclNode.FcnRef>["D_FCN_REF", stmtFlags] typeName fcnRefTypeList IDENT rtnType) 
+	: 	'(' rtnType typeName fcnRefTypeList ')' IDENT (ASSIGN expr)?
+		{ stmtFlags.add(Flags.FCN_REF_RTN); } // has a return type specified
+		-> ^(D_FCN_REF<DeclNode.FcnRef>["D_FCN_REF", stmtFlags] typeName fcnRefTypeList IDENT rtnType expr?) 
 	;        	
 rtnType 
 	:	typeName

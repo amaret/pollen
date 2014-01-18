@@ -1055,6 +1055,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		static final private int FORMALS = 1;
 		static final private int NAME = 2;
 		static final private int RTN = 3;
+		static final private int INIT = 3;
+		static final private int INIT_WITH_RTN = 4;
 
 		private boolean isVoid = false;
 
@@ -1102,10 +1104,31 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				ParseUnit.current().reportError(this.getName(),
 						"compositions can only declare host variables");
 			}
+			ExprNode i = this.getInit();
+			if (i instanceof ExprNode.Const && ((ExprNode.Const)i).getValue().getText().equals("null")) {
+				TypeNode.Usr t = (TypeNode.Usr) (getTypeSpec() instanceof TypeNode.Usr ? getTypeSpec() : null);
+				SymbolEntry se = t != null ? t.getSymbol() : null;
+				IScope sc = se != null ? se.scope() : null;
+				boolean isModule = sc instanceof ITypeKind ? ((ITypeKind)sc).isModule() : false;
+				if (isModule) {
+					ParseUnit.current().reportError(this, this.getName().getText() + ": module function references cannot be initialized to null");
+				}				
+			}
+
 			super.pass1End();
 		}
 
 		public ExprNode getInit() {
+			if (flags.contains(Flags.FCN_REF_RTN)) {
+				if (getChildCount() > INIT_WITH_RTN) {
+					return ((ExprNode) getChild(INIT_WITH_RTN));
+				}				
+			}
+			else {
+				if (getChildCount() > INIT) {
+					return ((ExprNode) getChild(INIT));
+				}						
+			}
 			return null;
 		}
 	}
@@ -1149,8 +1172,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 	}
 
 	// DeclNode.TypedMember
-	// For proxy (protocol member), a member with class type, or a member with
-	// function type (function ref)
+	// For proxy (protocol member) or a member with class type
 	static public class TypedMember extends DeclNode.Var implements
 			ITypeSpecInit, IScope, IUnitWrapper, ITypeKind, IOutputQualifiedName {
 

@@ -1,5 +1,6 @@
 package com.amaret.pollen.translator;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import com.amaret.pollen.parser.Cat.Arr;
 import com.amaret.pollen.parser.Cat.Fcn;
 import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.DeclNode.Formal;
+import com.amaret.pollen.parser.DeclNode.Var;
 import com.amaret.pollen.parser.ExprNode;
 import com.amaret.pollen.parser.ExprNode.Call;
 import com.amaret.pollen.parser.ExprNode.Const;
@@ -973,33 +975,58 @@ public class Auxiliary {
 		gen.getFmt().print("#include \"../../%1/%2/%2.h\"\n", pn, un);
 		gen.getFmt().print("#endif\n\n");
 	}
+	/**
+	 * Note the field type which is typedef'd can be either a function reference variable type or base type of an array of same.
+	 * @param fields. DeclNodes for the class or module or function locals.
+	 */
 
-	void genLocals(List<DeclNode.Var> localVars) {
+	public void genFcnRefTypeDefs(List<DeclNode> fields) {
+		List<String> fcnrefTypeDefs = new ArrayList<String>();		
+		for (DeclNode fld : fields) {     
+			if (fld instanceof DeclNode.ITypeSpec) {
+				TypeNode t = ((DeclNode.ITypeSpec) fld).getTypeSpec();
+				if (t instanceof TypeNode.Usr && ((TypeNode.Usr)t).isFunctionRef()) {
+					String s = gen.getOutputName(t, null, EnumSet.of(Flags.IS_FCNREF_TYPEDEF));
+					if (!fcnrefTypeDefs.contains(s)) { // must be unique or c gives error
+						fcnrefTypeDefs.add(s);
+						gen.getFmt().print("%ttypedef ");
+						gen.getFmt().print("%1;\n", s);
+					}
+				}  
+			}
+        }
+	}
+
+	void genLocals(List<DeclNode> localVars) {
 		// locals are first declared without initializers.
 		// later on they are initialized with assign statements.
 		// TODO this doesn't always work - why is it ever done? Take this out?
-		for (DeclNode.Var var : localVars) {
-			if (isHost()) {
-				gen.getFmt().print("%tvar %1", var.getName());
-				if (var.getInit() == null) {
-					gen.getFmt().print(" = ");
-					genDefault(var.getTypeCat(), var, DEFAULT_INNEW);
-				}
-				gen.getFmt().print(";\n");
-			} else {
-				// in c, 'int arr[2] = {1,2};' cannot be split into 2 statements.
-				// Special case to prevent that splitting.
-				if (!(var instanceof DeclNode.Arr && ((DeclNode.Arr) var).getInit() != null)) {
-					gen.getFmt().print("%t");
-					TypeNode t = var instanceof DeclNode.Arr ? ((DeclNode.Arr) var)
-							.getTypeArr() : var.getTypeSpec();
-					genTypeWithVarName(t, "" + var.getName(), EnumSet.noneOf(Flags.class));
-					// must initialize const on the declaration
-					if (var.isConst() && var.getInit() != null) {
+		
+		for (DeclNode v : localVars) {
+			if (v instanceof DeclNode.Var) {
+				DeclNode.Var var = (Var) v;
+				if (isHost()) {
+					gen.getFmt().print("%tvar %1", var.getName());
+					if (var.getInit() == null) {
 						gen.getFmt().print(" = ");
-						genExpr(var.getInit());
+						genDefault(var.getTypeCat(), var, DEFAULT_INNEW);
 					}
 					gen.getFmt().print(";\n");
+				} else {
+					// in c, 'int arr[2] = {1,2};' cannot be split into 2 statements.
+					// Special case to prevent that splitting.
+					if (!(var instanceof DeclNode.Arr && ((DeclNode.Arr) var).getInit() != null)) {
+						gen.getFmt().print("%t");
+						TypeNode t = var instanceof DeclNode.Arr ? ((DeclNode.Arr) var)
+								.getTypeArr() : var.getTypeSpec();
+						genTypeWithVarName(t, "" + var.getName(), EnumSet.noneOf(Flags.class));
+						// must initialize const on the declaration
+						if (var.isConst() && var.getInit() != null) {
+							gen.getFmt().print(" = ");
+							genExpr(var.getInit());
+						}
+						gen.getFmt().print(";\n");
+					}
 				}
 			}
 		}

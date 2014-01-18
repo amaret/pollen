@@ -169,7 +169,7 @@ public class UnitHeader {
         String clsStruct = (qual.isEmpty()) ? gen.uname_target().substring(0, gen.uname_target().length()-1) : gen.uname_target() + qual;
         String clsStructPtr = (qual.isEmpty()) ?  gen.uname_target() :  gen.uname_target() + qual + "_";
         
-        genFcnRefTypeDefs(fields);              
+        gen.getAux().genFcnRefTypeDefs(fields);
         
         gen.getFmt().print("%tstruct %1 {\n%+", clsStruct);
         for (DeclNode fld : fields) {
@@ -236,27 +236,6 @@ public class UnitHeader {
 			gen.getFmt().print("]");
 		}
 	}
-
-	/**
-	 * Note the field type which is typedef'd can be either a function reference variable type or base type of an array of same.
-	 * @param fields. DeclNodes for the class or module
-	 */
-	private void genFcnRefTypeDefs(List<DeclNode> fields) {
-		List<String> fcnrefTypeDefs = new ArrayList<String>();		
-		for (DeclNode fld : fields) {     
-			if (fld instanceof DeclNode.ITypeSpec) {
-				TypeNode t = ((DeclNode.ITypeSpec) fld).getTypeSpec();
-				if (t instanceof TypeNode.Usr && ((TypeNode.Usr)t).isFunctionRef()) {
-					String s = gen.getOutputName(t, null, EnumSet.of(Flags.IS_FCNREF_TYPEDEF));
-					if (!fcnrefTypeDefs.contains(s)) { // must be unique or c gives error
-						fcnrefTypeDefs.add(s);
-						gen.getFmt().print("%ttypedef ");
-						gen.getFmt().print("%1;\n", s);
-					}
-				}  
-			}
-        }
-	}
     
     private void genDecl$Module(DeclNode.Usr decl) {
     	
@@ -264,7 +243,7 @@ public class UnitHeader {
     		return;
         
         List<DeclNode> fields = decl.getFeatures();
-        genFcnRefTypeDefs(fields);            
+        gen.getAux().genFcnRefTypeDefs(fields);            
         gen.getFmt().print("%tstruct %1 {\n%+", gen.uname_target());
         for (DeclNode fld : fields) {
 

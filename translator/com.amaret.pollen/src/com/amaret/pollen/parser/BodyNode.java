@@ -11,7 +11,7 @@ public class BodyNode extends BaseNode implements IScope {
 	static final private int STMTS = 1;   
     static private BodyNode current = null;
     DeclNode.Fcn fcn = null;
-    private List<DeclNode.Var> localVars = new ArrayList<DeclNode.Var>();
+    private List<DeclNode> localVars = new ArrayList<DeclNode>();
     private NestedScope scopeDeleg = new NestedScope(this);
             
     BodyNode(int ttype, String ttext) {
@@ -120,7 +120,7 @@ public class BodyNode extends BaseNode implements IScope {
 	/**
 	 * @return the list of function local variables
 	 */
-	public List<DeclNode.Var> getLocalVars() {
+	public List<DeclNode> getLocalVars() {
 		return localVars;
 	}
 
