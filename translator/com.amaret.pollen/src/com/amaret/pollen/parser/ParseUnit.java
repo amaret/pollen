@@ -36,7 +36,8 @@ public class ParseUnit {
 	private SymbolTable symbolTable;
 	private Properties properties;
 	private Stack<String> impChain;
-	private HashMap<String, UnitNode> unitMap;
+	private HashMap<String, UnitNode> unitMap;		// will be used by javascript so keys must be the javascript unit name.
+	private HashMap<String, UnitNode> unitNameMap; 	// supports reuse of UnitNodes, avoid parsing a file > 1 times. 
 	private HashMap<String, String> packages;
 	private HashMap<String, String> errors;
 	
@@ -182,6 +183,9 @@ public class ParseUnit {
 
 	public static void setDebugMode(boolean debugMode) {
 		ParseUnit.debugMode = debugMode;
+		boolean dbg = false;
+		if (debugMode)
+			dbg = true;
 	}
 
 	public static boolean isDebugMode() {
@@ -267,6 +271,7 @@ public class ParseUnit {
 		seriousErrorCount = 0;
 		errors = new HashMap<String, String>();
 		unitMap = new HashMap<String, UnitNode>();
+		unitNameMap = new HashMap<String, UnitNode>();
 		out.printf("%s", ProcessUnits.version() + "\n");
 	}
 
@@ -334,6 +339,7 @@ public class ParseUnit {
      * variable declaration.
      * This needs to be done multiple times potentially because the same file may have more than one AST, 
      * due to imports. This code makes sure that DeclNodes in all ASTs for a single variable have the preset flag set. 
+     * NOTE with change that re-uses UnitNode for multiple parses, this may not be needed. 
      * @param se
      */
     private void addToPresetMap(SymbolEntry se) {
@@ -375,20 +381,121 @@ public class ParseUnit {
 		}
 		return false;
 	}
+	
+	void debugUnitMap(String fcn, String qualName, UnitNode u, boolean found, String caller) {
+		String hdr = "UnitMap debug, " + (!caller.isEmpty() ? "called from " + caller + ", " : "");
+		if (u != null && u.isVoid()) {
+			System.out.println(hdr + fcn + "(): void unit");
+			return;
+		}
+		System.out.print(hdr + fcn + "(): name ");
+		System.out.print(qualName);
+		if (u != null && !u.getUnitType().getMetaQualName().isEmpty()) {
+			String pkg = qualName.substring(0,
+					qualName.lastIndexOf(".") + 1);
+			System.out.print(", meta name " + (pkg + u.getUnitType().getMetaQualName()));
+		}
+		String f = "";
+		if (fcn.equals("findUnit"))
+			f = found ? ", found TRUE" : ", found FALSE";
+		System.out.println(f);				
+	}
+	
+	private UnitNode getUnit(ImportNode theImport) {
+		
+		String pkg = theImport.getFrom() + ".";
+		
+		String name = pkg + theImport.getMeta() == null ? this.mkMetaUnitMapName(theImport, false) : this.mkUnitMapName(theImport);
+		UnitNode u = unitNameMap.get(name);
+		return u;		
+	}	
+	
+	private void enterUnitNameMap(UnitNode unit, ImportNode theImport) {
+		
+		if (theImport == null) // this is the top level unit, no entry is needed
+			return;
+				
+		if (unit.getUnitType().getMetaQualName().isEmpty()) {
+			String qualName = this.mkUnitMapName(theImport);
+			if (unitNameMap.get(qualName) == null)
+				unitNameMap.put(qualName, unit);
+		}
+		else {
+			String shortMetaName = mkMetaUnitMapName(theImport, true); // used for error check
+			String metaName = mkMetaUnitMapName(theImport, false);		
+			UnitNode chk = unitNameMap.get(shortMetaName);
+			UnitNode u = unitNameMap.get(metaName);
+			if (chk != null && u != chk ) {
+				// if u & chk are not the same, the difference can only be in the arguments, which is an error
+				ParseUnit.current().reportError(unit, unit.getQualName() + ": meta type name collides with another meta type name which was instantiated in the same package but with different arguments. Distinct meta type instances cannot have the same name and package.");
+				return;
+			}
+			if (unitNameMap.get(metaName) == null) {
+				unitNameMap.put(metaName, unit);
+				unitNameMap.put(shortMetaName, unit);
+			}			
+		}		
+	}
+	/**
+	 * 
+	 * @param theImport
+	 * @return the external name, the generated name, not the internal 'as' name (except for meta, which is generated with the 'as' name). 
+	 */
+	private String mkUnitMapName(ImportNode theImport) {
+		String pkg = theImport.getFrom() + ".";
+		String uname = pkg + (theImport.getMeta() != null ? theImport.getAs().getText() : theImport.getUnitName().getText());
+		return uname; 
+		
+	}
+	/**
+	 * For instantiated meta types, make the map name. 
+	 * 
+	 * @param theImport
+	 * @param shortName return a name without qualification with arguments
+	 * @return a name for the map
+	 */
+	private String mkMetaUnitMapName(ImportNode theImport, boolean shortName) {
+		// For meta instantiations, full qualification with package, meta name and also meta arguments is needed. 
+		// This is because you can't instantiate e.g. Event into the same package with the same name but different arguments.
+		// If the arguments are different it is a different type and needs a non-colliding name. 
+		String pkg = theImport.getFrom() + ".";
+		String n = "";
+		String uname = theImport.getMeta() != null ? theImport.getAs().getText() : theImport.getUnitName().getText();
+		if (!shortName && theImport != null && theImport.getMeta() != null) {
+			String underSc = "_";
+			for (BaseNode b : theImport.getMeta()) {
+				n += underSc;
+				if (b.getType() != pollenParser.NIL)
+					n += b.getChild(0).getText();
+			}
+		}
+		n = pkg + uname + n;
+		return n;
+	}
 
 	public void enterUnit(String qualname, UnitNode unit) {
+		
+		if (isDebugMode())
+			debugUnitMap("enterUnit", qualname, unit, false, "");
+		
 		if (!unit.isVoid()) { // deferred instantiation ('{}')
-			UnitNode tmp = unitMap.put(qualname, unit);
+			unitMap.put(qualname, unit);
 			if (!unit.getUnitType().getMetaQualName().isEmpty()) {
 				String pkg = qualname.substring(0,
 						qualname.lastIndexOf(".") + 1);
 				unitMap.put(pkg + unit.getUnitType().getMetaQualName(), unit);
 			}
+			
 		}
 	}
 
-	public UnitNode findUnit(String qualName) {
-		return unitMap.get(qualName);
+	public UnitNode findUnit(String qualName, String caller) {
+		UnitNode u = unitMap.get(qualName);
+		
+		if (isDebugMode())
+			debugUnitMap("findUnit", qualName, null, u != null, caller);
+		
+		return u;
 	}
 
 	/**
@@ -422,6 +529,9 @@ public class ParseUnit {
 	 * @throws Exception
 	 */
 	private void parseImports(UnitNode unit) throws Exception {
+		
+		//setDebugMode(true);
+		setDebugMode(false);
 
 		String importer = (impChain.size() > 0) ? impChain
 				.get(impChain.size() - 1) : "";
@@ -441,14 +551,16 @@ public class ParseUnit {
 			UnitNode currUnit = null;
 
 			SymbolEntry currSym = unit.resolveSymbol(currImport.getFrom());
-			ISymbolNode currSnode = currSym == null ? null : currSym.node();
+			// as currNode is the 'from' clause, it is null or the import node of a composition import:
+			// 'from Compos import Mod'
+			ISymbolNode currNode = currSym == null ? null : currSym.node();
 			
 			SymbolEntry currExportSym = null;
 			UnitNode client = unit;
-			ImportNode clientImport = currImport;
+			ImportNode importFromClient = currImport;
 			
-			String cname = client != null ? client.getQualName() : "<no import>";
-			String ciname = clientImport != null ? clientImport.getQualName()
+			String clientName = client != null ? client.getQualName() : "<no import>";
+			String importFromClientName = importFromClient != null ? importFromClient.getQualName()
 					: "<none>";
 
 			
@@ -458,37 +570,53 @@ public class ParseUnit {
 				Atom name = currImport.getName();
 				unit.defineSymbol(name, currImport);
 				checkParseUnit(pkgPath + File.separator
-						+ currImport.getUnitName() + ".p", clientImport, cname, ciname);
+						+ currImport.getUnitName() + ".p", importFromClient, clientName, importFromClientName);
 				continue;
 			}
 			
+			if (ParseUnit.isDebugMode()) {
+				String s = "ParseUnit.parseImports(), parsing: " + fromPkg + "."
+						+ currImport.getUnitName().getText()
+						+ (pkgPath == null ? " (a composition)" : "");
+				System.out.println(s);
+			}
+			
 			// import is instantiated meta type
-			if (currSnode == null && currImport.isTypeMetaArg()) {
+			if (currNode == null && currImport.isSynthesizedFromMeta()) {
+			//if (currSnode == null) { 
+
 				// if this is an instantiated meta type, its pollen file won't exist
-				currSnode = findUnit(fromPkg + "." + currImport.getQualName());
-				if (currSnode != null && currSnode instanceof UnitNode) {
-					currUnit = (UnitNode) currSnode;
+				currNode = findUnit(fromPkg + "." + currImport.getQualName(), "parseImports");
+				if (currNode != null && currNode instanceof UnitNode) {
+					currUnit = (UnitNode) currNode;
 					currImport.bindUnit(currUnit);
 					Atom name = currImport.getName();
 					unit.defineSymbol(name, currImport);
-					currUnit.addClient(unit);
+					currUnit.addClient(unit); 
 					this.enterUnit(currUnit.getQualName(), currUnit);
 					checkParseUnit(pkgPath + File.separator
-							+ currImport.getUnitName() + ".p", clientImport, cname, ciname);
+							+ currImport.getUnitName() + ".p", importFromClient, clientName, importFromClientName);
 					continue;
 				}
 			}
 
-			boolean dbg = true;
-			if (ParseUnit.isDebugMode()) {
-				String s = "**   ParseUnit.parseImports(): " + fromPkg + "."
-						+ currImport.getUnitName().getText()
-						+ (pkgPath == null ? " (a composition)" : "");
-				System.out.println(s);
-
+			UnitNode u = this.getUnit(currImport);
+			boolean dbg = false;
+			if (u != null)
+				dbg = true;
+			if (u != null && u instanceof UnitNode) {
+				currUnit = (UnitNode) u;
+				currImport.bindUnit(currUnit);
+				Atom name = currImport.getName();
+				unit.defineSymbol(name, currImport);
+				currUnit.addClient(unit); 
+				this.enterUnit(currUnit.getQualName(), currUnit);
+				checkParseUnit(pkgPath + File.separator
+						+ currImport.getUnitName() + ".p", importFromClient, clientName, importFromClientName);
+				continue;
 			}
 
-			if (!(currSnode instanceof ImportNode)) {
+			if (!(currNode instanceof ImportNode)) {
 				try {
 
 					if (pkgPath == null) {
@@ -512,12 +640,12 @@ public class ParseUnit {
 							}
 						}
 						currUnit = parseUnit(pkgPath + File.separator + fromPkg
-								+ ".p", client, clientImport);
+								+ ".p", client, importFromClient);
 
 					} else {
 						currUnit = parseUnit(pkgPath + File.separator
 								+ currImport.getUnitName() + ".p", client,
-								clientImport);
+								importFromClient);
 					}
 
 				} catch (Termination te) {
@@ -527,7 +655,7 @@ public class ParseUnit {
 			}
 
 			else {
-				currUnit = ((ImportNode) currSnode).getUnit();
+				currUnit = ((ImportNode) currNode).getUnit();
 				if (currUnit == null) {
 					reportError(currImport.getUnitName(), "import not bound to unit");
 					continue;
@@ -576,6 +704,7 @@ public class ParseUnit {
 		}
 
 		impChain.pop();
+		//setDebugMode(false);
 	}
 
 	/**
@@ -625,10 +754,10 @@ public class ParseUnit {
 
 		UnitNode unit = (UnitNode) result.getTree();
 
-		//setDebugMode(true);
+		//setDebugMode(false);
 		if (isDebugMode())
 			System.out.println("       AST: " + unit.toStringTree());
-		setDebugMode(false);
+		//setDebugMode(false);
 
 		// if (getErrorCount() > 0) {
 		// return null;
@@ -644,7 +773,9 @@ public class ParseUnit {
 			reportError(unit.getName(),
 					"unit name does not match the current file");
 		}
+		
 		enterUnit(unit.getQualName(), unit);
+		enterUnitNameMap(unit, theImport);
 		parseImports(unit);
 		checkUnit(unit);
 
@@ -677,7 +808,7 @@ public class ParseUnit {
 		}
 		
 		if (isDebugMode()) {
-			String dbgStr = "  START parseUnit() : ";
+			String dbgStr = "  setup parse : ";
 			String asName = theImport != null ? " as " + theImport.getName().getText() : "";
 			dbgStr += "parse \'" + ParseUnit.mkPackageName(inputPath) + "."
 					+ ParseUnit.mkUnitName(inputPath)

@@ -249,8 +249,8 @@ public class ProgCCode {
         ParseUnit cur = ParseUnit.current();
         for (int i = 0; i < unitsArr.length(); i++) {
             Value.Obj uobj = unitsArr.getObj(i);
-            UnitDesc ud;
-            UnitNode u = cur.findUnit(uobj.getStr("$name"));
+            UnitDesc ud;            
+            UnitNode u = cur.findUnit(uobj.getStr("$name"), "generate");            
 
             if (uobj.getBool("pollen$used")) {
                 ud = new UnitDesc(u, uobj, true);

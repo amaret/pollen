@@ -109,7 +109,7 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
      * This import describes a meta argument which was translated into an import.
      * @return true if a meta argument
      */
-    public boolean isTypeMetaArg() {
+    public boolean isSynthesizedFromMeta() {
     	if (flags.contains(Flags.TYPE_META_ARG))
     		return true;
     	return false;
@@ -118,9 +118,9 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
      * 
      * @return true if instantiating type is a primitive, e.g. 'uint8'
      */
-    public boolean isTypeMetaArgPrimitive() {
+    public boolean isSynthesizedFromMetaPrimitive() {
     	String s = Cat.Scalar.codeFromString(this.getUnitName().getText());
-    	if (isTypeMetaArg() && Cat.Scalar.codeFromString(this.getUnitName().getText()) != null) {
+    	if (isSynthesizedFromMeta() && Cat.Scalar.codeFromString(this.getUnitName().getText()) != null) {
     		// primitive type
     		return true;
     	}
@@ -295,6 +295,8 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 				ParseUnit.current().reportError(this.getUnitName(), "not an exported unit");
 			}
         }
+        boolean saveDbg = ParseUnit.isDebugMode();
+        ParseUnit.setDebugMode(false);
         if (ParseUnit.isDebugMode()) {
         	String list = "";
         	for (List<DeclNode.Fcn> fl : this.getUnit().getFcnMap().values()) {
@@ -307,6 +309,7 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
         	
         	ParseUnit.current().reportError(this, "Binding module '" + getName().getText() + "' to unit '" + unit.getQualName() + list);
         }
+        ParseUnit.setDebugMode(saveDbg);
 	}      
 	
 	@Override

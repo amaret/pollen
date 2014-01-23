@@ -234,7 +234,7 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 					ImportNode i = (ImportNode) s.node();
 
 					if (i.getUnit() == null) {
-						if (i.isTypeMetaArg())
+						if (i.isSynthesizedFromMeta())
 							rtn = i.getUnitName().getText();
 						else
 							rtn = Cat.Scalar

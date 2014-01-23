@@ -380,14 +380,19 @@ public class UnitJScript {
     	if (imp.getUnit() == null)
     		return;
     	
+   	 	// The external name, the generated name, is different for meta and non-meta. 
+    	// For non-meta, the 'as' name is the internal name and the external name is the result of imp.getUnitName(). 
+    	// For meta, the 'as' name is the external name. 
     	String nameU = imp.getUnit().getQualName();
     	String nUnit = imp.getUnit().getName().getText();
 		String asName = imp.getName().getText();
 		String impName = imp.getUnitName().getText();
 		
-		if (ParseUnit.isDebugMode()) {
-			debugUse(imp, nUnit, asName, impName);			
-		}
+        boolean saveDbg = ParseUnit.isDebugMode();
+        ParseUnit.setDebugMode(false);
+        if (ParseUnit.isDebugMode()) {
+        	debugUse(imp, nUnit, asName, impName);		
+        }
 		
 		if (imp.getUnit().isMeta() && ! imp.getUnit().isComposition()) {
 			// Get the code name of the meta module
@@ -407,6 +412,8 @@ public class UnitJScript {
 			String n = ((UnitNode) imp.getParent().getParent()).getQualName();
 			System.out.println("genUse(): for " + n + " importing " + imp.getUnitName().getText() + " check use of " + nameU);				
 		}
+        ParseUnit.setDebugMode(saveDbg);
+
     	
     	boolean genUseType = imp.getUnit().isModule() || imp.getUnit().isClass() || imp.getUnit().isEnum();    	
  

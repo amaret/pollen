@@ -140,7 +140,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 					SymbolEntry se = t.getSymbol();
 					isRef = true;
 					boolean metaPrimitiveType = (se != null && se.node() instanceof ImportNode && ((ImportNode) se
-							.node()).isTypeMetaArgPrimitive());
+							.node()).isSynthesizedFromMetaPrimitive());
 					if (metaPrimitiveType) // type 'T' is actually a uint8 (for
 											// example)
 						isRef = false;
@@ -669,7 +669,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			String qual = rtn.substring(0, rtn.indexOf("."));
 			if (qualifier != null) {
 				if (qualifier instanceof ImportNode) {
-					if (((ImportNode) qualifier).isTypeMetaArg()) {
+					if (((ImportNode) qualifier).isSynthesizedFromMeta()) {
 						// first qualifier is spurious
 						rtn = rtn.substring(rtn.indexOf(".") + 1);
 					}
@@ -1114,7 +1114,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 					ParseUnit.current().reportError(this, this.getName().getText() + ": module function references cannot be initialized to null");
 				}				
 			}
-
 			super.pass1End();
 		}
 
@@ -1430,7 +1429,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				
 			}
 			boolean metaPrimitiveType = (snode instanceof ImportNode && ((ImportNode) snode)
-					.isTypeMetaArgPrimitive());
+					.isSynthesizedFromMetaPrimitive());
 
 			// note 'host' is supported
 			if (flags.contains(Flags.CONST) && !metaPrimitiveType) {
@@ -1458,10 +1457,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			// UnitNode typeUnit: The UnitNode that contains the type
 			// of this typed member.
 			// For a nested type T in module M, that is the unit node for M.
-			boolean isTypeMetaArg = false;
+			boolean isSynthFromMeta = false;
 			if (snode instanceof ImportNode) {
 				typeUnit = ((ImportNode) snode).getUnit();
-				isTypeMetaArg = ((ImportNode) snode).isTypeMetaArg();
+				isSynthFromMeta = ((ImportNode) snode).isSynthesizedFromMeta();
 			} else if (snode instanceof UnitNode) {
 				typeUnit = (UnitNode) snode;
 			} else if (snode instanceof DeclNode.Fcn
@@ -1491,7 +1490,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 				} else {
 					if (!typeUnit.isClass() && !this.isFcnRef() && !isClassRef
-							&& !isTypeMetaArg) {
+							&& !isSynthFromMeta) {
 						ParseUnit
 								.current()
 								.reportError(getTypeName(),

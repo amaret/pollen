@@ -548,13 +548,13 @@ public class ExprNode extends BaseNode {
 			int minArgc = fcncat.minArgc();
 			int maxArgc = fcncat.maxArgc();
 
+			exprCat = fcncat.retCat();
+			
 			if (argc < minArgc || argc > maxArgc) {
-				currUnit.reportError(getName(), "wrong number of arguments");
+				if (!this.isConstructorCallOnHostVar())
+					currUnit.reportError(getName(), "wrong number of arguments");
 				return;
 			}
-
-			exprCat = fcncat.retCat();
-
 			
 			//  May need tweaking for case that parameter type is a default instantiation meta
 			//  parameter for  a meta type and it is instantiated with a non-default type.

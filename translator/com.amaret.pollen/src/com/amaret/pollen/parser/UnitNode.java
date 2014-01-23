@@ -162,14 +162,11 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
         if (resolveSymbol(name) != null) {
             return false;
         }
-        if (ParseUnit.isDebugMode()) {
-        	if (node instanceof ImportNode) {
-        		System.out.println("********** enter import of " + name.getText() + " into symtab (scope) of unit " + this.getName().getText());
-            	
-            		boolean dbg = false; if (name.getText().equals("AsInterrupts")) 
-            			dbg = true;
-        	}
-        }
+//        if (ParseUnit.isDebugMode()) {
+//        	if (node instanceof ImportNode) {
+//        		System.out.println("********** enter import of " + name.getText() + " into symtab (scope) of unit " + this.getName().getText());
+//        	}
+//        }
 	    getSymbolTable().put(name.getText(), new SymbolEntry(this, node));
 	    node.setDefiningScope(this);
 	    return true;
@@ -541,7 +538,6 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     	//boolean dbg = true;
     	boolean dbg = false;
     	
-    	ParseUnit.setDebugMode(dbg);
     	if (dbg) {
     		ParseUnit.current().reportError(this, "\n**************importSymbols() for unit " + this.getQualName() + "**********************" );
     	}
@@ -595,8 +591,6 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     	}
 
     	putBaseUnitImports(curUnit);
-
-    	ParseUnit.setDebugMode(false);
     }
 
 	/**

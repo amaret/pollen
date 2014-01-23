@@ -6,11 +6,14 @@ package com.amaret.pollen.translator;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
 import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.Flags;
@@ -40,7 +43,12 @@ public class Generator {
     private ITarget target;
 	private final Formatter fmt = new Formatter();
 	final Auxiliary aux = new Auxiliary(this);
+	private List<String> fcnRefTypeDefs;  // typedefs can only be emitted once (must be unique for c)
 	
+	public List<String> getFcnRefTypedefs() {
+		return fcnRefTypeDefs;
+	}
+
 	public Auxiliary getAux() {
 		return aux;
 	}
@@ -106,10 +114,13 @@ public class Generator {
 			if (u.isVoid())
 				continue;
 
-			//ParseUnit.setDebugMode(true);
+			
+	        boolean saveDbg = ParseUnit.isDebugMode();
+	        ParseUnit.setDebugMode(false);
 			if (ParseUnit.isDebugMode()) {	
-				System.out.println("GENUNIT " + u.getQualName());
+				System.out.println("genUnits() START: " + u.getQualName());
 			}
+	        ParseUnit.setDebugMode(saveDbg);
 
 			setupUnit(u);
 			genHeader();
@@ -149,7 +160,8 @@ public class Generator {
         curUnit = unit;
         uname = unit.getName().getText();
         uname_target = unit.getPkgName().getText().replace('.', '_') + '_'  + uname + '_';	
-        uname_host = unit.getPkgName().getText() + '.'  + uname;	    		       
+        uname_host = unit.getPkgName().getText() + '.'  + uname;	
+        fcnRefTypeDefs = new ArrayList<String>();
 	}
 
 	/**
@@ -189,12 +201,18 @@ public class Generator {
 	 * @param unit
 	 * @param Set<UnitNode> uses
 	 */
+	List<String> impChain = new ArrayList<String>(); // prevents stack overflow for recursive imports
     private void findUses(UnitNode unit, Set<UnitNode> uses) {
         for (ImportNode imp : unit.getImports()) {
-        	if (imp.getUnit() != null) 
-        		findUses(imp.getUnit(), uses);
+        	if (imp.getUnit() != null) {
+        		if (!impChain.contains(imp.getQualName())) {
+        			impChain.add(imp.getUnit().getQualName());
+        			findUses(imp.getUnit(), uses);
+        		}
+        	}
         }
-        if (!uses.contains(unit)) {// && !unit.isProtocol() ) {
+        if (!uses.contains(unit)) {
+        	impChain.remove(unit.getUnit().getQualName());
         	uses.add(unit); 
         }
     }

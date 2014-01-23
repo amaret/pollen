@@ -23,6 +23,7 @@ import com.amaret.pollen.parser.ExprNode.Ident;
 import com.amaret.pollen.parser.ExprNode.Index;
 import com.amaret.pollen.parser.ExprNode.New;
 import com.amaret.pollen.parser.ExprNode.Quest;
+import com.amaret.pollen.parser.ExprNode.Self;
 import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.IScope;
 import com.amaret.pollen.parser.ISymbolNode;
@@ -981,14 +982,13 @@ public class Auxiliary {
 	 */
 
 	public void genFcnRefTypeDefs(List<DeclNode> fields) {
-		List<String> fcnrefTypeDefs = new ArrayList<String>();		
 		for (DeclNode fld : fields) {     
 			if (fld instanceof DeclNode.ITypeSpec) {
 				TypeNode t = ((DeclNode.ITypeSpec) fld).getTypeSpec();
 				if (t instanceof TypeNode.Usr && ((TypeNode.Usr)t).isFunctionRef()) {
 					String s = gen.getOutputName(t, null, EnumSet.of(Flags.IS_FCNREF_TYPEDEF));
-					if (!fcnrefTypeDefs.contains(s)) { // must be unique or c gives error
-						fcnrefTypeDefs.add(s);
+					if (!gen.getFcnRefTypedefs().contains(s)) { // must be unique or c gives error
+						gen.getFcnRefTypedefs().add(s);
 						gen.getFmt().print("%ttypedef ");
 						gen.getFmt().print("%1;\n", s);
 					}
@@ -1445,6 +1445,7 @@ public class Auxiliary {
 	}
 
 	private void genStmt$Return(StmtNode.Return stmt) {
+		
 		gen.getFmt().print("return");
 		ExprNode.Vec expr = stmt.getVec();
 		String addrOf = "";
@@ -1452,24 +1453,31 @@ public class Auxiliary {
 		while (body != null && !(body instanceof BodyNode)) {
 			body = body.getParent();
 		}
-		if (body instanceof BodyNode) {			
+		if (body instanceof BodyNode) {		
+			DeclNode.Fcn f = ((BodyNode) body).getFcn();
+			Cat fcat = f.getTypeCat();
 			TypeNode t = ((BodyNode) body).getFcn().getTypeSpec();
 			if (t instanceof TypeNode.Usr) {
-				ExprNode.Ident ei = (Ident) ((expr.getVals().get(0)) instanceof ExprNode.Ident ? (expr.getVals().get(0)) : null);
 				
+				ExprNode.Ident ei = (Ident) ((expr.getVals().get(0)) instanceof ExprNode.Ident ? (expr.getVals().get(0)) : null);
+				if (ei == null) {
+					ExprNode.Self s = (Self) ((expr.getVals().get(0)) instanceof ExprNode.Self ? (expr.getVals().get(0)) : null);
+					if (s != null && s.getMember() instanceof Ident)
+						ei = (Ident) s.getMember();
+				}								
 				SymbolEntry se;
 				if (ei != null) {
-					Cat cat = ei.getCat();
-//					se = ei.getSymbol();
-//					addrOf = se != null && !(se.node() instanceof DeclNode.TypedMember) && !isHost() ? " &" : "";
-					addrOf = !(cat.isClassRef() || cat.isRef() || cat.isFcnRef()) && !isHost() ? " &" : "";
+					Cat rtnCat = ei.getCat();
+					if (rtnCat instanceof Cat.Arr && !(fcat instanceof Cat.Arr))
+						rtnCat = ((Cat.Arr)rtnCat).getBase();
+					addrOf = !(rtnCat.isClassRef() || rtnCat.isRef() || rtnCat.isFcnRef()) && !isHost() ? " &" : "";
 				}
 				
 				se = ((TypeNode.Usr)t).getSymbol();
 				ISymbolNode node = se != null ? se.node() : null;
 				if (node != null) {
 					//addrOf = " &";
-					if (node instanceof ImportNode && ((ImportNode)node).isTypeMetaArgPrimitive())
+					if (node instanceof ImportNode && ((ImportNode)node).isSynthesizedFromMetaPrimitive())
 						addrOf = "";
 				}	
 			}
