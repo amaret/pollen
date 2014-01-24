@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -409,7 +410,12 @@ public class ParseUnit {
 		UnitNode u = unitNameMap.get(name);
 		return u;		
 	}	
-	
+	/**
+	 * Map unit names to unit nodes so that we don't need to reparse files that are imported > 1 times. 
+	 * Instead we retrieve the unit node from this map. 
+	 * @param unit
+	 * @param theImport create the map name for the unit from the import
+	 */
 	private void enterUnitNameMap(UnitNode unit, ImportNode theImport) {
 		
 		if (theImport == null) // this is the top level unit, no entry is needed
@@ -480,6 +486,8 @@ public class ParseUnit {
 		
 		if (!unit.isVoid()) { // deferred instantiation ('{}')
 			unitMap.put(qualname, unit);
+			// for meta types, two names are entered. 
+			// the first is used during passes 1 and 2 and the second during codegen.
 			if (!unit.getUnitType().getMetaQualName().isEmpty()) {
 				String pkg = qualname.substring(0,
 						qualname.lastIndexOf(".") + 1);
@@ -754,10 +762,10 @@ public class ParseUnit {
 
 		UnitNode unit = (UnitNode) result.getTree();
 
-		//setDebugMode(false);
+		setDebugMode(false);
 		if (isDebugMode())
 			System.out.println("       AST: " + unit.toStringTree());
-		//setDebugMode(false);
+		setDebugMode(false);
 
 		// if (getErrorCount() > 0) {
 		// return null;
@@ -775,9 +783,9 @@ public class ParseUnit {
 		}
 		
 		enterUnit(unit.getQualName(), unit);
-		enterUnitNameMap(unit, theImport);
+		enterUnitNameMap(unit, theImport); 
 		parseImports(unit);
-		checkUnit(unit);
+		checkUnitPass1(unit);
 
 		paths.remove(paths.size() - 1);
 
@@ -883,12 +891,19 @@ public class ParseUnit {
 	public HashMap<String, UnitNode> parseUnits() throws Exception {
 
 		currUnitNode = parseUnit(path);
+		UnitNode topLevelUnit = currUnitNode;
+		
+		for (UnitNode u : checkUnitsPass2) { 
+
+			checkUnitPass2(u);  // pass 2: inter unit references
+		} 
+		currUnitNode = topLevelUnit;
 		return unitMap;
 	}
 
 	/**
 	 * doPass1, doPass2
-	 * 
+	 * OLD
 	 * @param unit
 	 */
 	private void checkUnit(UnitNode unit) {
@@ -896,16 +911,40 @@ public class ParseUnit {
 		// unit.defineSymbol(unit.getName(), unit);
 		currUnitNode = unit;
 
-		// if (isDebugMode())
-		// System.out.println("  START checkUnit() for " + unit.getName());
-
-		// if (getErrorCount() == 0 || isDebugMode()) {
+		// if (getErrorCount() == 0) {
 		unit.doPass1();
 		// }
 
-		// if (getErrorCount() == 0 || isDebugMode()) {
+		// if (getErrorCount() == 0) {
 		unit.doPass2();
 		// }
+
+		currUnitNode = null;
+	}
+	private List<UnitNode> checkUnitsPass2 = new ArrayList<UnitNode>();
+	/**
+	 * doPass1
+	 * 
+	 * @param unit
+	 */
+	private void checkUnitPass1(UnitNode unit) {		
+		currUnitNode = unit;
+		
+		unit.doPass1();		// internal unit references
+		checkUnitsPass2.add(unit);
+		
+		currUnitNode = null;
+	}
+	/**
+	 * doPass2
+	 * 
+	 * @param unit
+	 */
+	private void checkUnitPass2(UnitNode unit) {
+
+		currUnitNode = unit;
+		
+		unit.doPass2();
 
 		currUnitNode = null;
 	}

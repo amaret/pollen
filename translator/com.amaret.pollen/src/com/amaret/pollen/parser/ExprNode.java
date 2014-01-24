@@ -259,11 +259,6 @@ public class ExprNode extends BaseNode {
 			return (ExprNode) getChild(NAME);
 		}
 
-		@Override
-		protected boolean pass1Begin() {
-
-			return super.pass1Begin();
-		}
 
 		protected boolean pass2Begin() {
 
@@ -281,6 +276,8 @@ public class ExprNode extends BaseNode {
 				String call = ei.getName().getText();
 				boolean chkHostScope = symtab.currScopeIsHostFcn() || isConstructorCallOnHostVar();
 				boolean dbg = false;
+				if (call.equals("Dispatcher.post"))
+					dbg = true;
 				
 				boolean skipLookup =  (call.matches(ParseUnit.INTRINSIC_PREFIX + ".*")) ? true : false;
 
@@ -335,6 +332,7 @@ public class ExprNode extends BaseNode {
 							}
 						}
 					}
+
 					if (fcn == null) {
 						// Could be a host function accessed through a non-host
 						// qualifier:
@@ -502,6 +500,15 @@ public class ExprNode extends BaseNode {
 
 		@Override
 		protected void pass2End() {
+			if (getName() != null && getName() instanceof ExprNode.Ident) {
+				ExprNode.Ident ei = (ExprNode.Ident) getName();
+
+				String call = ei.getName().getText();
+				boolean dbg = false;
+				if (call.equals("myEventQueue.remove"))
+					dbg = true;
+			}
+
 
 			ParseUnit currUnit = ParseUnit.current();
 			Cat cat = getName().getCat();
@@ -1156,11 +1163,11 @@ public class ExprNode extends BaseNode {
 
 		@Override
 		protected boolean pass2Begin() {
+			ParseUnit currUnit = ParseUnit.current();
+			
 			// this used to be pass1Begin() but that creates a requirement 
 			// that a variable be declared before it is referenced.
 			
-			ParseUnit currUnit = ParseUnit.current();
-
 			if (!currUnit.getCurrUnitNode().getUnitType().isClass()) {
 				// If the class is nested, the unit type may be the containing module. So check further.
 				Tree t = this.getParent();
@@ -1171,15 +1178,31 @@ public class ExprNode extends BaseNode {
 							"\'@\' can only be used in \'class\' methods");
 			}
 
+			enterSymbol(false);
+
+			return super.pass2Begin();
+		}
+
+		/**
+		 * Lookup the symbol. Depending on order of dcln / reference may need to be done twice to resolve.
+		 * Only an error if there is no symbol after 2nd lookup. 
+		 * @param isPass2End 
+		 * 
+		 */
+		private void enterSymbol(boolean isPass2End) {
 			// do the lookup of the deref'd member here, where the self context
 			// is known, in case there is a name collision between a local var
-			// name
-			// and a member name.
-			if (getMember() != null && getMember() instanceof ExprNode.Ident) {
-				ExprNode.Ident ei = (ExprNode.Ident) getMember();
+			// name and a member name.
+			ParseUnit currUnit = ParseUnit.current();
+			ExprNode e = (Ident) (getMember() instanceof ExprNode.Ident ? getMember()
+					: ((getMember() instanceof ExprNode.Call) ? ((ExprNode.Call) getMember())
+							.getName() : null));
+			ExprNode.Ident ei = (Ident) (e instanceof ExprNode.Ident ? e : null);
+						
+			if (ei != null) {
 				symbol = currUnit.getSymbolTable().resolveSymbol(ei.getName(),
 						currUnit.getSymbolTable().curScope());
-				if (symbol == null) {
+				if (symbol == null && isPass2End) {
 					currUnit.reportSeriousError(ei.getName(),
 							"identifier is not declared in the current scope "
 									+ ParseUnit.current().getSymbolTable().curScope().getScopeName());
@@ -1189,17 +1212,23 @@ public class ExprNode extends BaseNode {
 			} else {
 				symbol = currUnit.getSymbolTable().lookupName(
 						ParseUnit.current().getUnitName());
+				if (symbol == null && isPass2End) {
+					currUnit.reportSeriousError(this,
+							"identifier is not declared in the current scope "
+									+ ParseUnit.current().getSymbolTable().curScope().getScopeName());
+				}
 			}
-
-			return super.pass2Begin();
 		}
 
 		@Override
 		protected void pass2End() {
-			if (symbol != null && symbol.node() instanceof DeclNode.Var
+			if (symbol == null)
+				enterSymbol(true);
+			if (symbol == null)
+				return;
+			if (symbol.node() instanceof DeclNode.Var
 					&& ((DeclNode.Var) symbol.node()).isConst())
 				isConst = true;
-
 			exprCat = symbol.node().getTypeCat();
 		}
 	}

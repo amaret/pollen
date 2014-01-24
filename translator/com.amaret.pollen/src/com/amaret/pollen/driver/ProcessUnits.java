@@ -181,7 +181,7 @@ public class ProcessUnits {
 		pollenHelp += "\n" + "  -h\tThis help message.";
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.63";  // user release . internal rev . fix number
+	private static String  v = "0.2.64";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -332,6 +332,7 @@ public class ProcessUnits {
 	}
 	protected int translateUnit(HashMap<String, UnitNode> unitMap) throws Exception {
 		
+		ParseUnit cur = ParseUnit.current();
 		
 		int rtn = ParseUnit.current().getCurrUnitNode().getErrorCount();
 		if (rtn == 0) {

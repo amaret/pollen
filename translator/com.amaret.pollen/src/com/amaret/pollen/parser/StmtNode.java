@@ -239,11 +239,14 @@ public class StmtNode extends BaseNode {
         @Override
         protected void pass2End() {
             BodyNode body = BodyNode.current();
+
             for (DeclNode.Var decl : getVars()) {
+            	
                 ExprNode init = decl.getInit();
                 if (init != null) {
                     init.setCat(decl.getTypeCat());
                 }
+                
                 body.addLocalVar(decl );
             }
         }

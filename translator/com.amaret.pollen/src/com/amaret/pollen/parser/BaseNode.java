@@ -33,6 +33,7 @@ public class BaseNode extends CommonTree {
     }
    
     final void doPass2() {
+    	//System.out.println(this.toStringTree());
        if (!pass2Begin()) {
             return;
         }

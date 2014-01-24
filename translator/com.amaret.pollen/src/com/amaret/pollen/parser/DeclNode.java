@@ -1924,8 +1924,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		public DeclNode.Usr getImplementedType() {
 			if (implementedType == null && this.getImplements() != null) {
 				SymbolEntry p = lookupName(getImplements().getText());
-				if (p != null) {
-					implementedType = (Usr) p.node();
+				ISymbolNode node = p != null ? p.node() : null;
+				if (node instanceof ImportNode)
+					node = ((ImportNode)node).getUnit().getUnitType();
+				if (node != null) {
+					implementedType = (Usr) node;
 				}
 			}
 			return implementedType;
