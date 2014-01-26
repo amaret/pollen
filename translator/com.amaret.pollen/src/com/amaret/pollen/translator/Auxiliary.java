@@ -956,15 +956,58 @@ public class Auxiliary {
 			gen.getFmt().print(sep);
 			sep = ", ";
 			if (typeFlg) {
-				SymbolEntry s = arg.getTypeSpec() instanceof TypeNode.Usr ? ((TypeNode.Usr) arg
-						.getTypeSpec()).getSymbol()
-						: null;
-				genTypeWithVarName(arg.getTypeSpec(), "" + arg.getName(), EnumSet.noneOf(Flags.class));
+				genExternFcnParameter(arg.getTypeSpec(), "" + arg.getName(), EnumSet.noneOf(Flags.class), arg);
 			} else
 				gen.getFmt().print(arg.getName()); // javascript
 		}
 		gen.getFmt().print(" )");
 	}
+	/**
+	 * forwards for out of unit references. Required to avoid circular header file inclusion problems in c. 
+	 * @param args
+	 * @param fcn
+	 */
+	void genFcnArgForwards(List<DeclNode.Formal> args, com.amaret.pollen.parser.DeclNode.Fcn fcn) {
+		if (isHost())
+			return;
+		if (args.size() == 0) 
+			return;
+		
+		DeclNode.Formal thisPtr = fcn.getThisPtr();
+		boolean skipFirst = thisPtr.isMethod() ? true : false;
+
+		for (DeclNode.Formal arg : args) {
+//			if (skipFirst) {
+//				skipFirst = false;
+//				continue;
+//			}
+			SymbolEntry s = arg.getTypeSpec() instanceof TypeNode.Usr ? ((TypeNode.Usr) arg
+					.getTypeSpec()).getSymbol()
+					: null;
+			if (s == null || !( s.node() instanceof ImportNode)) { // an ImportNode indicates an out-of-unit reference
+				continue;
+			}	
+			if (((ImportNode)s.node()).isSynthesizedFromMetaPrimitive()) {
+				continue;
+			}		
+			//System.out.println(arg.toStringTree());
+			TypeNode.Usr t = (Usr) arg.getTypeSpec();
+			String str = t.getOutputNameTarget(gen, s.scope(), EnumSet.of(Flags.IS_FCNARG_TYPEDEF));
+			//gen.getFmt().print_dbg("extern struct %1 %1;\n", str);
+			if (!gen.getFcnArgForwards().contains(str)) {
+				gen.getFmt().print("struct %1;\n", str);
+				gen.getFcnArgForwards().add(str);
+			}
+
+			//gen.getFmt().print_dbg("struct " + arg.getTypeSpec().getName().getText() + "; ");
+
+
+
+			//gen.getFmt().print_dbg(arg.getOutputNameTarget(gen, s.scope(), EnumSet.noneOf(Flags.class)));
+			//gen.getFmt().print_dbg(arg.getOutputQNameTarget(gen, arg, s.scope(), EnumSet.noneOf(Flags.class)));
+		}
+	}
+
 
 	void genHeaderInclude(String qn) {
 		String gs = qn.replace('.', '_') + "__M";
@@ -1545,6 +1588,35 @@ public class Auxiliary {
 		String s = mkTypeName(type, flags) + (name == null ? "" : " " + name);
 		gen.getFmt().print("%1", s);
 	}
+	void genExternFcnParameter(TypeNode type, String name, EnumSet<Flags> flags, Formal arg) {
+		
+		if (type instanceof TypeNode.Usr) {
+			if (((TypeNode.Usr)type).isFunctionRef()) {
+				this.genTypeWithVarName(type, name, flags);	
+				return;
+			}
+		}
+		SymbolEntry s = arg.getTypeSpec() instanceof TypeNode.Usr ? ((TypeNode.Usr) arg
+				.getTypeSpec()).getSymbol()
+				: null;
+		if (s == null || !( s.node() instanceof ImportNode)) { // an ImportNode indicates an out-of-unit reference
+			this.genTypeWithVarName(type, name, flags);
+			return;
+		}
+		if (((ImportNode)s.node()).isSynthesizedFromMetaPrimitive()) {
+			this.genTypeWithVarName(type, name, flags);
+			return;
+		}		
+		//this.genTypeWithVarName(type, name, flags);
+		//System.out.println(arg.toStringTree());
+
+		TypeNode.Usr t = (Usr) arg.getTypeSpec();
+		String str = t.getOutputNameTarget(gen, s.scope(), EnumSet.of(Flags.IS_FCNARG_TYPEDEF));
+		gen.getFmt().print("struct %1* %2", str, name);
+
+		//gen.getFmt().print_dbg("struct " + type.getName().getText() + "* " + name);
+	}
+	
 	/**
 	 * 
 	 * @param type

@@ -223,6 +223,8 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 					isCStructRef = false;
 				}
 			}
+			if (flags.contains(Flags.IS_FCNARG_TYPEDEF))
+				isCStructRef = false;
 			/*
 			 * isCStructRef reflects that a typedef is being used for the class or module struct. For example:
 			 * typedef struct pollen_events_AE pollen_events_AE;

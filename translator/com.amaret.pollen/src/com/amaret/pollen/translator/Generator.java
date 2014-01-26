@@ -43,10 +43,13 @@ public class Generator {
     private ITarget target;
 	private final Formatter fmt = new Formatter();
 	final Auxiliary aux = new Auxiliary(this);
-	private List<String> fcnRefTypeDefs;  // typedefs can only be emitted once (must be unique for c)
-	
+	private List<String> fcnRefTypeDefs;  // typedefs can only be emitted once (must be unique for c)	
 	public List<String> getFcnRefTypedefs() {
 		return fcnRefTypeDefs;
+	}
+	private List<String> fcnArgForwards;  // we get around c circular header inclusion problems by emitting forwards for cross unit reference function arguments
+	public List<String> getFcnArgForwards() {
+		return fcnArgForwards;
 	}
 
 	public Auxiliary getAux() {
@@ -162,6 +165,7 @@ public class Generator {
         uname_target = unit.getPkgName().getText().replace('.', '_') + '_'  + uname + '_';	
         uname_host = unit.getPkgName().getText() + '.'  + uname;	
         fcnRefTypeDefs = new ArrayList<String>();
+        fcnArgForwards = new ArrayList<String>();
 	}
 
 	/**
@@ -205,6 +209,8 @@ public class Generator {
     private void findUses(UnitNode unit, Set<UnitNode> uses) {
         for (ImportNode imp : unit.getImports()) {
         	if (imp.getUnit() != null) {
+        		if (imp.isSynthesizedFromMeta() && imp.getUnit().isMeta())
+        			continue;
         		if (!impChain.contains(imp.getQualName())) {
         			impChain.add(imp.getUnit().getQualName());
         			findUses(imp.getUnit(), uses);

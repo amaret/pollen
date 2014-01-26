@@ -764,6 +764,7 @@ scope{
 	String qpkg;
 	String qimp;
 	String asName;
+	Object metaArgs;
 }
 @init{
 	String defaultPkg = "";
@@ -774,7 +775,7 @@ scope{
     	// the default package is the containing directory
     	defaultPkg = path.substring(j, k);
 }
- 	   :    'from'! importFrom
+ 	:    'from'! importFrom
     
     	|	('import' qualName 
     		{	
@@ -794,12 +795,12 @@ scope{
     				$stmtImport::qimp = $qualName.text;
     			}
     		}  
-         (metaArguments)?
-         importAs 
-         delim) 
-         {
-         	ParseUnit.current().addToImportsMaps($stmtImport::qimp, $stmtImport::asName, defaultPkg);
-         }
+                        (metaArguments { $stmtImport::metaArgs=$metaArguments.tree; })?
+                        importAs 
+                        delim) 
+                        {
+         	                  ParseUnit.current().addToImportsMaps($stmtImport::qimp, $stmtImport::asName, defaultPkg, $stmtImport::metaArgs);
+                         }
          -> ^(IMPORT<ImportNode>["IMPORT"] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs metaArguments?)
     ;
 catch [PollenException re] {
@@ -827,11 +828,11 @@ importFrom
     			if ($stmtImport::qimp.isEmpty())
     				throw new PollenException("Missing module specification for pollen.environment", input);
     		}  
-         (metaArguments)?
-         importAs delim) 
-         {
-         	ParseUnit.current().addToImportsMaps($stmtImport::qimp, $stmtImport::asName, $stmtImport::qpkg);
-         }
+                       (metaArguments { $stmtImport::metaArgs=$metaArguments.tree; })?
+                        importAs delim) 
+                       {
+         	                ParseUnit.current().addToImportsMaps($stmtImport::qimp, $stmtImport::asName, $stmtImport::qpkg, $stmtImport::metaArgs);
+                       }
          -> ^(IMPORT<ImportNode>["IMPORT"] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs metaArguments?)
 	
     ;
@@ -949,6 +950,9 @@ scope {
     when instantiated.
   **************/
 metaParmGen 
+scope{
+	Object  metaArgs;
+}
 @init {
 	// for import stmt 
 	String name = "";
@@ -959,13 +963,16 @@ metaParmGen
 	String ctext = "";
 	EnumSet<LitFlags> lf = EnumSet.noneOf(LitFlags.class);
 	if (isVoidInstance) {
-
-		metaFlags.add(Flags.VOID_INSTANCE);
+	    metaFlags.add(Flags.VOID_INSTANCE);
 	}
 
 }
 @after {
 	$metaParmsGen::idx++;
+
+	if ($metaParmGen::metaArgs != null) {
+	        ((CommonTree) $metaParmGen.tree).addChild(((CommonTree) $metaParmGen::metaArgs));				
+              }
 }
 	:	'type' IDENT ( '=' typeName {name = $typeName.text;})? 
 			{ 
@@ -1001,13 +1008,14 @@ metaParmGen
 		    			   String handlerName = ""; 
                     		    		   int i = name.indexOf('.');
                     		    		   if (i != -1) { // type is a function ref: "HP.handler"
-                    		    		   	// handler name ignored for now
+                    		    		   	// handler name ignored for now: look at this if we do it
                     		    			handlerName = "." + name.substring(i+1);   // the fcn name, 'handler'  
                     		    			name = name.substring(0, i);  // HP, the unit type                  		    				              		    				  
                     		    		    }
 		    			  // fixups
 		    			  String n = ParseUnit.current().getTypeName(client.getQualName(), name);
 		    			  String f = ParseUnit.current().getPackage(client.getQualName(),name);
+		    			  $metaParmGen::metaArgs = (Tree) ParseUnit.current().getMetaArgs(client.getQualName(), name);
 		    			  if (n != null) {
 		    			      name = n;
 		    			      from = f != null ? f : from;		    			      
@@ -1031,6 +1039,7 @@ metaParmGen
 
 	    	}
 	  -> ^(IMPORT<ImportNode>["IMPORT", flags] IDENT[from] IDENT[name] IDENT[as])
+
 	  
 	 |   builtinType id=IDENT ('=' primitiveLit { ctext = $primitiveLit.text; } )?
 	 		{
@@ -1071,7 +1080,7 @@ metaParmGen
 			 	  	    throw new PollenException("Missing actual parameter for meta type instantiation where no default value specified", input);
 			 	    }
 			 	 }
-		 		}
+		 	        }
 	 		}
 		-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", flags]  
 			^(T_STD<TypeNode.Std>["T_STD", EnumSet.noneOf(Flags.class)] builtinType) 
@@ -1082,7 +1091,8 @@ catch [PollenFatalException e] {
     ParseUnit.current().reportFailure(e);
 }	
 metaArguments
-   :  '{' metaArgument (NL)* (',' (NL*) metaArgument (NL*) )* '}' -> ^(LIST<ListNode>["LIST"] metaArgument+)
+   :        '{' metaArgument (NL)* (',' (NL*) metaArgument (NL*) )* '}' 
+   		-> ^(LIST<ListNode>["LIST"] metaArgument+)
    |	'{' '}'      -> LIST<ListNode>["LIST"]	// defer metaArgument binding  
    ;
  	

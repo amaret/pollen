@@ -120,6 +120,7 @@ public class UnitHeader {
     }
     
     private void genDecl$Fcn(DeclNode.Fcn decl) {
+    	gen.aux.genFcnArgForwards(decl.getFormals(), decl);
         gen.getFmt().print("extern ");
         TypeNode ft = decl.getTypeSpec();
         gen.aux.genTypeWithVarName(ft, gen.uname_target() + gen.aux.mkPollenCname(decl.cname()) + gen.aux.mkSuf(decl), EnumSet.noneOf(Flags.class));

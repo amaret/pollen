@@ -14,6 +14,7 @@ import java.util.Stack;
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.tree.Tree;
 import org.antlr.runtime.tree.TreeAdaptor;
 
 import com.amaret.pollen.driver.ProcessUnits;
@@ -88,24 +89,33 @@ public class ParseUnit {
 	 * These maps support these fixups.
 	 * Used by the parser.
 	 */
-	protected class ImportsMaps {	// one of these per unit
+	protected class ImportsMaps {	
+		// each unit has one ImportsMaps map for its imports
+		// each 'as' name for an import will retrieve the actual name, package, and meta args.
 		private HashMap<String, String> typeToPackageMap;        
 		private HashMap<String, String> asNameToTypeMap;        
 		private HashMap<String, String> asNameToPackageMap;  
+		private HashMap<String, Tree> asNameToMetaArgsMap;
 		protected ImportsMaps() {
 			typeToPackageMap = new HashMap<String, String>();
 			asNameToPackageMap = new HashMap<String, String>();	
 			asNameToTypeMap = new HashMap<String, String>();
+			asNameToMetaArgsMap = new HashMap<String, Tree>();
 		}
-		protected void addTypeNamesToPackageMaps(String t,String asName, String pkg) {
+		protected void addTypeNamesToPackageMaps(String t,String asName, String pkg, Tree metaArgs) {
 			typeToPackageMap.put(t,pkg);
 			if (asName != null) {
 				asNameToPackageMap.put(asName, pkg);
 				asNameToTypeMap.put(asName, t);
+				asNameToMetaArgsMap.put(asName, metaArgs);
 			}
 		}
 		protected String getPackage(String key) {
 			String ret = (asNameToTypeMap.get(key)) != null ? asNameToPackageMap.get(key) : typeToPackageMap.get(key);
+			return ret;
+		}
+		protected Tree getMetaArgs(String key) {
+			Tree ret = (asNameToMetaArgsMap.get(key)) != null ? asNameToMetaArgsMap.get(key) : null;
 			return ret;
 		}
 		protected String getTypeName(String key) {
@@ -114,6 +124,7 @@ public class ParseUnit {
 			return ret;
 		}
 	}
+	// the key is the unit
 	private HashMap<String, ImportsMaps> importedTypes = new HashMap<String, ImportsMaps>();  // one per unit
 	/**
 	 * Supports fixups to meta parameters, see nested class ImportsMaps.
@@ -121,22 +132,45 @@ public class ParseUnit {
 	 * @param asName
 	 * @param pkg
 	 */
-	public void addToImportsMaps(String type, String asName, String pkg) {
-		String key = ParseUnit.mkPackageName(getCurrPath()) + "." + ParseUnit.mkUnitName(getCurrPath());
-		//System.out.println("in unit " + key + " add 'import " + pkg + "." + type + " as " + asName + "'");
-		if (!importedTypes.containsKey(key))
-			importedTypes.put(key, new ImportsMaps());
-		importedTypes.get(key).addTypeNamesToPackageMaps(type, asName, pkg);		
+	public void addToImportsMaps(String type, String asName, String pkg, Object metaArgs) {
+		String unitKey = ParseUnit.mkPackageName(getCurrPath()) + "." + ParseUnit.mkUnitName(getCurrPath());
+		if (isDebugMode()) {
+			String dbgStr = "";
+			if (metaArgs instanceof ListNode) {
+				dbgStr = ", meta args ";
+				String comma = "";
+				ListNode<BaseNode> l = (ListNode<BaseNode>) metaArgs;
+				for (BaseNode b : l.getElems()) {
+					dbgStr += comma;
+					if (b.getType() != pollenParser.NIL)
+						dbgStr += b.getText() + "." + b.getChild(0).getText();
+					else
+						dbgStr += "<none, use default>";
+					comma = ", ";				
+				}			
+			}
+			System.out.println("in unit " + unitKey + " add 'import " + pkg + "." + type + " as " + asName + "'" + dbgStr);
+		}
+		if (!importedTypes.containsKey(unitKey))
+			importedTypes.put(unitKey, new ImportsMaps());
+		Tree t = (Tree) metaArgs;
+		importedTypes.get(unitKey).addTypeNamesToPackageMaps(type, asName, pkg, t);		
 	}
-	public String getTypeName(String key, String n) {
-		if (!importedTypes.containsKey(key))
-			importedTypes.put(key, new ImportsMaps());
-		return importedTypes.get(key).getTypeName(n);		
+	//ParseUnit.current.getMetaArgs(client.getQualName(), name);
+	public String getTypeName(String unitKey, String asName) {
+		if (!importedTypes.containsKey(unitKey))
+			importedTypes.put(unitKey, new ImportsMaps());
+		return importedTypes.get(unitKey).getTypeName(asName);		
 	}
-	public String getPackage(String key, String t) {
-		if (!importedTypes.containsKey(key))
-			importedTypes.put(key, new ImportsMaps());
-		return importedTypes.get(key).getPackage(t);
+	public Tree getMetaArgs(String unitKey, String asName) {
+		if (!importedTypes.containsKey(unitKey))
+			importedTypes.put(unitKey, new ImportsMaps());
+		return importedTypes.get(unitKey).getMetaArgs(asName);		
+	}
+	public String getPackage(String unitKey, String asName) {
+		if (!importedTypes.containsKey(unitKey))
+			importedTypes.put(unitKey, new ImportsMaps());
+		return importedTypes.get(unitKey).getPackage(asName);
 	}
 
 	public static String getPollenFile() {
@@ -762,7 +796,7 @@ public class ParseUnit {
 
 		UnitNode unit = (UnitNode) result.getTree();
 
-		setDebugMode(false);
+		//setDebugMode(true);
 		if (isDebugMode())
 			System.out.println("       AST: " + unit.toStringTree());
 		setDebugMode(false);
@@ -833,6 +867,7 @@ public class ParseUnit {
 						dbgStr += "<none, use default>";
 					comma = ", ";
 				}
+
 			}
 			System.out.println(dbgStr);
 		}

@@ -388,6 +388,17 @@ public class UnitJScript {
 		String asName = imp.getName().getText();
 		String impName = imp.getUnitName().getText();
 		
+		// complicated. Given, in Test.p:
+		// 'from pollen.hardware import HandlerProtocol{uint8} as HP'
+		// 'from pollen.data import Queue {HP} as HandlerQueue'
+		// this is fixed up, in 'meta Queue {type E}' to :
+		// 'from pollen.hardware import HandlerProtocol{uint8} as E'
+		// The name 'E' is an 'as' name but it should NOT be the external name.
+		// It's used to satisfy references to 'E' in Queue. 
+		// This should work because HandlerProtocol{uint8} has to be output in the package already to be used this way.
+		if (imp.isSynthesizedFromMeta() && imp.getUnit().isMeta())
+			return;
+		
         boolean saveDbg = ParseUnit.isDebugMode();
         ParseUnit.setDebugMode(false);
         if (ParseUnit.isDebugMode()) {
