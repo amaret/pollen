@@ -247,12 +247,7 @@ public class UnitJScript {
     			ExprNode init = decl.getInit();
     			TypeNode t = ((ExprNode.Typ) init).getTyp();
     			UnitNode u = ((DeclNode.TypedMember) decl).getBindToUnit();
-    			String bindToUnit = "";
-    			if (u != null) {
-    				bindToUnit = u.getName().getText();
-    				bindToUnit = u.getPkgName().getText().replace('.', '_') + '_'  + bindToUnit + '_';	
-    			}
-    			gen.getAux().genBind(decl, t, bindToUnit );
+    			gen.getAux().genBind(decl, t, u );
     			return;
     		}
     		String qualifier = (decl.isClassScope()) ? "this" : gen.uname();
@@ -393,7 +388,7 @@ public class UnitJScript {
 		// 'from pollen.data import Queue {HP} as HandlerQueue'
 		// this is fixed up, in 'meta Queue {type E}' to :
 		// 'from pollen.hardware import HandlerProtocol{uint8} as E'
-		// The name 'E' is an 'as' name but it should NOT be the external name.
+		// The name 'E' is an 'as' name but it should NOT be the external name, unlike other meta types.
 		// It's used to satisfy references to 'E' in Queue. 
 		// This should work because HandlerProtocol{uint8} has to be output in the package already to be used this way.
 		if (imp.isSynthesizedFromMeta() && imp.getUnit().isMeta())
@@ -423,8 +418,6 @@ public class UnitJScript {
 			String n = ((UnitNode) imp.getParent().getParent()).getQualName();
 			System.out.println("genUse(): for " + n + " importing " + imp.getUnitName().getText() + " check use of " + nameU);				
 		}
-        ParseUnit.setDebugMode(saveDbg);
-
     	
     	boolean genUseType = imp.getUnit().isModule() || imp.getUnit().isClass() || imp.getUnit().isEnum();    	
  
@@ -460,7 +453,8 @@ public class UnitJScript {
     			else break;
     		}
     	}   
-    	ParseUnit.setDebugMode(false);
+        ParseUnit.setDebugMode(saveDbg);
+    	//ParseUnit.setDebugMode(false);
     }
 
 	/**

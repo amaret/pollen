@@ -1,3 +1,15 @@
+// note that the first loop runs twice. This was needed
+// because a later occurring module used an earlier occurring
+// module. Complex code may require more work to resolve 
+// uses: could iterate the array until there is a pass where
+// no new uses are discovered.
+for (var i = $units.length - 1; i >= 0; i--) {
+    var u = $units[i];
+    if (u.pollen$used && 'pollen__uses__' in u) {
+        debug_line("  HOST INIT, calling pollen__uses__ ", u)
+        u.pollen__uses__();
+    }
+}
 for (var i = $units.length - 1; i >= 0; i--) {
     var u = $units[i];
     if (u.pollen$used && 'pollen__uses__' in u) {

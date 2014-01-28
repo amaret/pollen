@@ -13,6 +13,7 @@ import com.amaret.pollen.parser.BaseNode;
 import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.DeclNode.Class;
 import com.amaret.pollen.parser.DeclNode.Formal;
+import com.amaret.pollen.parser.DeclNode.ITypeSpec;
 import com.amaret.pollen.parser.ExprNode;
 import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.IScope;
@@ -123,7 +124,9 @@ public class UnitHeader {
     	gen.aux.genFcnArgForwards(decl.getFormals(), decl);
         gen.getFmt().print("extern ");
         TypeNode ft = decl.getTypeSpec();
-        gen.aux.genTypeWithVarName(ft, gen.uname_target() + gen.aux.mkPollenCname(decl.cname()) + gen.aux.mkSuf(decl), EnumSet.noneOf(Flags.class));
+        gen.aux.genForwardForType(decl);
+		gen.aux.genForwardedType(ft, gen.uname_target() + gen.aux.mkPollenCname(decl.cname()) + gen.aux.mkSuf(decl), EnumSet.noneOf(Flags.class), (ITypeSpec) decl);       		
+        //gen.aux.genTypeWithVarName(ft, gen.uname_target() + gen.aux.mkPollenCname(decl.cname()) + gen.aux.mkSuf(decl), EnumSet.noneOf(Flags.class));
         gen.aux.genFcnArgs(decl.getFormals(), true, decl);
         gen.getFmt().print(";\n");
     }
@@ -171,6 +174,10 @@ public class UnitHeader {
         String clsStructPtr = (qual.isEmpty()) ?  gen.uname_target() :  gen.uname_target() + qual + "_";
         
         gen.getAux().genFcnRefTypeDefs(fields);
+        for (DeclNode fld : fields) {
+        	if (fld instanceof DeclNode.ITypeSpec)
+        		gen.aux.genForwardForType((ITypeSpec) fld);
+        }
         
         gen.getFmt().print("%tstruct %1 {\n%+", clsStruct);
         for (DeclNode fld : fields) {
@@ -186,7 +193,9 @@ public class UnitHeader {
 			else
 				if (fld instanceof DeclNode.ITypeSpec && !(fld instanceof DeclNode.Fcn)) {
 					gen.getFmt().print("%t");
-					gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "" + fld.getName(), EnumSet.noneOf(Flags.class));       		
+					gen.aux.genForwardedType(((DeclNode.ITypeSpec) fld).getTypeSpec(), "" + fld.getName(), EnumSet.noneOf(Flags.class), (ITypeSpec) fld);       		
+					//gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "" + fld.getName(), EnumSet.noneOf(Flags.class));       		
+
 				}
     		if (fld instanceof DeclNode.Arr) {
     			((DeclNode.Arr)fld).checkDims();
@@ -244,7 +253,11 @@ public class UnitHeader {
     		return;
         
         List<DeclNode> fields = decl.getFeatures();
-        gen.getAux().genFcnRefTypeDefs(fields);            
+        gen.getAux().genFcnRefTypeDefs(fields);   
+        for (DeclNode fld : fields) {
+        	if (fld instanceof DeclNode.ITypeSpec)
+        		gen.aux.genForwardForType((ITypeSpec) fld);
+        }
         gen.getFmt().print("%tstruct %1 {\n%+", gen.uname_target());
         for (DeclNode fld : fields) {
 
@@ -279,20 +292,11 @@ public class UnitHeader {
         		else {
         			String name = (fld instanceof DeclNode.Arr && !((DeclNode.Arr)fld).hasDim()) ? "* " : "";
         			name += fld.getName().getText();
-        			gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), name, EnumSet.noneOf(Flags.class));
+					gen.aux.genForwardedType(((DeclNode.ITypeSpec) fld).getTypeSpec(), name, EnumSet.noneOf(Flags.class), (ITypeSpec) fld);       		
+        			//gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), name, EnumSet.noneOf(Flags.class));
         		}
         		if (fld instanceof DeclNode.Arr && ((DeclNode.Arr)fld).hasDim()) {
         			genArrDims(((DeclNode.Arr)fld));
-//        			for (BaseNode e : ((DeclNode.Arr)fld).getDim().getElems()) {
-//        				gen.getFmt().print("[");
-//        				if (e instanceof ExprNode.Const) {
-//        					gen.aux.genExpr((ExprNode) e);
-//        				}
-//        				else {
-//        					ParseUnit.current().reportError(fld, "non-host module arrays with specified dimensions must have dimensions which are compile time constants");
-//        				}
-//        				gen.getFmt().print("]");
-//        			}
         		}
         		gen.getFmt().print(";\n");
         	}
@@ -387,7 +391,7 @@ public class UnitHeader {
             gen.getFmt().print("extern struct %1%2%3", gen.uname_target(), " ", gen.uname_target().substring(0, gen.uname_target().length()-1) + ";\n"); 
             //gen.fmt.print("extern struct %1%2%3", gen.cname(), "* ", gen.cname().substring(0, gen.cname().length()-1) + ";\n"); 
 
-            for (/*DeclNode decl*/ BaseNode b : unit.getFeatures()) {
+            for (BaseNode b : unit.getFeatures()) {
             	if (!(b instanceof DeclNode))
             		continue;
             	DeclNode decl = (DeclNode) b;

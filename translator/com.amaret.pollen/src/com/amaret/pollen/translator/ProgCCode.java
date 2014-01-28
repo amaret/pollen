@@ -250,9 +250,10 @@ public class ProgCCode {
         for (int i = 0; i < unitsArr.length(); i++) {
             Value.Obj uobj = unitsArr.getObj(i);
             UnitDesc ud;            
-            UnitNode u = cur.findUnit(uobj.getStr("$name"), "generate");            
+            UnitNode u = cur.findUnit(uobj.getStr("$name"), "generate");       
+            // genUse() in UnitJScript
 
-            if (uobj.getBool("pollen$used")) {
+            if (uobj.getBool("pollen$used")) { // a host_init pass in epilogue.js sets this
                 ud = new UnitDesc(u, uobj, true);
                 getUnitDescriptors().add(ud); // will get c code generated from these
             }
@@ -427,31 +428,26 @@ public class ProgCCode {
     			continue;
 
     		Object val = ud.getUnitObj().getAny(protoMem.getName());
+    		val = genTypedMemberVal(ud, (Var) decl, val);
 
-    		if (val == Value.UNDEF) {
-
-    			if (protoMem.getBindLocUnit() != null) {
-    				String qname = protoMem.getDefiningScope().getScopeName() + "." + protoMem.getName().getText();
-    				UnitDesc udsc = unitDescsMap.get(protoMem.getBindLocUnit().getQualName());
-    				val = udsc.getUnitObj().getAny(qname);
-    			}        
-    			if (val == Value.UNDEF) {
-    				ParseUnit.current().reportError(protoMem.getName(), "protocol member has never been bound");
+    		String qn;
+    		if (val instanceof String)
+    			qn = (String) val;
+    		else {
+    			if (!(val instanceof NativeObject || val instanceof NativeArray)) {
     				return;
     			}
+    			else 
+    				qn = ((Value.Obj) Value.toVal(val)).getStr("$name");
     		}
-    		String qn;
-    		if (!(val instanceof NativeObject || val instanceof NativeArray)) {
-    			return;
-    			//qn = val.toString(); // A Double, for example
+    		if (protoMem.getBindToUnit() != null) { // null is unbound protocol member
+
+    			gen.aux.genTitle("protocol member " + gen.curUnit().getQualName() + '.' + protoMem.getName() + " delegates " + qn);
+    			gen.aux.genHeaderInclude(protoMem.getBindToUnit().getQualName());
+    			//String pcn = gen.uname_target() + protoMem.getName() + '_';
+    			//String dcn = qn.replace('.', '_') + '_';
+    			//genProtocolMemberDefines(protoMem.getTypeUnit(), pcn, dcn); // not needed anymore
     		}
-    		else 
-    			qn = ((Value.Obj) Value.toVal(val)).getStr("$name");
-    		String pcn = gen.uname_target() + protoMem.getName() + '_';
-    		String dcn = qn.replace('.', '_') + '_';
-    		gen.aux.genTitle("protocol member " + gen.curUnit().getQualName() + '.' + protoMem.getName() + " delegates " + qn);
-    		gen.aux.genHeaderInclude(qn);
-    		genProtocolMemberDefines(protoMem.getTypeUnit(), pcn, dcn);
     	}
 
     }
@@ -606,7 +602,7 @@ public class ProgCCode {
 
 		obj = ud.getUnitObj().getAny(n);
         if (obj == Value.UNDEF) {
-            ParseUnit.current().reportError(decl.getName(), "private variable has never been assigned");
+            ParseUnit.current().reportError(decl.getName(), "variable has never been assigned");
             return;
         }
         
@@ -614,37 +610,10 @@ public class ProgCCode {
         //	return;
 
         Object val = Value.toVal(obj);
-        
-        // Old code. Now this is initializing fields of structs (values embedded in {}). Name assignments not needed.
-//        String cname = gen.cname() + decl.getName() + gen.aux.mkSuf(decl);        
-//        gen.aux.genType(decl.getTypeSpec(), cname);
-//        gen.fmt.print(" = ");
-
-        
-        if (decl instanceof DeclNode.TypedMember && ((DeclNode.TypedMember) decl).isProtocolMember()) {
-
-
-        	if (((TypedMember) decl).getBindLocUnit() != ud.getUnit()
-        			&& ((TypedMember) decl).getBindLocUnit() != null) {
-        		
-        		// Get the binding from the bind unit
-        		
-        		String qname = decl.getDefiningScope().getScopeName() + "." + decl.getName().getText();
-        		UnitDesc udsc = unitDescsMap.get(((TypedMember) decl).getBindLocUnit().getQualName());
-        		if (udsc != null) {
-        			obj = udsc.getUnitObj().getAny(qname);
-        			val = Value.toVal(obj);
-        		}
-//        		else {
-//        			udsc = unitDescsMap.get(((TypedMember) decl).getBindToUnit().getQualName());
-//        			obj = udsc.getUnitObj().getAny(((TypedMember) decl).getBindToUnit().getQualName());
-//        			val = Value.toVal(obj);
-//
-//        			
-//        		}
-        		
-        	}
-        	gen.getFmt().print("&");        	
+                
+		if (decl instanceof DeclNode.TypedMember && ((DeclNode.TypedMember) decl).isProtocolMember()) {
+			val = genTypedMemberVal(ud, decl, val);
+			gen.getFmt().print("&");          	
         }
         
 		gen.getFmt().mark();
@@ -653,6 +622,35 @@ public class ProgCCode {
 		int l = 16 - ss.length() > 0 ? 24 - ss.length() : 4;
 		String spaces = String.format("%"+l+"s", "");
 		gen.getFmt().print("%1,%2/* %3 */\n",ss, spaces, decl.getName());   					
+    }
+
+
+	/**
+	 * Get value of protocol member from binding.
+	 * @param ud
+	 * @param decl
+	 * @param val
+	 * @return the val from the bind unit. Will be a String.
+	 */
+    private Object genTypedMemberVal(UnitDesc ud, DeclNode.Var decl, Object val) {
+    	Object obj;
+    	if (!(decl instanceof DeclNode.TypedMember) || !(((DeclNode.TypedMember) decl).isProtocolMember()))
+    		return val;
+    	if (((TypedMember) decl).getBindLocUnit() != ud.getUnit()
+    			&& ((TypedMember) decl).getBindLocUnit() != null) {
+
+    		// Get the binding from the bind unit
+
+    		String qname = decl.getDefiningScope().getScopeName() + "." + decl.getName().getText();
+    		UnitDesc udsc = unitDescsMap.get(((TypedMember) decl).getBindLocUnit().getQualName());
+    		if (udsc != null) {
+    			obj = udsc.getUnitObj().getAny(qname);
+    			val = Value.toVal(obj);
+    			if (val == Value.UNDEF)
+    				ParseUnit.current().reportError(decl.getName(), "protocol member has never been bound");
+    		}
+    	}
+    	return val;
     }
     
     private void genVal(Cat cat, TypeNode cast, Object val) {

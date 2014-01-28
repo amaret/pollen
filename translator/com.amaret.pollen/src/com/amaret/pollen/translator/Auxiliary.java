@@ -15,6 +15,7 @@ import com.amaret.pollen.parser.Cat.Arr;
 import com.amaret.pollen.parser.Cat.Fcn;
 import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.DeclNode.Formal;
+import com.amaret.pollen.parser.DeclNode.ITypeSpec;
 import com.amaret.pollen.parser.DeclNode.Var;
 import com.amaret.pollen.parser.ExprNode;
 import com.amaret.pollen.parser.ExprNode.Call;
@@ -735,33 +736,31 @@ public class Auxiliary {
 		ExprNode proMem = stmt.getPro();
 		TypeNode typ = stmt.getValue();
 					
-		String bindToUnit = "";
-		if (stmt.getBindToUnit() != null) {
-			bindToUnit = (stmt.getBindToUnit() == null) ? "" : stmt.getBindToUnit().getName().getText();
-			bindToUnit = stmt.getBindToUnit().getPkgName().getText().replace('.', '_') + '_'  + bindToUnit + '_';	
-		}
 		BaseNode b = ParseUnit.current().getPresetExpr(proMem.getSymbol());
 		ISymbolNode n = (proMem != null && proMem.getSymbol() != null) ? proMem.getSymbol().node()
 				: null;		
-		genBind(n, typ, bindToUnit);
+		genBind(n, typ, stmt.getBindToUnit());
 
 	}
 	/**
 	 * @param protocolMbr
 	 * @param typ
-	 * @param bindToUnit
+	 * @param bindToUnitNode
 	 */
-	void genBind(ISymbolNode protocolMbr, TypeNode typ, String bindToUnit) {
+	void genBind(ISymbolNode protocolMbr, TypeNode typ, UnitNode bindToUnitNode) {
 		boolean isProxy = (protocolMbr != null && protocolMbr instanceof DeclNode.TypedMember && ((DeclNode.TypedMember) protocolMbr)
 				.isProtocolMember());
 		if (!isProxy)
 			return;
-		String sn = gen.curUnit().getName().getText()
-				
+		String sn = gen.curUnit().getName().getText()				
 				.equals(protocolMbr.getDefiningScope().getScopeName()) ? ""
 				: protocolMbr.getDefiningScope().getScopeName() + ".";
 		String n = sn +  protocolMbr.getName().getText();
-
+		String bindToUnit = "";
+		if (bindToUnitNode != null) {
+			bindToUnit = bindToUnitNode.getName().getText();
+			bindToUnit = bindToUnitNode.getPkgName().getText().replace('.', '_') + '_'  + bindToUnit + '_';	
+		}		
 		gen.getFmt().print("var $$v = \'");
 		if (typ == null) {
 			gen.getFmt().print("undefined");
@@ -780,7 +779,21 @@ public class Auxiliary {
 
 		String uname = "$units[\'" + gen.uname_host() + "\']"; 
 		gen.getFmt().print("$$bind(%1, '%2', $$v);", uname, n);
-		gen.getFmt().print("if ($$v && $$v == $$s) $$v.pollen$used = true;\n");
+		//gen.getFmt().print("\n$$printf( \'$$v \' + $$v + \', $$s \' + $$s);\n");
+
+		// NOTE I don't think the first assign below of '$$v.pollen$used = true' will
+		// ever take effect because the format of $$v is not a unit reference. 
+		// The case I looked at got 'undefined' as the $$v.pollen$used value.
+		// I added the bindTo assign for the cases I understand and I'm keeping the 
+		// $$v old one "just in case" it works for something.
+		if (bindToUnitNode == null) {
+			gen.getFmt().print("if ($$v && $$v == $$s) $$v.pollen$used = true;\n");
+		}
+		else {
+			gen.getFmt().print("{ $$v.pollen$used = true;\n%t");
+			String bindTo = bindToUnitNode.getUnitType().getOutputNameHost(gen, bindToUnitNode, EnumSet.noneOf(Flags.class));
+			gen.getFmt().print("%1pollen$used = true;}\n\n", bindTo);					
+		}
 	}
 
 	private void genExpr$Size(ExprNode.Size expr) {
@@ -956,56 +969,52 @@ public class Auxiliary {
 			gen.getFmt().print(sep);
 			sep = ", ";
 			if (typeFlg) {
-				genExternFcnParameter(arg.getTypeSpec(), "" + arg.getName(), EnumSet.noneOf(Flags.class), arg);
+				genForwardedType(arg.getTypeSpec(), "" + arg.getName(), EnumSet.noneOf(Flags.class), arg);
 			} else
 				gen.getFmt().print(arg.getName()); // javascript
 		}
 		gen.getFmt().print(" )");
 	}
+	
 	/**
-	 * forwards for out of unit references. Required to avoid circular header file inclusion problems in c. 
+	 * Utility to generate the forward in c for cross unit references. Needed to fix circular header inclusion.
+	 * @param arg
+	 */
+	public void genForwardForType(ITypeSpec arg) {
+		if (isHost())
+			return;
+		SymbolEntry s = arg.getTypeSpec() instanceof TypeNode.Usr ? ((TypeNode.Usr) arg
+				.getTypeSpec()).getSymbol()
+				: null;
+		if (s == null || !( s.node() instanceof ImportNode)) { // an ImportNode indicates an out-of-unit reference
+			return;
+		}	
+		if (((ImportNode)s.node()).isSynthesizedFromMetaPrimitive()) {
+			return;
+		}		
+		TypeNode.Usr t = (Usr) arg.getTypeSpec();
+		String str = t.getOutputNameTarget(gen, s.scope(), EnumSet.of(Flags.IS_FCNARG_TYPEDEF));
+		if (!gen.getFcnArgForwards().contains(str)) {
+			gen.getFmt().print("struct %1;\n", str); // the forward
+			gen.getFcnArgForwards().add(str);
+		}
+		
+	}
+	/**
+	 * forwards for out of unit references in c header files. 
+	 * Required to avoid circular header file inclusion problems in c. 
 	 * @param args
 	 * @param fcn
 	 */
 	void genFcnArgForwards(List<DeclNode.Formal> args, com.amaret.pollen.parser.DeclNode.Fcn fcn) {
 		if (isHost())
 			return;
+		genForwardForType(fcn);  // for return
 		if (args.size() == 0) 
-			return;
-		
-		DeclNode.Formal thisPtr = fcn.getThisPtr();
-		boolean skipFirst = thisPtr.isMethod() ? true : false;
-
+			return;				
 		for (DeclNode.Formal arg : args) {
-//			if (skipFirst) {
-//				skipFirst = false;
-//				continue;
-//			}
-			SymbolEntry s = arg.getTypeSpec() instanceof TypeNode.Usr ? ((TypeNode.Usr) arg
-					.getTypeSpec()).getSymbol()
-					: null;
-			if (s == null || !( s.node() instanceof ImportNode)) { // an ImportNode indicates an out-of-unit reference
-				continue;
-			}	
-			if (((ImportNode)s.node()).isSynthesizedFromMetaPrimitive()) {
-				continue;
-			}		
-			//System.out.println(arg.toStringTree());
-			TypeNode.Usr t = (Usr) arg.getTypeSpec();
-			String str = t.getOutputNameTarget(gen, s.scope(), EnumSet.of(Flags.IS_FCNARG_TYPEDEF));
-			//gen.getFmt().print_dbg("extern struct %1 %1;\n", str);
-			if (!gen.getFcnArgForwards().contains(str)) {
-				gen.getFmt().print("struct %1;\n", str);
-				gen.getFcnArgForwards().add(str);
-			}
-
-			//gen.getFmt().print_dbg("struct " + arg.getTypeSpec().getName().getText() + "; ");
-
-
-
-			//gen.getFmt().print_dbg(arg.getOutputNameTarget(gen, s.scope(), EnumSet.noneOf(Flags.class)));
-			//gen.getFmt().print_dbg(arg.getOutputQNameTarget(gen, arg, s.scope(), EnumSet.noneOf(Flags.class)));
-		}
+			genForwardForType(arg);			
+		}		
 	}
 
 
@@ -1014,6 +1023,7 @@ public class Auxiliary {
 		int k = qn.lastIndexOf('.');
 		String pn = qn.substring(0, k);
 		String un = qn.substring(k + 1);
+
 		gen.getFmt().print("#ifndef %1\n", gs);
 		gen.getFmt().print("#define %1\n", gs);
 		gen.getFmt().print("#include \"../../%1/%2/%2.h\"\n", pn, un);
@@ -1588,7 +1598,15 @@ public class Auxiliary {
 		String s = mkTypeName(type, flags) + (name == null ? "" : " " + name);
 		gen.getFmt().print("%1", s);
 	}
-	void genExternFcnParameter(TypeNode type, String name, EnumSet<Flags> flags, Formal arg) {
+	/**
+	 * Call this if the function argument might need a forward in c header file. 
+	 * @param type
+	 * @param name
+	 * @param flags
+	 * @param arg
+	 */
+	void genForwardedType(TypeNode type, String name, EnumSet<Flags> flags, ITypeSpec arg) {
+		
 		
 		if (type instanceof TypeNode.Usr) {
 			if (((TypeNode.Usr)type).isFunctionRef()) {
@@ -1606,15 +1624,13 @@ public class Auxiliary {
 		if (((ImportNode)s.node()).isSynthesizedFromMetaPrimitive()) {
 			this.genTypeWithVarName(type, name, flags);
 			return;
-		}		
-		//this.genTypeWithVarName(type, name, flags);
-		//System.out.println(arg.toStringTree());
+		}	
+		// because right now host arrays are instance arrays not reference arrays
+		String isPtr = (arg instanceof DeclNode.Arr && ((DeclNode.Arr)arg).isHost()) ? " " : "* ";
 
 		TypeNode.Usr t = (Usr) arg.getTypeSpec();
 		String str = t.getOutputNameTarget(gen, s.scope(), EnumSet.of(Flags.IS_FCNARG_TYPEDEF));
-		gen.getFmt().print("struct %1* %2", str, name);
-
-		//gen.getFmt().print_dbg("struct " + type.getName().getText() + "* " + name);
+		gen.getFmt().print("struct %1%3 %2", str, name, isPtr); // the argument for which there is a forward
 	}
 	
 	/**
