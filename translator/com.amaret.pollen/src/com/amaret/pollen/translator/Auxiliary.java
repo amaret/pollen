@@ -411,7 +411,6 @@ public class Auxiliary {
 
 				
  		String n = expr.getName() instanceof ExprNode.Ident ? ((ExprNode.Ident) expr.getName()).getName().getText() : "";
-		//System.out.println("genExprCall: " + expr.toStringTree());
 
 		if (n.equals(ParseUnit.INTRINSIC_PREFIX + "assert")) {				
 			if (!ProcessUnits.isAsserts())

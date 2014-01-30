@@ -245,6 +245,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		static final private int DIM = 2;
 		static final private int INIT = 3;
 		private boolean initToNull = false;
+		// if the dimension size variable is host, it is calculated at host time and then retrieved for the header.
+		List<Integer> dimensionSizes = new java.util.ArrayList<Integer>();
 
 		Arr(int ttype, String ttext, EnumSet<Flags> flags) {
 			super(ttype, ttext, flags);
@@ -309,6 +311,31 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         	else 
         		return null;
         }
+        /**
+         * 
+         * @return if the dimension size has been calculated at host time it will be stored here for header generation.
+         */
+        public int getFirstDimSize() {
+        	if (dimensionSizes.size() > 0)
+        		return dimensionSizes.get(0);
+        	return -1;
+        }
+        // TODO update these for multidimensional arrays
+        /**
+         * Save the size for header generation.
+         * @param i
+         */
+        public void setFirstDimSize(int i) {
+        	if (dimensionSizes.size() > 0) {
+        		int prev = dimensionSizes.get(0);
+        		if (prev != i) {
+        			ParseUnit.current().reportWarning(this, this.getName().getText() + ": a size for the array has been calculated at host time > once. The largest value will be used.");
+        			if (prev > i)
+        				return;        			
+        		}        		
+        	}
+        	dimensionSizes.add(i);
+        }        
 
 		@Override
 		public Atom getName() {

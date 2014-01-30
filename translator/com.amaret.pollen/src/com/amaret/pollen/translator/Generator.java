@@ -41,6 +41,7 @@ public class Generator {
 	private String uname_host;
 	private String uname_target;
     private ITarget target;
+    private File progFile;
 	private final Formatter fmt = new Formatter();
 	final Auxiliary aux = new Auxiliary(this);
 	private List<String> fcnRefTypeDefs;  // typedefs can only be emitted once (must be unique for c)	
@@ -118,18 +119,27 @@ public class Generator {
 				continue;
 
 			
-	        boolean saveDbg = ParseUnit.isDebugMode();
-	        ParseUnit.setDebugMode(false);
-			if (ParseUnit.isDebugMode()) {	
-				System.out.println("genUnits() START: " + u.getQualName());
-			}
-	        ParseUnit.setDebugMode(saveDbg);
-
 			setupUnit(u);
-			genHeader();
+			//genHeader();
 			genBody();
 			genJScript();
 			genInfo();
+		}
+		
+	}
+	/**
+	 * @param main The pollen file
+	 * @param units All dependent units
+	 */
+	public void genUnitHeaders(UnitNode main, HashMap<String, UnitNode> units) throws Exception {
+		
+
+		for (UnitNode u : units.values()) {
+			if (u.isVoid())
+				continue;
+
+			setupUnit(u);
+			genHeader();
 		}
 		
 	}
@@ -224,7 +234,7 @@ public class Generator {
     }
     
     @SuppressWarnings("unchecked")
-    private ITarget loadTarget() throws Exception {
+    public ITarget loadTarget() throws Exception {
         ITarget targ = null;
         try {
             String clsName = ParseUnit.current().getProperty(ITarget.P_CLASS);
@@ -237,9 +247,12 @@ public class Generator {
         return targ;
     }
 
+    private ProgCCode targProg = null;
+	public ProgCCode getTargProg() {
+		return targProg;
+	}
 
-
-    public void genProg(UnitNode unit) throws Exception {
+	public void genProgFiles(UnitNode unit) throws Exception {
 
         if (!unit.isModule()) {
             return;
@@ -251,7 +264,7 @@ public class Generator {
         findUses(unit, uses);
 
         File jsFile = ParseUnit.cacheFile(unit.getQualName(), "-prog.js");
-        File progFile = ParseUnit.cacheFile(unit.getQualName(), "-prog.c");
+        progFile = ParseUnit.cacheFile(unit.getQualName(), "-prog.c");
         boolean missingRun = unit.getFcnMap().get(ParseUnit.INTRINSIC_PREFIX + "run") == null;
         boolean noProg = unit.isHost() || missingRun;
         if (noProg) {
@@ -264,24 +277,31 @@ public class Generator {
         setupUnit(unit);
         getFmt().reset();
         ProgJScript jsProg = new ProgJScript(this);
-        jsProg.generate(uses, unit);
+        jsProg.generateProgJS(uses, unit);
         writeFile(jsFile, getFmt().toBytes(), true);
         if (ParseUnit.getSeriousErrorCount() == 0) {
         	Value.Arr unitsArr = (Value.Arr) Script.execute(getFmt().toString(), "$units", jsFile.getAbsolutePath());
-
         	getFmt().reset();
-        	ProgCCode targProg = new ProgCCode(this);
-        	targProg.generate(unitsArr);
+        	targProg = new ProgCCode(this);
+        	targProg.generateProgC(unitsArr);
         	writeFile(progFile, getFmt().toBytes(), true);
         }
 
         if (ParseUnit.getSeriousErrorCount() > 0) {
             return;
-        }
-        
-        target = this.loadTarget();
-        target.compile(progFile);
+        }        
     }
+
+	/**
+	 * @param progFile
+	 * @throws Exception
+	 */
+	public void compile() throws Exception {
+		if (ParseUnit.getSeriousErrorCount() == 0) {
+			target = this.loadTarget();
+			target.compile(progFile);
+		}
+	}
 
 
 	/**
@@ -307,7 +327,7 @@ public class Generator {
 			File file = ParseUnit.cacheFile(curUnit.getQualName(), ".h");
 			getFmt().reset();
 			UnitHeader unitHeader = new UnitHeader(this);
-			unitHeader.generate(curUnit);
+			unitHeader.generateUnitHdr(curUnit);
 			writeFile(file, getFmt().toBytes());
 		}
 

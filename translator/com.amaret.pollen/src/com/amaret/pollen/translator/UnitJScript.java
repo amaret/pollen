@@ -1,5 +1,6 @@
 package com.amaret.pollen.translator;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import com.amaret.pollen.parser.BodyNode;
 import com.amaret.pollen.parser.Cat;
 import com.amaret.pollen.parser.Cat.Fcn;
 import com.amaret.pollen.parser.DeclNode;
+import com.amaret.pollen.parser.DeclNode.Arr;
 import com.amaret.pollen.parser.DeclNode.Formal;
 import com.amaret.pollen.parser.DeclNode.ITypeInfo;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
@@ -64,35 +66,49 @@ public class UnitJScript {
         
         gen.getFmt().print(" {\n%+");
         if (fcn.isHost()) {
-        	//gen.fmt.print("%tdebug_line(\"" + fcn.getName() + "\", " + gen.uname() + ");\n");
             gen.getFmt().print("%tvar $$text = '';\n");
 
         }
         gen.aux.genLocals(body.getLocalVars());
         if (fcn.isClassHostConstructor()) {
         	gen.getFmt().print("%t%2.%1();\n", ParseUnit.PRIVATE_INIT, "this" );
-        	//gen.getFmt().print("%t%2.%1();\n", ParseUnit.PRESET_INIT, "this" );
-        }
-        if (fcn.isClassHostConstructor() || fcn.isModuleHostConstructor()) {
-        	// init Arrays first in host constructors which will be AFTER presets
-        	DeclNode.Usr u = gen.isNestedClass() ? gen.getNestedClass() : gen.curUnit().getUnitType();        	
-        	for (DeclNode decl : u.getFeatures()) {
-        		if (isPrivateInit(decl) && isHostInit(decl) && decl instanceof DeclNode.Arr) {
-        			genDecl(decl);
-        		}
-        	}
+        	//gen.getFmt().print("%t%2.%1();\n", ParseUnit.PRESET_INIT, "this" ); // now done in epilogue
         }
 
         boolean skipBody = false;
         if (fcn.getName().getText().equals(ParseUnit.PRESET_INIT) && !fcn.isPresetInitializer())
         	skipBody = true; // no-op the preset initializer if an error was detected
 
+        List<DeclNode.Arr> arrList = new ArrayList<DeclNode.Arr>();
+        if (fcn.isClassHostConstructor() || fcn.isModuleHostConstructor()) {
+        	DeclNode.Usr u = gen.isNestedClass() ? gen.getNestedClass() : gen.curUnit().getUnitType();        	
+        	for (DeclNode decl : u.getFeatures()) {
+        		if (isPrivateInit(decl) && isHostInit(decl) && decl instanceof DeclNode.Arr) {
+        			DeclNode.Arr arr = (Arr) decl;
+        			if (arr.getFirstDim() instanceof ExprNode.Ident) {
+        				SymbolEntry se = ((ExprNode.Ident)arr.getFirstDim()).getSymbol();
+        				ISymbolNode node = se != null ? se.node() : null;
+        				if (node instanceof DeclNode.Var && ((DeclNode.Var)node).isHost()) {
+        					String msg = "Array '" + arr.getName() + "' has computed size (from host variable '" + node.getName().getText() 
+        							+ "'). You cannot reference arrays of computed size directly or indirectly until after the host initializer has returned.";
+        					ParseUnit.current().reportWarning((BaseNode) node, msg);
+        					arrList.add(arr);
+        					continue;
+        				}
+        			}       			
+        			genDecl(decl);
+        		}
+        	}
+        }
         if (!skipBody)
         	for (StmtNode stmt : body.getStmts()) {
         		gen.getFmt().print("%t");
         		gen.aux.genStmt(stmt);
         		gen.getFmt().print("\n");
         	}
+        for (DeclNode.Arr arr : arrList) {
+        	genDecl(arr);
+        }
         
         if (fcn.isHost()) {
             gen.getFmt().print("%treturn %1;\n", rtn);
@@ -154,7 +170,6 @@ public class UnitJScript {
             String s = gen.getOutputQName(decl, (ISymbolNode) decl.getEnclosingScope(),decl.getDefiningScope(), EnumSet.noneOf(Flags.class ));
             gen.getAux().setHost(true);
             gen.getFmt().print("%t%1.%2 = new $$Ref('%3');\n", gen.uname(), n, s);
-            //gen.getFmt().print_dbg("%t%1.%2 = new $$Ref('%3%2__%4');\n", gen.uname(), n, gen.uname_target(), suf);
         }
     }
     
@@ -208,6 +223,16 @@ public class UnitJScript {
     	gen.getFmt().print("%t%1.%2.prototype." + ParseUnit.PRIVATE_INIT + " = function() {\n%+", gen.uname(), decl.getName());
         for (DeclNode d : decl.getFeatures()) {
             if (isPrivateInit(d) && isHostInit(d)) {
+            	if (d instanceof DeclNode.Arr)
+            		continue;
+                genDecl(d);
+            }
+        }
+        // do the arrays last so that the dimensions have final value (if calculated).
+        for (DeclNode d : decl.getFeatures()) {
+            if (isPrivateInit(d) && isHostInit(d)) {
+            	if (!(d instanceof DeclNode.Arr))
+            		continue;
                 genDecl(d);
             }
         }

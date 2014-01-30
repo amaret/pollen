@@ -14,6 +14,7 @@ import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.DeclNode.Class;
 import com.amaret.pollen.parser.DeclNode.Formal;
 import com.amaret.pollen.parser.DeclNode.ITypeSpec;
+import com.amaret.pollen.parser.DeclNode.Var;
 import com.amaret.pollen.parser.ExprNode;
 import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.IScope;
@@ -26,6 +27,7 @@ import com.amaret.pollen.parser.TypeNode;
 import com.amaret.pollen.parser.TypeNode.Usr;
 import com.amaret.pollen.parser.UnitNode;
 import com.amaret.pollen.parser.pollenParser;
+import com.amaret.pollen.script.Value;
 
 public class UnitHeader {
 
@@ -209,34 +211,44 @@ public class UnitHeader {
         gen.getFmt().print("%ttypedef struct %1* %2;\n", clsStruct, clsStructPtr); 
 
     }
-
 	/**
 	 * Used for host and target class arrays. Used for module target arrays only (not host). 
 	 * @param fld
 	 */
 	private void genArrDims(DeclNode fld) {
 		boolean isClass = fld.getDefiningScope() instanceof DeclNode.Class ? true : false;
-		//System.out.println("genArrDims " + fld.toStringTree());
 		for (BaseNode e : ((DeclNode.Arr)fld).getDim().getElems()) {
 			gen.getFmt().print("[");
 			boolean isPreset = false;
 			if (e instanceof ExprNode.Ident) {
+
 				if (ParseUnit.current().isPreset(((ExprNode.Ident)e).getSymbol())) {
 					isPreset = true;
 					e = ParseUnit.current().getPresetExpr(((ExprNode.Ident)e).getSymbol());
-				}
-				else {
-					// if the arr dim is a variable initialized to a constant, use that constant as the dim value.
+				}				
+				else {					
+					String val = null; 
+					int i = ((DeclNode.Arr)fld).getFirstDimSize(); // check if array size set at  host time.
+					if (i != -1) {
+						val = Integer.toString(i);
+					}
+					if (val != null) {
+						gen.getFmt().print("%1] /* %2 */", val, ((ExprNode.Ident) e).getName().getText());
+						continue;
+					}
 					SymbolEntry se = ((ExprNode.Ident)e).getSymbol();
-					ISymbolNode node = se != null ? se.node() : null;
+					ISymbolNode node = se != null ? se.node() : null;					
 					if (node instanceof DeclNode.Var) {
+						// if the arr dim is a variable initialized to a constant, use that constant as the dim value.
 						e = ((DeclNode.Var)node).getInit();
 					}
 				}
 			}
-			if (e instanceof ExprNode && ((ExprNode)e).getConstInitialValue() != null)
-				 gen.aux.genExpr(((ExprNode) e).getConstInitialValue());
+			if (e instanceof ExprNode && ((ExprNode)e).getConstInitialValue() != null) {
+				gen.aux.genExpr(((ExprNode) e).getConstInitialValue());
+			}
 			else {
+				// If the array dimension size variable is host, these errors will not occur. 
 				String msg = isClass ? "for arrays defined in class scope, " : "for non-host arrays defined in module scope, ";
 				// note these errors not raised for host arrays in modules because the issue doesn't exist on the host/module side.
 				ParseUnit.current().reportError(fld.getName(), msg + "array dimensions must resolve to compile time constant values");
@@ -481,7 +493,7 @@ public class UnitHeader {
 
     
     
-    public void generate(UnitNode unit) {
+    public void generateUnitHdr(UnitNode unit) {
         
         gen.aux.setHost(false);
 

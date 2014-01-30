@@ -181,7 +181,7 @@ public class ProcessUnits {
 		pollenHelp += "\n" + "  -h\tThis help message.";
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.66";  // user release . internal rev . fix number
+	private static String  v = "0.2.67";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -338,13 +338,17 @@ public class ProcessUnits {
 		if (rtn == 0) {
 			UnitNode curUnit = ParseUnit.current().getCurrUnitNode();
 			Generator g = new Generator();
-			g.genUnits(curUnit, unitMap);
+			g.genUnits(curUnit, unitMap); // js and c body
 			
             if (ParseUnit.current().getCurrUnitNode().getErrorCount() > 0) {
                 return 1;
             }
             
-            g.genProg(curUnit);
+            g.genProgFiles(curUnit); // prog.js, prog.c
+            
+            g.genUnitHeaders(curUnit, unitMap); // last to initialize some host variables (e.g. array dimensions)
+            
+            g.compile();
             
             if (ParseUnit.getSeriousErrorCount() > 0) {
                 return 1;

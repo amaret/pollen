@@ -15,6 +15,7 @@ import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.BaseNode;
 import com.amaret.pollen.parser.Cat;
 import com.amaret.pollen.parser.DeclNode;
+import com.amaret.pollen.parser.DeclNode.Arr;
 import com.amaret.pollen.parser.DeclNode.EnumVal;
 import com.amaret.pollen.parser.DeclNode.FcnRef;
 import com.amaret.pollen.parser.DeclNode.ITypeSpec;
@@ -242,7 +243,7 @@ public class ProgCCode {
         }
 	}
 
-    public void generate(Value.Arr unitsArr) {
+    public void generateProgC(Value.Arr unitsArr) {
 
         gen.aux.setHost(false);
         
@@ -251,7 +252,6 @@ public class ProgCCode {
             Value.Obj uobj = unitsArr.getObj(i);
             UnitDesc ud;            
             UnitNode u = cur.findUnit(uobj.getStr("$name"), "generate");       
-            // genUse() in UnitJScript
 
             if (uobj.getBool("pollen$used")) { // a host_init pass in epilogue.js sets this
                 ud = new UnitDesc(u, uobj, true);
@@ -494,7 +494,7 @@ public class ProgCCode {
     }
 
     private void genHostVal(UnitDesc ud, DeclNode.Var decl) {
-    	
+    	    	
     	if (!decl.isHost()) 
     		return;
     	
@@ -509,10 +509,10 @@ public class ProgCCode {
         if (val.toString().matches(".*NOT_FOUND")) {
         	if (decl.isClassScope()) {
         		String n = decl.getDefiningScope().getScopeName() + "." + decl.getName().getText();
-        		val = ud.getUnitObj().getAny(decl.getName());
+        		val = ud.getUnitObj().getAny(n);
         		if (val.toString().matches(".*NOT_FOUND"))
         			n = decl.getDefiningScope().getScopeName() + "." + n;
-        		val = ud.getUnitObj().getAny(decl.getName());
+        		val = ud.getUnitObj().getAny(n);
         	}
         }
         
@@ -652,6 +652,36 @@ public class ProgCCode {
     	}
     	return val;
     }
+    /**
+     * The header is now generated after the prog files which means we can initialize it with host values.
+     * Not used. It will not work for classes that get (host) instances. Note we can't generate the header
+     * with values that conflict with the *prog.c file so use this with care. 
+     * @param decl
+     * @param u
+     * @return the value as a String or null if none.
+     */
+    public String genHostValueForHdr(DeclNode.Var decl, UnitNode u) {
+    	
+    	if (!decl.isHost())
+    		return null;
+
+    	String qname = u.getQualName();
+		UnitDesc udsc = unitDescsMap.get(qname);
+		Object val, obj;
+		if (udsc != null) {
+			Obj uobj = udsc.getUnitObj();
+			obj = uobj.getAny(decl.getName().getText());
+			val = Value.toVal(obj);
+			if (val instanceof Number) {
+				int i = ((Number)val).intValue();
+				return Integer.toString(i);
+			}
+			if (val instanceof String)
+				return val.toString();
+			// more cases?
+		}
+		return null;
+    }
     
     private void genVal(Cat cat, TypeNode cast, Object val) {
         Object vobj = Value.toVal(val);
@@ -758,6 +788,7 @@ public class ProgCCode {
 			}
 			return;
 		}
+		
         
         DeclNode.Usr struct = (DeclNode.Usr) is;
         
@@ -815,6 +846,9 @@ public class ProgCCode {
         TypeNode base = tarr.getBase();
         gen.getFmt().print("{\n%+");
         if (varr.length() > 0) {
+        	DeclNode.Arr decl = (Arr) (cat.getType() != null ? cat.getType().getParent() : null);
+        	if (decl != null)
+        		decl.setFirstDimSize(varr.length());
             for (int i = 0; i < varr.length(); i++) {
                 gen.getFmt().print("%t");
                 genVal(cat.getBase(), base, varr.getAny(i));

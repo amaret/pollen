@@ -15,7 +15,7 @@ public class ProgJScript {
         this.gen = gen;
     }
 
-    public void generate(Set<UnitNode> uses, UnitNode main) {
+    public void generateProgJS(Set<UnitNode> uses, UnitNode main) {
         
         gen.aux.setHost(true);
 
