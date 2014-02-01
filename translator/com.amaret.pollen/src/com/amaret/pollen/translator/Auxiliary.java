@@ -59,6 +59,14 @@ public class Auxiliary {
 	private Generator gen;
 	private boolean isHost;
 	private boolean skipPost = false;
+	private DeclNode.Arr updateArr = null;
+	DeclNode.Arr getUpdateArr() {
+		return updateArr;
+	}
+	void setUpdateArr(DeclNode.Arr arr) {
+		updateArr = arr;
+	}
+	
 	private static int varSuf = 0;
 	/**
 	 * Used to avoid recursive calls to genExprPost() when we know we have an index expr.
@@ -186,6 +194,109 @@ public class Auxiliary {
 			gen.getFmt().print(")");
 		}
 	}
+	/**
+	 * 
+	 * @param preExpr. For example below it should be the Ident.
+	 * Given arr[idx].foo():
+	 * 
+	 *        ExprNode.Ident 
+	 *      /        |         \
+	 *    Array    Index       Call
+	 *   'arr'     'idx'       'foo'
+	 *    
+	 * @param postExpr for above could be Index or Call.
+	 * @return "." or "->"
+	 */
+	String mkDerefOp(ExprNode preExpr, ExprNode postExpr) {
+		String deref = "";
+		Cat preCat = preExpr.getCat();
+		int preType = preExpr.getType();
+		switch (preType) {
+		case pollenParser.E_CALL:
+			break;
+		case pollenParser.E_INDEX:
+			break;
+		case pollenParser.E_IDENT:
+			if (preCat instanceof Cat.Arr && ((Cat.Arr)preCat).getBase().isAggTyp()) {
+				// instances or references?
+				TypeNode.Arr ta = ((Cat.Arr)preCat).getType();
+				deref = ta.isReferenceElems() ? "->" : ".";				
+			}
+			break;
+		default:
+			break;
+		}
+		return deref;
+	}
+	/**
+	 * A pollen expr of the form 'p.foo().bar()' becomes 'bar(foo(p))'.
+	 * Generate so that the 'this' ptr is the first parameter. 
+	 * C side only. 
+	 * @param expr
+	 */
+	void genExprPostCall(ExprNode.Ident expr) {
+		if (isHost())
+			return;
+		for (int i = 1; i < expr.getChildCount(); i++) {
+			BaseNode b = (BaseNode) expr.getChild(i);
+			if (b instanceof ExprNode.Call) {
+				SymbolEntry se = ((ExprNode.Call)b).getCalledFcn();
+				ISymbolNode node = se != null ? se.node() : null;
+				if (node != null && node instanceof DeclNode.Fcn) {
+					if (!((DeclNode.Fcn)node).isMethod()) {
+						ParseUnit.current().reportError(expr, node.getName().getText() + ": found module function. This call expression requires a class method.");
+						return;
+					}					
+				}
+			}						
+		}
+		for (int i = expr.getChildCount() - 1; i > 0; i-- ) {
+			BaseNode b = (BaseNode) expr.getChild(i);
+			if (!(b instanceof ExprNode.Call))
+				continue;
+			
+			
+		}
+		
+	}
+	/**
+	 * For a nested (post) method call, generate the this ptr. 
+	 * @param expr
+	 */
+	void genExprPostCallThisPtr(ExprNode.Ident expr, ExprNode call) {
+		if (isHost())
+			return;
+		genExpr$Ident(expr);
+		if (expr.getChildCount() > 1) {
+			for (int i = 1; i < expr.getChildCount(); i++) {
+				BaseNode b = (BaseNode) expr.getChild(i);
+				if (b == call)
+					return;
+				if (b instanceof ExprNode) {
+					ExprNode e = (ExprNode) b;
+					int eType = e.getType();
+					switch (eType) {
+					case pollenParser.E_INDEX:
+						//if (!isHost())
+							genExpr$Index((Index) e);
+						break;
+					case pollenParser.E_IDENT:						
+						gen.getFmt().print(mkDerefOp(expr, e));
+						genExpr$Ident((Ident) e);
+						break;
+					case pollenParser.E_CALL:
+						System.out.println(expr.toStringTree());
+						gen.getFmt().print(".");
+						genExpr2(e, eType);
+						break;
+					default:
+						break;
+
+					}
+				}				
+			}
+		}
+	}
 
 	/**
 	 * Generate the expr which is a dereference after (from) a function return, 
@@ -204,12 +315,14 @@ public class Auxiliary {
 						//if (!isHost())
 							genExpr2(e, eType);
 						break;
-					case pollenParser.E_IDENT:					
-						gen.getFmt().print("->");
+					case pollenParser.E_IDENT:						
+						gen.getFmt().print(mkDerefOp(expr, e));
 						genExpr2(e, eType);
 						break;
 					case pollenParser.E_CALL:
-						boolean dbg = true;
+						gen.getFmt().print(".");
+						genExpr2(e, eType);
+						break;
 					default:
 						break;
 
@@ -283,12 +396,13 @@ public class Auxiliary {
 		ExprNode right = expr.getRight();
 		String op = expr.getOp().getText();
 		
+		//System.out.println(expr.toStringTree());
+		
 		// Check for modifications of preset variables outside of preset assignments
 		if (expr.isAssign() && left instanceof ExprNode.Ident) {
 			SymbolEntry se = ((ExprNode.Ident)left).getSymbol() != null ? ((ExprNode.Ident)left).getSymbol() : null;
 			BaseNode b = expr;
 			ISymbolNode node = se != null ? se.node() : null;
-			//System.out.println(node != null ? se.scope().getScopeName() + "." + node.getName().getText() + " " + node.toString() : "null");
 			if (node instanceof DeclNode && ParseUnit.current().isPreset(se)) {
 				while (b != null && !(b instanceof DeclNode.Fcn))
 					b = (BaseNode) b.getParent();
@@ -371,17 +485,6 @@ public class Auxiliary {
 			gen.getFmt().print(" = ");
 			genHostNew(right);
 			return;
-			// class host constructors are a bit special
-//			ExprNode.Call c = ((ExprNode.New) right).getCall();
-//			if (c.getCalledFcn() != null) {
-//				SymbolEntry se = c.getCalledFcn();
-//				ISymbolNode node = se != null ? se.node() : null;
-//				if (node != null
-//						&& node.getName().getText().equals(ParseUnit.CTOR_CLASS_HOST)) {
-//					gen.getFmt().print_dbg(".%1()", ParseUnit.CTOR_CLASS_HOST);
-//					return;
-//				}
-//			}
 		}
 
 		String addrOf = "";
@@ -405,6 +508,13 @@ public class Auxiliary {
 		}
 
 		genExpr(right);
+		ExprNode l = (!(left instanceof ExprNode.Self)) ? left : ((ExprNode.Self)left).getMember();
+		if (expr.isAssign() && l instanceof ExprNode.Ident && isHost()) {
+			SymbolEntry se = ((ExprNode.Ident)l).getSymbol() != null ? ((ExprNode.Ident)l).getSymbol() : null;
+			ISymbolNode node = se != null ? se.node() : null;
+			if (node instanceof DeclNode.Var && ((DeclNode.Var)node).isHost() && ((DeclNode.Var)node).getArrayForDimensionVar() != null)
+				setUpdateArr(((DeclNode.Var)node).getArrayForDimensionVar());
+		}
 	}
 
 	private void genExpr$Call(ExprNode.Call expr) {
@@ -426,7 +536,7 @@ public class Auxiliary {
 		}				
 		genExpr(expr.getName());
 		
-		genCallArgs(expr);
+		genCallArgs(expr, null);
 	}
 	private void genExprCallThruFcnPtrArray(ExprNode.Ident expr) {
 		if (!expr.isCallThruFcnPtrArray())
@@ -445,8 +555,9 @@ public class Auxiliary {
 
 	/**
 	 * @param expr
+	 * @param thisPtr TODO
 	 */
-	void genCallArgs(ExprNode.Call expr) {
+	void genCallArgs(ExprNode.Call expr, Ident thisPtr) {
 		Cat cat = expr.getName().getCat();
 		Cat.Fcn fcncat = cat instanceof Cat.Fcn ? (Cat.Fcn) cat : null;
 		
@@ -931,7 +1042,7 @@ public class Auxiliary {
 			s += "()." +  ParseUnit.CTOR_CLASS_HOST;
 			gen.getFmt().print( s );	
 			ExprNode.Call call = (Call) (e instanceof ExprNode.New ? ((New) e).getCall() : e);
-			genCallArgs(call);
+			genCallArgs(call, null);
 		}
 	}
 

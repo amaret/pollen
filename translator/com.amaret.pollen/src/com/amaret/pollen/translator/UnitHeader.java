@@ -227,12 +227,9 @@ public class UnitHeader {
 					e = ParseUnit.current().getPresetExpr(((ExprNode.Ident)e).getSymbol());
 				}				
 				else {					
-					String val = null; 
 					int i = ((DeclNode.Arr)fld).getFirstDimSize(); // check if array size set at  host time.
 					if (i != -1) {
-						val = Integer.toString(i);
-					}
-					if (val != null) {
+						String val = Integer.toString(i);
 						gen.getFmt().print("%1] /* %2 */", val, ((ExprNode.Ident) e).getName().getText());
 						continue;
 					}

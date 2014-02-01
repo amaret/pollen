@@ -89,7 +89,7 @@ public class UnitJScript {
         				SymbolEntry se = ((ExprNode.Ident)arr.getFirstDim()).getSymbol();
         				ISymbolNode node = se != null ? se.node() : null;
         				if (node instanceof DeclNode.Var && ((DeclNode.Var)node).isHost()) {
-        					String msg = "Array '" + arr.getName() + "' has computed size (from host variable '" + node.getName().getText() 
+        					String msg = "Array '" + arr.getName().getText() + "' has computed size (from host variable '" + node.getName().getText() 
         							+ "'). You cannot reference arrays of computed size directly or indirectly until after the host initializer has returned.";
         					ParseUnit.current().reportWarning((BaseNode) node, msg);
         					arrList.add(arr);
@@ -104,6 +104,13 @@ public class UnitJScript {
         	for (StmtNode stmt : body.getStmts()) {
         		gen.getFmt().print("%t");
         		gen.aux.genStmt(stmt);
+        		if (gen.aux.getUpdateArr() != null) {
+        			gen.getFmt().print("\n");     
+					String msg = "Array '" + gen.aux.getUpdateArr().getName().getText() + "' has computed size. The final value for the computed size will be the last one calculated.";
+					ParseUnit.current().reportWarning(fcn.getUnit(), msg);
+        			genDecl(gen.aux.getUpdateArr());
+        			gen.aux.setUpdateArr(null);
+        		}
         		gen.getFmt().print("\n");
         	}
         for (DeclNode.Arr arr : arrList) {
@@ -559,7 +566,7 @@ public class UnitJScript {
             if (init instanceof ExprNode.New) {
             	DeclNode d = (DeclNode) ts;            	
             	gen.getFmt().print("; %2.%3.%1", ParseUnit.CTOR_CLASS_HOST, gen.uname(), d.getName() );
-            	gen.aux.genCallArgs(((ExprNode.New)init).getCall());            	
+            	gen.aux.genCallArgs(((ExprNode.New)init).getCall(), null);            	
             }
         }
         else if (tc.startsWith(Cat.ARR) || tc.startsWith(Cat.VEC)) {

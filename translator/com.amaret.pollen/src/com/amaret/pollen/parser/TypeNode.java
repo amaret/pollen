@@ -33,7 +33,10 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 
 			this.baseSymbol = baseSymbol;
 		}
-
+		/**
+		 * 
+		 * @return true if element type is references to object (not instances)
+		 */
 		public boolean isReferenceElems() {
 			return referenceElems;
 		}

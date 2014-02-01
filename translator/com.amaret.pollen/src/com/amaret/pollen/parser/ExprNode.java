@@ -276,7 +276,7 @@ public class ExprNode extends BaseNode {
 				String call = ei.getName().getText();
 				boolean chkHostScope = symtab.currScopeIsHostFcn() || isConstructorCallOnHostVar();
 				boolean dbg = false;
-				if (call.equals("Dispatcher.post"))
+				if (call.equals("foo"))
 					dbg = true;
 				
 				boolean skipLookup =  (call.matches(ParseUnit.INTRINSIC_PREFIX + ".*")) ? true : false;
@@ -357,7 +357,10 @@ public class ExprNode extends BaseNode {
 							}
 						}
 					}
-
+					boolean isHostFcn = fcn != null
+							&& fcn.node() instanceof DeclNode.Fcn
+							&& ((DeclNode.Fcn) fcn.node()).isHost() ? true
+							: false;
 					if (fcn == null)
 						currUnit
 						.reportSeriousError(
@@ -391,21 +394,7 @@ public class ExprNode extends BaseNode {
 						}
 
 						ei.setSymbol(fcn);
-						boolean isHostFcn = false;
-						if (fcn != null) {
-							IScope sc = fcn.scope();
-							isHostFcn = (fcn.node() instanceof DeclNode.Fcn && ((DeclNode.Fcn) fcn
-									.node()).isHost());
-							if (!isHostFcn && sc instanceof DeclNode.Usr
-									&& ((DeclNode.Usr) sc).isClass()
-									&& !((DeclNode.Usr) sc).isHost()
-									&& !(fcn.node() instanceof DeclNode.FcnRef)) {
 
-								// for function references, the scope of the
-								// function ref is not the scope of the fcn 
-								addThisPtrParameter = true;
-							}
-						}
 						if (qualifier != null && qualifier.node() instanceof ITypeKind
 								&& ((ITypeKind) qualifier.node()).isComposition()
 								&& !isHostFcn) {
@@ -413,7 +402,20 @@ public class ExprNode extends BaseNode {
 							// won't exist at runtime
 							ei.getName().stripQualifiers();
 						}
+
 					}
+					if (fcn != null) {
+						IScope sc = fcn.scope();
+						if (!isHostFcn && sc instanceof DeclNode.Usr
+								&& ((DeclNode.Usr) sc).isClass()
+								&& !((DeclNode.Usr) sc).isHost()
+								&& !(fcn.node() instanceof DeclNode.FcnRef)) {	
+							// for function references, the scope of the
+							// function ref is not the scope of the fcn 
+							addThisPtrParameter = true;
+						}
+					}
+
 				} // end 'if (!skipLookup)'
 
 			}
@@ -828,6 +830,16 @@ public class ExprNode extends BaseNode {
 												// 'obj'
 
 		private boolean thisPtr = false; // add 'this' to accesses
+		int postExprCallCount = 0;		 // the number of calls after first expr 'a.b' in 'a.b.c.d.e...'
+		
+		/**
+		 * Because 'this' is fixed up to be a parameter, postExpr calls need special handling. 
+		 * arr[0].foo() has this equal 1, clsRef.foo() has this equal 0
+		 * @return number of calls after the first expr.
+		 */
+		public int getPostExprCallCount() {
+			return postExprCallCount;
+		}
 
 		public boolean isThisPtr() {
 			if (!thisPtr) {
@@ -943,6 +955,7 @@ public class ExprNode extends BaseNode {
 			if (ParseUnit.isIntrinsicCall(this.getName().getText()))
 				return super.pass2Begin();
 			
+			
 			// if this is a post expr (it is to the right of '.'), get the correct parent for scope for lookup.
 			// it may be parent for field after call or array, or it may be grandparent for call after call or array.
 			ExprNode postExprParent = (ExprNode) ((this.getParent() instanceof ExprNode.Ident
@@ -966,7 +979,7 @@ public class ExprNode extends BaseNode {
 					accessible |= (d.getUnit() == currUnit.getCurrUnitNode());
 					symbol = (accessible) ? symbol : null;
 				}
-			}
+			} 
 
 			if (symbol == null)
 				symbol = currUnit.getSymbolTable().resolveSymbol(getName(),
@@ -1064,18 +1077,19 @@ public class ExprNode extends BaseNode {
 						while (!(sc instanceof DeclNode.Fcn));
 					}
 					if (sc.getEnclosingScope() == symbol.scope()) {
-//						boolean staticAccess = ((DeclNode.Fcn) sc).isHost() ||
-//							 (((DeclNode.Fcn) sc).isConstructor() && !((DeclNode.Fcn) sc)
-//								.isClassTargetConstructor());
-//						if (!staticAccess)
-							thisPtr = true; // a class var accessed within a method belonging to its class
+						thisPtr = true; // a class var accessed within a method belonging to its class
 					}
 				}				
 				exprCat = this.getCat(); //symbol.node().getTypeCat();
 
 			}
+			for (int i = 1; i < this.getChildCount(); i++) {
+				BaseNode b = (BaseNode) this.getChild(i);
+				if (b instanceof ExprNode.Call)
+					postExprCallCount++;				
+			}
 		}
-		
+
 	}
 
 	// ExprNode.Typ (used for init expressions for meta parameters)
@@ -1200,8 +1214,24 @@ public class ExprNode extends BaseNode {
 			ExprNode.Ident ei = (Ident) (e instanceof ExprNode.Ident ? e : null);
 						
 			if (ei != null) {
-				symbol = currUnit.getSymbolTable().resolveSymbol(ei.getName(),
-						currUnit.getSymbolTable().curScope());
+				if (ei.getName().getText().equals("this")) // in the function symbol table so start there
+					symbol = currUnit.getSymbolTable().resolveSymbol(ei.getName(),
+							currUnit.getSymbolTable().curScope());
+				else {
+					IScope scopeToUse = currUnit.getSymbolTable().curScope();	
+					// scope calculation has the effect of going to unit type scope. fcn body scope
+					// can have parameters with same name as module vars.
+					while (scopeToUse != null && !(scopeToUse instanceof DeclNode.Usr))
+						scopeToUse = scopeToUse.getEnclosingScope();
+					if (!(scopeToUse instanceof DeclNode.Usr)) {
+						symbol = currUnit.getSymbolTable().resolveSymbol(ei.getName(),
+								true);
+					}
+					else {
+						symbol = scopeToUse.resolveSymbol(ei.getName());
+					}
+				}
+				
 				if (symbol == null && isPass2End) {
 					currUnit.reportSeriousError(ei.getName(),
 							"identifier is not declared in the current scope "

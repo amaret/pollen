@@ -287,8 +287,8 @@ public class ProgCCode {
 
     private void genFldVals(DeclNode.Usr cls, Obj vobj, String name) {
     	
-        gen.getFmt().print("/* %1 obj init */\n", name);
-        gen.getFmt().print("%t{\n%+", name);
+        gen.getFmt().print("/* %1 object init */\n", name);
+        gen.getFmt().print("%t{\n%+");
         for (DeclNode fld : cls.getFeatures()) {
         	if (fld instanceof DeclNode.Var) {
         		if (((DeclNode.Var)fld).isIntrinsic() &&  !((DeclNode.Var)fld).isIntrinsicUsed())
@@ -297,6 +297,10 @@ public class ProgCCode {
    				gen.getFmt().mark();
         		genVal((ITypeSpec) fld, vobj.getAny(fld.getName()));
         		String ss = gen.getFmt().release();
+        		if (ss.toString().matches("org.mozilla.javascript.Undefined.*")) {
+        			ParseUnit.current().reportError(fld, fld.getName().getText() + ": expected host initialization did not occur");        
+        			ss = "/* UNDEFINED */";
+        		}
         		int l = 16 - ss.length() > 0 ? 24 - ss.length() : 4;
         		String spaces = String.format("%"+l+"s", "");
         		gen.getFmt().print("%1,%2/* %3 */\n",ss, spaces, fld.getName());
@@ -796,6 +800,9 @@ public class ProgCCode {
         if (name.isEmpty()) {
         	ParseUnit.current().reportError(gen.curUnit(), "script problem for " + n);
         }
+        if (struct instanceof DeclNode.Class && ((DeclNode.Class)struct).isNestedClass()) {
+        	name += "." + struct.getName().getText();
+        }
 
         genFldVals(struct, vobj, name);
 
@@ -847,6 +854,7 @@ public class ProgCCode {
         gen.getFmt().print("{\n%+");
         if (varr.length() > 0) {
         	DeclNode.Arr decl = (Arr) (cat.getType() != null ? cat.getType().getParent() : null);
+        	
         	if (decl != null)
         		decl.setFirstDimSize(varr.length());
             for (int i = 0; i < varr.length(); i++) {

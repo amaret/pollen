@@ -306,8 +306,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         	if (child.getElems().isEmpty())
         		return null;
         	BaseNode b = child.getElems().get(0);
-        	if ( b instanceof ExprNode )
+        	if ( b instanceof ExprNode ) {
         		return (ExprNode) b;
+        	}
         	else 
         		return null;
         }
@@ -326,7 +327,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
          * @param i
          */
         public void setFirstDimSize(int i) {
-        	if (dimensionSizes.size() > 0) {
+         	if (dimensionSizes.size() > 0) {
         		int prev = dimensionSizes.get(0);
         		if (prev != i) {
         			ParseUnit.current().reportWarning(this, this.getName().getText() + ": a size for the array has been calculated at host time > once. The largest value will be used.");
@@ -384,6 +385,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 					ParseUnit.current().reportError(this, this.getName().getText() + ": host arrays must be declared with dimension, initializer, or both");
 			}
 			//checkDims(); // moved to codegen
+			checkDimExprs();
 
 			ExprNode.Vec v = checkInits();
 			
@@ -413,6 +415,27 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			TypeNode.Arr arrt = this.getTypeArr();
 			return arrt.isReferenceElems();
 		}
+		public void checkDimExprs() {
+			List<ExprNode> dim = getDim().getElems();
+			boolean invalidFlag = !(dim.get(0) instanceof ExprNode.Const || dim.get(0) instanceof ExprNode.Ident)
+					|| dim.get(0).getChildCount() > 1;
+			if (invalidFlag) {
+				ParseUnit.current().reportError(this, this.getName().getText() + ": invalid expression for array dimension");
+				return; 
+			}
+			// this condition means we had '[x]' instead of '[constExpr]' for size
+			if (dim.get(0) instanceof ExprNode.Ident) {
+				SymbolEntry se = ((ExprNode.Ident)dim.get(0)).getSymbol();
+				ISymbolNode node = se != null ? se.node() : null;
+				if (node instanceof DeclNode.Var) {
+					DeclNode.Var v = (Var) node;
+					if (!v.isHost())
+						return;
+					// a host variable sets the dimension
+					v.setArrayForDimensionVar(this);
+				}
+			}			
+		}
 
 		/**
 		 * Check for legal dimension specifier
@@ -425,7 +448,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				ParseUnit.current().reportError(this.getName(),
 						"multi-dimensional arrays not yet implemented");
 			}
-			// this condition means we had '[x]' instead of '[constExpr]'
+			// this condition means we had '[x]' instead of '[constExpr]' for size
 			if (dim.get(0) instanceof ExprNode.Ident) {
 				SymbolEntry se = ((ExprNode.Ident)dim.get(0)).getSymbol();
 				ParseUnit.current().initPreset(se);
@@ -2138,6 +2161,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		Var(int ttype, String ttext, EnumSet<Flags> flags) {
 			super(ttype, ttext, flags);
 		}
+		DeclNode.Arr arrayForDimensionVar = null;
+
 		public String getOutputQNameTarget(Generator g, ISymbolNode node, IScope sc, EnumSet<Flags> flags) {
 			String qn = "";
 			if (node == null || sc == null)
@@ -2383,6 +2408,20 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			}
 			super.pass2End();
 
+		}
+		/**
+		 * 
+		 * @return if this variable specifies dimension for an array, return the array, else null.
+		 */
+		public DeclNode.Arr getArrayForDimensionVar() {
+			return arrayForDimensionVar;
+		}
+		/**
+		 * This variable is the dimension variable for an array. Set the array for this variable.
+		 * @param arrayForDimensionVar
+		 */
+		public void setArrayForDimensionVar(DeclNode.Arr arrayForDimensionVar) {
+			this.arrayForDimensionVar = arrayForDimensionVar;
 		}
 	}
 
