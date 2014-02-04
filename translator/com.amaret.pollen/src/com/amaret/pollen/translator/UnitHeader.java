@@ -585,11 +585,11 @@ public class UnitHeader {
     	boolean title = false;
     	
     	if (unit.isClass()) {
+    		// fields referenced with 'this'
             return;
     	}
-
     	for (DeclNode decl : unit.getFeatures()) {
-    		
+        	   		
     		if (decl.isHost() && !(decl instanceof DeclNode.TypedMember)) {
     			continue;
     		}

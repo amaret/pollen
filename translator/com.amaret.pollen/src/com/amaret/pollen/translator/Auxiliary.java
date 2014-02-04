@@ -521,6 +521,9 @@ public class Auxiliary {
 
 				
  		String n = expr.getName() instanceof ExprNode.Ident ? ((ExprNode.Ident) expr.getName()).getName().getText() : "";
+ 		boolean dbg = false;
+ 		if (n.equals("start"))
+ 			dbg = true;
 
 		if (n.equals(ParseUnit.INTRINSIC_PREFIX + "assert")) {				
 			if (!ProcessUnits.isAsserts())
@@ -567,18 +570,21 @@ public class Auxiliary {
 
 		if (expr.addThisPtrParameter()) {
 			sep = ", ";
+			final String ADDR_OF = "&(";
 			if (expr.getQualifier() != null) {				
-				String addrOf = expr.getQualifier().node() instanceof DeclNode && ((DeclNode)expr.getQualifier().node()).isHostClassRef() ? "&" : "";
+				String addrOf = expr.getQualifier().node() instanceof DeclNode && ((DeclNode)expr.getQualifier().node()).isHostClassRef() ? ADDR_OF : "";
+				String closeP = addrOf.equals(ADDR_OF) ? ")" : "";
 				ISymbolNode node = expr.getQualifier().node();
 				IScope scope = expr.getQualifier().scope();
-				String n = "";
+				String n = ""; 
+				EnumSet<Flags> f = scope instanceof DeclNode.Class ? EnumSet.of(Flags.IS_THISPTR) : EnumSet.noneOf(Flags.class);
 				if (scope == gen.curUnit()) {
 					n = gen.uname() + "." + node.getName().getText();
 				}
 				else {
-					n = mkName(expr.getQualifier().node(), expr.getQualifier().scope(), null, EnumSet.noneOf(Flags.class));
+					n = mkName(expr.getQualifier().node(), expr.getQualifier().scope(), null, f);
 				}
-				gen.getFmt().print("%1%2", addrOf, n);
+				gen.getFmt().print("%1%2%3", addrOf, n, closeP);
 			}
 			else 
 				gen.getFmt().print("/* unknown invoker ?? */");
@@ -1735,8 +1741,9 @@ public class Auxiliary {
 			this.genTypeWithVarName(type, name, flags);
 			return;
 		}	
-		// because right now host arrays are instance arrays not reference arrays
-		String isPtr = (arg instanceof DeclNode.Arr && ((DeclNode.Arr)arg).isHost()) ? " " : "* ";
+		// isPtr should only be true for these types when isHost if false (host means instances not references)
+		String isPtr = (arg instanceof DeclNode.Arr && ((DeclNode.Arr)arg).isHost()
+				|| arg instanceof DeclNode.TypedMember && ((DeclNode.TypedMember)arg).isHost()) ? " " : "* ";
 
 		TypeNode.Usr t = (Usr) arg.getTypeSpec();
 		String str = t.getOutputNameTarget(gen, s.scope(), EnumSet.of(Flags.IS_FCNARG_TYPEDEF));
