@@ -119,7 +119,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				qn = g.uname();
 			boolean classScopeOfDcln = scopeOfDcln instanceof DeclNode.Class;
 			if (classScopeOfDcln) {
-				if (thisPtr || g.curUnit().isClass() || g.isNestedClass()){
+				if (thisPtr || g.curUnit().isClass() || g.isClassUnit()){
 					// the scope qualifier is 'this'
 					String n = this.getName().getText().substring(this.getName().getText().lastIndexOf('.')+1);
 					return "this." + n;
@@ -245,11 +245,17 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		static final private int DIM = 2;
 		static final private int INIT = 3;
 		private boolean initToNull = false;
+		private boolean hasHostDim = false;
+
 		// if the dimension size variable is host, it is calculated at host time and then retrieved for the header.
 		List<Integer> dimensionSizes = new java.util.ArrayList<Integer>();
 
 		Arr(int ttype, String ttext, EnumSet<Flags> flags) {
 			super(ttype, ttext, flags);
+		}
+
+		public boolean hasHostDim() {
+			return hasHostDim;
 		}
 
 		public TypeNode.Arr getTypeArr() {
@@ -431,6 +437,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 					DeclNode.Var v = (Var) node;
 					if (!v.isHost())
 						return;
+					hasHostDim = true;
 					// a host variable sets the dimension
 					v.setArrayForDimensionVar(this);
 				}
@@ -760,7 +767,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				qn = g.uname();
 			boolean classScopeOfDcln = scopeOfDcln instanceof DeclNode.Class;
 			if (classScopeOfDcln) {
-				if (thisPtr || g.curUnit().isClass() || g.isNestedClass()){
+				if (thisPtr || g.curUnit().isClass() || g.isClassUnit()){
 					// the scope qualifier is 'this'
 					String n = this.getName().getText().substring(this.getName().getText().lastIndexOf('.')+1);
 					return "this." + n;
@@ -2208,7 +2215,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				qn = g.uname();
 			boolean classScopeOfDcln = scopeOfDcln instanceof DeclNode.Class;
 			if (classScopeOfDcln) {
-				if (thisPtr || g.curUnit().isClass() || g.isNestedClass()){
+				if (thisPtr || g.curUnit().isClass() || g.isClassUnit()){
 					// the scope qualifier is 'this'
 					String n = node.getName().getText().substring(node.getName().getText().lastIndexOf('.')+1);
 					return "this." + n;
@@ -2250,7 +2257,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				qn = g.uname();
 			boolean classScopeOfDcln = scopeOfDcln instanceof DeclNode.Class;
 			if (classScopeOfDcln) {
-				if (thisPtr || g.curUnit().isClass() || g.isNestedClass()){
+				if (thisPtr || g.curUnit().isClass() || g.isClassUnit()){
 					// the scope qualifier is 'this'
 					String n = this.getName().getText().substring(this.getName().getText().lastIndexOf('.')+1);
 					return "this." + n;
@@ -2476,16 +2483,27 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 	public boolean isHost() {
 		return flags.contains(Flags.HOST);
 	}
-	// initialization for arrays of typed members can use assignment. Just output as non const.
+	// E.g. initialization for arrays of typed members can use assignment. Just output as non const.
 	public boolean isHostNonConst() {
 		return flags.contains(Flags.HOST_NONCONST);
 	}
+	/**
+	 * The starting assumption is that variables declared host will end up as const (in flash). But there are numerous cases
+	 * where this assumption does not work. When we detect such a case we change HOST to HOST_NONCONST. 
+	 * Also if a variable is assigned to in target code and is not one of these special cases, we strip HOST.
+	 */
 	public void clearHost() {
 		if (isHost()) {
 			// declaring as const is limiting... E.g.
 			// C const arrays get a warning if you assign an element of a const array to a non const variable.
 			// So these items are handled as host variables but not generated as const
-			if (this instanceof DeclNode.TypedMember || this instanceof DeclNode.FcnRef || this instanceof DeclNode.Arr)
+			// ALSO : a host dimension must stay host, it triggers reallocs of the array whenever modified. 
+			boolean isHostDim = this instanceof DeclNode.Var
+					&& ((DeclNode.Var) this).getArrayForDimensionVar() != null ? true
+					: false;
+			if (this instanceof DeclNode.TypedMember
+					|| this instanceof DeclNode.FcnRef
+					|| this instanceof DeclNode.Arr || isHostDim)
 				flags.add(Flags.HOST_NONCONST);
 			else
 				flags.remove(Flags.HOST);
@@ -2531,10 +2549,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 	}
 
 	/**
-	 * Private for a reason. Use ParseUnit.isPreset().
 	 * @return
 	 */
-	private boolean isPreset() {
+	public boolean isPreset() {
 		return flags.contains(Flags.PRESET);
 	}
 	

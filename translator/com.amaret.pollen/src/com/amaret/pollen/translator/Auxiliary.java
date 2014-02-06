@@ -512,8 +512,12 @@ public class Auxiliary {
 		if (expr.isAssign() && l instanceof ExprNode.Ident && isHost()) {
 			SymbolEntry se = ((ExprNode.Ident)l).getSymbol() != null ? ((ExprNode.Ident)l).getSymbol() : null;
 			ISymbolNode node = se != null ? se.node() : null;
-			if (node instanceof DeclNode.Var && ((DeclNode.Var)node).isHost() && ((DeclNode.Var)node).getArrayForDimensionVar() != null)
-				setUpdateArr(((DeclNode.Var)node).getArrayForDimensionVar());
+			if (node instanceof DeclNode.Var)  {
+				DeclNode.Var v = (Var) node;
+				if (!ParseUnit.current().isPreset(se) && v.isHost() && v.getArrayForDimensionVar() != null)
+					setUpdateArr(v.getArrayForDimensionVar());				
+			}
+
 		}
 	}
 
@@ -521,9 +525,6 @@ public class Auxiliary {
 
 				
  		String n = expr.getName() instanceof ExprNode.Ident ? ((ExprNode.Ident) expr.getName()).getName().getText() : "";
- 		boolean dbg = false;
- 		if (n.equals("start"))
- 			dbg = true;
 
 		if (n.equals(ParseUnit.INTRINSIC_PREFIX + "assert")) {				
 			if (!ProcessUnits.isAsserts())
@@ -759,6 +760,20 @@ public class Auxiliary {
 		IScope scopeOfDcln = sym.scope();
 		SymbolEntry qualifier = expr.getQualifier();
 		ISymbolNode qualifierNode = qualifier != null ? qualifier.node() : null;
+		
+		if (isHost()) {
+			DeclNode.Arr arr = (DeclNode.Arr) (snode instanceof DeclNode.Arr ? snode
+					: qualifierNode instanceof DeclNode.Arr ? qualifierNode
+							: null);
+			if (arr != null && arr.hasHostDim()) {
+				ParseUnit.current().reportSeriousError(
+							arr,
+							"Invalid access. Array '"
+								+ arr.getName().getText()
+								+ "' has dimension specified by a host variable so it cannot be accessed until after host initializers have completed.");
+			}
+
+		}
 				
 		String rtn = mkName(snode, scopeOfDcln, qualifierNode, flags);
 		gen.getFmt().print(rtn); 	

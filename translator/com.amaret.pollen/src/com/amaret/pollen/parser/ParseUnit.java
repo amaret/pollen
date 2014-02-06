@@ -156,7 +156,28 @@ public class ParseUnit {
 		Tree t = (Tree) metaArgs;
 		importedTypes.get(unitKey).addTypeNamesToPackageMaps(type, asName, pkg, t);		
 	}
-	//ParseUnit.current.getMetaArgs(client.getQualName(), name);
+	
+	public String getNameForMessage(String n) {
+		
+		String rtn = n;
+		
+		String prefix = n.lastIndexOf('.') != -1 ? n.substring(0,n.lastIndexOf('.')) + " " : "";
+		n = n.lastIndexOf('.') != -1 ? n.substring(n.lastIndexOf('.')+1) : n;
+		
+		if (n.equals(ParseUnit.CTOR_CLASS_HOST))
+			return prefix + "host class constructor";
+		else if (n.equals(ParseUnit.CTOR_CLASS_TARGET))
+			return prefix + "class constructor";
+		else if (n.equals(CTOR_MODULE_HOST))
+			return prefix + "host module constructor";
+		else if (n.equals(CTOR_MODULE_TARGET)) 
+			return prefix + "module constructor";
+		// others?
+			
+		
+		return rtn;
+	}
+	
 	public String getTypeName(String unitKey, String asName) {
 		if (!importedTypes.containsKey(unitKey))
 			importedTypes.put(unitKey, new ImportsMaps());
@@ -1005,6 +1026,17 @@ public class ParseUnit {
 		ParseUnit.current().getCurrUnitNode().incErrorCount();
 		seriousErrorCount+=1;
 		reportError(node, msg);
+	}
+	/**
+	 * Calling this will mean the javascript for this unit will not be called. 
+	 * It means the error will cause rhino to abort with a stack trace.
+	 * @param f file name
+	 * @param msg
+	 */
+	public void reportSeriousError(String f, String msg) {
+		ParseUnit.current().getCurrUnitNode().incErrorCount();
+		seriousErrorCount+=1;
+		reportError(f, msg);
 	}
 
 	/**

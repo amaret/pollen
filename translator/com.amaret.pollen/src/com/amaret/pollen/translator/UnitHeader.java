@@ -164,6 +164,12 @@ public class UnitHeader {
 	}
 	
     private void genDecl$Class(DeclNode.Class decl) {
+    	
+    	for (DeclNode fld : decl.getFeatures()) {
+    		// nested first to resolve references to them from containing class
+    		if (fld instanceof DeclNode.Class)
+    			genDecl$Class((Class) fld);
+    	}
     	    
         List<DeclNode> fields = decl.getFeatures();
         
@@ -177,6 +183,8 @@ public class UnitHeader {
         
         gen.getAux().genFcnRefTypeDefs(fields);
         for (DeclNode fld : fields) {
+			if (fld instanceof DeclNode.Class)
+				continue;
         	if (fld instanceof DeclNode.ITypeSpec)
         		gen.aux.genForwardForType((ITypeSpec) fld);
         }
@@ -187,6 +195,8 @@ public class UnitHeader {
 			if (fld instanceof DeclNode.Var
 					&& ((DeclNode.Var) fld).isIntrinsic()
 					&& !((DeclNode.Var) fld).isIntrinsicUsed())
+				continue;
+			if (fld instanceof DeclNode.Class)
 				continue;
 			if (fld instanceof DeclNode.FcnRef) {
         		String s = gen.getOutputName((Usr) ((DeclNode.ITypeSpec) fld).getTypeSpec(), null, EnumSet.noneOf(Flags.class));
@@ -426,20 +436,20 @@ public class UnitHeader {
     	}
 
        
-        for (DeclNode decl : unit.getFeatures()) {
-            switch (decl.getType()) {
-            // the unit type contains a class
-            case pollenParser.D_CLASS:
-    			if (!title) {
-    				gen.aux.genTitle("class definition (unit " + unit.getName().getText() + ")");
-    				title = true;
-    			}
-                genDecl$Class((DeclNode.Class) decl);
-                break;
-            default:
-            	break;
-            }
-        }
+//        for (DeclNode decl : unit.getFeatures()) {
+//            switch (decl.getType()) {
+//            // the unit type contains a class
+//            case pollenParser.D_CLASS:
+//    			if (!title) {
+//    				gen.aux.genTitle("class definition (unit " + unit.getName().getText() + ")");
+//    				title = true;
+//    			}
+//                genDecl$Class((DeclNode.Class) decl);
+//                break;
+//            default:
+//            	break;
+//            }
+//        }
     	gen.getFmt().print("\n");
     }
     

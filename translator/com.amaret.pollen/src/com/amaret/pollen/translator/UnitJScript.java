@@ -35,6 +35,10 @@ public class UnitJScript {
     public UnitJScript(Generator gen) {
         this.gen = gen;
     }
+    /**
+     * Gen function bodies. Note this includes the class and module host initializers. 
+     * @param body
+     */
 
     private void genBody(BodyNode body) {
 
@@ -74,29 +78,31 @@ public class UnitJScript {
         	gen.getFmt().print("%t%2.%1();\n", ParseUnit.PRIVATE_INIT, "this" );
         	//gen.getFmt().print("%t%2.%1();\n", ParseUnit.PRESET_INIT, "this" ); // now done in epilogue
         }
-
+        
         boolean skipBody = false;
         if (fcn.getName().getText().equals(ParseUnit.PRESET_INIT) && !fcn.isPresetInitializer())
         	skipBody = true; // no-op the preset initializer if an error was detected
 
         List<DeclNode.Arr> arrList = new ArrayList<DeclNode.Arr>();
         if (fcn.isClassHostConstructor() || fcn.isModuleHostConstructor()) {
-        	DeclNode.Usr u = gen.isNestedClass() ? gen.getNestedClass() : gen.curUnit().getUnitType();        	
+        	DeclNode.Usr u = gen.isClassUnit() ? gen.peekClass() : gen.curUnit().getUnitType();        	
         	for (DeclNode decl : u.getFeatures()) {
-        		if (isPrivateInit(decl) && isHostInit(decl) && decl instanceof DeclNode.Arr) {
-        			DeclNode.Arr arr = (Arr) decl;
-        			if (arr.getFirstDim() instanceof ExprNode.Ident) {
-        				SymbolEntry se = ((ExprNode.Ident)arr.getFirstDim()).getSymbol();
-        				ISymbolNode node = se != null ? se.node() : null;
-        				if (node instanceof DeclNode.Var && ((DeclNode.Var)node).isHost()) {
-        					String msg = "Array '" + arr.getName().getText() + "' has computed size (from host variable '" + node.getName().getText() 
-        							+ "'). You cannot reference arrays of computed size directly or indirectly until after the host initializer has returned.";
-        					ParseUnit.current().reportWarning((BaseNode) node, msg);
-        					arrList.add(arr);
-        					continue;
+        		if (isPrivateInit(decl) && isHostInit(decl)) {
+        			if (decl instanceof DeclNode.Arr) {
+        				// init arrays in the host initializer, either in dcln order or at exit.
+        				// target arrays or host arrays with const dim will be init in dcln order. 
+        				// arrays with 'preset' host variables as dim will be init in dcln order.
+        				// other arrays with host variable dim will be init at exit. 
+        				DeclNode.Arr arr = (Arr) decl;
+        				if (arr.hasHostDim() && !arr.isPreset()) { // if host dim and not preset, initialize at the exit of host initializer
+    						arrList.add(arr);   
+    						continue;        					
         				}
-        			}       			
-        			genDecl(decl);
+        				genDecl(decl);
+        			}
+        			else if (isDeclHostInit(decl)) {
+        				genDecl(decl);
+        			}        				
         		}
         	}
         }
@@ -106,7 +112,7 @@ public class UnitJScript {
         		gen.aux.genStmt(stmt);
         		if (gen.aux.getUpdateArr() != null) {
         			gen.getFmt().print("\n");     
-					String msg = "Array '" + gen.aux.getUpdateArr().getName().getText() + "' has computed size. The final value for the computed size will be the last one calculated.";
+					String msg = "Array '" + gen.aux.getUpdateArr().getName().getText() + "' has computed size. The final value for the computed size for all instances of the array will be the last one calculated.";
 					ParseUnit.current().reportWarning(fcn.getUnit(), msg);
         			genDecl(gen.aux.getUpdateArr());
         			gen.aux.setUpdateArr(null);
@@ -114,7 +120,7 @@ public class UnitJScript {
         		gen.getFmt().print("\n");
         	}
         for (DeclNode.Arr arr : arrList) {
-        	genDecl(arr);
+        	genDecl(arr); // generate arrays with host variable size at the end of host initializer
         }
         
         if (fcn.isHost()) {
@@ -182,7 +188,13 @@ public class UnitJScript {
     
     private void genDecl$Class(DeclNode.Class decl) {
     	
-    	gen.setNestedClass(decl);
+    	gen.pushClass(decl); 
+    	
+    	for (DeclNode fld : decl.getFeatures()) {
+    		if (fld instanceof DeclNode.Class)
+    			genDecl(fld);
+    	}
+    	
 
         String sn = decl.getUnitQualName().replace('.', '_') + "_" + decl.getName();
         gen.getFmt().print("%t%1.%2$$id = 1;\n", gen.uname(), decl.getName());
@@ -191,17 +203,19 @@ public class UnitJScript {
         gen.getFmt().print("%tthis.$$cname = cn ? cn : '%1__'+this.$$id+'__S';\n", sn); 
         gen.getFmt().print("%tthis.$$tname = '%1';\n", sn);
         gen.getFmt().print("%tthis.$$uname = '%1';\n", gen.curUnit().getQualName());
-        for (DeclNode fld : decl.getFeatures()) {
-        	if (fld instanceof DeclNode.Var) {
-        		
-				if (((DeclNode.Var) fld).isIntrinsic()
-						&& !((DeclNode.Var) fld).isIntrinsicUsed())
+		for (DeclNode fld : decl.getFeatures()) {
+			if (fld instanceof DeclNode.Var) {
+
+				boolean skip = isDeclHostInit(fld)
+						|| ((((DeclNode.Var) fld).isIntrinsic() && !((DeclNode.Var) fld)
+								.isIntrinsicUsed()));
+				if (skip)
 					continue;
 
-        		gen.getFmt().print("%tthis.%1 = ", fld.getName());
-        		genInit((DeclNode.Var)fld);
-        		gen.getFmt().print(";\n");
-        	}
+				gen.getFmt().print("%tthis.%1 = ", fld.getName());
+				genInit((DeclNode.Var) fld);
+				gen.getFmt().print(";\n");
+			}
         }
 
         gen.getFmt().print("%-%t}\n");
@@ -226,25 +240,10 @@ public class UnitJScript {
         		genBody(((DeclNode.Fcn)d).getBody());
         	}
         }
-    
-    	gen.getFmt().print("%t%1.%2.prototype." + ParseUnit.PRIVATE_INIT + " = function() {\n%+", gen.uname(), decl.getName());
-        for (DeclNode d : decl.getFeatures()) {
-            if (isPrivateInit(d) && isHostInit(d)) {
-            	if (d instanceof DeclNode.Arr)
-            		continue;
-                genDecl(d);
-            }
-        }
-        // do the arrays last so that the dimensions have final value (if calculated).
-        for (DeclNode d : decl.getFeatures()) {
-            if (isPrivateInit(d) && isHostInit(d)) {
-            	if (!(d instanceof DeclNode.Arr))
-            		continue;
-                genDecl(d);
-            }
-        }
-        gen.getFmt().print("%-%t}\n");
-        gen.setNestedClass(null);      
+        if (decl.getContainingType() != null)
+        	this.genPrivateInit(decl); // generate privateInit for nested classes
+   
+        gen.popClass();      
     }
 
     
@@ -299,7 +298,7 @@ public class UnitJScript {
         gen.getFmt().print(";\n");
     }
     
-    private void genDecls(UnitNode unit) {
+    private void genDecls(UnitNode unit) { 
     	if (unit == null)
     		return;
     	if (unit.isComposition()) { // compositions: only generate decl for enums
@@ -367,25 +366,53 @@ public class UnitJScript {
         
         if (unit.isTarget()) {
             genUses(unit);            
-            genPrivateInit(unit);
+            genPrivateInit(unit.getUnitType());
         }
         
 
         genEpilogue(unit);
     }
 
-    private void genPrivateInit(UnitNode unit) {
+    private void genPrivateInit(Usr unit) {
     	
-    	if (unit.isClass())
-    		return;
-        gen.getFmt().print("%t%1." + ParseUnit.PRIVATE_INIT + " = function() {\n%+", gen.uname());
-        for (DeclNode decl : unit.getFeatures()) {
-            if (isPrivateInit(decl) && isHostInit(decl) && !(decl instanceof DeclNode.Arr)) {
+    	if (unit.isClass()) {
+    		gen.getFmt().print("%t%1.%2.prototype." + ParseUnit.PRIVATE_INIT + " = function() {\n%+", gen.uname(), unit.getName());
+    	}
+    	else     	
+    		gen.getFmt().print("%t%1." + ParseUnit.PRIVATE_INIT + " = function() {\n%+", gen.uname());
+        
+    	for (DeclNode decl : unit.getFeatures()) {
+            if (isPrivateInit(decl) && isHostInit(decl) && !isDeclHostInit(decl)) {
                 genDecl(decl);
+            }
+        }
+        // Do the arrays last. 
+        // Note that this is privateInit: here we init target arrays with target dim only. 
+    	// After dynamic memory alloc is implemented, target class objects in class scope would be init here.
+        for (DeclNode d : unit.getFeatures()) {
+            if (isPrivateInit(d) && isHostInit(d)) {
+            	if (!(d instanceof DeclNode.Arr))
+            		continue;
+            	if (((DeclNode.Arr)d).hasHostDim() || d.isHost())
+            		continue;
+                genDecl(d);
             }
         }
         gen.getFmt().print("%-%t}\n");
     }
+
+	/**
+	 * To minimize cross unit conflicts with partially constructed objects, first do a privateInit pass on everything.
+	 * That means postponing object initialization until hostInit: we do these there, on entry.
+	 * @param decl
+	 * @return true if these will be initialized on entry to host initializer
+	 */
+	private boolean isDeclHostInit(DeclNode decl) {
+		boolean skip = decl instanceof DeclNode.Arr
+				|| (decl instanceof DeclNode.TypedMember
+				&& ((DeclNode.TypedMember) decl).isClassRef());
+		return skip;
+	}
     
     private void debugUses(UnitNode unit) {
         List<ImportNode> impL = unit.getImports();
@@ -564,8 +591,9 @@ public class UnitJScript {
             gen.aux.genDefault(ts.getTypeCat(), ts);
                       
             if (init instanceof ExprNode.New) {
-            	DeclNode d = (DeclNode) ts;            	
-            	gen.getFmt().print("; %2.%3.%1", ParseUnit.CTOR_CLASS_HOST, gen.uname(), d.getName() );
+            	DeclNode d = (DeclNode) ts;        
+            	String qualif = d.getDefiningScope() instanceof DeclNode.Class ? "this" : gen.uname();
+            	gen.getFmt().print("; %2.%3.%1", ParseUnit.CTOR_CLASS_HOST, qualif, d.getName() );
             	gen.aux.genCallArgs(((ExprNode.New)init).getCall(), null);            	
             }
         }

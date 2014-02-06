@@ -141,22 +141,26 @@ public class ExprNode extends BaseNode {
 			}
 			if (isAssign && getLeft() instanceof ExprNode.Ident) {
 				SymbolEntry se  = ((Ident) getLeft()).getSymbol();
-				if (se != null && se.node() instanceof DeclNode 						
-						&& ((DeclNode)se.node()).isHost()) {
-					// if a host variable is a target of an assignment in a target function
-					// strip the 'host' attribute
-					Tree tr = this.getParent();
-					while (tr != null && !(tr instanceof BodyNode)) {
-						tr = tr.getParent();
+				if (se != null && se.node() instanceof DeclNode) { 
+					if (((DeclNode)se.node()).isConst()) {
+						ParseUnit.current().reportError(this, "'" + ((DeclNode)se.node()).getName().getText() + "' has the attribute 'const' yet is the target of an assignment");
 					}
-					if (tr instanceof BodyNode) {
-						if (!((BodyNode)tr).getFcn().isHost()) {
-							((DeclNode)se.node()).clearHost();
-							currUnit.reportWarning(getLeft(), 
-								"host variable is the target of an assignment in a target function.");
+					if (((DeclNode)se.node()).isHost()) {
+						// if a host variable is a target of an assignment in a target function
+						// strip the 'host' attribute
+						Tree tr = this.getParent();
+						while (tr != null && !(tr instanceof BodyNode)) {
+							tr = tr.getParent();
 						}
+						if (tr instanceof BodyNode) {
+							if (!((BodyNode)tr).getFcn().isHost()) {
+								((DeclNode)se.node()).clearHost();
+								currUnit.reportWarning(getLeft(), 
+										"host variable is the target of an assignment in a target function.");
+							}
+						}
+
 					}
-					
 				}
 				
 			}
@@ -366,8 +370,8 @@ public class ExprNode extends BaseNode {
 						.reportSeriousError(
 								currUnit.getCurrUnitNode(),
 								"'"
-										+ call
-										+ "': identifier is not declared in the current scope "
+										+ ParseUnit.current().getNameForMessage(call)
+										+ "': function is not declared in (or visible to) the current scope "
 										+ symtab.curScope().getScopeName());
 
 					else if (qualifier != null) {
@@ -986,8 +990,8 @@ public class ExprNode extends BaseNode {
 						true);
 			if (symbol == null) {
 				currUnit.reportSeriousError(currUnit.getCurrUnitNode(), "'"
-						+ this.getName().getText()
-						+ "': identifier is not declared in the current scope "
+						+ ParseUnit.current().getNameForMessage(this.getName().getText())
+						+ "': identifier is not declared in (or visible to) the current scope "
 						+ currUnit.getSymbolTable().curScope().getScopeName());
 			} else {
 
@@ -1047,8 +1051,8 @@ public class ExprNode extends BaseNode {
 				symbol = ParseUnit.current().getSymbolTable().resolveSymbol(getName(),
 						ParseUnit.current().getSymbolTable().curScope());
 				if (symbol == null) {
-					ParseUnit.current().reportSeriousError(getName(),
-							"identifier is not declared in the current scope "
+					ParseUnit.current().reportSeriousError(ParseUnit.current().getCurrUnitNode(), "'" + ParseUnit.current().getNameForMessage(this.getName().getText()) +
+							"': identifier is not declared in (or visible to) the current scope "
 							+ ParseUnit.current().getSymbolTable().curScope().getScopeName());
 				} else {
 					setSymbol(symbol);

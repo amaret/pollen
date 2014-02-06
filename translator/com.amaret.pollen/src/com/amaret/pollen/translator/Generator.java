@@ -35,7 +35,6 @@ import com.amaret.pollen.target.ITarget;
 public class Generator {
 
 	private UnitNode curUnit;
-	private DeclNode.Class nestedClass = null;
 	private UnitNode mainUnit;
 	private static String uname;
 	private String uname_host;
@@ -56,24 +55,42 @@ public class Generator {
 	public Auxiliary getAux() {
 		return aux;
 	}
-
-	public boolean isTargetC() {
-		return true;
-	}
-	
-	public Generator() {}
-	public boolean isNestedClass() {
-		return nestedClass != null;
-	}
-	
 	public boolean isHost() {
 		return aux.isHost();
 	}
-	public void setNestedClass(DeclNode.Class cls) {
-		nestedClass = cls;
+		
+	public Generator() {}
+	
+	public boolean isClassUnit() {
+		return !classStack.isEmpty();
 	}
-	public DeclNode.Class getNestedClass() {
-		return nestedClass;
+
+	private Stack<DeclNode.Class> classStack = new Stack<DeclNode.Class>();
+	
+	/**
+	 * Push onto class stack. Handles nesting. 
+	 * @param cls
+	 */
+	public void pushClass(DeclNode.Class cls) {
+		classStack.push(cls);
+	}
+	/**
+	 * Pop from class stack. Handles nesting. 
+	 * @return tos or null.
+	 */
+	public DeclNode.Class popClass() {
+		DeclNode.Class c = null;
+		if (!classStack.isEmpty()) {
+			c = classStack.pop();
+		}
+		return c;
+	}
+	
+	public DeclNode.Class peekClass() {
+		if (!classStack.isEmpty())
+			return classStack.peek();
+		else
+			return null;
 	}
 
 	public String getOutputName(Object s, IScope sc, EnumSet<Flags> flags) {
@@ -103,7 +120,7 @@ public class Generator {
 	}
 	
 	/**
-	 * @param main The pollen file
+	 * @param main the top level unit
 	 * @param units All dependent units
 	 */
 	public void genUnits(UnitNode main, HashMap<String, UnitNode> units) throws Exception {
@@ -128,7 +145,7 @@ public class Generator {
 		
 	}
 	/**
-	 * @param main The pollen file
+	 * @param main The top level unit
 	 * @param units All dependent units
 	 */
 	public void genUnitHeaders(UnitNode main, HashMap<String, UnitNode> units) throws Exception {
