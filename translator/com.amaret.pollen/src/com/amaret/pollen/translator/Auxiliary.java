@@ -1585,7 +1585,7 @@ public class Auxiliary {
 					ExprNode.Const ec = (Const) expr;
 					cat = new Character(ec.getCat().code().charAt(0)).toString();
 					break;
-				default:
+				default:     // why not function returns?
 					ParseUnit
 					.current()
 					.reportError(stmt,

@@ -2171,6 +2171,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		DeclNode.Arr arrayForDimensionVar = null;
 
 		public String getOutputQNameTarget(Generator g, ISymbolNode node, IScope sc, EnumSet<Flags> flags) {
+			
 			String qn = "";
 			if (node == null || sc == null)
 				return qn;
@@ -2267,6 +2268,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 						
 		}
 		public String getOutputNameTarget(Generator g, IScope sc, EnumSet<Flags> flags) {
+			
 			boolean thisPtr = flags.contains(Flags.IS_THISPTR);
 			thisPtr = thisPtr && !this.getName().getText().equals("this");
 			boolean postExpr = flags.contains(Flags.IS_POSTEXPR);
@@ -2410,9 +2412,14 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			}
 			ITypeSpecInit tsi = (ITypeSpecInit) this;
 			ExprNode init = tsi.getInit();
-			if (init != null) {
+			if (init != null && init.getCat() instanceof Cat.Arr && !(init instanceof ExprNode.Call)) {
+				Cat baseCat = ((Cat.Arr)init.getCat()).getBase();
+				TypeRules.checkInit(tsi.getTypeCat(), init, baseCat, false);
+			}
+			else if (init != null) {
 				TypeRules.checkInit(tsi.getTypeCat(), init);
 			}
+			setCheckInitDone(true);
 			super.pass2End();
 
 		}
@@ -2439,8 +2446,21 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 	private IScope definingScope;
 	protected Cat typeCat;
 	protected UnitNode unit;
+	protected boolean checkInitDone = false;
 
 	EnumSet<Flags> flags = EnumSet.noneOf(Flags.class);
+
+	/**
+	 * A type specific check can override the outermost, generic one. 
+	 * @return checkInit already done.
+	 */
+	public boolean isCheckInitDone() {
+		return checkInitDone;
+	}
+
+	public void setCheckInitDone(boolean checkInitDone) {
+		this.checkInitDone = checkInitDone;
+	}
 
 	DeclNode(int ttype, String ttext, EnumSet<Flags> f) {
 		this.token = new Atom(ttype, ttext);
@@ -2490,7 +2510,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 	/**
 	 * The starting assumption is that variables declared host will end up as const (in flash). But there are numerous cases
 	 * where this assumption does not work. When we detect such a case we change HOST to HOST_NONCONST. 
-	 * Also if a variable is assigned to in target code and is not one of these special cases, we strip HOST.
+	 * Also if a simple variable is assigned to in target code and is not one of these special cases, we strip HOST entirely.
 	 */
 	public void clearHost() {
 		if (isHost()) {
@@ -2618,7 +2638,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			return;
 		}
 
-		TypeRules.checkInit(tsi.getTypeCat(), init);
+		if (!isCheckInitDone())
+			TypeRules.checkInit(tsi.getTypeCat(), init);
 	}
 
 	@Override

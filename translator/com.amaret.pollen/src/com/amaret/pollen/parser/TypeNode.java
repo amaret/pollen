@@ -184,7 +184,7 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 		 * IScope sc - not used, can pass null.
 		 */
         public String getOutputNameTarget(Generator g, IScope sc, EnumSet<Flags> flags) {
-        	boolean isCStructRef = true; 
+        	boolean underscore = true; 
         	boolean isTypedef = flags.contains(Flags.IS_FCNREF_TYPEDEF) || flags.contains(Flags.IS_CLASSREF_TYPEDEF);
         	boolean addTypeMods = flags.contains(Flags.IS_DECL);
         	
@@ -217,23 +217,30 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 			}
 			if (this.getParent() instanceof DeclNode) {
 				if (((DeclNode)this.getParent()).isHostClassRef()) { 
-					isCStructRef = false;
+					underscore = false;
 				}								
 			}
 			if (this.getParent() instanceof TypeNode.Arr && this.getParent().getParent() instanceof DeclNode.Arr) {
 				DeclNode.Arr a = (DeclNode.Arr) this.getParent().getParent();
 				if (a.isHost()) {
-					isCStructRef = false;
+					underscore = false;
 				}
 			}
-			if (flags.contains(Flags.IS_FCNARG_TYPEDEF))
-				isCStructRef = false;
+
 			/*
-			 * isCStructRef reflects that a typedef is being used for the class or module struct. For example:
-			 * typedef struct pollen_events_AE pollen_events_AE;
-			 * typedef struct pollen_events_AE* pollen_events_AE_; //use this typedef for a class
+			 * The underscore issue reflects typedefs for classes versus modules.
+			 * Class typedefs:
+			 * 	1. typedef struct test1_BlinkMilli_led test1_BlinkMilli_led;
+			 * 	2. typedef struct test1_BlinkMilli_led* test1_BlinkMilli_led_;
+			 * Module typedef:
+			 * 	3. typedef struct test1_BlinkMilli_ test1_BlinkMilli_;
+			 * For IS_FCNARG_TYPEDEF, for classes we have case 1 (no '_') and for 
+			 * modules we have case 3 (with '_'). 
 			 */
-			String ptr_suffix = isCStructRef ? "_" : "";
+			if (flags.contains(Flags.IS_FCNARG_TYPEDEF) && isClassRef())
+				underscore = false;
+			
+			String ptr_suffix = underscore ? "_" : "";
 			if (s != null && s.node() != null) {
 				if (s.node() instanceof ImportNode) {
 					ImportNode i = (ImportNode) s.node();

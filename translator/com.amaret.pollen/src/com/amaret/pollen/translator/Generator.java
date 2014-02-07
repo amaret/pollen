@@ -314,7 +314,7 @@ public class Generator {
 	 * @throws Exception
 	 */
 	public void compile() throws Exception {
-		if (ParseUnit.getSeriousErrorCount() == 0) {
+		if (ParseUnit.getSeriousErrorCount() == 0 && progFile != null) {
 			target = this.loadTarget();
 			target.compile(progFile);
 		}

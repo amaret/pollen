@@ -46,13 +46,13 @@ public class ProgCCode {
     /**
      * target 'c' code is generated for these units.
      */
-    private List<UnitDesc> unitDescs = new ArrayList<UnitDesc>();   
+    private List<UnitDesc> unitDescs = new ArrayList<UnitDesc>();  
     
     public List<UnitDesc> getUnitDescriptors() {
 		return unitDescs;
 	}
-
-    private class UnitDesc {
+    
+	private class UnitDesc {
         private UnitNode unit;
         private Value.Obj unitObj;
 
@@ -290,9 +290,24 @@ public class ProgCCode {
         gen.getFmt().print("/* %1 object init */\n", name);
         gen.getFmt().print("%t{\n%+");
         for (DeclNode fld : cls.getFeatures()) {
+
         	if (fld instanceof DeclNode.Var) {
         		if (((DeclNode.Var)fld).isIntrinsic() &&  !((DeclNode.Var)fld).isIntrinsicUsed())
         			continue;
+        		if (((DeclNode)fld).isProtocolMember()) {
+
+        			if (cls.isNestedClass()) {
+        				// this doesn't work because nested classes don't have UnitNodes. Only outermost classes do. 
+        				ParseUnit.current().reportError(fld, fld.getName().getText() + ": protocol members in nested classes are not supported");
+        			}
+        			else {
+            			String qname = cls.getUnitQualName();
+            			UnitDesc ud = unitDescsMap.get(qname);
+        				gen.getFmt().print("%t");
+        				genUnitVar(ud, (Var) fld);
+        				continue;        		
+        			}
+        		}
         		gen.getFmt().print("%t");
    				gen.getFmt().mark();
         		genVal((ITypeSpec) fld, vobj.getAny(fld.getName()));
@@ -380,7 +395,7 @@ public class ProgCCode {
     private void genTargetUnits() {
 
         for (UnitDesc ud : getUnitDescriptors()) {
-
+        	
             UnitNode unit = ud.getUnit();
             
             gen.setupUnit(unit);

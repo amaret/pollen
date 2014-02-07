@@ -120,7 +120,6 @@ public class ExprNode extends BaseNode {
 				}
 			}
 			return isRight ? this.getRight().getCat() : this.getLeft().getCat();
-
 		}
 
 		public Cat getSubExprCat() {
@@ -140,12 +139,21 @@ public class ExprNode extends BaseNode {
 				return;
 			}
 			if (isAssign && getLeft() instanceof ExprNode.Ident) {
-				SymbolEntry se  = ((Ident) getLeft()).getSymbol();
-				if (se != null && se.node() instanceof DeclNode) { 
-					if (((DeclNode)se.node()).isConst()) {
-						ParseUnit.current().reportError(this, "'" + ((DeclNode)se.node()).getName().getText() + "' has the attribute 'const' yet is the target of an assignment");
+				SymbolEntry l_se  = ((Ident) getLeft()).getSymbol();
+				SymbolEntry r_se = getRight() instanceof ExprNode.Ident ? ((ExprNode.Ident)getRight()).getSymbol() : null;
+				if (l_se != null && l_se.node() instanceof DeclNode) { 
+					if (((DeclNode)l_se.node()).isConst()) {
+						ParseUnit.current().reportError(this, "'" + ((DeclNode)l_se.node()).getName().getText() + "' has the attribute 'const' yet is the target of an assignment");
 					}
-					if (((DeclNode)se.node()).isHost()) {
+					if (l_se.node() instanceof DeclNode.Arr) {
+						if (r_se != null && r_se.node() instanceof DeclNode.Arr) {
+							if (!((DeclNode)l_se.node()).isHost() && ((DeclNode)r_se.node()).isHost())
+								// if assigning a host array to a target array, you can no longer generate that 
+								// host array as const (c restriction). 
+								((DeclNode)r_se.node()).clearHost();
+						}
+					}
+					if (((DeclNode)l_se.node()).isHost()) {
 						// if a host variable is a target of an assignment in a target function
 						// strip the 'host' attribute
 						Tree tr = this.getParent();
@@ -154,15 +162,14 @@ public class ExprNode extends BaseNode {
 						}
 						if (tr instanceof BodyNode) {
 							if (!((BodyNode)tr).getFcn().isHost()) {
-								((DeclNode)se.node()).clearHost();
+								((DeclNode)l_se.node()).clearHost();
 								currUnit.reportWarning(getLeft(), 
 										"host variable is the target of an assignment in a target function.");
 							}
 						}
 
 					}
-				}
-				
+				}				
 			}
 			Cat left = getSubExprCat(false);
 			Cat right = getSubExprCat(true);

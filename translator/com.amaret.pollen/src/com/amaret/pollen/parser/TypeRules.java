@@ -182,11 +182,13 @@ public class TypeRules {
 	}
 
     static void checkInit(Cat declCat, ExprNode init) {
-        checkInit(declCat, init, false);
+        checkInit(declCat, init, init.getCat(), false);
     }
-    
     static private void checkInit(Cat declCat, ExprNode init, boolean genArgs) {
-        Cat initCat = init.getCat();
+    	checkInit(declCat, init, init.getCat(), genArgs);
+    }
+    static void checkInit(Cat declCat, ExprNode init, Cat initCat, boolean genArgs)	{
+           
         if (preCheck(declCat, initCat) != null) {
             return;
         }
@@ -198,6 +200,9 @@ public class TypeRules {
             checkInitVec(declCat, (ExprNode.Vec) init, genArgs);
             return;
         }
+        boolean dbg = false;
+        if (initCat instanceof Cat.Arr)
+        	dbg = true;
         Cat resCat = checkBinary("=", declCat, initCat, "initialization type mismatch");
         if (resCat instanceof Cat.Error) {
         	if (declCat.isAggTyp() && ((Cat.Agg)declCat).aggScope() instanceof DeclNode) { // error message with name & linenum
