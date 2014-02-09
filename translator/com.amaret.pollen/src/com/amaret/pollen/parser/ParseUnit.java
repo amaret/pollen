@@ -59,6 +59,7 @@ public class ParseUnit {
 	public static final String CTOR_MODULE_TARGET = "targetInit";
 	public static final String CTOR_MODULE_HOST = "$$hostInit";
 	public static final String PRIVATE_INIT = "$$privateInit";
+	public static final String HOST_INIT_LASTPASS = "$$hostInitLastPass";
 	public static final String PRESET_INIT = INTRINSIC_PREFIX + "presets__";
 	public static final String KIND_EXTERN = "__E";
 	public static final String KIND_INTERN = "__I";

@@ -826,7 +826,6 @@ public class ProgCCode {
     
     private void genValArr(Cat.Arr cat, TypeNode.Arr tarr, Object val) {
     	
-
         Value.Arr varr = null;
         Value.Obj vobj = null;
         

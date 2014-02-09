@@ -83,19 +83,20 @@ public class UnitJScript {
         if (fcn.getName().getText().equals(ParseUnit.PRESET_INIT) && !fcn.isPresetInitializer())
         	skipBody = true; // no-op the preset initializer if an error was detected
 
+        DeclNode.Usr u = gen.isClassUnit() ? gen.peekClass() : gen.curUnit().getUnitType();  
         List<DeclNode.Arr> arrList = new ArrayList<DeclNode.Arr>();
         if (fcn.isClassHostConstructor() || fcn.isModuleHostConstructor()) {
-        	DeclNode.Usr u = gen.isClassUnit() ? gen.peekClass() : gen.curUnit().getUnitType();        	
+        	      	
         	for (DeclNode decl : u.getFeatures()) {
         		if (isPrivateInit(decl) && isHostInit(decl)) {
         			if (decl instanceof DeclNode.Arr) {
-        				// init arrays in the host initializer, either in dcln order or at exit.
+        				// init arrays in the host initializer, either in dcln order or in hostInitLastPass.
         				// target arrays or host arrays with const dim will be init in dcln order. 
         				// arrays with 'preset' host variables as dim will be init in dcln order.
-        				// other arrays with host variable dim will be init at exit. 
+        				// other arrays with host variable dim will be init in hostInitLastPass.  
         				DeclNode.Arr arr = (Arr) decl;
         				if (arr.hasHostDim() && !arr.isPreset()) { // if host dim and not preset, initialize at the exit of host initializer
-    						arrList.add(arr);   
+    						//arrList.add(arr);   
     						continue;        					
         				}
         				genDecl(decl);
@@ -110,17 +111,14 @@ public class UnitJScript {
         	for (StmtNode stmt : body.getStmts()) {
         		gen.getFmt().print("%t");
         		gen.aux.genStmt(stmt);
-        		if (gen.aux.getUpdateArr() != null) {
-        			gen.getFmt().print("\n");     
-					String msg = "Array '" + gen.aux.getUpdateArr().getName().getText() + "' has computed size. The final value for the computed size for all instances of the array will be the last one calculated.";
-					ParseUnit.current().reportWarning(fcn.getUnit(), msg);
-        			genDecl(gen.aux.getUpdateArr());
-        			gen.aux.setUpdateArr(null);
-        		}
         		gen.getFmt().print("\n");
         	}
         for (DeclNode.Arr arr : arrList) {
         	genDecl(arr); // generate arrays with host variable size at the end of host initializer
+        }
+        if (u.isClass()) {
+        	gen.getFmt().print("%tthis.%1();\n", ParseUnit.HOST_INIT_LASTPASS);
+        	
         }
         
         if (fcn.isHost()) {
@@ -240,8 +238,10 @@ public class UnitJScript {
         		genBody(((DeclNode.Fcn)d).getBody());
         	}
         }
-        if (decl.getContainingType() != null)
+        if (decl.getContainingType() != null) {
         	this.genPrivateInit(decl); // generate privateInit for nested classes
+        	this.genHostInitLastPass(decl);
+        }
    
         gen.popClass();      
     }
@@ -367,6 +367,7 @@ public class UnitJScript {
         if (unit.isTarget()) {
             genUses(unit);            
             genPrivateInit(unit.getUnitType());
+            genHostInitLastPass(unit.getUnitType());
         }
         
 
@@ -400,6 +401,39 @@ public class UnitJScript {
         }
         gen.getFmt().print("%-%t}\n");
     }
+    /**
+     * The last pass of hostInit allocs arrays with host dimensions. At this point dimensions are known.
+     * @param u
+     */
+    private void genHostInitLastPass(Usr u) {
+    	
+    	boolean isGenerated = false;
+    	
+    	if (u.isClass()) {
+    		gen.getFmt().print("%t%1.%2.prototype." + ParseUnit.HOST_INIT_LASTPASS + " = function() {\n%+", gen.uname(), u.getName());
+    		isGenerated = true; // always
+    	}
+    	
+    	for (DeclNode decl : u.getFeatures()) {
+    		if (isPrivateInit(decl) && isHostInit(decl)) {
+    			if (decl instanceof DeclNode.Arr) {
+    				// init arrays with host dim in a final pass over the units
+    				// (called from epilogue). That is, here.
+    				DeclNode.Arr arr = (Arr) decl;
+    				if (arr.hasHostDim() && !arr.isPreset()) { // if host dim and not preset, initialize at the exit of host initializer
+    					if (!isGenerated) {
+    			    		gen.getFmt().print("%t%1." + ParseUnit.HOST_INIT_LASTPASS + " = function() {\n%+", gen.uname());
+    						isGenerated = true;
+    					}
+    					genDecl(decl); 					
+    				}    				
+    			}				
+    		}
+    	}
+    	if (isGenerated)
+    		gen.getFmt().print("%-%t}\n");
+    }
+
 
 	/**
 	 * To minimize cross unit conflicts with partially constructed objects, first do a privateInit pass on everything.

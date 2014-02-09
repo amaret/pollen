@@ -330,18 +330,18 @@ public class DeclNode extends BaseNode implements ISymbolNode {
         // TODO update these for multidimensional arrays
         /**
          * Save the size for header generation.
+         * Called when the array is alloc'd in javascript.
          * @param i
          */
         public void setFirstDimSize(int i) {
-         	if (dimensionSizes.size() > 0) {
-        		int prev = dimensionSizes.get(0);
-        		if (prev != i) {
-        			ParseUnit.current().reportWarning(this, this.getName().getText() + ": a size for the array has been calculated at host time > once. The largest value will be used.");
-        			if (prev > i)
-        				return;        			
-        		}        		
+        	if (hasHostDim()) {
+        		String msg = "Array '" + getName().getText() + "' has computed size. The final value for the computed size for all instances of the array will be the last one calculated.";
+        		ParseUnit.current().reportWarning(this, msg);
         	}
-        	dimensionSizes.add(i);
+			if (dimensionSizes.size() == 0)
+				dimensionSizes.add(i);
+			else
+				dimensionSizes.set(0, i);
         }        
 
 		@Override
@@ -502,7 +502,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 					.valueOf(((ExprNode) dim.get(0)).getConstInitialValue().getValue()
 							.getText()) : -1;
 
-			if (exprs > 0 && exprs > dims)
+			if (exprs > 0 && exprs > dims && dim.get(0) instanceof ExprNode.Const)
 				// set dims to # of initializer exprs
 				((ExprNode.Const) dim.get(0)).getValue().setText(
 						String.valueOf(exprs));
@@ -1546,6 +1546,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 					}
 
 				} else {
+					String n = typeUnit.getName().getText();
 					if (!typeUnit.isClass() && !this.isFcnRef() && !isClassRef
 							&& !isSynthFromMeta) {
 						ParseUnit

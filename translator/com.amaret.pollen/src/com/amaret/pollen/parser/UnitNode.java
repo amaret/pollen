@@ -341,34 +341,22 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     	return !isHost();
     }
     public boolean isHost() {
-    	if (flags.contains(Flags.COMPOSITION))
-    		return true;
-    	return false;
+    	return this.getUnitType().isComposition();
     }
    public boolean isEnum() {
-   	if (flags.contains(Flags.ENUM))
-   		return true;
-   	return false;
+	   return this.getUnitType().isEnum();
    }       
     public boolean isModule() {
-    	if (flags.contains(Flags.MODULE))
-    		return true;
-    	return false;
+    	return this.getUnitType().isModule();
     }       
     public boolean isProtocol() {
-    	if (flags.contains(Flags.PROTOCOL))
-    		return true;
-    	return false;
+    	return this.getUnitType().isProtocol();
     }
     public boolean isComposition() {
-    	if (flags.contains(Flags.COMPOSITION))
-    		return true;
-    	return false;
+    	return this.getUnitType().isComposition();
     }
     public boolean isClass() {
-    	if (flags.contains(Flags.CLASS))
-    		return true;
-    	return false;
+    	return this.getUnitType().isClass();
     }
     /**
      * 

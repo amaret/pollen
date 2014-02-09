@@ -59,15 +59,7 @@ public class Auxiliary {
 	private Generator gen;
 	private boolean isHost;
 	private boolean skipPost = false;
-	private DeclNode.Arr updateArr = null;
-	DeclNode.Arr getUpdateArr() {
-		return updateArr;
-	}
-	void setUpdateArr(DeclNode.Arr arr) {
-		updateArr = arr;
-	}
 	
-	private static int varSuf = 0;
 	/**
 	 * Used to avoid recursive calls to genExprPost() when we know we have an index expr.
 	 * @return
@@ -508,17 +500,6 @@ public class Auxiliary {
 		}
 
 		genExpr(right);
-		ExprNode l = (!(left instanceof ExprNode.Self)) ? left : ((ExprNode.Self)left).getMember();
-		if (expr.isAssign() && l instanceof ExprNode.Ident && isHost()) {
-			SymbolEntry se = ((ExprNode.Ident)l).getSymbol() != null ? ((ExprNode.Ident)l).getSymbol() : null;
-			ISymbolNode node = se != null ? se.node() : null;
-			if (node instanceof DeclNode.Var)  {
-				DeclNode.Var v = (Var) node;
-				if (!ParseUnit.current().isPreset(se) && v.isHost() && v.getArrayForDimensionVar() != null)
-					setUpdateArr(v.getArrayForDimensionVar());				
-			}
-
-		}
 	}
 
 	private void genExpr$Call(ExprNode.Call expr) {
@@ -900,7 +881,8 @@ public class Auxiliary {
 				if (typ instanceof TypeNode.Usr || typ instanceof TypeNode.Std) {
 					bindToUnit = gen.getOutputName(typ, null, EnumSet.noneOf(Flags.class));
 				}
-				else bindToUnit = "/* ?? unknown symbol ?? */";
+				if (bindToUnit.isEmpty()) 
+					bindToUnit = "/* ?? unknown symbol ?? */ ";
 			} 
 			gen.getFmt().print(bindToUnit.substring(0, bindToUnit.length()-1)); 
 		}
