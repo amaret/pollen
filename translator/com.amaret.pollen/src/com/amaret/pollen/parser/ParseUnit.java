@@ -1061,6 +1061,8 @@ public class ParseUnit {
 	 * @param msg
 	 */
 	public void reportWarning(BaseNode node, String msg) {
+		if (!ProcessUnits.isWarnings())
+			return;
 		if (node instanceof ExprNode.Ident) {
 			msg = "'" + ((ExprNode.Ident) node).getName() + "': " + msg;
 		}

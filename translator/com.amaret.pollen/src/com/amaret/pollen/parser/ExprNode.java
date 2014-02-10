@@ -323,7 +323,12 @@ public class ExprNode extends BaseNode {
 							if (qualifier == null && chkHostScope)
 								qualifier = symtab.curScope().lookupName(n, false);
 
-							ei.setQualifier(qualifier);
+							ei.setQualifier(qualifier);  
+							if (qualifier instanceof SymbolEntry
+									&& qualifier.node() instanceof DeclNode.TypedMember
+									&& ((DeclNode.TypedMember)qualifier.node()).isProtocolMember()) {
+								ei.setCallThruProtoMbr(true);																
+							}
 							if (qualifier != null && qualifier.node() instanceof ImportNode) {
 								// For imports, the qualifier will get output by translator code.
 								ei.getName().stripQualifiers();
@@ -840,8 +845,9 @@ public class ExprNode extends BaseNode {
 		private SymbolEntry qualifier = null; // for obj.field qualifier is
 												// 'obj'
 
-		private boolean thisPtr = false; // add 'this' to accesses
-		int postExprCallCount = 0;		 // the number of calls after first expr 'a.b' in 'a.b.c.d.e...'
+		private boolean thisPtr = false; 		// add 'this' to accesses
+		int postExprCallCount = 0;		 		// the number of calls after first expr 'a.b' in 'a.b.c.d.e...'
+		private boolean isCallThruProtoMbr = false; // Qualifier is protocol member: use bindTo unit for the call
 		
 		/**
 		 * Because 'this' is fixed up to be a parameter, postExpr calls need special handling. 
@@ -934,6 +940,20 @@ public class ExprNode extends BaseNode {
 		public void setSymbol(SymbolEntry symbol) {
 			this.symbol = symbol;
 
+		}
+		/**
+		 * 
+		 * @param f true if qualifier is protocol member
+		 */
+		public void setCallThruProtoMbr(boolean f) {
+			isCallThruProtoMbr = f;
+		}
+		/**
+		 * If qualifier is protocol member: use bindTo unit for the call.
+		 * @return true if call qualifier is protocol member else false.
+		 */
+		public boolean isCallThruProtoMbr() {
+			return isCallThruProtoMbr;
 		}
 
 		

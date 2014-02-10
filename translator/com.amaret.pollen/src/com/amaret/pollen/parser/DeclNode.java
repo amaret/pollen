@@ -1321,7 +1321,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			
 			if (this.isProtocolMember()) {
 				// An access to protocol member from outside its dcln scope
-				if (sc instanceof DeclNode.Usr && sc != g.curUnit().getUnitType()) {
+				if (sc instanceof DeclNode.Usr && sc != g.curUnit().getUnitType() && !flags.contains(Flags.IS_PROTOMBR_CALL)) {
 					qn = ((DeclNode.Usr)sc).getOutputNameHost(g, sc, flags);	
 					return qn + node.getName().getText();
 				}				
@@ -1331,6 +1331,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				}
 				else 
 					qn = this.getBindToUnit().getQualName();
+				
+				if (flags.contains(Flags.IS_PROTOMBR_CALL)) {					
+					return "$units['" + qn + "']." + node.getName().getText();					
+				}
 			}
 			if (qn.isEmpty()) {
 				qn = (scopeOfDcln instanceof UnitNode ? ((UnitNode) scopeOfDcln)

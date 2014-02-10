@@ -23,12 +23,19 @@ public class ProcessUnits {
 	private static String pollenPrintPkg = "";
 	private static boolean gccAvr = false;
 	private static boolean asserts = false;
+	private static boolean warnings = false;
 	
 	public static boolean isAsserts() {
 		return asserts;
 	}
 	public static void setAsserts(boolean asserts) {
 		ProcessUnits.asserts = asserts;
+	}
+	public static boolean isWarnings() {
+		return warnings;
+	}
+	public static void setWarnings(boolean warnings) {
+		ProcessUnits.warnings = warnings;
 	}
 	public static boolean isGccAvr() {
 		return gccAvr;
@@ -176,12 +183,13 @@ public class ProcessUnits {
 		pollenHelp += "\n" + "\tbe substituted for \'pollen.environment\' in import statements.";
 		pollenHelp += "\n" + "  -p <pollen path>";
 		pollenHelp += "\n" + "\tSpecifies fully qualified path to a pollen module that will";
-		pollenHelp += "\n" + "\timplement the protocol \'PrintProtocol.p\' found in \'pollen.lang\'.";
-		pollenHelp += "\n" + "\tThis implementation will be used in pollen \'print\' statements.";
+		pollenHelp += "\n" + "\timplement the protocol \'PrintProtocol.p\'.";
 		pollenHelp += "\n" + "  -h\tThis help message.";
+		pollenHelp += "\n" + "  -w\tOutput warning messages. (Otherwise suppressed.)";
+
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.71";  // user release . internal rev . fix number
+	private static String  v = "0.2.72";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -250,6 +258,10 @@ public class ProcessUnits {
 			}
 			if (p.equals("-a")) { 		// turns asserts on
 				ProcessUnits.setAsserts(true);
+				continue;
+			}
+			if (p.equals("-w")) { 		// turns warnings on
+				ProcessUnits.setWarnings(true);
 				continue;
 			}
 			if (p.matches("-[A-z]+")) {

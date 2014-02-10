@@ -503,7 +503,6 @@ public class Auxiliary {
 	}
 
 	private void genExpr$Call(ExprNode.Call expr) {
-
 				
  		String n = expr.getName() instanceof ExprNode.Ident ? ((ExprNode.Ident) expr.getName()).getName().getText() : "";
 
@@ -717,6 +716,8 @@ public class Auxiliary {
 			flags.add(Flags.IS_POSTEXPR);
 		if (expr.isCallThruFcnPtrArray())
 			flags.add(Flags.IS_FCNPTR_ARR_CALL);
+		if (expr.isCallThruProtoMbr())	
+			flags.add(Flags.IS_PROTOMBR_CALL);
 		
 		//boolean dbg = false;
 //		String s = expr.getName().getText();
