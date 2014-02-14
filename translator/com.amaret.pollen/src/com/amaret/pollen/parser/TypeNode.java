@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.antlr.runtime.tree.Tree;
 
-import com.amaret.pollen.parser.DeclNode.Arr;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.target.ITarget.TypeId;
 import com.amaret.pollen.target.ITarget.TypeInfo;

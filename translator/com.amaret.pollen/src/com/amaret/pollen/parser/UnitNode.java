@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.translator.Generator;
 
@@ -500,6 +501,23 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
     @Override
     protected boolean pass1Begin() {
     	//System.out.println("**UnitNode " + this.getQualName() + " pass1Begin()");
+    	int idxPrintProtocol = -1;
+    	int idxPrintImpl = -1;
+    	// Excessive imports for print protocol assignment with 'bind'. We don't know if we will encounter a bind
+    	// so we import when not needed. Prune here. 
+    	// print protocol inserted in all files, print impl only in toplevel module iff -p option.
+    	for (int i = 0; i < this.getImports().size(); i++) {
+    		ImportNode imp = this.getImports().get(i);    	
+    		if (imp.getName().getText().equals(ParseUnit.INTRINSIC_PRINT_PROTOCOL))
+    			idxPrintProtocol = i;
+    		if (imp.getName().getText().equals(ProcessUnits.getPollenPrint()))
+    			idxPrintImpl = i;
+    	}
+    	if (idxPrintImpl == -1 || idxPrintProtocol == -1) { // must occur in a pair to be valid, or the print impl imports the proto
+    		if (idxPrintProtocol != -1 && !this.getName().getText().equals(ProcessUnits.getPollenPrint()))
+    			this.getImports().remove(idxPrintProtocol);
+    	}
+    	
 		if (importMap.isEmpty()) {
 			for (ImportNode imp : this.getImports()) {
 				importMap.put(imp.getName().getText(), imp);

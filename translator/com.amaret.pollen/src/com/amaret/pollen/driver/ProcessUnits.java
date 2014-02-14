@@ -6,12 +6,11 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Properties;
 
-import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.ParseUnit;
+import com.amaret.pollen.parser.ParseUnit.Property;
 import com.amaret.pollen.parser.SymbolTable;
 import com.amaret.pollen.parser.UnitNode;
-import com.amaret.pollen.parser.ParseUnit.Property;
 import com.amaret.pollen.translator.Generator;
 
 public class ProcessUnits {
@@ -21,10 +20,34 @@ public class ProcessUnits {
 	private static String pollenEnvPkg = "";
 	private static String pollenPrint = "";
 	private static String pollenPrintPkg = "";
+	private static String pollenPrintProxyModule = ""; // where it is
+	private static boolean pollenPrintBindSeen = false;
 	private static boolean gccAvr = false;
 	private static boolean asserts = false;
 	private static boolean warnings = false;
+	private static boolean dashPoption = false;
 	
+	public static boolean isDashPoption() {
+		return dashPoption;
+	}
+	public static void setDashPoption(boolean dashPoption) {
+		ProcessUnits.dashPoption = dashPoption;
+	}
+	/**
+	 * 
+	 * @return the <package.module> in which the print intrinsic is set.
+	 */
+	public static String getPollenPrintProxyModule() {
+		return pollenPrintProxyModule;
+	}
+	/**
+	 * This is the module in which the print intrinsic is initialized.
+	 * Set in parser. 
+	 * @param pollenPrintProxyModule
+	 */
+	public static void setPollenPrintProxyModule(String pollenPrintProxyModule) {
+		ProcessUnits.pollenPrintProxyModule = pollenPrintProxyModule;
+	}
 	public static boolean isAsserts() {
 		return asserts;
 	}
@@ -49,25 +72,64 @@ public class ProcessUnits {
 	public static String getPollenEnv() {
 		return pollenEnv;
 	}
+	public static void setPollenPrint(String pollenPrint) {
+		ProcessUnits.pollenPrint = pollenPrint;
+	}
 	public static String getPollenPrint() {
 		return pollenPrint;
 	}
-	public static boolean doImportPrint() {
-		boolean currFileIsPrintProtocol = ParseUnit.current().getFileName()
-				.equals(ParseUnit.INTRINSIC_PRINT_PROTOCOL + ".p");
+	public static boolean doImportPrintImpl() {
+		if (pollenPrint.isEmpty())
+			return false;
 		boolean currFileIsPrintImpl = ParseUnit.current().getFileName()
 				.equals(pollenPrint + ".p");
-		return !pollenPrint.isEmpty() && !currFileIsPrintProtocol
-				&& !currFileIsPrintImpl;
+		if (isDashPoption() && ParseUnit.current().isParseToplevel() 
+				&& !currFileIsPrintImpl)
+			return true;
+		return false;
+	}
+	public static boolean doImportPrintProtocol() {
+		if (isDashPoption()) {
+			if (ParseUnit.current().isParseToplevel())
+				return true;
+			return false;
+		}
+		// if not using -p, the bind can occur anywhere so we import it for all valid units.
+//		boolean scopeOk = !(ParseUnit.current().getParseUnitFlags()
+//				.contains(Flags.ENUM) || ParseUnit.current()
+//				.getParseUnitFlags().contains(Flags.PROTOCOL));
+		boolean currFileIsPrintProtocol = ParseUnit.current().getFileName()
+				.equals(ParseUnit.INTRINSIC_PRINT_PROTOCOL + ".p");
+		if (!currFileIsPrintProtocol)
+			return true; 
+		return false;
+	}
+	public static boolean isPollenPrintBindSeen() {
+		return pollenPrintBindSeen;
+	}
+	public static void setPollenPrintBindSeen(boolean pollenPrintBindSeen) {
+		ProcessUnits.pollenPrintBindSeen = pollenPrintBindSeen;
 	}
 	/**
 	 * This is the intrinsic protocol member which will be used in the emitted print methods.
 	 * Generate if '-p' specifies a print implementation.
 	 * @return
 	 */
-	public static boolean doEmitPrintProxy() {
+	public static boolean doEmitPrintProxyViaDashP() {
 		boolean scopeOk = ParseUnit.current().getParseUnitFlags().contains(Flags.MODULE);
-		return !pollenPrint.isEmpty() && scopeOk;
+		return (!pollenPrint.isEmpty() && isDashPoption() && scopeOk && ParseUnit.current().isParseToplevel());
+	}
+	/**
+	 * This is the intrinsic protocol member which will be used in the emitted print methods.
+	 * Generate if a binding 'printProtocol := <mod>' was seen.
+	 * @return
+	 */
+	public static boolean doEmitPrintProxyViaBind() {
+		boolean scopeOk = (ParseUnit.current().getParseUnitFlags().contains(Flags.MODULE)
+				|| ParseUnit.current().getParseUnitFlags().contains(Flags.COMPOSITION) 
+				|| ParseUnit.current().getParseUnitFlags().contains(Flags.CLASS))
+				&& !ParseUnit.current().isUnitUnderConstructionNested();
+		return (ProcessUnits.isPollenPrintBindSeen() && scopeOk);
 	}
 	public static String getPollenPrintPkg() {
 		return pollenPrintPkg;
@@ -118,11 +180,9 @@ public class ProcessUnits {
 	 */
 	private HashMap<String, String> getPackages(final String bundlePath) {
 		
-		// TODO finalize pollenRoot when migration to 'real pollen' is complete		
 		String bundleName = bundlePath.substring(bundlePath.lastIndexOf(File.separator)+1);
 		if (pollenRoot.isEmpty()
-				&& (bundleName.equals("pollen.core")					// OLD
-					|| bundleName.equals("pollen.api")))		// NEW (I think)
+				&& (bundleName.equals("pollen-core") /* new */ || bundleName.equals("pollen.core") /* old */ ))	
 			pollenRoot = bundlePath;
 	
 
@@ -189,7 +249,7 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.72";  // user release . internal rev . fix number
+	private static String  v = "0.2.73";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -249,7 +309,8 @@ public class ProcessUnits {
 				if (!(new File(emod + ".p")).exists())
 					throw new Termination ("Invalid -p usage: must specifiy a fully qualified module for pollen.print");								
 				pollenPrintPkg = this.putModule(inputs, emod);
-				pollenPrint = emod.substring(emod.lastIndexOf(File.separator)+1);
+				setPollenPrint(emod.substring(emod.lastIndexOf(File.separator)+1));
+				setDashPoption(true);
 				continue;
 			}
 			if (p.equals("-gccAvr")) { 	// UNDOCUMENTED, for testing: runs gccavr

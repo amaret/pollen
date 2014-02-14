@@ -3,18 +3,15 @@
  */
 package com.amaret.pollen.translator;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 
-import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.BaseNode;
 import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.DeclNode.Class;
 import com.amaret.pollen.parser.DeclNode.Formal;
 import com.amaret.pollen.parser.DeclNode.ITypeSpec;
-import com.amaret.pollen.parser.DeclNode.Var;
 import com.amaret.pollen.parser.ExprNode;
 import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.IScope;
@@ -27,7 +24,6 @@ import com.amaret.pollen.parser.TypeNode;
 import com.amaret.pollen.parser.TypeNode.Usr;
 import com.amaret.pollen.parser.UnitNode;
 import com.amaret.pollen.parser.pollenParser;
-import com.amaret.pollen.script.Value;
 
 public class UnitHeader {
 

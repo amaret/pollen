@@ -9,15 +9,12 @@ import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.UniqueTag;
-import org.mozilla.javascript.NativeFunction;
 
 import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.BaseNode;
 import com.amaret.pollen.parser.Cat;
 import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.DeclNode.Arr;
-import com.amaret.pollen.parser.DeclNode.EnumVal;
-import com.amaret.pollen.parser.DeclNode.FcnRef;
 import com.amaret.pollen.parser.DeclNode.ITypeSpec;
 import com.amaret.pollen.parser.DeclNode.TypedMember;
 import com.amaret.pollen.parser.DeclNode.Var;
@@ -116,7 +113,7 @@ public class ProgCCode {
 
     private void genEpilogue() {
     	
-        gen.aux.genTitle("pollen.print");
+        gen.aux.genTitle(ParseUnit.POLLEN_PRINT);
         
         gen.getFmt().print("%tvoid %1pollen__print_bool(bool b) {\n%+", gen.uname_target());
         genIntrinsicPrintCall("print_bool", "b");        
@@ -229,6 +226,15 @@ public class ProgCCode {
 	 */
 	private void genIntrinsicPrintCall(String fcnCall, String parm) {
 		SymbolEntry s = gen.curUnit().getUnitType().getScopeDeleg().lookupName(ParseUnit.INTRINSIC_PRINT_PROXY);
+		if (s == null && !ProcessUnits.getPollenPrintProxyModule().isEmpty()) {
+			// Note because intrinsic can be set anywhere it may not be accessible by normal pollen rules.
+			// That is why we get its symtab by using 'findUnit()'. 
+			UnitNode u = ParseUnit.current().findUnit(
+					ProcessUnits.getPollenPrintProxyModule(), "");
+			if (u != null)
+				s = u.getUnitType().lookupName(ParseUnit.INTRINSIC_PRINT_PROXY,
+						false);
+		}
         ISymbolNode n = s != null ? s.node() : null;
         if (n instanceof DeclNode.TypedMember &&  ((DeclNode.TypedMember)n).getBindToUnit() != null) {
         	IScope sc = ((DeclNode.TypedMember)n).getBindToUnit().getUnitType();

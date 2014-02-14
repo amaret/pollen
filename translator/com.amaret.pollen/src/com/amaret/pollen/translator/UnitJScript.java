@@ -11,13 +11,11 @@ import com.amaret.pollen.parser.Cat.Fcn;
 import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.DeclNode.Arr;
 import com.amaret.pollen.parser.DeclNode.Formal;
-import com.amaret.pollen.parser.DeclNode.ITypeInfo;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
 import com.amaret.pollen.parser.DeclNode.Usr;
 import com.amaret.pollen.parser.ExprNode;
 import com.amaret.pollen.parser.Flags;
-import com.amaret.pollen.parser.IScope;
 import com.amaret.pollen.parser.ISymbolNode;
 import com.amaret.pollen.parser.ImportNode;
 import com.amaret.pollen.parser.ParseUnit;
@@ -578,7 +576,7 @@ public class UnitJScript {
                 debugUses(unit);
         List<ImportNode> impL = unit.getImports();
         List<String> inserted = new java.util.ArrayList<String>();
-        if (impL.size() > 0) {
+        if (impL.size() > 0) {   		
             gen.getFmt().print("%t%1.pollen__uses__ = function() {\n%+", gen.uname());
             for (ImportNode imp : impL) {
                 if (imp.getUnit() != null) { 

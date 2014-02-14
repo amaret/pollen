@@ -7,11 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.antlr.runtime.tree.BaseTree;
-import org.antlr.runtime.tree.Tree;
-
 import com.amaret.pollen.parser.Cat.Agg;
-import com.amaret.pollen.parser.ExprNode.Binary;
 import com.amaret.pollen.parser.ExprNode.Vec;
 import com.amaret.pollen.target.ITarget.TypeInfo;
 import com.amaret.pollen.translator.Generator;

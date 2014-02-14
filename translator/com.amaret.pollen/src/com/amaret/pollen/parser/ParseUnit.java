@@ -5,7 +5,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -42,18 +41,26 @@ public class ParseUnit {
 	private HashMap<String, UnitNode> unitNameMap; 	// supports reuse of UnitNodes, avoid parsing a file > 1 times. 
 	private HashMap<String, String> packages;
 	private HashMap<String, String> errors;
+	private boolean parseTopLevel = false;
 	
 	
 	private List<String> metaModules = new ArrayList<String>();
 	static private boolean debugMode = false;
 	
-	// pollen names
+	// pollen names, source
+	public static final String POLLEN_PRINT = "pollen.print";
+	public static final String POLLEN_PRINT_PROXY = "pollen.printProtocol";	
+	public static final String POLLEN_ENVIRONMENT = "pollen.environment";
+	public static final String POLLEN_PRINTPKG = "pollen.output";
+	
+	// pollen names, generated
 	public static final String EXPORT_PREFIX = "$$export";
+	// A name prefixed with intrinsic prefix will not be entered into the symtab (lookups will fail). 
 	public static final String INTRINSIC_PREFIX = "pollen__";
 	public static final String DEFAULT_LOOPVAR = INTRINSIC_PREFIX + "loopvar"; // for loops w/ undeclared loop variables
 	public static final String INTRINSIC_UNITVAR = INTRINSIC_PREFIX +"unitname";
 	public static final String INTRINSIC_PRINT_PROTOCOL= "PrintProtocol";
-	public static final String INTRINSIC_PRINT_PROXY = "$$printProxy";
+	public static final String INTRINSIC_PRINT_PROXY = "intrinsicPrintProtocol";
 	public static final String CTOR_CLASS_TARGET = "new_";
 	public static final String CTOR_CLASS_HOST = "new_host";
 	public static final String CTOR_MODULE_TARGET = "targetInit";
@@ -75,6 +82,17 @@ public class ParseUnit {
 		if (s.equals(ParseUnit.INTRINSIC_PREFIX + ParseUnit.DEFAULT_LOOPVAR))
 			return false;			
 		return true;
+	}
+	/**
+	 * 
+	 * @return true if unit currently being parsed is the top level module
+	 */
+	public boolean isParseToplevel() {
+		return parseTopLevel;
+	}
+
+	public void setParseToplevel(boolean toplevelModule) {
+		this.parseTopLevel = toplevelModule;
 	}
 	/*
 	 * For meta instantiations.
@@ -222,6 +240,13 @@ public class ParseUnit {
 		if (this.currUnitNode != null)
 			return this.currUnitNode.getUnitType().getFlags();
 		return parser.getParseUnitFlags();
+	}
+	/**
+	 * 
+	 * @return true if unit currently being parsed is nested
+	 */
+	public boolean isUnitUnderConstructionNested() {
+		return parser.getParserTypeInfoListSize() > 1;
 	}
 	public String getParseUnitName() {
 		if (parser == null)
@@ -789,6 +814,8 @@ public class ParseUnit {
 		String clientName = client != null ? client.getQualName() : "<no import>";
 		String theImportName = theImport != null ? theImport.getQualName()
 				: "<none>";
+		
+		setParseToplevel(client == null && theImport == null);
 
 		setDebugMode(false);
 		//setDebugMode(true);
@@ -818,7 +845,7 @@ public class ParseUnit {
 
 		UnitNode unit = (UnitNode) result.getTree();
 
-		//setDebugMode(true);
+		setDebugMode(false);
 		if (isDebugMode())
 			System.out.println("       AST: " + unit.toStringTree());
 		setDebugMode(false);

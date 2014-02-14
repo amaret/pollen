@@ -115,6 +115,7 @@ tokens {
 	    clientImport = cli;
 	    isVoidInstance = (cli != null && cli.getMeta() != null && cli.getMeta().size() == 0);
 	    instantiateToDefaults = (cli != null && cli.getMeta() == null);
+	    ProcessUnits.setPollenPrintBindSeen(false);
 	}
 	    
     EnumSet<Flags> featureFlags = EnumSet.noneOf(Flags.class); 
@@ -142,12 +143,20 @@ tokens {
     	return ti.getTypeName();
     }
     public EnumSet<Flags> getParseUnitFlags() {
+    	if (ti == null) {
+    		ParseUnit.current().reportFailure("invalid request");
+    		return EnumSet.noneOf(Flags.class); 
+    	}
     	return ti.getUnitFlags();
     }
 
     
-    ArrayList<TypeInfo> tl = new ArrayList<TypeInfo>();
+    ArrayList<TypeInfo> typeInfoList = new ArrayList<TypeInfo>();
     TypeInfo ti;
+    
+    public int getParserTypeInfoListSize() {
+    	return typeInfoList.size();
+    }
     
     String getInject(String text) {
         return text.substring(text.indexOf("+{")+2,text.lastIndexOf("}+"));
@@ -400,7 +409,7 @@ stmtExport
 classDefinition  
 @init{
 		ti = new TypeInfo();
-		tl.add(ti);		
+		typeInfoList.add(ti);		
 		ti.setUnitFlags(metaFlags); 
 		metaFlags = EnumSet.noneOf(Flags.class);		
 		String qual = "";
@@ -409,9 +418,9 @@ classDefinition
 		hasTargetConstructor = false;
 }
 @after{
-   	ti = tl.remove(tl.size()-1);
-   	if (tl.size() > 0)
-   	  ti = tl.get(tl.size()-1);
+   	ti = typeInfoList.remove(typeInfoList.size()-1);
+   	if (typeInfoList.size() > 0)
+   	  ti = typeInfoList.get(typeInfoList.size()-1);
 }
 	:	'class' IDENT
 			{ 
@@ -499,21 +508,31 @@ classTargCtor[EnumSet<Flags> ft]
 				)
 	|	-> NIL
 	;
+	/*
+	scope {
+	Object unitImports;
+}
+	:       	stmtPackage
+	        	importList {$unitPackage::unitImports = $importList.tree;}	 
+	*/
 moduleDefinition 
+scope {
+  Object moduleFeatureList;
+}
 @init{
 		ti = new TypeInfo();
 		ti.setUnitFlags(metaFlags); 
 		metaFlags = EnumSet.noneOf(Flags.class);		
-		tl.add(ti);		
+		typeInfoList.add(ti);		
 		String qual = "";
 		String name = "";
 		hasHostConstructor = false;
 		hasTargetConstructor = false;
 }
 @after{
-   	ti = tl.remove(tl.size()-1);
-   	if (tl.size() > 0)
-   	  ti = tl.get(tl.size()-1);
+   	ti = typeInfoList.remove(typeInfoList.size()-1);
+   	if (typeInfoList.size() > 0)
+   	  ti = typeInfoList.get(typeInfoList.size()-1);
 }
 	:    'module' IDENT
 	      { 
@@ -528,7 +547,10 @@ moduleDefinition
 	      implementsClause
 			braceOpen moduleFeatureList[name] braceClose
 			-> ^(D_MODULE<DeclNode.Usr>["D_MODULE", ti.getUnitFlags(), qual] 
-			IDENT moduleFeatureList extendsClause implementsClause {$unitTypeDefinition::meta}) 
+				IDENT 
+				moduleFeatureList //{$moduleDefinition::moduleFeatureList = $moduleFeatureList.tree;}
+				extendsClause 
+				implementsClause {$unitTypeDefinition::meta}) 
 	;
 moduleFeatureList[String n]
 @init {
@@ -547,7 +569,14 @@ moduleFeatureList[String n]
 			       )
 ;
 intrinsicPrintProxy
-	:	{ProcessUnits.doEmitPrintProxy()}? 
+@init{
+  EnumSet flags;
+  if (ti.getUnitFlags().contains(Flags.COMPOSITION)) 
+      flags = EnumSet.of(Flags.INTRINSIC_VAR, Flags.HOST, Flags.PROTOCOL_MEMBER) ;
+  else
+      flags = EnumSet.of(Flags.INTRINSIC_VAR, Flags.PROTOCOL_MEMBER);
+}
+	:	{ProcessUnits.doEmitPrintProxyViaDashP()}? 
 			-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", EnumSet.of(Flags.INTRINSIC_VAR, Flags.BIND, Flags.PROTOCOL_MEMBER)] 				
 				^(T_USR<TypeNode.Usr>["T_USR", EnumSet.of(Flags.INTRINSIC_VAR)] 
 					IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL]
@@ -557,6 +586,13 @@ intrinsicPrintProxy
 				 	^(T_USR<TypeNode.Usr>["T_USR", EnumSet.noneOf(Flags.class)] 				 			 	
 				 		IDENT[ProcessUnits.getPollenPrint()]	)			 	  
 				   )
+			       )
+		|   {ProcessUnits.doEmitPrintProxyViaBind()}? 
+			-> ^(D_VAR<DeclNode.TypedMember>["D_VAR", flags] 				
+				^(T_USR<TypeNode.Usr>["T_USR", EnumSet.of(Flags.INTRINSIC_VAR)] 
+					IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL]
+				  ) 
+				IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] 				
 			       )
 		 | -> NIL	
 	;
@@ -643,13 +679,13 @@ scope {
 		ti = new TypeInfo();
 		ti.setUnitFlags(metaFlags); 
 		metaFlags = EnumSet.noneOf(Flags.class);		
-		tl.add(ti);		
+		typeInfoList.add(ti);		
 		String qual = "";
 }
 @after{
-   	ti = tl.remove(tl.size()-1);
-   	if (tl.size() > 0)
-   	  ti = tl.get(tl.size()-1);
+   	ti = typeInfoList.remove(typeInfoList.size()-1);
+   	if (typeInfoList.size() > 0)
+   	  ti = typeInfoList.get(typeInfoList.size()-1);
 }
 	:  'enum'(IDENT 
 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.ENUM));
@@ -686,13 +722,13 @@ protocolDefinition
 		ti = new TypeInfo();
 		ti.setUnitFlags(metaFlags); 
 		metaFlags = EnumSet.noneOf(Flags.class);		
-		tl.add(ti);		
+		typeInfoList.add(ti);		
 		String qual = "";
 }
 @after{
-   	ti = tl.remove(tl.size()-1);
-   	if (tl.size() > 0)
-   	  ti = tl.get(tl.size()-1);
+   	ti = typeInfoList.remove(typeInfoList.size()-1);
+   	if (typeInfoList.size() > 0)
+   	  ti = typeInfoList.get(typeInfoList.size()-1);
 }
 	:	'protocol' IDENT
 		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.PROTOCOL));
@@ -723,13 +759,13 @@ compositionDefinition
 		ti = new TypeInfo();
 		ti.setUnitFlags(metaFlags); 
 		metaFlags = EnumSet.noneOf(Flags.class);		
-		tl.add(ti);		
+		typeInfoList.add(ti);		
 		String qual = "";
 }
 @after{
-   	ti = tl.remove(tl.size()-1);
-   	if (tl.size() > 0)
-   	  ti = tl.get(tl.size()-1);
+   	ti = typeInfoList.remove(typeInfoList.size()-1);
+   	if (typeInfoList.size() > 0)
+   	  ti = typeInfoList.get(typeInfoList.size()-1);
 }
 	:	'composition' IDENT
 		{ 
@@ -747,7 +783,9 @@ compositionDefinition
 			     IDENT compositionFeatureList extendsClause implementsClause {$unitTypeDefinition::meta}) 
 	;
 compositionFeatureList
-	:	compositionFeature*	-> ^(LIST<ListNode>["LIST"] compositionFeature*)
+	:	compositionFeature*	
+		intrinsicPrintProxy
+		-> ^(LIST<ListNode>["LIST"] compositionFeature* intrinsicPrintProxy)
 	;
 compositionFeature
 @init {
@@ -779,13 +817,13 @@ scope{
     
     	|	('import' qualName 
     		{	
-    			if ($qualName.text.equals("pollen.environment")) {
+    			if ($qualName.text.equals(ParseUnit.POLLEN_ENVIRONMENT)) {
     				$stmtImport::qimp = ProcessUnits.getPollenEnv();
     				defaultPkg = ProcessUnits.getPollenEnvPkg();
     				if ($stmtImport::qimp.isEmpty())
     					throw new PollenException("Missing module specification for pollen.environment", input);
     			}
-    			else if ($qualName.text.equals("pollen.print")) {
+    			else if ($qualName.text.equals(ParseUnit.POLLEN_PRINT)) {
     				$stmtImport::qimp = ProcessUnits.getPollenPrint();
     				defaultPkg = ProcessUnits.getPollenPrintPkg();
     				if ($stmtImport::qimp.isEmpty())
@@ -817,14 +855,14 @@ importFrom
     
     :   	(q1=qualName 
     		{	
-    			$stmtImport::qpkg = ($q1.text.equals("pollen.environment")) ? ProcessUnits.getPollenEnvPkg() : $q1.text;
+    			$stmtImport::qpkg = ($q1.text.equals(ParseUnit.POLLEN_ENVIRONMENT)) ? ProcessUnits.getPollenEnvPkg() : $q1.text;
     			if ($stmtImport::qpkg.isEmpty())
     				throw new PollenException("Missing module specification for pollen.environment", input);
     		} 
     		'import' 
     		q2=qualName 
     		{	
-    			$stmtImport::qimp = ($q2.text.equals("pollen.environment")) ? ProcessUnits.getPollenEnv() : $q2.text;
+    			$stmtImport::qimp = ($q2.text.equals(ParseUnit.POLLEN_ENVIRONMENT)) ? ProcessUnits.getPollenEnv() : $q2.text;
     			if ($stmtImport::qimp.isEmpty())
     				throw new PollenException("Missing module specification for pollen.environment", input);
     		}  
@@ -877,19 +915,20 @@ scope {
 		 m2=importPrintProtocol	{  $importIntrinsicPrint::l.add($m2.tree);}	
 	;
 // synthesize the imports for the print implementation (from the -p option)
-// import the protocol and an implemenation
 importPrintImpl
-	:	{ProcessUnits.doImportPrint()}? 
+	:	{ProcessUnits.doImportPrintImpl()}? 
 		   -> ^(IMPORT<ImportNode>["IMPORT",  EnumSet.noneOf(Flags.class)] 
 			IDENT[ProcessUnits.getPollenPrintPkg()] 
 			IDENT[ProcessUnits.getPollenPrint()]
 			NIL)	
 		|  -> NIL
 	;
+// To support binding print protocol without requiring -p option we must import the print protocol in every unit
+// (except itself). This happens only if -p is NOT used. 
 importPrintProtocol
-	:	{ProcessUnits.doImportPrint()}? 
+	:	{ProcessUnits.doImportPrintProtocol()}? 
 		   -> ^(IMPORT<ImportNode>["IMPORT",  EnumSet.noneOf(Flags.class)] 
-			IDENT["pollen.lang"] 
+			IDENT[ParseUnit.POLLEN_PRINTPKG] 
 			IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL]
 			NIL)	
 		|  -> NIL
@@ -1152,6 +1191,7 @@ implementsClause
     {
     	if (ti.getUnitFlags().contains(Flags.PROTOCOL))
     		throw new PollenException("\'implements\' clause is not supported for protocols", input);
+    	
     }
     	-> qualName
     | 	-> NIL
@@ -1544,7 +1584,31 @@ stmtAssign
 		-> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] assignOp injectionCode expr))
 	;
 stmtBind
-	:	varOrFcnOrArray BIND  userTypeName	 delim -> ^(S_BIND<StmtNode.Bind>["S_BIND"] varOrFcnOrArray  userTypeName)	
+@init{
+	String qn = "";
+}
+	:	qualName BIND  userTypeName	 delim 
+		{
+
+			if ($qualName.text.equals(ParseUnit.POLLEN_PRINT_PROXY)) {
+			
+			           if (ProcessUnits.isDashPoption()) {
+			               ParseUnit.current().reportError(ParseUnit.POLLEN_PRINT_PROXY, "Invalid bind of intrinsic print protocol member:  '-p' option is in use");
+			           }
+			           if (getParserTypeInfoListSize() > 1) {
+			               ParseUnit.current().reportError(ParseUnit.POLLEN_PRINT_PROXY, "Invalid bind of intrinsic print protocol member: not allowed in nested class");
+			           }
+			           		
+				qn = ParseUnit.INTRINSIC_PRINT_PROXY;
+				ProcessUnits.setPollenPrintBindSeen(true); // causes the print protocol member to be created
+				ProcessUnits.setPollenPrint($userTypeName.text);
+				ProcessUnits.setPollenPrintProxyModule(ParseUnit.mkPackageName(ParseUnit.current().getCurrPath()) + "."  + ti.getTypeName());
+				
+			}
+			else
+				qn = $qualName.text;
+		}	
+			-> ^(S_BIND<StmtNode.Bind>["S_BIND"] ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT[qn])  userTypeName)	
 	;
 stmtPeg
 	:	varOrFcnOrArray PEG  exprAssign	 delim -> ^(S_PEG<StmtNode.Peg>["S_PEG"] varOrFcnOrArray  exprAssign)	

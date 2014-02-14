@@ -1,6 +1,5 @@
 package com.amaret.pollen.translator;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -12,7 +11,6 @@ import com.amaret.pollen.parser.BodyNode;
 import com.amaret.pollen.parser.Cat;
 import com.amaret.pollen.parser.Cat.Agg;
 import com.amaret.pollen.parser.Cat.Arr;
-import com.amaret.pollen.parser.Cat.Fcn;
 import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.DeclNode.Formal;
 import com.amaret.pollen.parser.DeclNode.ITypeSpec;
@@ -29,7 +27,6 @@ import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.IScope;
 import com.amaret.pollen.parser.ISymbolNode;
 import com.amaret.pollen.parser.ImportNode;
-import com.amaret.pollen.parser.ListNode;
 import com.amaret.pollen.parser.LitFlags;
 import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.StmtNode;
@@ -277,7 +274,7 @@ public class Auxiliary {
 						genExpr$Ident((Ident) e);
 						break;
 					case pollenParser.E_CALL:
-						System.out.println(expr.toStringTree());
+						//System.out.println(expr.toStringTree());
 						gen.getFmt().print(".");
 						genExpr2(e, eType);
 						break;

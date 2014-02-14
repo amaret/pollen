@@ -8,9 +8,6 @@ import java.util.Set;
 import org.antlr.runtime.tree.Tree;
 
 import com.amaret.pollen.driver.ProcessUnits;
-import com.amaret.pollen.parser.Cat.Agg;
-import com.amaret.pollen.parser.Cat.Arr;
-import com.amaret.pollen.parser.DeclNode.Class;
 import com.amaret.pollen.parser.DeclNode.TypedMember;
 import com.amaret.pollen.parser.DeclNode.Var;
 import com.amaret.pollen.parser.ExprNode.Ident;
@@ -589,7 +586,7 @@ public class StmtNode extends BaseNode {
         }
         
         @Override
-        protected void pass2End() {
+        protected void pass2End() { 
         	Cat src_cat = TypeRules.checkBind(getPro().getCat(), getValue());
         	SymbolEntry sym = getPro().getSymbol();
         	ISymbolNode snode = sym != null ? sym.node() : null;
