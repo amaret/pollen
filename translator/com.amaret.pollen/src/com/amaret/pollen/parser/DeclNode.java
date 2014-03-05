@@ -354,11 +354,23 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				return true;
 			ExprNode e = this.getFirstDim();
 			if (e instanceof ExprNode.Const) {
-				if (((ExprNode.Const)e).getValue().getText().equals("-1")) {
+				if (((ExprNode.Const)e).getValue().getText().equals(ParseUnit.ARRAY_WITHOUT_DIMENSION)) {
 					return false;
 				}
 			}
 			return true;
+		}
+		public boolean isArrWithoutDim() { 
+			if (getInit() instanceof ExprNode.Vec)
+				return true;
+			ExprNode e = this.getFirstDim();
+			if (e instanceof ExprNode.Const) {
+				if (((ExprNode.Const)e).getValue().getText().equals(ParseUnit.ARRAY_WITHOUT_DIMENSION)) {
+					ParseUnit.current().reportError(this, "array dimension missing on declaration");
+					return true;
+				}
+			}
+			return false;
 		}
 
 		@Override
@@ -424,6 +436,12 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			if (invalidFlag) {
 				ParseUnit.current().reportError(this, this.getName().getText() + ": invalid expression for array dimension");
 				return; 
+			}
+			ExprNode e = this.getFirstDim();
+			if (e instanceof ExprNode.Const) {
+				if (((ExprNode.Const)e).getValue().getText().equals(ParseUnit.ARRAY_WITHOUT_DIMENSION)) {
+					ParseUnit.current().reportError(this, "array dimension missing on declaration");
+				}
 			}
 			// this condition means we had '[x]' instead of '[constExpr]' for size
 			if (dim.get(0) instanceof ExprNode.Ident) {

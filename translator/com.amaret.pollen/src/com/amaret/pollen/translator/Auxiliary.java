@@ -1543,6 +1543,7 @@ public class Auxiliary {
 	}
 
 	private void genStmt$Print(StmtNode.Print stmt) {
+		
 		if (isHost()) {
 			gen.getFmt().print("$$printf(");
 			String sep = "";
@@ -1554,16 +1555,22 @@ public class Auxiliary {
 			gen.getFmt().print(");");
 		} else {
 			
-			String cat = "";
+			String catChar = "";
 			for (ExprNode expr : stmt.getArgs()) {
 				switch (expr.getType()) {
 				case pollenParser.E_IDENT:
 					ExprNode.Ident ei = (Ident) expr;
-					cat = new Character(ei.getCat().code().charAt(0)).toString();
+					Cat cat = ei.getCat();
+					if (cat instanceof Cat.Arr && ei.hasIndexExpr()) {
+						catChar = new Character(((Cat.Arr)cat).getBase().code().charAt(0)).toString();
+					}
+					else
+						catChar = new Character(ei.getCat().code().charAt(0)).toString();
+					
 					break;
 				case pollenParser.E_CONST:
 					ExprNode.Const ec = (Const) expr;
-					cat = new Character(ec.getCat().code().charAt(0)).toString();
+					catChar = new Character(ec.getCat().code().charAt(0)).toString();
 					break;
 				default:     // why not function returns?
 					ParseUnit
@@ -1575,7 +1582,7 @@ public class Auxiliary {
 
 				String uname_target = (ParseUnit.getPollenPkg() + "." + ParseUnit.getPollenFile() + ".").replace('.', '_');
 				
-				switch (cat.charAt(0)) {
+				switch (catChar.charAt(0)) {
 				case 'b':
 					gen.getFmt().print("%1%2print_bool(", uname_target, ParseUnit.INTRINSIC_PREFIX);
 					gen.aux.genExpr(expr);
@@ -1700,13 +1707,15 @@ public class Auxiliary {
 	 * @param flags TODO
 	 */
 	void genTypeWithVarName(TypeNode type, String name, EnumSet<Flags> flags) {
-		
+		String dim = "";
 		if (type instanceof TypeNode.Arr) {
 			Cat.Arr c = (Arr) Cat.fromType(type);
-			if (c.getType().hasDim())
+			dim = c.getType().hasDim() ? "" : "[]"; // update for multi dimensional arrays
+			if (c.getType().hasDim() || c.getType().isArrWithoutDim())
 				name = ""; // name will be output as part of type
 		}
-		String s = mkTypeName(type, flags) + (name == null ? "" : " " + name);
+		
+		String s = mkTypeName(type, flags) + (name == null ? "" : " " + name + dim);
 		gen.getFmt().print("%1", s);
 	}
 	/**

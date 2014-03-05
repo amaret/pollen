@@ -249,7 +249,7 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.73";  // user release . internal rev . fix number
+	private static String  v = "0.2.74";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -459,7 +459,6 @@ public class ProcessUnits {
             if (p.name().equals("POLLEN_ROOT"))
             	pollenRoot = val;
         }
-
         
         props = new PropsLoader().apply(props, pollenRoot + File.separator + "props", System.err);
         if (props == null) {

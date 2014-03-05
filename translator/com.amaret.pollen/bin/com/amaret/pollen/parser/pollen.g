@@ -1492,9 +1492,14 @@ formalParameter
 			-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", pFlags] 
 				^(T_USR<TypeNode.Usr>["T_USR", pFlags] IDENT) 
 				IDENT ^(E_TYP<ExprNode.Typ>["E_TYP"] typeName)?)
+	|  	(typeName  '[') => formalParameterArr
 	|   	typeName IDENT ( '=' expr)?
 			-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL"] typeName IDENT (expr)?)
 
+	;
+formalParameterArr
+	:	typeNameArray '[' ']' IDENT ( '=' expr)?
+			-> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL"] typeNameArray IDENT (expr)?)
 	;
 fcnArgumentList
 	:	'(' fcnArguments ')'	->  fcnArguments

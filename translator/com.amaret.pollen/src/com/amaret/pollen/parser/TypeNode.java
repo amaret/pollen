@@ -75,12 +75,16 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 			return getChildCount() > DIM ? (ListNode<ExprNode>) getChild(DIM) : null;
 			
 		}
-
-        
+       
         public boolean hasDim() {
         	if (parent instanceof DeclNode.Arr)
         		return ((DeclNode.Arr)parent).hasDim();
             return getChildCount() > DIM;
+        }
+        public boolean isArrWithoutDim() {
+        	if (parent instanceof DeclNode.Arr)
+        		return ((DeclNode.Arr)parent).isArrWithoutDim();
+        	return getChildCount() <= DIM;        	
         }
         public String getOutputNameHost(Generator g, IScope sc, EnumSet<Flags> flags) {
         	return this.getOutputNameTarget(g, sc, flags);
