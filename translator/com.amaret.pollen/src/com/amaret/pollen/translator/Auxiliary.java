@@ -1726,10 +1726,13 @@ public class Auxiliary {
 	 * @param arg
 	 */
 	void genForwardedType(TypeNode type, String name, EnumSet<Flags> flags, ITypeSpec arg) {
-		
-		
+				
 		if (type instanceof TypeNode.Usr) {
 			if (((TypeNode.Usr)type).isFunctionRef()) {
+				this.genTypeWithVarName(type, name, flags);	
+				return;
+			}
+			if (((TypeNode.Usr)type).getTypeKind() != null && ((TypeNode.Usr)type).getTypeKind().isEnum()) {
 				this.genTypeWithVarName(type, name, flags);	
 				return;
 			}

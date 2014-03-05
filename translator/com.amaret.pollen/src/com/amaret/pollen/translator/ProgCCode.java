@@ -415,6 +415,12 @@ public class ProgCCode {
     private void genPrologue() {
         gen.getFmt().print("#define pollen__target_name %1\n", ParseUnit.current().getProperty(ITarget.P_NAME));       
         gen.getFmt().print("#include <pollen.lang/std.h>\n\n");
+        
+        for (String k : unitDescsMap.keySet()) {
+        	UnitDesc u = unitDescsMap.get(k);
+        	this.genProgCCodeEnumVals(u.getUnit());       	
+        }
+        
         for (UnitDesc ud : getUnitDescriptors()) {
       
             UnitNode unit = ud.getUnit();
@@ -431,10 +437,6 @@ public class ProgCCode {
             if (u.isTarget()) {
                 gen.aux.genHeaderInclude(u.getQualName());
             }
-        }
-        for (String k : unitDescsMap.keySet()) {
-        	UnitDesc u = unitDescsMap.get(k);
-        	this.genProgCCodeEnumVals(u.getUnit());       	
         }
     }
 
@@ -498,7 +500,10 @@ public class ProgCCode {
     private void genProgCCodeEnumVals(UnitNode unit) {
     	if (unit.isComposition() || unit.isProtocol())
     		for (DeclNode idecl : unit.getFeatures()) {
-    			if (idecl instanceof DeclNode.Usr && ((DeclNode.Usr) idecl).isEnum()) {
+    			if (idecl instanceof DeclNode.Usr && ((DeclNode.Usr) idecl).isEnum()) {  
+    				gen.aux.genTitle("enum definitions (unit " + idecl.getName().getText() + ")");
+    				DeclNode.Usr d = (com.amaret.pollen.parser.DeclNode.Usr) idecl;
+    				gen.getFmt().print("typedef uint8 %1;\n", d.getOutputNameTarget(gen, unit, EnumSet.noneOf(Flags.class)));
     				for (DeclNode.EnumVal ev : ((DeclNode.Usr) idecl).getVals()) {
     					String s = gen.getOutputName(ev, ev.getDefiningScope(), EnumSet.noneOf(Flags.class));
     					gen.getFmt().print("#define %1 %2\n", s, ev.getVal().getText());

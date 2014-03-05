@@ -187,6 +187,9 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 		 * IScope sc - not used, can pass null.
 		 */
         public String getOutputNameTarget(Generator g, IScope sc, EnumSet<Flags> flags) {
+        	
+        	// these cases should simplify. too many cases! pull out imports first thing?
+        	
         	boolean underscore = true; 
         	boolean isTypedef = flags.contains(Flags.IS_FCNREF_TYPEDEF) || flags.contains(Flags.IS_CLASSREF_TYPEDEF);
         	boolean addTypeMods = flags.contains(Flags.IS_DECL);
@@ -223,6 +226,9 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 					underscore = false;
 				}								
 			}
+			if (this.getTypeKind() != null && this.getTypeKind().isEnum())
+				underscore = false;
+			
 			if (this.getParent() instanceof TypeNode.Arr && this.getParent().getParent() instanceof DeclNode.Arr) {
 				DeclNode.Arr a = (DeclNode.Arr) this.getParent().getParent();
 				if (a.isHost()) {
@@ -267,9 +273,15 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 							}
 						}
 						else {
-							rtn = i.getUnit()
-							.getQualName().replace(".", "_")
-							+ ptr_suffix;
+							if (i.getUnit().isEnum())	
+								rtn = g.getOutputName(
+										i.getUnit().getUnitType(), i.getUnit(),
+										EnumSet.noneOf(Flags.class))
+										+ ptr_suffix;
+							else
+								rtn = i.getUnit().getQualName()
+										.replace(".", "_")
+										+ ptr_suffix;
 
 						}						
 					}

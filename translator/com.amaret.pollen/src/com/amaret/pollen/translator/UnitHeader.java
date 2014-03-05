@@ -505,15 +505,15 @@ public class UnitHeader {
         genForwards(unit);
         
         genInject(unit);    
+        
+        genEnums(unit);
                 
         genClasses(unit);
         
         genHostVars(unit);
           
         genFcns(unit);
-  
-        genEnums(unit);
-        
+          
         genConsts(unit);
         
         genVars(unit);

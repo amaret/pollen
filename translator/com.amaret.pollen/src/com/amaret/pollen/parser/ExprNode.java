@@ -596,9 +596,7 @@ public class ExprNode extends BaseNode {
 				if (TypeRules.preCheck(actualCat) != null) {
 					continue;
 				}
-				boolean dbg = actualCat.isClassFcn();
-				if (dbg)
-					dbg = false;
+
 				Cat res = TypeRules.checkBinary("=", formalCat, actualCat,
 						"formal / actual parameter type conflict");
 				if (res instanceof Cat.Error) {

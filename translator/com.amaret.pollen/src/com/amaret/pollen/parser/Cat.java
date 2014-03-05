@@ -159,7 +159,11 @@ public class Cat implements Cloneable {
         private String mkCodeFromScope(IScope sc) {
         	
         	if (sc instanceof UnitNode)
-        		return mkCodeFromScope(((UnitNode) sc).getUnitType());
+        		return mkCodeFromScope(((UnitNode) sc).getUnitType()); 
+        	
+        	if (sc instanceof ITypeKind && ((ITypeKind) sc).isEnum()) {
+        		return Cat.Scalar.codeFromString("uint8");        		
+        	}
         	
         	if (sc instanceof DeclNode.Class) {
         		return Cat.CLASS + ((DeclNode.Class) sc).getUnitQualName();
