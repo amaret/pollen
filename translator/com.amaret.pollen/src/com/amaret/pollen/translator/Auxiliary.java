@@ -1711,7 +1711,7 @@ public class Auxiliary {
 		if (type instanceof TypeNode.Arr) {
 			Cat.Arr c = (Arr) Cat.fromType(type);
 			dim = c.getType().hasDim() ? "" : "[]"; // update for multi dimensional arrays
-			if (c.getType().hasDim() || c.getType().isArrWithoutDim())
+			if (c.getType().hasDim()) // || c.getType().isArrWithoutDim())
 				name = ""; // name will be output as part of type
 		}
 		

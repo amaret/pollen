@@ -34,9 +34,5 @@ public interface ITarget {
     public boolean isBigEndian();
     
     public void compile(File srcFile) throws Exception;
-    /*    
-    public ISymbolReader getSymbolReader();       
-    public void load(File exeFile) throws Exception;
-    public String mkConstDecl(String cname);*/
 
 }

@@ -57,6 +57,7 @@ public class GccAvr extends GccBase {
         cmd += gcc;
         cmd = addCcOptsPrefix(cmd);
         cmd += " -mmcu=atmega328p"; //+ curr.getProperty(ITarget.P_MCU);
+        
         cmd += " -I" + curr.getPollenRoot();
         cmd = addCcOpts(cmd);
         cmd += srcFile;
