@@ -149,6 +149,21 @@ tokens {
     	}
     	return ti.getUnitFlags();
     }
+    // decode text into literal value for enums. handles hex, octal, decimal, etc. 
+    byte decode(org.antlr.runtime.CommonToken t) {
+            
+    	try {
+    		int i = Integer.decode(t.getText());
+    		byte b = (byte) i;
+    		if (b != i)
+    			ParseUnit.current().reportError(t, "enum values must fit in 8 bits");
+    		return (b);
+    	} catch (NumberFormatException e) {
+    		ParseUnit.current().reportError(t, "number format error for enum value " + t.getText());	
+    		return 0;
+    	}
+        }    
+       
 
     
     ArrayList<TypeInfo> typeInfoList = new ArrayList<TypeInfo>();
@@ -657,19 +672,7 @@ moduleFeature
 	|   classDefinition
 	|   injectionDecl
     ;
-    /*varDecl
-scope {
-  // Use 'typ' to rewrite the tree so that for AST x, 
-  // 'int x' and 'int y = 3, x, z' has the same structure.
-  Object typ; //CommonTree typ; only Object works, for some reason.
-}
-@init {
-	$varDecl::typ = null;
-	stmtFlags.addAll(typeMods);
-	String ctor = (typeMods.contains(Flags.HOST)) ? ParseUnit.CTOR_CLASS_HOST : ParseUnit.CTOR_CLASS_TARGET;
-}
-    
-    */
+ 
 enumDefinition 
 scope {
   int val;
@@ -706,16 +709,28 @@ enumElement
 @init {
 	String ctext = "";
 }
+	: 	IDENT ASSIGN enumVal
+		-> ^(D_ENUMVAL<DeclNode.EnumVal>["D_ENUMVAL", ti.getUnitFlags()] IDENT enumVal)
+		/*
 	:	IDENT ASSIGN INT_LIT  
 			{ $enumDefinition::val = Integer.valueOf($INT_LIT.text); 
 			   $enumDefinition::val++; 	}
 			-> ^(D_ENUMVAL<DeclNode.EnumVal>["D_ENUMVAL", ti.getUnitFlags()] IDENT INT_LIT)
+		*/
 	|	IDENT	
 			{ 
 			  if ($enumDefinition::val == -1) $enumDefinition::val = 0; 
 			  ctext = Integer.toString($enumDefinition::val++);
 			}
 			-> ^(D_ENUMVAL<DeclNode.EnumVal>["D_ENUMVAL", ti.getUnitFlags()] IDENT INT_LIT[ctext])
+	;
+enumVal
+@after {
+	$enumDefinition::val++; 
+}
+	:	INT_LIT   {   $enumDefinition::val = decode($INT_LIT);  }
+	|	OCT_LIT {   $enumDefinition::val = decode($OCT_LIT);  }
+	|	HEX_LIT  {   $enumDefinition::val = decode($HEX_LIT);  }
 	;
 protocolDefinition
 @init{
@@ -1843,7 +1858,8 @@ varDim
   fl.add(LitFlags.NUM); fl.add(LitFlags.INT);
 }
 	:  	expr  
-	| 	-> ^(E_CONST<ExprNode.Const>["E_CONST", fl] INT_LIT["-1"]) // an array without dimensions (in c, flexible)
+	// the array without dimension could be useful (pegging an array to some memory) but not implemented. 
+	| 	-> ^(E_CONST<ExprNode.Const>["E_CONST", fl] INT_LIT[ParseUnit.ARRAY_WITHOUT_DIMENSION]) // an array without dimensions (in c, flexible)
 	;
 initializer
 	: expr // restrict
@@ -1995,31 +2011,7 @@ injectionDecl
         NL+
          -> ^(D_INJ<DeclNode.Inject>["D_INJ"] ^(E_INJ<ExprNode.Inject>["E_INJ"] inject))
 	;
-	/*
-injectionCode
-	:	injection_list -> ^(INJECT<InjectionBlock>["INJECT"] injection_list)
-	;
-injectionDecl
-	:	injection_list NL+ 
-		-> ^(D_INJ<DeclNode.Inject>["D_INJ"] ^(INJECT<InjectionBlock>["INJECT"] injection_list))
-	;
-stmtInjection
-	:	injection_list NL+	
-	-> ^(S_INJ<StmtNode.Inject>["S_INJ"] ^(INJECT<InjectionBlock>["INJECT"] injection_list))
-	;
-injection_list
-	:	IJ_BEG		
-			injectionElem+
-		IJ_END
-		-> ^(LIST<ListNode>["LIST"] injectionElem+)
-	;
-injectionElem
-	:
-		INJ_TXT -> ^(E_INJ<ExprNode.Inject>["E_INJ_TXT"] INJ_TXT)
-	| 
-		INJ_ID  -> ^(E_INJ<ExprNode.Inject>["E_INJ_ID"] INJ_ID )
-	;	
-	*/
+
 delim
 	:	(SEMI) (NL)*	-> 
 	|	(NL)+	-> 

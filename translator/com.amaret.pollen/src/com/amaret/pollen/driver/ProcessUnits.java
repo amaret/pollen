@@ -6,6 +6,8 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Properties;
 
+import antlr.CommonToken;
+
 import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.ParseUnit.Property;
@@ -249,10 +251,11 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.75";  // user release . internal rev . fix number
+	private static String  v = "0.2.76";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
+
 	/**
 	 * 
 	 * @param args - bundles and pollen file, possible options
