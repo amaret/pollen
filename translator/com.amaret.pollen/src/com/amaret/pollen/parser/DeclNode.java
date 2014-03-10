@@ -561,15 +561,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		EnumVal(int ttype, String ttext, EnumSet<Flags> f) {
 			super(ttype, ttext, f);
 		}
-
+	    
 		public Atom getVal() {
 			// grammar requires integer literal
 			// Note parser synthesizes if value is missing
 			return ((BaseNode) this.getChild(VAL)).getAtom();
-		}
-
-		public boolean isPublic() {
-			return true;
 		}
 
 		public String getOutputNameTarget(Generator g, IScope sc, EnumSet<Flags> flags) {

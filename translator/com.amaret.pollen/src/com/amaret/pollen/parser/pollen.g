@@ -124,36 +124,97 @@ tokens {
     EnumSet<Flags> typeMods = EnumSet.noneOf(Flags.class);
     
     private class TypeInfo {
-        public EnumSet<Flags> getUnitFlags() {
-                        return uf;
-                }    
-                public void setUnitFlags(EnumSet<Flags> unitFlags) {
-                        uf.addAll(unitFlags);
-                }    
-                public String getTypeName() {
-                        return tn;
-                }    
-                public void setTypeName(String typeName) {
-                        this.tn = typeName;
-                }    
-                EnumSet<Flags> uf = EnumSet.noneOf(Flags.class);
-                String tn = "";  
+    	private EnumSet<Flags> uf = EnumSet.noneOf(Flags.class);
+	private String tn = "";  
+	public EnumSet<Flags> getUnitFlags() {
+		if (tn.isEmpty()) // backtracking
+			return getParseUnitFlags();
+		else
+			return uf;
+	}    
+	public void setUnitFlags(EnumSet<Flags> unitFlags) {
+		uf.addAll(unitFlags);
+	}    
+	public String getTypeName() {
+		if (tn.isEmpty()) // backtracking
+			return getParseUnitTypeName();
+		else
+			return tn;
+	}    
+	public void setTypeName(String typeName) {
+		this.tn = typeName;
+	}    
+	
     }    
-    public String getParseUnitTypeName() {
-    	return ti.getTypeName();
-    }
+
+         public String getParseUnitTypeName() {
+        	if (currType == null || typeInfoList.size() <= 0) {
+        		ParseUnit.current().reportFailure("invalid request");
+            }
+            String n = typeInfoList.get(typeInfoList.size()-1).getTypeName();
+            if (n.isEmpty())
+            	ParseUnit.current().reportFailure("invalid request");
+            return  n;
+        	
+        }
+    /**
+     *  Use this for DeclNode constructors. 
+     */ 
     public EnumSet<Flags> getParseUnitFlags() {
-    	if (ti == null) {
+    	if (currType == null) {
     		ParseUnit.current().reportFailure("invalid request");
-    		return EnumSet.noneOf(Flags.class); 
-    	}
+        }
+    	if (typeInfoList.size() <= 0) {
+		return EnumSet.noneOf(Flags.class);
+        }
+        // Get requested flags from type info list, not the current type info object,
+        // as the latter can be accessed while backtracking giving invalid flags. 
+	TypeInfo ti = typeInfoList.get(typeInfoList.size()-1);
     	return ti.getUnitFlags();
     }
+    
+    private ArrayList<TypeInfo> typeInfoList = new ArrayList<TypeInfo>();
+    private TypeInfo currType;
+
+    // currType has info for the type encountered (including while backtracking)
+    // but if backtracking don't push currType on the stack.
+    // It turns out '@init' code is exec'd when backtracking but '@after' code is not.
+    // so this keeps stack integrity. See 
+    // http://www.antlr3.org/pipermail/antlr-interest/2010-April/038320.html
+    
+    private void pushType() {
+
+
+	currType = new TypeInfo();
+	// Needs to be gated by backtracking state.
+	// If backtracking state > 0 this could be exec'd
+	// more than once for a single type.
+	if ( state.backtracking==0 ) {
+		typeInfoList.add(currType);		
+       		currType.setUnitFlags(metaFlags); 
+       		metaFlags = EnumSet.noneOf(Flags.class);		
+       	}
+    }
+    private void popType() {
+    	// currType is on the stack only when we are not backtracking.
+        if (typeInfoList.size() <= 0) {
+    		ParseUnit.current().reportFailure("invalid request");
+        }
+	if ( state.backtracking==0 ) {
+               	currType = typeInfoList.remove(typeInfoList.size()-1); // pop
+        }
+        if (typeInfoList.size() > 0) {
+		currType = typeInfoList.get(typeInfoList.size()-1);
+        }
+    }
+    
     // decode text into literal value for enums. handles hex, octal, decimal, etc. 
     byte decode(org.antlr.runtime.CommonToken t) {
             
     	try {
     		int i = Integer.decode(t.getText());
+    		if (i < 0)
+    			ParseUnit.current().reportError(t, "enum values cannot be negative");
     		byte b = (byte) i;
     		if (b != i)
     			ParseUnit.current().reportError(t, "enum values must fit in 8 bits");
@@ -164,11 +225,6 @@ tokens {
     	}
         }    
        
-
-    
-    ArrayList<TypeInfo> typeInfoList = new ArrayList<TypeInfo>();
-    TypeInfo ti;
-    
     public int getParserTypeInfoListSize() {
     	return typeInfoList.size();
     }
@@ -423,33 +479,28 @@ stmtExport
     ;
 classDefinition  
 @init{
-		ti = new TypeInfo();
-		typeInfoList.add(ti);		
-		ti.setUnitFlags(metaFlags); 
-		metaFlags = EnumSet.noneOf(Flags.class);		
+		pushType();
 		String qual = "";
 		String name = "";
 		hasHostConstructor = false;
 		hasTargetConstructor = false;
 }
 @after{
-   	ti = typeInfoList.remove(typeInfoList.size()-1);
-   	if (typeInfoList.size() > 0)
-   	  ti = typeInfoList.get(typeInfoList.size()-1);
+	popType();
 }
 	:	'class' IDENT
-			{ 
-	      	ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.CLASS));
-	      	if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().getText().equals("NIL")) {
+		{ 
+	      		currType.setTypeName($IDENT.text); currType.setUnitFlags(EnumSet.of(Flags.CLASS));
+	      		if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().getText().equals("NIL")) {
 	      		// if there is an 'as' name in the instantiating context, qualify the unit name 
 	      		qual = clientImport.getAs().getText();
 	      	}
-	      	name = qual.isEmpty() ? ti.getTypeName() : qual;
+	      	name = qual.isEmpty() ? currType.getTypeName() : qual;
 	      }
 	   	extendsClause
 		implementsClause
 		braceOpen classFeatureList[name] braceClose
-		-> ^(D_CLASS<DeclNode.Class>["D_CLASS", ti.getUnitFlags(), qual] 
+		-> ^(D_CLASS<DeclNode.Class>["D_CLASS", getParseUnitFlags(), qual] 
 			IDENT classFeatureList extendsClause implementsClause {$unitTypeDefinition::meta})
 		;
 classFeatureList[String n]
@@ -491,11 +542,11 @@ classHostCtor[EnumSet<Flags> fh]
 			^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", fh] 
 			^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
 				^(T_LST<TypeNode.Lst>["T_LST", fh] 
-					^(LIST<ListNode>["LIST"] ^(T_USR<TypeNode.Usr>["T_USR", fh] IDENT[ti.getTypeName()]))) 								
+					^(LIST<ListNode>["LIST"] ^(T_USR<TypeNode.Usr>["T_USR", fh] IDENT[currType.getTypeName()]))) 								
 				IDENT[ParseUnit.CTOR_CLASS_HOST]) 
 			^(LIST<ListNode>["LIST"]) // empty parameters
 			^(D_FORMAL<DeclNode.Formal>["D_FORMAL", fh] 
-				^(T_USR<TypeNode.Usr>["T_USR", fh] IDENT[ti.getTypeName()]) 
+				^(T_USR<TypeNode.Usr>["T_USR", fh] IDENT[currType.getTypeName()]) 
 					IDENT["this"])
 			^(FCNBODY<BodyNode>["FCNBODY"] ^(LIST<ListNode>["LIST"]) ^(LIST<ListNode>["LIST"]))
 			)	
@@ -513,11 +564,11 @@ classTargCtor[EnumSet<Flags> ft]
 				^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", ft] 
 				^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
 					^(T_LST<TypeNode.Lst>["T_LST", ft] 
-						^(LIST<ListNode>["LIST"] ^(T_USR<TypeNode.Usr>["T_USR", ft] IDENT[ti.getTypeName()]))) 
+						^(LIST<ListNode>["LIST"] ^(T_USR<TypeNode.Usr>["T_USR", ft] IDENT[currType.getTypeName()]))) 
 					IDENT[ParseUnit.CTOR_CLASS_TARGET]) 
 				^(LIST<ListNode>["LIST"]) // empty parameters
 				^(D_FORMAL<DeclNode.Formal>["D_FORMAL", ft] 
-					^(T_USR<TypeNode.Usr>["T_USR", ft] IDENT[ti.getTypeName()]) 
+					^(T_USR<TypeNode.Usr>["T_USR", ft] IDENT[currType.getTypeName()]) 
 						IDENT["this"])
 				^(FCNBODY<BodyNode>["FCNBODY"] ^(LIST<ListNode>["LIST"]) ^(LIST<ListNode>["LIST"]))
 				)
@@ -535,33 +586,28 @@ scope {
   Object moduleFeatureList;
 }
 @init{
-		ti = new TypeInfo();
-		ti.setUnitFlags(metaFlags); 
-		metaFlags = EnumSet.noneOf(Flags.class);		
-		typeInfoList.add(ti);		
+		pushType();
 		String qual = "";
 		String name = "";
 		hasHostConstructor = false;
 		hasTargetConstructor = false;
 }
 @after{
-   	ti = typeInfoList.remove(typeInfoList.size()-1);
-   	if (typeInfoList.size() > 0)
-   	  ti = typeInfoList.get(typeInfoList.size()-1);
+	popType();
 }
 	:    'module' IDENT
 	      { 
-	      	ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.MODULE));
+	      	currType.setTypeName($IDENT.text); currType.setUnitFlags(EnumSet.of(Flags.MODULE));
 	      	if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().getText().equals("NIL")) {
 	      		// if there is an 'as' name in the instantiating context, qualify the unit name 
 	      		qual = clientImport.getAs().getText();
 	      	}
-	      	name = qual.isEmpty() ? ti.getTypeName() : qual;
+	      	name = qual.isEmpty() ? currType.getTypeName() : qual;
 	      }
 	      extendsClause
 	      implementsClause
 			braceOpen moduleFeatureList[name] braceClose
-			-> ^(D_MODULE<DeclNode.Usr>["D_MODULE", ti.getUnitFlags(), qual] 
+			-> ^(D_MODULE<DeclNode.Usr>["D_MODULE", getParseUnitFlags(), qual] 
 				IDENT 
 				moduleFeatureList //{$moduleDefinition::moduleFeatureList = $moduleFeatureList.tree;}
 				extendsClause 
@@ -586,7 +632,7 @@ moduleFeatureList[String n]
 intrinsicPrintProxy
 @init{
   EnumSet flags;
-  if (ti.getUnitFlags().contains(Flags.COMPOSITION)) 
+  if (currType.getUnitFlags().contains(Flags.COMPOSITION)) 
       flags = EnumSet.of(Flags.INTRINSIC_VAR, Flags.HOST, Flags.PROTOCOL_MEMBER) ;
   else
       flags = EnumSet.of(Flags.INTRINSIC_VAR, Flags.PROTOCOL_MEMBER);
@@ -639,7 +685,7 @@ moduleHostCtor[EnumSet<Flags> fh]
 							IDENT[ParseUnit.CTOR_MODULE_HOST]) 
 						^(LIST<ListNode>["LIST"]) // empty parameters
 						^(D_FORMAL<DeclNode.Formal>["D_FORMAL", fh] 
-							^(T_USR<TypeNode.Usr>["T_USR", fh] IDENT[ti.getTypeName()]) IDENT["this"])
+							^(T_USR<TypeNode.Usr>["T_USR", fh] IDENT[currType.getTypeName()]) IDENT["this"])
 						^(FCNBODY<BodyNode>["FCNBODY"] ^(LIST<ListNode>["LIST"]) ^(LIST<ListNode>["LIST"]))
 						)	
 	| -> NIL
@@ -657,14 +703,18 @@ moduleTargCtor[EnumSet<Flags> ft]
 						^(LIST<ListNode>["LIST"]) // empty parameters
 						^(D_FORMAL<DeclNode.Formal>["D_FORMAL", ft] 
 							^(T_USR<TypeNode.Usr>["T_USR", ft] 
-								IDENT[ti.getTypeName()]) IDENT["this"])
+								IDENT[currType.getTypeName()]) IDENT["this"])
 						^(FCNBODY<BodyNode>["FCNBODY"] ^(LIST<ListNode>["LIST"]) ^(LIST<ListNode>["LIST"]))
 						)
 	|	-> NIL
 	;
 moduleFeature
+scope{
+	boolean publicEnum;
+}
 @init {
-	featureFlags = EnumSet.noneOf(Flags.class);
+	featureFlags = EnumSet.noneOf(Flags.class);	
+	$moduleFeature::publicEnum = false;
 }
 	:   fcnDefinition
    	|   varDeclaration
@@ -673,33 +723,50 @@ moduleFeature
 	|   injectionDecl
     ;
  
-enumDefinition 
+ enumUnitDefinition
+ @init{	
+ 	$unitTypeDefinition::publicEnum = false;
+ }
+ 	:	'enum'! enumBodyDefinition
+ 	;
+enumDefinition
+@init{	
+ 	$unitTypeDefinition::publicEnum = false;
+ }
+	:	('public'! { $unitTypeDefinition::publicEnum = true; })?  // will propagate to enum values  
+		'enum'!
+		enumBodyDefinition
+	;
+enumBodyDefinition
 scope {
-  int val;
+  		int val;
 }
 @init{
-                        $enumDefinition::val = -1;
-		ti = new TypeInfo();
-		ti.setUnitFlags(metaFlags); 
-		metaFlags = EnumSet.noneOf(Flags.class);		
-		typeInfoList.add(ti);		
+       		$enumBodyDefinition::val = -1;
+		pushType();
 		String qual = "";
 }
 @after{
-   	ti = typeInfoList.remove(typeInfoList.size()-1);
-   	if (typeInfoList.size() > 0)
-   	  ti = typeInfoList.get(typeInfoList.size()-1);
+	popType();
 }
-	:  'enum'(IDENT 
-		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.ENUM));
+	:          (IDENT 
+		{           currType.setTypeName($IDENT.text); 
+		            currType.setUnitFlags(EnumSet.of(Flags.ENUM));
+		            if (typeInfoList.size() == 1 && !(currType.getUnitFlags().contains(Flags.PUBLIC))) {
+		                // not nested, must be public
+		                currType.setUnitFlags(EnumSet.of(Flags.PUBLIC));
+		            }	
+		         	if ($unitTypeDefinition::publicEnum) {
+		                currType.setUnitFlags(EnumSet.of(Flags.PUBLIC));
+		            }			                	       
 			if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().getText().equals("NIL")) {
-	      	// if there is an 'as' name in the instantiating context, qualify the unit name 
-	      	qual = clientImport.getAs().getText();
-	      }
+	      	                 // if there is an 'as' name in the instantiating context, qualify the unit name 
+	      	                 qual = clientImport.getAs().getText();
+	                         }
 		}
 		braceOpen enumList braceClose)
-		-> ^(D_ENUM<DeclNode.Usr>["D_ENUM", ti.getUnitFlags(), qual] 
-			IDENT enumList {$unitTypeDefinition::meta}) //{$unitTypeDefinition::metaImports})
+		-> ^(D_ENUM<DeclNode.Usr>["D_ENUM", getParseUnitFlags(), qual] 
+			IDENT enumList {$unitTypeDefinition::meta}) 
 	;
 enumList
 	:	enumElement (',' (delim)? enumElement)* -> ^(LIST<ListNode>["LIST"] enumElement+)
@@ -710,52 +777,41 @@ enumElement
 	String ctext = "";
 }
 	: 	IDENT ASSIGN enumVal
-		-> ^(D_ENUMVAL<DeclNode.EnumVal>["D_ENUMVAL", ti.getUnitFlags()] IDENT enumVal)
-		/*
-	:	IDENT ASSIGN INT_LIT  
-			{ $enumDefinition::val = Integer.valueOf($INT_LIT.text); 
-			   $enumDefinition::val++; 	}
-			-> ^(D_ENUMVAL<DeclNode.EnumVal>["D_ENUMVAL", ti.getUnitFlags()] IDENT INT_LIT)
-		*/
+		-> ^(D_ENUMVAL<DeclNode.EnumVal>["D_ENUMVAL", getParseUnitFlags()] IDENT enumVal)
 	|	IDENT	
 			{ 
-			  if ($enumDefinition::val == -1) $enumDefinition::val = 0; 
-			  ctext = Integer.toString($enumDefinition::val++);
+			  if ($enumBodyDefinition::val == -1) $enumBodyDefinition::val = 0; 
+			  ctext = Integer.toString($enumBodyDefinition::val++);
 			}
-			-> ^(D_ENUMVAL<DeclNode.EnumVal>["D_ENUMVAL", ti.getUnitFlags()] IDENT INT_LIT[ctext])
+			-> ^(D_ENUMVAL<DeclNode.EnumVal>["D_ENUMVAL", getParseUnitFlags()] IDENT INT_LIT[ctext])
 	;
 enumVal
 @after {
-	$enumDefinition::val++; 
+	$enumBodyDefinition::val++; 
 }
-	:	INT_LIT   {   $enumDefinition::val = decode($INT_LIT);  }
-	|	OCT_LIT {   $enumDefinition::val = decode($OCT_LIT);  }
-	|	HEX_LIT  {   $enumDefinition::val = decode($HEX_LIT);  }
+	:	INT_LIT   {   $enumBodyDefinition::val = decode($INT_LIT);  }
+	|	OCT_LIT {   $enumBodyDefinition::val = decode($OCT_LIT);  }
+	|	HEX_LIT  {   $enumBodyDefinition::val = decode($HEX_LIT);  }
 	;
 protocolDefinition
 @init{
-		ti = new TypeInfo();
-		ti.setUnitFlags(metaFlags); 
-		metaFlags = EnumSet.noneOf(Flags.class);		
-		typeInfoList.add(ti);		
+		pushType();
 		String qual = "";
 }
 @after{
-   	ti = typeInfoList.remove(typeInfoList.size()-1);
-   	if (typeInfoList.size() > 0)
-   	  ti = typeInfoList.get(typeInfoList.size()-1);
+	popType();
 }
 	:	'protocol' IDENT
-		{ ti.setTypeName($IDENT.text); ti.setUnitFlags(EnumSet.of(Flags.PROTOCOL));
+		{ currType.setTypeName($IDENT.text); currType.setUnitFlags(EnumSet.of(Flags.PROTOCOL));
 			if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().getText().equals("NIL")) {
-	      	// if there is an 'as' name in the instantiating context, qualify the unit name 
-	      	qual = clientImport.getAs().getText();
-	      }
+	      		// if there is an 'as' name in the instantiating context, qualify the unit name 
+	      			qual = clientImport.getAs().getText();
+	      		}
 		}
 		extendsClause
 		implementsClause
 		braceOpen protocolFeatureList braceClose 
-		-> ^(D_PROTOCOL<DeclNode.Usr>["D_PROTOCOL", ti.getUnitFlags(), qual] 
+		-> ^(D_PROTOCOL<DeclNode.Usr>["D_PROTOCOL", getParseUnitFlags(), qual] 
 			IDENT protocolFeatureList extendsClause implementsClause {$unitTypeDefinition::meta}) //{$unitTypeDefinition::metaImports})
 	;
 protocolFeatureList
@@ -771,21 +827,16 @@ protocolFeature
     ;
 compositionDefinition
 @init{
-		ti = new TypeInfo();
-		ti.setUnitFlags(metaFlags); 
-		metaFlags = EnumSet.noneOf(Flags.class);		
-		typeInfoList.add(ti);		
+		pushType();
 		String qual = "";
 }
 @after{
-   	ti = typeInfoList.remove(typeInfoList.size()-1);
-   	if (typeInfoList.size() > 0)
-   	  ti = typeInfoList.get(typeInfoList.size()-1);
+	popType();
 }
 	:	'composition' IDENT
 		{ 
-		  ti.setTypeName($IDENT.text); 
-		  ti.setUnitFlags(EnumSet.of(Flags.COMPOSITION));
+		  currType.setTypeName($IDENT.text); 
+		  currType.setUnitFlags(EnumSet.of(Flags.COMPOSITION));
 		  if (isMetaInstance && clientImport.getAs() != null && !clientImport.getAs().getText().equals("NIL")) {
 	      	// if there is an 'as' name in the instantiating context, qualify the unit name 
 	      	qual = clientImport.getAs().getText();
@@ -794,7 +845,7 @@ compositionDefinition
 		extendsClause  
 		implementsClause
 		braceOpen compositionFeatureList braceClose 
-			-> ^(D_COMPOSITION<DeclNode.Usr>["D_COMPOSITION", ti.getUnitFlags(), qual] 
+			-> ^(D_COMPOSITION<DeclNode.Usr>["D_COMPOSITION", getParseUnitFlags(), qual] 
 			     IDENT compositionFeatureList extendsClause implementsClause {$unitTypeDefinition::meta}) 
 	;
 compositionFeatureList
@@ -1176,11 +1227,12 @@ userTypeNameArr
 unitTypeDefinition
 scope {
   Object meta; 			// specification of meta type/value parameters
-}
+  boolean publicEnum;
+  }
 @after{
    // debug
    if (ParseUnit.isDebugMode())
-	System.out.println("       " + ti.getTypeName() + ", " + ti.getUnitFlags().toString());
+	System.out.println("       " + currType.getTypeName() + ", " + currType.getUnitFlags().toString());
 }
    :   (meta! { $unitTypeDefinition::meta = $meta.tree; })  
      (
@@ -1188,13 +1240,13 @@ scope {
 	|     ('class') =>  classDefinition
    	|     ('protocol') => protocolDefinition 
    	|     ('composition') => compositionDefinition 
-   	|     ('enum') => enumDefinition 
+   	|     ('enum') => enumUnitDefinition // outermost, not contained
      )
    ;
 extendsClause
     :   'extends' qualName
     {
-    	if (ti.getUnitFlags().contains(Flags.CLASS) || ti.getUnitFlags().contains(Flags.MODULE))
+    	if (currType.getUnitFlags().contains(Flags.CLASS) || currType.getUnitFlags().contains(Flags.MODULE))
     		throw new PollenException("\'extends\' clause is not supported for classes or modules", input);
     }
      -> qualName
@@ -1204,7 +1256,7 @@ extendsClause
 implementsClause
     :   'implements' qualName 
     {
-    	if (ti.getUnitFlags().contains(Flags.PROTOCOL))
+    	if (currType.getUnitFlags().contains(Flags.PROTOCOL))
     		throw new PollenException("\'implements\' clause is not supported for protocols", input);
     	
     }
@@ -1361,7 +1413,7 @@ fcnDefinition
 			fcnType_fcnName 
 			formalParameterList 
 			^(D_FORMAL<DeclNode.Formal>["D_FORMAL", featureFlags] 
-				^(T_USR<TypeNode.Usr>["T_USR", featureFlags] IDENT[ti.getTypeName()]) IDENT["this"])
+				^(T_USR<TypeNode.Usr>["T_USR", featureFlags] IDENT[currType.getTypeName()]) IDENT["this"])
 			fcnBody
 		)
 	;
@@ -1378,7 +1430,7 @@ fcnDefinitionHost
 				fcnType_fcnName 
 				formalParameterList 
 				^(D_FORMAL<DeclNode.Formal>["D_FORMAL", featureFlags] 
-					^(T_USR<TypeNode.Usr>["T_USR", featureFlags] IDENT[ti.getTypeName()]) IDENT["this"])
+					^(T_USR<TypeNode.Usr>["T_USR", featureFlags] IDENT[currType.getTypeName()]) IDENT["this"])
 				fcnBody)		
 	;
 catch [PollenException re] {
@@ -1399,14 +1451,14 @@ fcnDeclaration
    :	fcnAttr
 		fcnType_fcnName (formalParameterList) delim
 		{
-			if (ti.getUnitFlags().contains(Flags.PROTOCOL))
+			if (currType.getUnitFlags().contains(Flags.PROTOCOL))
 				featureFlags.add(Flags.PUBLIC);
 		}
    -> ^(D_FCN_DCL<DeclNode.Fcn>["D_FCN_DCL", featureFlags] 
    		fcnType_fcnName 
    		formalParameterList 
 		 ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", featureFlags] 
-			^(T_USR<TypeNode.Usr>["T_USR", featureFlags] IDENT[ti.getTypeName()]) IDENT["this"])
+			^(T_USR<TypeNode.Usr>["T_USR", featureFlags] IDENT[currType.getTypeName()]) IDENT["this"])
    	)
    ;
 
@@ -1428,14 +1480,14 @@ fcnType_fcnName
 			^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
 				^(LIST<ListNode>["LIST"] typeName)) 
 				qualName)      // int myfcn()
-	|	{(featureFlags.contains(Flags.PRESET)) && input.LT(1).getText().equals(ti.getTypeName()) }? 
+	|	{(featureFlags.contains(Flags.PRESET)) && input.LT(1).getText().equals(currType.getTypeName()) }? 
 		typeName	         
 		{ 
 		  String n;
 		  featureFlags.remove(Flags.PUBLIC);
 		  featureFlags.add(Flags.HOST);
-		  if (!ti.getUnitFlags().contains(Flags.COMPOSITION)) {
-		  	ParseUnit.current().reportError(ti.getTypeName(), "\'preset\' initializer only allowed in compositions: initializer ignored"); 
+		  if (!currType.getUnitFlags().contains(Flags.COMPOSITION)) {
+		  	ParseUnit.current().reportError(currType.getTypeName(), "\'preset\' initializer only allowed in compositions: initializer ignored"); 
 		  	featureFlags.remove(Flags.PRESET);
 		  	n = "preset";
 		  }
@@ -1447,7 +1499,7 @@ fcnType_fcnName
 			^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
 			^(LIST<ListNode>["LIST"] ^(T_STD<TypeNode.Std>["T_STD", featureFlags] VOID["void"]))) 
 			IDENT[ParseUnit.PRESET_INIT]) 		  
-	|	{input.LT(1).getText().equals(ti.getTypeName()) && !(ti.getUnitFlags().contains(Flags.CLASS)) }? 
+	|	{input.LT(1).getText().equals(currType.getTypeName()) && !(currType.getUnitFlags().contains(Flags.CLASS)) }? 
 		typeName	         
 		{ 
 		  featureFlags.add(Flags.CONSTRUCTOR); 
@@ -1459,7 +1511,7 @@ fcnType_fcnName
 			^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
 			^(LIST<ListNode>["LIST"] ^(T_STD<TypeNode.Std>["T_STD", featureFlags] VOID["void"]))) 
 			IDENT[modCtor]) 		  
-	|	{input.LT(1).getText().equals(ti.getTypeName()) }? // Class constructor
+	|	{input.LT(1).getText().equals(currType.getTypeName()) }? // Class constructor
 		typeName	 
 		{ 
 		  featureFlags.add(Flags.CONSTRUCTOR); 
@@ -1622,7 +1674,7 @@ stmtBind
 				qn = ParseUnit.INTRINSIC_PRINT_PROXY;
 				ProcessUnits.setPollenPrintBindSeen(true); // causes the print protocol member to be created
 				ProcessUnits.setPollenPrint($userTypeName.text);
-				ProcessUnits.setPollenPrintProxyModule(ParseUnit.mkPackageName(ParseUnit.current().getCurrPath()) + "."  + ti.getTypeName());
+				ProcessUnits.setPollenPrintProxyModule(ParseUnit.mkPackageName(ParseUnit.current().getCurrPath()) + "."  + currType.getTypeName());
 				
 			}
 			else

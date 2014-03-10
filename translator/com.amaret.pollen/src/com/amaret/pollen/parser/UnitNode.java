@@ -117,8 +117,9 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope, IUnitWrap
 	}
 		
 	public DeclNode.Usr getUnitType() {
-		if (unitType == null)
+		if (unitType == null) {
 			unitType =  ((DeclNode.Usr) getChild(UNIT));
+		}
 		return unitType;
 	}
 	

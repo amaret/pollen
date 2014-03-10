@@ -313,9 +313,10 @@ public class UnitJScript {
     	genDecl(unit.getUnitType());
   
     	if (!unit.isClass()) 
-    		for (DeclNode decl : unit.getFeatures()) {    			
+    		for (DeclNode decl : unit.getFeatures()) {    
     			if (!isPrivateInit(decl) && isHostInit(decl)) {
     				genDecl(decl);
+
     			}
     		}
 		if (unit.getUnitType().getMetaFormals() != null)
@@ -354,7 +355,6 @@ public class UnitJScript {
         }
         
         genDecls(unit);
-        
         if (!unit.isClass() && !unit.isProtocol())
         	for (BaseNode d: unit.getFeatures()) {
         		if (d instanceof DeclNode.Fcn) {
