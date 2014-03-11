@@ -109,13 +109,16 @@ public class ExprNode extends BaseNode {
 							rightIndexExpr = (Index) e; // first one
 					}
 					ExprNode base = ((ExprNode.Index) e).getBase();
-					if (base instanceof ExprNode.Ident) {
-						SymbolEntry s = ((ExprNode.Ident) base).getSymbol();
-						if (s != null && s.node() instanceof DeclNode.ITypeSpec) {
-							return Cat.fromType(((DeclNode.ITypeSpec) s.node())
-									.getTypeSpec());
-						}
-					}
+					if (base.getCat() instanceof Cat.Arr)
+						return ((Cat.Arr)base.getCat()).getBase();
+					return base.getCat();
+//					if (base instanceof ExprNode.Ident) {
+//						SymbolEntry s = ((ExprNode.Ident) base).getSymbol();
+//						if (s != null && s.node() instanceof DeclNode.ITypeSpec) {
+//							return Cat.fromType(((DeclNode.ITypeSpec) s.node())
+//									.getTypeSpec());
+//						}
+//					}
 				}
 			}
 			return isRight ? this.getRight().getCat() : this.getLeft().getCat();
@@ -184,15 +187,21 @@ public class ExprNode extends BaseNode {
 					.getCat())) != null) {
 				return;
 			}
+			
 			if (!providedTypeTest && getLeft().getCat() != null
 					&& getRight().getCat() != null) {
-				exprCat = TypeRules.checkBinary(getOp().getText(), left, right);
+				if (right instanceof Cat.Arr) {
+					Cat baseCat = ((Cat.Arr)right).getBase();
+					exprCat = TypeRules.checkBinary(getOp().getText(), left, baseCat);
+					right = getSubExprCat(true);
+				}
+				else 
+					exprCat = TypeRules.checkBinary(getOp().getText(), left, right);
 				if (exprCat instanceof Cat.Error) {
 					ParseUnit.current().reportError(getOp(),
 							((Cat.Error) exprCat).getMsg());
 				}
 			}
-
 		}
 	}
 
