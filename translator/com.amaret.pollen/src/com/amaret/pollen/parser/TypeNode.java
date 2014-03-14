@@ -81,11 +81,6 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
         		return ((DeclNode.Arr)parent).hasDim();
             return getChildCount() > DIM;
         }
-        public boolean isArrWithoutDim() {
-        	if (parent instanceof DeclNode.Arr)
-        		return ((DeclNode.Arr)parent).isArrWithoutDim();
-        	return getChildCount() <= DIM;        	
-        }
         public String getOutputNameHost(Generator g, IScope sc, EnumSet<Flags> flags) {
         	return this.getOutputNameTarget(g, sc, flags);
         }
@@ -100,7 +95,8 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 			Tree tr = this.getParent();
 			while (tr != null && !(tr instanceof DeclNode.FcnTyp))
 				tr = tr.getParent();
-			if (tr instanceof DeclNode.FcnTyp)
+			if (tr instanceof DeclNode.FcnTyp ||
+					(!this.hasDim() && flags.contains(Flags.IS_LOCAL)))
 				rtn += "* ";
 			
 			if (this.getParent() instanceof DeclNode.Arr){

@@ -1170,6 +1170,7 @@ public class Auxiliary {
 		
 		for (DeclNode v : localVars) {
 			if (v instanceof DeclNode.Var) {
+				
 				DeclNode.Var var = (Var) v;
 				if (isHost()) {
 					gen.getFmt().print("%tvar %1", var.getName());
@@ -1185,7 +1186,7 @@ public class Auxiliary {
 						gen.getFmt().print("%t");
 						TypeNode t = var instanceof DeclNode.Arr ? ((DeclNode.Arr) var)
 								.getTypeArr() : var.getTypeSpec();
-						genTypeWithVarName(t, "" + var.getName(), EnumSet.noneOf(Flags.class));
+						genTypeWithVarName(t, "" + var.getName(), EnumSet.of(Flags.IS_LOCAL));
 						// must initialize const on the declaration
 						if (var.isConst() && var.getInit() != null) {
 							gen.getFmt().print(" = ");
@@ -1193,6 +1194,7 @@ public class Auxiliary {
 						}
 						gen.getFmt().print(";\n");
 					}
+				
 				}
 			}
 		}
@@ -1715,11 +1717,17 @@ public class Auxiliary {
 	 */
 	void genTypeWithVarName(TypeNode type, String name, EnumSet<Flags> flags) {
 		String dim = "";
-		if (type instanceof TypeNode.Arr && !flags.contains(Flags.IS_FCNDECL)) {
+		if (type instanceof TypeNode.Arr) {
 			Cat.Arr c = (Arr) Cat.fromType(type);
-			dim = c.getType().hasDim() ? "" : "[]"; // update for multi dimensional arrays
-			if (c.getType().hasDim()) // || c.getType().isArrWithoutDim())
-				name = ""; // name will be output as part of type
+			if (flags.contains(Flags.IS_LOCAL) && !c.getType().hasDim()) {
+				name = null;
+			}
+			else if (!flags.contains(Flags.IS_FCNDECL)) { // e.g. a function return				
+				dim = c.getType().hasDim() ? "" : "[]"; // update for multi dimensional arrays
+				if (c.getType().hasDim()) {// || c.getType().isArrWithoutDim())
+					name = null; // name will be output as part of type
+				}
+			}
 		}
 		
 		String s = mkTypeName(type, flags) + (name == null ? "" : " " + name + dim);
@@ -1777,7 +1785,7 @@ public class Auxiliary {
 		String rtn = "";
 		switch (t.getType()) {
 		case pollenParser.T_ARR:
-			rtn = (gen.getOutputName(t, null, EnumSet.noneOf(Flags.class)));		
+			rtn = (gen.getOutputName(t, null, flags));		
 			break;
 		case pollenParser.T_STD:
 		case pollenParser.T_USR:
