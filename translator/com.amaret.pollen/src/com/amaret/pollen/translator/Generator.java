@@ -103,7 +103,7 @@ public class Generator {
 			}
 		}
 		ParseUnit.current().reportError(curUnit, "Generator.getOutputName(): unimplemented feature");
-		return null;
+		return "";
 	}
 
 	public String getOutputQName(Object s, ISymbolNode n, IScope is, EnumSet<Flags> flags) {
@@ -116,7 +116,7 @@ public class Generator {
 			}
 		}
 		ParseUnit.current().reportError(curUnit, "Generator.getOutputQName(): unimplemented feature");
-		return null;
+		return "";
 	}
 	
 	/**
@@ -137,7 +137,7 @@ public class Generator {
 
 			
 			setupUnit(u);
-			//genHeader();
+			//genHeader(); moved			
 			genBody();
 			genJScript();
 			genInfo();

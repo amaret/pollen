@@ -366,7 +366,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			ExprNode e = this.getFirstDim();
 			if (e instanceof ExprNode.Const) {
 				if (((ExprNode.Const)e).getValue().getText().equals(ParseUnit.ARRAY_WITHOUT_DIMENSION)) {
-					ParseUnit.current().reportError(this, "array dimension missing on declaration");
+					//ParseUnit.current().reportError(this, "array dimension missing on declaration");
 					return true;
 				}
 			}
@@ -440,7 +440,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			ExprNode e = this.getFirstDim();
 			if (e instanceof ExprNode.Const) {
 				if (((ExprNode.Const)e).getValue().getText().equals(ParseUnit.ARRAY_WITHOUT_DIMENSION)) {
-					ParseUnit.current().reportError(this, "array dimension missing on declaration");
+					if (!(this.getDefiningScope() instanceof DeclNode.Usr))
+						ParseUnit.current().reportError(this, "array without dimension can only be declared in class or module scope");
 				}
 			}
 			// this condition means we had '[x]' instead of '[constExpr]' for size

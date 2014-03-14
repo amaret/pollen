@@ -154,6 +154,7 @@ public class ParseUnit {
 	 */
 	public void addToImportsMaps(String type, String asName, String pkg, Object metaArgs) {
 		String unitKey = ParseUnit.mkPackageName(getCurrPath()) + "." + ParseUnit.mkUnitName(getCurrPath());
+		setDebugMode(false);
 		if (isDebugMode()) {
 			String dbgStr = "";
 			if (metaArgs instanceof ListNode) {
@@ -169,7 +170,7 @@ public class ParseUnit {
 					comma = ", ";				
 				}			
 			}
-			System.out.println("in unit " + unitKey + " add 'import " + pkg + "." + type + " as " + asName + "'" + dbgStr);
+			System.out.println("addToImportsMaps(): in unit " + unitKey + " add 'import " + pkg + "." + type + " as " + asName + "'" + dbgStr);
 		}
 		if (!importedTypes.containsKey(unitKey))
 			importedTypes.put(unitKey, new ImportsMaps());
@@ -620,8 +621,6 @@ public class ParseUnit {
 	 */
 	private void parseImports(UnitNode unit) throws Exception {
 		
-		//setDebugMode(true);
-		setDebugMode(false);
 
 		String importer = (impChain.size() > 0) ? impChain
 				.get(impChain.size() - 1) : "";
@@ -663,13 +662,14 @@ public class ParseUnit {
 						+ currImport.getUnitName() + ".p", importFromClient, clientName, importFromClientName);
 				continue;
 			}
-			
+			setDebugMode(false);
 			if (ParseUnit.isDebugMode()) {
 				String s = "ParseUnit.parseImports(), parsing: " + fromPkg + "."
 						+ currImport.getUnitName().getText()
 						+ (pkgPath == null ? " (a composition)" : "");
 				System.out.println(s);
 			}
+			setDebugMode(false);
 			
 			// import is instantiated meta type
 			if (currNode == null && currImport.isSynthesizedFromMeta()) {
@@ -819,7 +819,6 @@ public class ParseUnit {
 		setParseToplevel(client == null && theImport == null);
 
 		setDebugMode(false);
-		//setDebugMode(true);
 		checkParseUnit(inputPath, theImport, clientName, theImportName);
 		File f = new File(inputPath);
 		if (!f.exists()) {

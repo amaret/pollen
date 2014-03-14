@@ -8,6 +8,8 @@ import java.util.Set;
 import org.antlr.runtime.tree.Tree;
 
 import com.amaret.pollen.driver.ProcessUnits;
+import com.amaret.pollen.parser.Cat.Fcn;
+import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
 import com.amaret.pollen.parser.DeclNode.TypedMember;
 import com.amaret.pollen.parser.DeclNode.Var;
 import com.amaret.pollen.parser.ExprNode.Ident;
@@ -536,7 +538,9 @@ public class StmtNode extends BaseNode {
     static public class Peg extends StmtNode {
 
         static final private int REF = 0;
-        static final private int ARR = 1;
+        static final private int PEG = 1;
+        static final private int ARR = 2;
+        private TypeNode refType = null;
         
         Peg(int ttype, String ttext) {
             super(ttype, ttext);
@@ -547,11 +551,27 @@ public class StmtNode extends BaseNode {
         public TypeNode getRefType() {
         	if (!(getChild(REF) instanceof ExprNode.Ident))
         		return null;
-        	ExprNode.Ident r = (Ident) getChild(REF);
-			DeclNode.TypedMember n = (TypedMember) (r.getSymbol() != null
-					&& r.getSymbol().node() instanceof DeclNode.TypedMember ? r
-					.getSymbol().node() : null);        	
-			return n != null ? n.getTypeSpec() : null;        	
+        	if (refType != null)
+        		return refType;
+        	
+        	Cat c = ((Ident) getChild(REF)).getCat();
+        	if (c instanceof Cat.Arr ) {
+        		refType = ((Cat.Arr)c).getType();
+        	}
+        	else if (c instanceof Cat.Agg) {
+        		IScope sc = ((Cat.Agg)c).aggScope();
+        		if (sc instanceof ITypeSpecInit)
+        			refType = ((ITypeSpecInit)sc).getTypeSpec();       
+        	}
+        	if (refType == null)
+        		ParseUnit.current().reportError(this, "target of the pegging operator assignment has invalid type");
+			return refType;        	
+        }
+        public boolean isPegArray() {
+        	return (getRefType() instanceof TypeNode.Arr);
+        }
+        public boolean isPegReference() {
+        	return (getRefType() instanceof TypeNode.Usr);
         }
 
         public ExprNode getArr() {
@@ -560,7 +580,9 @@ public class StmtNode extends BaseNode {
         protected void pass2End() {
         	SymbolEntry sym = getRef().getSymbol();
         	ISymbolNode snode = sym != null ? sym.node() : null;
-        	Cat c = this.getArr() != null ? this.getArr().getCat()  : null;
+			Cat c = this.getArr() == null ? null
+					: (this.getArr().getCat() instanceof Cat.Fcn ? ((Fcn) this.getArr().getCat()).retCat() : this
+							.getArr().getCat());
         	TypeRules.checkPeg((BaseNode) snode, c, this);
         }
     }

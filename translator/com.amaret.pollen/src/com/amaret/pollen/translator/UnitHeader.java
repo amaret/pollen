@@ -123,8 +123,7 @@ public class UnitHeader {
         gen.getFmt().print("extern ");
         TypeNode ft = decl.getTypeSpec();
         gen.aux.genForwardForType(decl);
-		gen.aux.genForwardedType(ft, gen.uname_target() + gen.aux.mkPollenCname(decl.cname()) + gen.aux.mkSuf(decl), EnumSet.noneOf(Flags.class), (ITypeSpec) decl);       		
-        //gen.aux.genTypeWithVarName(ft, gen.uname_target() + gen.aux.mkPollenCname(decl.cname()) + gen.aux.mkSuf(decl), EnumSet.noneOf(Flags.class));
+		gen.aux.genForwardedType(ft, gen.uname_target() + gen.aux.mkPollenCname(decl.cname()) + gen.aux.mkSuf(decl), EnumSet.of(Flags.IS_FCNDECL), (ITypeSpec) decl);       		
         gen.aux.genFcnArgs(decl.getFormals(), true, decl);
         gen.getFmt().print(";\n");
     }

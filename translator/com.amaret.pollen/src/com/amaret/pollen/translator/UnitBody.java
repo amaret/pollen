@@ -34,7 +34,7 @@ public class UnitBody {
 		}
 		gen.aux.genFcnRefTypeDefs(body.getLocalVars());
 		gen.aux.genTypeWithVarName(fcn.getTypeSpec(), gen.uname_target()
-				+ gen.aux.mkPollenCname(fcn.cname()) + gen.aux.mkSuf(fcn), EnumSet.noneOf(Flags.class));
+				+ gen.aux.mkPollenCname(fcn.cname()) + gen.aux.mkSuf(fcn), EnumSet.of(Flags.IS_FCNDECL));
 		gen.aux.genFcnArgs(body.getFormals(), true, fcn);
 		gen.getFmt().print(" {\n%+");
 		gen.aux.genLocals(body.getLocalVars());

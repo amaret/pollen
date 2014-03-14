@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.antlr.runtime.tree.Tree;
 
+import com.amaret.pollen.parser.Cat.Arr;
 import com.amaret.pollen.parser.DeclNode.Fcn;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
@@ -190,8 +191,8 @@ public class ExprNode extends BaseNode {
 			
 			if (!providedTypeTest && getLeft().getCat() != null
 					&& getRight().getCat() != null) {
-				if (right instanceof Cat.Arr) {
-					Cat baseCat = ((Cat.Arr)right).getBase();
+				if (right instanceof Cat.Arr || (right instanceof Cat.Fcn && ((Cat.Fcn)right).retCat() instanceof Cat.Arr)) {
+					Cat baseCat = right instanceof Cat.Arr ? ((Cat.Arr)right).getBase() : ((Arr) ((Cat.Fcn)right).retCat()).getBase();
 					exprCat = TypeRules.checkBinary(getOp().getText(), left, baseCat);
 					right = getSubExprCat(true);
 				}
@@ -286,8 +287,7 @@ public class ExprNode extends BaseNode {
 			SymbolTable symtab = currUnit.getSymbolTable();
 
 			// look up the call identifier here rather than in Expr.Ident
-			// because here we know  to check host scope.
-			
+			// because here we know  to check host scope.			
 
 			if (getName() != null && getName() instanceof ExprNode.Ident) {
 				ExprNode.Ident ei = (ExprNode.Ident) getName();
@@ -417,8 +417,6 @@ public class ExprNode extends BaseNode {
 							}
 						}
 
-						ei.setSymbol(fcn);
-
 						if (qualifier != null && qualifier.node() instanceof ITypeKind
 								&& ((ITypeKind) qualifier.node()).isComposition()
 								&& !isHostFcn) {
@@ -429,6 +427,9 @@ public class ExprNode extends BaseNode {
 
 					}
 					if (fcn != null) {
+						
+						ei.setSymbol(fcn);
+						
 						IScope sc = fcn.scope();
 						if (!isHostFcn && sc instanceof DeclNode.Usr
 								&& ((DeclNode.Usr) sc).isClass()
@@ -438,11 +439,13 @@ public class ExprNode extends BaseNode {
 							// function ref is not the scope of the fcn 
 							addThisPtrParameter = true;
 						}
+						
 					}
 
 				} // end 'if (!skipLookup)'
 
 			}
+			exprCat = mkExprCat();
 			return super.pass2Begin();
 		}
 
@@ -526,63 +529,21 @@ public class ExprNode extends BaseNode {
 
 		@Override
 		protected void pass2End() {
-			if (getName() != null && getName() instanceof ExprNode.Ident) {
-				ExprNode.Ident ei = (ExprNode.Ident) getName();
-
-				String call = ei.getName().getText();
-				boolean dbg = false;
-				if (call.equals("myEventQueue.remove"))
-					dbg = true;
-			}
-
-
 			ParseUnit currUnit = ParseUnit.current();
-			Cat cat = getName().getCat();
-
-			if ((exprCat = TypeRules.preCheck(cat)) != null) {
+			if (exprCat == null || !(exprCat instanceof Cat.Fcn))
 				return;
-			}
-			boolean fcnOrFcnRef = cat instanceof Cat.Fcn
-					|| cat instanceof Cat.Agg;
-			if (!fcnOrFcnRef) {
-				currUnit.reportError(getName(), "value is not a function");
-				return;
-			}
-			// TODO
-			// overload resolution
-			if (cat instanceof Cat.Agg) { 
-				if (((Cat.Agg) cat).aggScope() instanceof DeclNode.TypedMember) {
-					// a call via a function reference
-					DeclNode.TypedMember tm = (DeclNode.TypedMember) ((Cat.Agg) cat)
-							.aggScope();
-					cat = tm.getFcnTypeCat();
-				}
-				else if (((Cat.Agg) cat).aggScope() instanceof DeclNode.Fcn) {
-					// a call via a fcn ref passed as parameter
-					DeclNode.Fcn df = (DeclNode.Fcn) ((Cat.Agg) cat)
-							.aggScope();
-					 cat = df.getTypeCat();
-				}
-			}
-
-			if (!(cat instanceof Cat.Fcn)) {
-				String n = (getName() instanceof ExprNode.Ident) ? "\'"
-						+ ((ExprNode.Ident) getName()).getName().getText()
-						+ "\' " : "";
-				ParseUnit.current()
-						.reportError(getName(), n + "not a function");
-				return;
-			}
-
-			Cat.Fcn fcncat = (Cat.Fcn) cat;
+			Cat.Fcn fcncat = (com.amaret.pollen.parser.Cat.Fcn) exprCat; //setExprCat();
+//			if (fcncat == null)
+//				return; // error encountered
+//			
+//			exprCat = fcncat.retCat();
+			
 			int argc = getArgs().size();
 			// if (addThisPtrParameter) argc++; // add one for this ptr (already added in
 			// the parser)
 			int minArgc = fcncat.minArgc();
 			int maxArgc = fcncat.maxArgc();
 
-			exprCat = fcncat.retCat();
-			
 			if (argc < minArgc || argc > maxArgc) {
 				if (!this.isConstructorCallOnHostVar())
 					currUnit.reportError(getName(), "wrong number of arguments");
@@ -627,6 +588,53 @@ public class ExprNode extends BaseNode {
 				}
 
 			}
+		}
+
+		/**
+		 * Call exprCat. Should give a Cat.Fcn. 
+		 * @return the exprCat
+		 */
+		private Cat.Fcn mkExprCat() {
+			ParseUnit currUnit = ParseUnit.current();
+			Cat cat = getName().getCat();
+
+			if ((exprCat = TypeRules.preCheck(cat)) != null) {
+				return null;
+			}
+			boolean fcnOrFcnRef = cat instanceof Cat.Fcn
+					|| cat instanceof Cat.Agg;
+			if (!fcnOrFcnRef) {
+				currUnit.reportError(getName(), "value is not a function");
+				return null;
+			}
+			// TODO
+			// overload resolution
+			if (cat instanceof Cat.Agg) { 
+				if (((Cat.Agg) cat).aggScope() instanceof DeclNode.TypedMember) {
+					// a call via a function reference
+					DeclNode.TypedMember tm = (DeclNode.TypedMember) ((Cat.Agg) cat)
+							.aggScope();
+					cat = tm.getFcnTypeCat();
+				}
+				else if (((Cat.Agg) cat).aggScope() instanceof DeclNode.Fcn) {
+					// a call via a fcn ref passed as parameter
+					DeclNode.Fcn df = (DeclNode.Fcn) ((Cat.Agg) cat)
+							.aggScope();
+					 cat = df.getTypeCat();
+				}
+			}
+
+			if (!(cat instanceof Cat.Fcn)) {
+				String n = (getName() instanceof ExprNode.Ident) ? "\'"
+						+ ((ExprNode.Ident) getName()).getName().getText()
+						+ "\' " : "";
+				ParseUnit.current()
+						.reportError(getName(), n + "not a function");
+				return null;
+			}
+
+			Cat.Fcn fcncat = (Cat.Fcn) cat;
+			return fcncat;
 		}
 	}
 
@@ -1378,7 +1386,8 @@ public class ExprNode extends BaseNode {
 		}
 
 		@Override
-		protected boolean pass2Begin() {
+		//protected boolean pass2Begin() {
+		protected void pass2End() {
 			Cat basecat = getBase().getCat();
 			boolean dbg = false;
 			if (basecat == null)
@@ -1388,7 +1397,7 @@ public class ExprNode extends BaseNode {
 			// Cat.Error
 			if (exprCat != null
 					&& (exprCat == Cat.INJECT || exprCat instanceof Cat.Error)) {
-				return true;
+				return; // true;
 			}
 			if (basecat instanceof Cat.Arr) {
 				exprCat = ((Cat.Arr) basecat).getBase();
@@ -1400,7 +1409,7 @@ public class ExprNode extends BaseNode {
 				ParseUnit.current().reportError(getBase(),
 						"value cannot be indexed");
 			}
-			return true;
+			//return true;
 		}
 
 	}

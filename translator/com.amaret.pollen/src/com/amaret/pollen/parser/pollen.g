@@ -723,7 +723,9 @@ scope{
 	|   injectionDecl
     ;
  
- enumUnitDefinition
+ enumUnitDefinition			// this one does not allow a 'public' attribute (outermost, default is public).
+ 					// note that when outermost enum did  take optional 'public' it caused some bad parses though no antlr errors.
+ 					// possibly optional 'public' at the outer level confused the funct / var / type distinction.
  @init{	
  	$unitTypeDefinition::publicEnum = false;
  }
@@ -1683,7 +1685,7 @@ stmtBind
 			-> ^(S_BIND<StmtNode.Bind>["S_BIND"] ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT[qn])  userTypeName)	
 	;
 stmtPeg
-	:	varOrFcnOrArray PEG  exprAssign	 delim -> ^(S_PEG<StmtNode.Peg>["S_PEG"] varOrFcnOrArray  exprAssign)	
+	:	varOrFcnOrArray PEG  exprAssign	 delim -> ^(S_PEG<StmtNode.Peg>["S_PEG"] varOrFcnOrArray  PEG exprAssign)	
 	;
 printList	
 	:		printItemList	-> ^(LIST<ListNode>["LIST"] printItemList)

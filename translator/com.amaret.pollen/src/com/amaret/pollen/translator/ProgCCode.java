@@ -834,6 +834,19 @@ public class ProgCCode {
 
         
     }
+    private static void debugNativeObjectProperties(NativeObject obj) {
+        HashMap<String, String> mapParams = new HashMap<String, String>();
+
+        if(obj != null) {
+            Object[] propIds = NativeObject.getPropertyIds(obj);
+            for(Object propId: propIds) {
+                String key = propId.toString();
+                String value = NativeObject.getProperty(obj, key).toString();
+                mapParams.put(key, value);
+            }
+        }
+        //work with mapParams next..
+    }
     
     private void genValArr(Cat.Arr cat, TypeNode.Arr tarr, Object val) {
     	
@@ -852,12 +865,11 @@ public class ProgCCode {
             return;
         }
 
-        if (vobj != null && !tarr.hasDim()) {
-            int len = vobj.getInt("$$len");
-			if (len == 0) {
+        int len = vobj != null ? vobj.getInt("$$len") : 0;
+        if (len == 0 && !tarr.hasDim()) {		
 				gen.getFmt().print("null");
 				return;
-			}
+        }
 			
 //			legacy code, see dcln of fwdAddNames
 //            String cname = vobj.getStr("$$cname");
@@ -874,9 +886,12 @@ public class ProgCCode {
 //                fwdAggNames.add(cname);
 //                fwdAggList.add(fwarr);
 //            }
-            return;
-        }
         
+        if (!tarr.hasDim())	{
+        	ParseUnit.current().reportError(tarr, "arrays declared without dimension cannot be initialized during the host phase.");
+			gen.getFmt().print("null");
+			return;
+        }
         TypeNode base = tarr.getBase();
         gen.getFmt().print("{\n%+");
         if (varr.length() > 0) {

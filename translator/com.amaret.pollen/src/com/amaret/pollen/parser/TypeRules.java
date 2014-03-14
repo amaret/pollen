@@ -68,6 +68,11 @@ public class TypeRules {
 	static Cat checkBinary(String op, Cat left, Cat right) {
 		if (left == null || right == null) {
 			return Cat.fromError("expr problem", left, right);
+		}		
+		
+		if (right instanceof Cat.Fcn && !(left instanceof Cat.Fcn)) {
+			// assume that right should have Cat of function return
+			//right = ((Cat.Fcn)right).retCat();
 		}
 		
 		Cat rtn =  checkBinary(op, left, right, "operand type error");
@@ -83,9 +88,17 @@ public class TypeRules {
 		if (left.isFcnRef() && right.isClassFcn()) {
 			return mkResult(null, left, right, "class function references are not implemented");
 		}
+		
+		if (right instanceof Cat.Fcn && !(left instanceof Cat.Fcn)) {
+			right = ((Cat.Fcn)right).retCat();
+		}
+		if (left instanceof Cat.Fcn && !(right instanceof Cat.Fcn)) {
+			left = ((Cat.Fcn)left).retCat();
+		}
 
 		String r = right.mkCode();
 		String l = left.mkCode();
+		
 		if (r.charAt(0) == 'V' && l.charAt(0) == 'A') {
 			// assigning a dimensioned array to one w/out dimensions
 			left = ((Cat.Arr) left).getBase();
@@ -94,6 +107,7 @@ public class TypeRules {
 			right = ((Cat.Arr) right).getBase();	
 			r = right.mkCode();
 		}
+
 		boolean leftAgg = left.mkCode().charAt(0) == 'C' || left.mkCode().charAt(0) == 'X';
 		if (leftAgg) {
 			boolean rightAgg = right.mkCode().charAt(0) == 'C' || right.mkCode().charAt(0) == 'X';
@@ -331,13 +345,12 @@ public class TypeRules {
      */
     public static void checkPeg(BaseNode target, Cat src_cat, BaseNode errorNode) {
     	if (target == null) {
-    		System.out.println("TypeRules.checkPeg() bad parameter");
     		return; 
     	}  		
-    	if (!(target instanceof DeclNode.TypedMember)) {
+    	if (!(target instanceof DeclNode.TypedMember || target instanceof DeclNode.Arr)) {
 			ParseUnit.current().reportError(errorNode, "LHS of pegging operator assignment must be a typed member");   
     	}
-    	else {
+    	else if (target instanceof DeclNode.TypedMember) {
     		DeclNode.TypedMember t = (TypedMember) target;
     		if (!t.isClassRef())
     			ParseUnit.current().reportError(errorNode, "LHS of pegging operator assignment must be a reference to a class");   
@@ -450,6 +463,9 @@ public class TypeRules {
 
 	static {
 
+		// I THINK... PADD, PSUB are pointer ops and can be deleted. 
+		// I THINK... SADD is a string addition: keep.
+		
 		bryOpTab.put("=",   OP_ASSIGN);
 		bryOpTab.put("+=",  OP_ASSIGN|OP_ADD|OP_PADD);
 		bryOpTab.put("-=",  OP_ASSIGN|OP_ADD|OP_PSUB);
@@ -492,17 +508,21 @@ public class TypeRules {
 
 				mkBinary(OP_ASSIGN, "b|n", "b|n", "$1"),
 				mkBinary(OP_ASSIGN, "u4", "ua", "$1"),
-				mkBinary(OP_ASSIGN, "x.+", "F.+|v|x.+", "$1"),
+				mkBinary(OP_ASSIGN, "x.+", "F.+|v|x.+", "$1"),				
+				mkBinary(OP_ASSIGN, "u.+", "FA\\1", "$1"),
+				mkBinary(OP_ASSIGN, "i.+", "FA\\1", "$1"),
 				mkBinary(OP_ASSIGN, "C.+|X.+", "C.+|X.+|v", "$1"),
 				mkBinary(OP_ASSIGN, "C.+", "u1|i1", "$1"),
 				mkBinary(OP_ASSIGN, "p|r|s|P.+|F.+|R.+|A.+", "\\1|v", "$1"),
-				mkBinary(OP_ASSIGN, "p", "p|s|v|P.+|R.+", "$1"),
-				mkBinary(OP_ASSIGN, "r", "R.+|S.+", "$1"),
-				mkBinary(OP_ASSIGN, "s", "Pu1", "$1"),
 				mkBinary(OP_ASSIGN, "A.+", "\\1", "$1"),
 				mkBinary(OP_ASSIGN, "A(.+)", "V\\2", "$1"),
-				mkBinary(OP_ASSIGN, "R(.+)", "\\2", "$1"),
-				mkBinary(OP_ASSIGN, "R(.+)", "r", "$1"),
+				
+				// p, r, P, R, bygone types
+				//mkBinary(OP_ASSIGN, "p", "p|s|v|P.+|R.+", "$1"),
+				//mkBinary(OP_ASSIGN, "r", "R.+|S.+", "$1"),
+				//mkBinary(OP_ASSIGN, "s", "Pu1", "$1"),
+				//mkBinary(OP_ASSIGN, "R(.+)", "\\2", "$1"),
+				//mkBinary(OP_ASSIGN, "R(.+)", "r", "$1"),
 
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "i0", "i0|n", "$1"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "i1", "i0|i1|n", "$1"),
@@ -515,9 +535,7 @@ public class TypeRules {
 				mkBinary(OP_ADD|OP_MULT, "i0|i1|i2|i4|n", "i4", "$2"),
 				mkBinary(OP_ADD|OP_MULT, "n|ia|i0", "ia", "$2"),
 
-				// Added 'u2|u4' rhs cases below as it occurs in pollen and c does not complain
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, Cat.UINT8, "n|u1|u2|u4", "$1"),
-				// Added 'u4' rhs case below as it occurs in pollen and c does not complain
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, "u2", "n|u1|u2|u4", "$1"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, "u4", "n|u1|u2|u4", "$1"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, "ua", "n|ua", "$1"),
@@ -529,8 +547,8 @@ public class TypeRules {
 
 				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n", "n", "$1"),
 
-				mkBinary(OP_PADD, "p|s|P.+", "n|i0|i1|i2|i4|u1|u2|u4", "$1", TARG_DOMAIN),
-				mkBinary(OP_PSUB, "p|s|P.+", "\\1", "n", TARG_DOMAIN),
+				//mkBinary(OP_PADD, "p|s|P.+", "n|i0|i1|i2|i4|u1|u2|u4", "$1", TARG_DOMAIN),
+				//mkBinary(OP_PSUB, "p|s|P.+", "\\1", "n", TARG_DOMAIN),
 
 				mkBinary(OP_SADD, "s", "s", "$1", HOST_DOMAIN),
 

@@ -11,6 +11,7 @@ import com.amaret.pollen.parser.BodyNode;
 import com.amaret.pollen.parser.Cat;
 import com.amaret.pollen.parser.Cat.Agg;
 import com.amaret.pollen.parser.Cat.Arr;
+import com.amaret.pollen.parser.Cat.Fcn;
 import com.amaret.pollen.parser.DeclNode;
 import com.amaret.pollen.parser.DeclNode.Formal;
 import com.amaret.pollen.parser.DeclNode.ITypeSpec;
@@ -1034,7 +1035,8 @@ public class Auxiliary {
 	 * @param e can be ExprNode.Call or ExprNode.New
 	 */
 	public void genHostNew(ExprNode e) {
-		Cat.Agg cat = e.getCat().isAggTyp() ? (Agg) e.getCat() : null;
+		Cat c = e.getCat().isFcn() ? ((Fcn) e.getCat()).retCat() : e.getCat();
+		Cat.Agg cat = (Agg) (c.isAggTyp() ? c : null); 
 		ISymbolNode node = (ISymbolNode) (cat != null && cat.aggScope() instanceof ISymbolNode ? cat.aggScope() : null);
 		if (node != null) {
 			// E.g. : new $units['pollen.event.Event'].Event().new_host
@@ -1400,18 +1402,23 @@ public class Auxiliary {
 		gen.getFmt().print(";");
 	}
 	private void genStmt$Peg(StmtNode.Peg stmt) {
+		if (isHost()) {
+			ParseUnit.current().reportError(stmt, "pegging is a target phase only operation");
+			return;
+		}		
 		genExpr(stmt.getRef());
 		gen.getFmt().print(" = ");
-		TypeNode tn = stmt.getRefType();
-		String n = gen.getOutputName(tn, null, EnumSet.of(Flags.IS_PEG));
-		if (!isHost()) {
-			gen.getFmt().print("(%1) &", n);
+		if (stmt.isPegArray()) {
 			genExpr(stmt.getArr());
+			gen.getFmt().print(";");
 		}
-		else {
-			// such memory accesses not supported by javascript		
+		else if (stmt.isPegReference()) {
+			TypeNode tn = stmt.getRefType();
+			String n = gen.getOutputName(tn, null, EnumSet.of(Flags.IS_PEG));			
+			gen.getFmt().print("(%1) &", n);
+			genExpr(stmt.getArr());			
+			gen.getFmt().print(";");			
 		}
-		gen.getFmt().print(";");
 	}
 
 	private void genStmt$Block(StmtNode.Block stmt) {
@@ -1708,7 +1715,7 @@ public class Auxiliary {
 	 */
 	void genTypeWithVarName(TypeNode type, String name, EnumSet<Flags> flags) {
 		String dim = "";
-		if (type instanceof TypeNode.Arr) {
+		if (type instanceof TypeNode.Arr && !flags.contains(Flags.IS_FCNDECL)) {
 			Cat.Arr c = (Arr) Cat.fromType(type);
 			dim = c.getType().hasDim() ? "" : "[]"; // update for multi dimensional arrays
 			if (c.getType().hasDim()) // || c.getType().isArrWithoutDim())
