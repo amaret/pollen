@@ -402,14 +402,13 @@ public class Auxiliary {
 				}
 			}
 			if (node instanceof DeclNode.FcnRef && right instanceof ExprNode.Ident) {
+				
 				se = ((ExprNode.Ident)right).getSymbol() != null ? ((ExprNode.Ident)right).getSymbol() : null;
-				ISymbolNode fnode = se != null ? se.node() : null;
-				Cat cat = null;
-				if (fnode instanceof DeclNode)
-					cat = ((DeclNode)fnode).getTypeCat();
+				ISymbolNode srcNode = se != null ? se.node() : null;
 				boolean srcIsHost = false;
+				Cat cat = ((DeclNode)srcNode).getTypeCat();
 				if (cat != null && (cat.isFcn() || cat.isFcnRef())) {
-					srcIsHost = ((DeclNode) fnode).isHost();
+					srcIsHost = ((DeclNode) srcNode).isHost();
 				}
 				if (srcIsHost) {
 					// This is a function ref initialized to a host function.
@@ -454,6 +453,8 @@ public class Auxiliary {
 
 		Cat cl = left.getCat();
 		Cat cr = right.getCat();
+		if (!cl.isFcnRef() && cr.isFcn())
+			cr = ((Cat.Fcn)cr).retCat();
 
 		if (op.equals("=") && left.getCat().isArrayDesc()
 				&& right.getCat() instanceof Cat.Arr) {
@@ -480,8 +481,7 @@ public class Auxiliary {
 		String addrOf = "";
 		String deref = "";
 		if (cl instanceof Cat.Agg) {
-			Cat.Agg leftCat = (Agg) cl;
-			if (leftCat.isClassRef() && !(cr instanceof Cat.Scalar)
+			if (cl.isClassRef() && !(cr instanceof Cat.Scalar)
 					&& !isHost() && !cr.isRef())
 				addrOf = "&";
 			gen.getFmt().print(" %1 %2", op, addrOf);
@@ -499,7 +499,6 @@ public class Auxiliary {
 
 		genExpr(right);
 	}
-
 	private void genExpr$Call(ExprNode.Call expr) {
 				
  		String n = expr.getName() instanceof ExprNode.Ident ? ((ExprNode.Ident) expr.getName()).getName().getText() : "";
@@ -539,7 +538,7 @@ public class Auxiliary {
 	 * @param expr
 	 * @param thisPtr TODO
 	 */
-	void genCallArgs(ExprNode.Call expr, Ident thisPtr) {
+	void genCallArgs(ExprNode.Call expr, BaseNode thisPtr) {
 		Cat cat = expr.getName().getCat();
 		Cat.Fcn fcncat = cat instanceof Cat.Fcn ? (Cat.Fcn) cat : null;
 		
@@ -717,11 +716,6 @@ public class Auxiliary {
 		if (expr.isCallThruProtoMbr())	
 			flags.add(Flags.IS_PROTOMBR_CALL);
 		
-		//boolean dbg = false;
-//		String s = expr.getName().getText();
-//		System.out.println(s);
-		
-
 		SymbolEntry sym = expr.getSymbol();
 		if (sym == null) {
 			if (ParseUnit.isIntrinsicCall(expr.getName().getText()))
@@ -747,7 +741,7 @@ public class Auxiliary {
 							: null);
 			if (arr != null && arr.hasHostDim()) {
 				ParseUnit.current().reportSeriousError(
-							arr,
+							(BaseNode) expr.getParent(),
 							"Invalid access. Array '"
 								+ arr.getName().getText()
 								+ "' has dimension specified by a host variable so it cannot be accessed until after host initializers have completed.");
@@ -1475,7 +1469,7 @@ public class Auxiliary {
 				// actually perhaps just eliminate genlocals
 			
 			if (decl.getInit() != null) {
-				if (decl.isPegged()) {
+				if (decl.isPeggedOnDcln()) {
 					gen.getFmt().print("%1 = ", decl.getName());
 					TypeNode tn = decl.getTypeSpec();;
 					String n = gen.getOutputName(tn, null, EnumSet.noneOf((Flags.class)));

@@ -880,6 +880,7 @@ scope{
    	j = j == -1 ? 0 : j+1;
     	// the default package is the containing directory
     	defaultPkg = path.substring(j, k);
+    	EnumSet<Flags> importFlags = EnumSet.noneOf(Flags.class);  	
 }
  	:    'from'! importFrom
     
@@ -888,12 +889,14 @@ scope{
     			if ($qualName.text.equals(ParseUnit.POLLEN_ENVIRONMENT)) {
     				$stmtImport::qimp = ProcessUnits.getPollenEnv();
     				defaultPkg = ProcessUnits.getPollenEnvPkg();
+    				importFlags.add(Flags.UNIT_USED);
     				if ($stmtImport::qimp.isEmpty())
     					throw new PollenException("Missing module specification for pollen.environment", input);
     			}
     			else if ($qualName.text.equals(ParseUnit.POLLEN_PRINT)) {
     				$stmtImport::qimp = ProcessUnits.getPollenPrint();
     				defaultPkg = ProcessUnits.getPollenPrintPkg();
+    				importFlags.add(Flags.UNIT_USED);
     				if ($stmtImport::qimp.isEmpty())
     				    	throw new PollenException("Missing module specification for pollen.print", input);
     			}
@@ -907,7 +910,7 @@ scope{
                         {
          	                  ParseUnit.current().addToImportsMaps($stmtImport::qimp, $stmtImport::asName, defaultPkg, $stmtImport::metaArgs);
                          }
-         -> ^(IMPORT<ImportNode>["IMPORT"] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs metaArguments?)
+         -> ^(IMPORT<ImportNode>["IMPORT", importFlags] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs metaArguments?)
     ;
 catch [PollenException re] {
     String hdr = getErrorHeader(re);
@@ -917,6 +920,7 @@ catch [PollenException re] {
 
 importFrom
 @init{
+   	EnumSet<Flags> importFlags = EnumSet.noneOf(Flags.class);  	
 }
 @after{
  }
@@ -924,6 +928,9 @@ importFrom
     :   	(q1=qualName 
     		{	
     			$stmtImport::qpkg = ($q1.text.equals(ParseUnit.POLLEN_ENVIRONMENT)) ? ProcessUnits.getPollenEnvPkg() : $q1.text;
+    			if ($q1.text.equals(ParseUnit.POLLEN_ENVIRONMENT)) {
+    				importFlags.add(Flags.UNIT_USED);
+    			}
     			if ($stmtImport::qpkg.isEmpty())
     				throw new PollenException("Missing module specification for pollen.environment", input);
     		} 
@@ -931,6 +938,9 @@ importFrom
     		q2=qualName 
     		{	
     			$stmtImport::qimp = ($q2.text.equals(ParseUnit.POLLEN_ENVIRONMENT)) ? ProcessUnits.getPollenEnv() : $q2.text;
+    			if ($q2.text.equals(ParseUnit.POLLEN_ENVIRONMENT)) {
+    				importFlags.add(Flags.UNIT_USED);
+    			}
     			if ($stmtImport::qimp.isEmpty())
     				throw new PollenException("Missing module specification for pollen.environment", input);
     		}  
@@ -939,7 +949,7 @@ importFrom
                        {
          	                ParseUnit.current().addToImportsMaps($stmtImport::qimp, $stmtImport::asName, $stmtImport::qpkg, $stmtImport::metaArgs);
                        }
-         -> ^(IMPORT<ImportNode>["IMPORT"] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs metaArguments?)
+         -> ^(IMPORT<ImportNode>["IMPORT", importFlags] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs metaArguments?)
 	
     ;
 importAs
@@ -985,7 +995,7 @@ scope {
 // synthesize the imports for the print implementation (from the -p option)
 importPrintImpl
 	:	{ProcessUnits.doImportPrintImpl()}? 
-		   -> ^(IMPORT<ImportNode>["IMPORT",  EnumSet.noneOf(Flags.class)] 
+		   -> ^(IMPORT<ImportNode>["IMPORT",  EnumSet.of(Flags.UNIT_USED)] 
 			IDENT[ProcessUnits.getPollenPrintPkg()] 
 			IDENT[ProcessUnits.getPollenPrint()]
 			NIL)	
@@ -995,7 +1005,7 @@ importPrintImpl
 // (except itself). This happens only if -p is NOT used. 
 importPrintProtocol
 	:	{ProcessUnits.doImportPrintProtocol()}? 
-		   -> ^(IMPORT<ImportNode>["IMPORT",  EnumSet.noneOf(Flags.class)] 
+		   -> ^(IMPORT<ImportNode>["IMPORT",  (EnumSet.of(Flags.UNIT_USED))] 
 			IDENT[ParseUnit.POLLEN_PRINTPKG] 
 			IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL]
 			NIL)	

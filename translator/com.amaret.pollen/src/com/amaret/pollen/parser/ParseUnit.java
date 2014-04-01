@@ -44,6 +44,7 @@ public class ParseUnit {
 	private boolean parseTopLevel = false;
 	
 	
+	
 	private List<String> metaModules = new ArrayList<String>();
 	static private boolean debugMode = false;
 	
@@ -52,6 +53,12 @@ public class ParseUnit {
 	public static final String POLLEN_PRINT_PROXY = "pollen.printProtocol";	
 	public static final String POLLEN_ENVIRONMENT = "pollen.environment";
 	public static final String POLLEN_PRINTPKG = "pollen.output";
+	public static final String POLLEN_RESET = "pollen.reset";
+	public static final String POLLEN_READY = "pollen.ready";
+	public static final String POLLEN_SHUTDOWN = "pollen.shutdown";
+	public static final String POLLEN_RUN = "pollen.run";
+	public static final String POLLEN_HIBERNATE = "pollen.hibernate";
+
 	
 	// pollen names, generated
 	public static final String EXPORT_PREFIX = "$$export";
@@ -61,6 +68,7 @@ public class ParseUnit {
 	public static final String INTRINSIC_UNITVAR = INTRINSIC_PREFIX +"unitname";
 	public static final String INTRINSIC_PRINT_PROTOCOL= "PrintProtocol";
 	public static final String INTRINSIC_PRINT_PROXY = "intrinsicPrintProtocol";
+	//pollen.reset(), pollen.ready(), pollen.shutdown(), pollen.run(), pollen.hibernate().
 	public static final String CTOR_CLASS_TARGET = "new_";
 	public static final String CTOR_CLASS_HOST = "new_host";
 	public static final String CTOR_MODULE_TARGET = "targetInit";
@@ -854,6 +862,7 @@ public class ParseUnit {
 		// return null;
 		// }
 		unit.init();
+		unit.setUnitUsed(isParseToplevel()); // top level unit always marked used
 
 		if (!(unit.getPkgName().getText().equals(getPackageName()))) {
 			reportError(unit.getPkgName(),
@@ -981,33 +990,29 @@ public class ParseUnit {
 
 			checkUnitPass2(u);  // pass 2: inter unit references
 		} 
+		int iter = 0;
+		boolean foundUsedUnit = false;
+		while (true) {
+			iter++;
+			for (UnitNode u : checkUnitsPass2) { 
+
+				boolean flag = checkUnitPassN(u);  // pass N: finish up marking units used.
+				foundUsedUnit = flag ? true : foundUsedUnit;
+			}
+			if (!foundUsedUnit)
+				break;
+			if (iter > 10)
+				break;
+		}
+		
 		currUnitNode = topLevelUnit;
 		return unitMap;
 	}
 
-	/**
-	 * doPass1, doPass2
-	 * OLD
-	 * @param unit
-	 */
-	private void checkUnit(UnitNode unit) {
-
-		// unit.defineSymbol(unit.getName(), unit);
-		currUnitNode = unit;
-
-		// if (getErrorCount() == 0) {
-		unit.doPass1();
-		// }
-
-		// if (getErrorCount() == 0) {
-		unit.doPass2();
-		// }
-
-		currUnitNode = null;
-	}
 	private List<UnitNode> checkUnitsPass2 = new ArrayList<UnitNode>();
 	/**
 	 * doPass1
+	 * Called from parseUnit(), after a parse/parseImports completes.
 	 * 
 	 * @param unit
 	 */
@@ -1021,6 +1026,7 @@ public class ParseUnit {
 	}
 	/**
 	 * doPass2
+	 * Called from parseUnits() after all parsing.
 	 * 
 	 * @param unit
 	 */
@@ -1031,6 +1037,25 @@ public class ParseUnit {
 		unit.doPass2();
 
 		currUnitNode = null;
+	}
+	/*
+	 * doPass3
+	 * 
+	 * @param unit
+	 * @return true if this pass resulting in newly marking a unit used
+	 */
+	private boolean checkUnitPassN(UnitNode unit) {
+
+		currUnitNode = unit;
+		boolean usedUnitFound = unit.isUnitUsed();
+		
+		unit.doPassN();
+		
+		usedUnitFound = unit.isUnitUsed() && !usedUnitFound;
+
+		currUnitNode = null;
+		
+		return usedUnitFound;
 	}
 
 	public UnitNode getCurrUnitNode() {

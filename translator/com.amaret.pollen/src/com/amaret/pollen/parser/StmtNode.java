@@ -234,21 +234,55 @@ public class StmtNode extends BaseNode {
         public List<DeclNode.Var> getVars() {
             return ((List<DeclNode.Var>) this.children);
         }
+        /**
+         * StmtNode.Decl is only created in the grammar for function local variables. 
+         * Module body scope declarations get DeclNodes. 
+         */
 
         @Override
         protected void pass2End() {
             BodyNode body = BodyNode.current();
 
             for (DeclNode.Var decl : getVars()) {
-            	
+            	            	
                 ExprNode init = decl.getInit();
                 if (init != null) {
                     init.setCat(decl.getTypeCat());
-                }
-                
+                }                
                 body.addLocalVar(decl );
+                setUsesForLocals();
             }
         }
+        protected boolean passNBegin() {
+       		setUsesForLocals();
+            return true;
+        }
+		/**
+		 * Mark unitUsed for the unit type of a local. 
+		 * These checks are memory access uses and can occur in pass2 or passN.
+		 */
+		private void setUsesForLocals() {
+			UnitNode u = (UnitNode) this.getParentOfType(UnitNode.class);
+        	for (DeclNode.Var decl : getVars()) {
+         		if (decl.isPeggedOnDcln() && u.isUnitUsed()) {
+        			if (decl instanceof DeclNode.TypedMember)
+        				((DeclNode.TypedMember)decl).setUnitsUsedForPeg();
+        		}
+    			if (decl.isBoundOnDcln() && u.isUnitUsed()) {
+    				((DeclNode.TypedMember)decl).setUnitsUsedForBind(u);
+    			}
+
+        		if (!(decl instanceof ITypeSpecInit)) {
+        			continue;
+        		}
+        		// Check the initial value expression and mark its unit used if appropriate.
+        		ITypeSpecInit tsi = (ITypeSpecInit) decl;
+        		ExprNode init = tsi.getInit();
+        		if (u.isUnitUsed() && init instanceof ExprNode.Ident && init.getSymbol() != null
+        				&& init.getSymbol().node() instanceof DeclNode)
+        			((DeclNode) init.getSymbol().node()).setUnitUsedForExpr(this);
+        	}
+		}
     }
 
     
@@ -580,6 +614,8 @@ public class StmtNode extends BaseNode {
         protected void pass2End() {
         	SymbolEntry sym = getRef().getSymbol();
         	ISymbolNode snode = sym != null ? sym.node() : null;
+        	if (snode instanceof DeclNode.TypedMember)
+        		((DeclNode.TypedMember)snode).setUnitsUsedForPeg();
 			Cat c = this.getArr() == null ? null
 					: (this.getArr().getCat() instanceof Cat.Fcn ? ((Fcn) this.getArr().getCat()).retCat() : this
 							.getArr().getCat());
@@ -629,13 +665,40 @@ public class StmtNode extends BaseNode {
         	if (accessOK && getValue() != null && getPro() != null && src_cat != null) { 
 
         		BaseNode d = (BaseNode) ((Cat.Agg) src_cat).aggScope();
-        		UnitNode u = (UnitNode) ((d instanceof UnitNode) ? d : d instanceof DeclNode.Usr ? ((DeclNode.Usr)d).getUnit() : null);      			
-        		((DeclNode.TypedMember)snode).bindModule(u, getValue()); // bind it
-        		bindToUnit = ((DeclNode.TypedMember)snode).getBindToUnit();     	
+        		UnitNode bindtoUnit = (UnitNode) ((d instanceof UnitNode) ? d : d instanceof DeclNode.Usr ? ((DeclNode.Usr)d).getUnit() : null);      			
+        		((DeclNode.TypedMember)snode).bindModule(bindtoUnit, getValue()); // bind it
+        		bindToUnit = ((DeclNode.TypedMember)snode).getBindToUnit();  
 
-        	}  
+        		UnitNode currUnit = ((UnitNode) this.getParentOfType(UnitNode.class));
+        		//if (currUnit.isUnitUsed())
+        			setUnitsUsed((TypedMember) snode, currUnit);
+        	}
 
         }
+        public void pass3Begin() {
+        	SymbolEntry sym = getPro().getSymbol();
+        	UnitNode u = ((UnitNode) this.getParentOfType(UnitNode.class));
+			DeclNode.TypedMember decl = (TypedMember) (sym != null
+					&& sym.node() instanceof DeclNode.TypedMember ? sym.node()
+					: null);
+			if (decl != null && u.isUnitUsed()) {
+				setUnitsUsed(decl, u);
+			}        	
+        }
+
+		/**
+		 * Set unitUsed for the unit bound, the bind site (current unit node) and 
+		 * the unit of dcln of the protocol member. 
+		 * Can be called in pass2 or passN. Bind site unit must be used.
+		 * @param snode
+		 */
+		private void setUnitsUsed(DeclNode.TypedMember snode, UnitNode bindSite) {
+			if (bindToUnit != null) {
+				bindToUnit.setUnitUsed(true); 		// bound unit
+				bindSite.setUnitUsed(true); 		// bind site
+				snode.getUnit().setUnitUsed(true);  // dcln site of protocol mbr declaration
+			}
+		}
 
 		public UnitNode getBindToUnit() {
 			return bindToUnit;

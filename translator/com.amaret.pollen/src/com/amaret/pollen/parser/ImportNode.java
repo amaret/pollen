@@ -100,10 +100,7 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     }
     ImportNode(int ttype, String ttext, EnumSet<Flags> f) {
         this(ttype, ttext);
-        flags = f;
-    }
-    ImportNode(BaseNode b) {
-    	
+        flags = f.clone();
     }
     /**
      * This import describes a meta argument which was translated into an import.
@@ -281,7 +278,10 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 	public void bindUnit(UnitNode impUnit) {
 		unit = impUnit;
         cat = Cat.fromSymbolNode(unit, unit.getDefiningScope());
-        
+//        String bound = (flags.contains(Flags.UNIT_USED)) ? "BOUND " : "";
+//        System.out.println("bindUnit: " + flags + " " + impUnit.getQualName());
+//        System.out.println(bound + "ImportNode.bindUnit(): import " + this.getQualName() + " bound to unit " + impUnit.toStringTree());
+        impUnit.setUnitUsed(flags.contains(Flags.UNIT_USED));
         if (this.isFromComposImportModule()) {
         	// check that this unit which was imported from a composition was exported by that composition
 			SymbolEntry currExportSym = null;

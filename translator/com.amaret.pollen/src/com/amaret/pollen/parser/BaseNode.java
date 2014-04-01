@@ -17,7 +17,9 @@ public class BaseNode extends CommonTree {
 	    super(t);
         fileName = ParseUnit.current().getPackageName() + "." + ParseUnit.current().getFileName();
 	}
-    
+    /**
+     * If pass1Begin() returns false, pass1End() is not called. 
+     */
     final void doPass1() {
     	
     	if (!pass1Begin()) {
@@ -32,6 +34,9 @@ public class BaseNode extends CommonTree {
         
     }
    
+    /**
+     * If pass2Begin() returns false, pass2End() is not called. 
+     */
     final void doPass2() {
        if (!pass2Begin()) {
             return;
@@ -43,6 +48,23 @@ public class BaseNode extends CommonTree {
         }
         pass2End();
     }
+    /**
+     * If passNBegin() returns false, pass3End() is not called. 
+     */
+    final void doPassN() {
+    	
+    	if (!passNBegin()) {
+            return;
+        }
+        if (getChildCount() > 0) {
+            for (Object o : getChildren()) {
+                ((BaseNode)o).doPassN();
+            }
+        }
+        passNEnd();
+        
+    }
+
     
     public Atom getAtom() {
         return (Atom) getToken();
@@ -73,6 +95,14 @@ public class BaseNode extends CommonTree {
     
     protected void pass2End() {
     }
+    protected boolean passNBegin() {
+        return true;
+    }
+    
+    protected void passNEnd() {
+    }
+
+
     
     void setIndexes(int start, int stop) {
         startIndex = start;
@@ -105,6 +135,18 @@ public class BaseNode extends CommonTree {
 		// non-synthesized tokens have correct line num
 		// whereas synthesized tokens all have the line num of EOF
 		return super.getLine();
+	}
+
+	/**
+	 * Look up thru parents to find the first node of c class.
+	 * @param c the class we are searching for
+	 * @return the node with c class or null if not found.
+	 */
+	public BaseNode getParentOfType(@SuppressWarnings("rawtypes") Class c) {
+		BaseNode up = (BaseNode) this.getParent();
+		while (up != null && !(up.getClass().isAssignableFrom(c)))
+			up = (BaseNode) up.getParent();
+		return up;
 	}
 
 

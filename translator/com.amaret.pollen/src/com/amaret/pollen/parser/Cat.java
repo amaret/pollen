@@ -300,6 +300,7 @@ public class Cat implements Cloneable {
         		argCats.add(Cat.fromType(arg.getTypeSpec()));
         	}
         	minArgc = fcnD.getFormals().size();
+        	aggScope = fcnD.getEnclosingScope();
         	this.fcnD = fcnD;
         }
         

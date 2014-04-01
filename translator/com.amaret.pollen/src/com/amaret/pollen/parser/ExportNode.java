@@ -49,7 +49,7 @@ public class ExportNode extends BaseNode implements ISymbolNode {
      * @param name e.g. 'm.foo' from 'export m.foo'
      * @return the DeclNode for that function
      */
-    public static ISymbolNode getExportFcnDclnNode(Atom name) {
+    private static ISymbolNode getExportFcnDclnNode(Atom name) {
 
     	String[] path = name.getText().split("\\.");
     	if (path.length < 2) {
@@ -69,9 +69,9 @@ public class ExportNode extends BaseNode implements ISymbolNode {
     	
     	SymbolEntry fse = null;
     	ISymbolNode fsn = null;
-    	boolean dbg = false;
-    	if (name.getText().equals("Mcu.wait"))
-    		dbg = true;
+//    	boolean dbg = false;
+//    	if (name.getText().equals("Mcu.wait"))
+//    		dbg = true;
     	   	
     	if (imp == null) {
     		currUnit.reportError(name, "not an imported unit");
@@ -81,8 +81,8 @@ public class ExportNode extends BaseNode implements ISymbolNode {
     	
     	while (true) {
     		UnitNode uimp = imp.getUnit();
-    		if (uimp == null)
-    			dbg = true;
+//    		if (uimp == null)
+//    			dbg = true;
     		if (uimp.isComposition()) {
     			fse = uimp.lookupExportInUnit(fcn);
     			fsn = fse != null ? fse.node() : null;
@@ -91,7 +91,6 @@ public class ExportNode extends BaseNode implements ISymbolNode {
     			uname.setText(imp.getUnitName().getText());
     			imp = uimp.getImportByName(uname, uimp); //ParseUnit.current().getCurrUnitNode()); 
     			if (imp == null) {
-    				dbg = true;
     				return null;
     			}
     			
@@ -119,7 +118,7 @@ public class ExportNode extends BaseNode implements ISymbolNode {
      * @param name e.g. 'm' from 'export m'
      * @return the DeclNode for that unit
      */
-    ISymbolNode getExportUnitDclnNode(Atom name) {
+    private ISymbolNode getExportUnitDclnNode(Atom name) {
 
     	String[] path = name.getText().split("\\.");
     	if (path.length != 1) {
@@ -133,9 +132,9 @@ public class ExportNode extends BaseNode implements ISymbolNode {
     	u.setText(unit);
     	SymbolEntry mse = null;
     	ISymbolNode msn = null;
-    	boolean dbg = false;
-    	if (name.getText().equals("AsInterrupts"))
-    		dbg = true;
+//    	boolean dbg = false;
+//    	if (name.getText().equals("AsInterrupts"))
+//    		dbg = true;
 
     	ImportNode imp = currUnit.getCurrUnitNode().getImportByName(name, ParseUnit.current().getCurrUnitNode());
     	if (imp == null) {

@@ -222,11 +222,12 @@ public class Generator {
             getFmt().reset();
             UnitJScript unitJScript = new UnitJScript(this);
             unitJScript.generate(curUnit);
-            writeFile(file, getFmt().toBytes());
+            if (curUnit.isUnitUsed())
+            	writeFile(file, getFmt().toBytes());
         //}
     }
 	/**
-	 * Follow imports recursively starting at unit to get units that are used.
+	 * Follow imports recursively starting at top level unit to get units that are used.
 	 * Add used unit to Set<UnitNode> if not already there.
 	 * 
 	 * @param unit
@@ -239,7 +240,11 @@ public class Generator {
         		if (imp.isSynthesizedFromMeta() && imp.getUnit().isMeta())
         			continue;
         		if (!impChain.contains(imp.getQualName())) {
-        			impChain.add(imp.getUnit().getQualName());
+        			UnitNode u = imp.getExportUnit() != null ? imp.getExportUnit().getUnit() : imp.getUnit();
+        			// String used =  (u.isUnitUsed() ? "USED     " : "NOT USED ");
+        			// System.out.println(used + "unit " + u.getQualName() + ", import " + imp.getQualName());
+        			
+        			impChain.add(imp.getUnit().getQualName());			
         			findUses(imp.getUnit(), uses);
         		}
         	}
@@ -279,6 +284,7 @@ public class Generator {
         ParseUnit cur  = ParseUnit.current();
         Set<UnitNode> uses = new LinkedHashSet<UnitNode>();
         findUses(unit, uses);
+        filterUses(uses);
 
         File jsFile = ParseUnit.cacheFile(unit.getQualName(), "-prog.js");
         progFile = ParseUnit.cacheFile(unit.getQualName(), "-prog.c");
@@ -310,6 +316,38 @@ public class Generator {
     }
 
 	/**
+	 * Filter the uses list so that it contains only units with UNIT_USED flag true. 
+	 * @param orig
+	 */
+	private void filterUses(Set<UnitNode> orig) {
+		Set<UnitNode> filt = new LinkedHashSet<UnitNode>();
+		Set<UnitNode> extraOrig = new LinkedHashSet<UnitNode>();
+        for (UnitNode u : orig) {
+        	if (u.isUnitUsed())
+        		filt.add(u);
+        	else
+        		extraOrig.add(u);
+        }
+        boolean dbg = false;
+        ParseUnit.setDebugMode(dbg);
+        if (ParseUnit.isDebugMode()) {
+        	String origUses = "";
+        	String filtUses = "";
+        	for (UnitNode u : extraOrig) {
+        		origUses += " " + u.getUnitType().getUnitQualName();
+        	}
+        	for (UnitNode u : filt) {
+        		filtUses += " " + u.getUnitType().getUnitQualName();
+        	}
+        	System.out.println("FULL LIST: " + filtUses + origUses);
+        	System.out.println("FILT LIST: " + filtUses);
+        }
+        orig.clear();
+        orig.addAll(filt);
+        ParseUnit.setDebugMode(false);
+	}
+
+	/**
 	 * @param progFile
 	 * @throws Exception
 	 */
@@ -330,7 +368,8 @@ public class Generator {
             getFmt().reset();
             UnitBody unitBody = new UnitBody(this);
             unitBody.generate(curUnit);
-            writeFile(file, getFmt().toBytes());
+            if (curUnit.isUnitUsed())
+            	writeFile(file, getFmt().toBytes());
         }				
 	}
 	
@@ -345,7 +384,8 @@ public class Generator {
 			getFmt().reset();
 			UnitHeader unitHeader = new UnitHeader(this);
 			unitHeader.generateUnitHdr(curUnit);
-			writeFile(file, getFmt().toBytes());
+			if (curUnit.isUnitUsed())
+				writeFile(file, getFmt().toBytes());
 		}
 
 	}

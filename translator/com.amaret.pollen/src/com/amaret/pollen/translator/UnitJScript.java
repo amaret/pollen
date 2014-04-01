@@ -272,7 +272,8 @@ public class UnitJScript {
     	
     	if (decl.isHost() || isHostInit(decl)) {
     		
-    		if (decl.isBound() && decl.getInit() != null) { // initialized protocol member
+    		if (decl.isBoundOnDcln() && decl.getInit() != null) { // initialized protocol member
+    			//System.out.println("bind js " + decl.toStringTree());
     			ExprNode init = decl.getInit();
     			TypeNode t = ((ExprNode.Typ) init).getTyp();
     			UnitNode u = ((DeclNode.TypedMember) decl).getBindToUnit();
@@ -509,10 +510,13 @@ public class UnitJScript {
 			String n = ((UnitNode) imp.getParent().getParent()).getQualName();
 			System.out.println("genUse(): for " + n + " importing " + imp.getUnitName().getText() + " check use of " + nameU);				
 		}
+		
+		boolean unitUsed = imp.getExportUnit() != null ? imp.getExportUnit()
+				.getUnit().isUnitUsed() : imp.getUnit().isUnitUsed();
     	
     	boolean genUseType = imp.getUnit().isModule() || imp.getUnit().isClass() || imp.getUnit().isEnum();    	
  
-    	if (genUseType) {
+    	if (genUseType && unitUsed) {
 
     		if (!inserted.contains(nameU)) {
     			inserted.add(nameU);
