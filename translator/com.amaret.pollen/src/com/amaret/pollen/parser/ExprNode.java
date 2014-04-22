@@ -1213,6 +1213,8 @@ public class ExprNode extends BaseNode {
 				if (symbol.node() instanceof DeclNode.Var
 						&& ((DeclNode.Var) symbol.node()).isConst())
 					isConst = true;
+				if (symbol.node() instanceof DeclNode.EnumVal)
+					isConst = true;
 				if (symbol.node() instanceof DeclNode.Formal) {
 					DeclNode.Formal f = (DeclNode.Formal) symbol.node();
 					if (f.isTypeMetaArg() && f.getInit() == null) {

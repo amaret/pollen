@@ -42,7 +42,6 @@ tokens {
     E_IDENT;
     E_INDEX;
     E_INJ;
-    E_NUMLIT;
     E_NEW;
     E_PAREN;
     E_QUEST;
@@ -923,6 +922,7 @@ importFrom
    	EnumSet<Flags> importFlags = EnumSet.noneOf(Flags.class);  	
 }
 @after{
+	
  }
     
     :   	(q1=qualName 
@@ -1785,7 +1785,16 @@ stmtDefault
 	:	'default'	':' NL* stmts	-> ^(S_CASE<StmtNode.Case>["S_CASE"] stmts)
 	;
 stmtCase
-	:	'case' (INT_LIT)	':' NL* stmts	-> ^(S_CASE<StmtNode.Case>["S_CASE"] stmts INT_LIT)
+@init {
+	EnumSet<LitFlags> litFlags = EnumSet.of(LitFlags.INT);
+}
+	:	'case' (INT_LIT)	':' NL* stmts	-> ^(S_CASE<StmtNode.Case>["S_CASE"] stmts 
+							    ^(E_CONST<ExprNode.Const>["E_CONST", litFlags] INT_LIT))
+	|	'case' (qualName)	':' NL* stmts	-> ^(S_CASE<StmtNode.Case>["S_CASE"] stmts 
+							    ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT[$qualName.text])) // enum val
+							    //^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT))
+							    //^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT[$qualName.text])
+	
 	;
 stmtDoWhile
 	:	'do' stmtBlock 'while' '(' expr ')' delim 	-> ^(S_WHILE<StmtNode.While>["S_WHILE", true] expr stmtBlock)

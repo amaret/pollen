@@ -11,6 +11,7 @@ public class BodyNode extends BaseNode implements IScope {
 	static final private int STMTS = 1;   
     static private BodyNode current = null;
     DeclNode.Fcn fcn = null;
+    private List<String> localVarNames = new ArrayList<String>();
     private List<DeclNode> localVars = new ArrayList<DeclNode>();
     private NestedScope scopeDeleg = new NestedScope(this);
             
@@ -33,8 +34,17 @@ public class BodyNode extends BaseNode implements IScope {
     	return (getFcn() != null ? getFcn().getDefiningScope().getScopeName() + "." + getFcn().getName().getText() : "");
     }
     void addLocalVar(DeclNode.Var var) {
-        if (var != null 
-        		&& !(var.getName().getText().equals(ParseUnit.DEFAULT_LOOPVAR))) { 
+    	String  name = var.getName().getText();
+    	if (name.matches(ParseUnit.INTRINSIC_PREFIX + ".*"))
+    		return;
+    	if (localVarNames.contains(name)) {
+    		ParseUnit.current().reportError(var, "'" + name + "': duplicate local variable name in function scope not allowed");
+    		return;
+    	}
+    	else {
+    		localVarNames.add(name);
+    	}
+        if (var != null) { 
             localVars.add(var);
         }
     }  

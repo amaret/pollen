@@ -66,6 +66,7 @@ public class TypeRules {
 	}
 
 	static Cat checkBinary(String op, Cat left, Cat right) {
+		
 		if (left == null || right == null) {
 			return Cat.fromError("expr problem", left, right);
 		}		
@@ -77,8 +78,9 @@ public class TypeRules {
 		
 		Cat rtn =  checkBinary(op, left, right, "operand type error");
 		boolean dbg = false;
-		if (rtn instanceof Cat.Error)
+		if (rtn instanceof Cat.Error) {
 			dbg = true;
+		}
 		
 		return rtn;
 	}

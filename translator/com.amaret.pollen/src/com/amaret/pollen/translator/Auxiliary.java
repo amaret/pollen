@@ -1160,7 +1160,9 @@ public class Auxiliary {
 	void genLocals(List<DeclNode> localVars) {
 		// locals are first declared without initializers.
 		// later on they are initialized with assign statements.
-		// TODO this doesn't always work - why is it ever done? Take this out?
+		// This is done because this is javascript semantics. No block local 
+		// variable dclns; vars are hoisted. Pollen as a whole follows javascript
+		// rules for this, in target as well as host fcns. 
 		
 		for (DeclNode v : localVars) {
 			if (v instanceof DeclNode.Var) {
