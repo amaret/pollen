@@ -197,6 +197,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			}
 			return false;
 		}
+		public void setMethod() {
+			flags.add(Flags.METHOD);
+		}
 
 		protected boolean pass1Begin() {
 			super.pass1Begin();
@@ -766,7 +769,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			if (ParseUnit.current().getParseUnitFlags().contains(Flags.CLASS)
 					&& !(flags.contains(Flags.CONSTRUCTOR))
 					&& !(flags.contains(Flags.HOST))) {
-				flags.add(Flags.METHOD);
+				this.flags.add(Flags.METHOD);
 			}
 		}
 
@@ -915,7 +918,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		 * @return the synthesized 'this' ptr
 		 */
 		public DeclNode.Formal getThisPtr() {
-			return ((DeclNode.Formal) getChild(THIS_PTR));
+			DeclNode.Formal thisPtr = ((DeclNode.Formal) getChild(THIS_PTR));
+			if (this.isMethod())
+				thisPtr.setMethod();
+			return thisPtr;
 		}
 
 		@Override
@@ -1064,9 +1070,12 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 			if (name.getText().matches(ParseUnit.INTRINSIC_PREFIX + ".*")) {
 				flags.add(Flags.PUBLIC); // always
-				if (isMethod())
-					currUnit.reportError(name,
-							"pollen lifecycle functions must be defined in modules");
+				if (isMethod()) {
+					String n = getName().getText();
+					n = "'" +n.substring(0,n.indexOf("_")) + "." + n.substring(n.lastIndexOf("_")+1) + "'";
+					currUnit.reportError(this,
+				        	n + ": pollen lifecycle functions must be defined in modules");
+				}
 			}
 
 			IScope scopeToUse = currUnit.getSymbolTable().curScope();
