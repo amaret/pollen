@@ -3,7 +3,9 @@ package com.amaret.pollen.driver;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 import antlr.CommonToken;
@@ -175,6 +177,7 @@ public class ProcessUnits {
 		}
 		return relativePath;
 	}
+	private List<String> packageNames = new ArrayList<String>();
 	/**
 	 * 
 	 * @param bundlePath - a absolute path for a bundle
@@ -216,13 +219,19 @@ public class ProcessUnits {
 				return false;
 			}
 		};
+
 		String[] pkgs = bundle.list(filter);
 		if (pkgs != null) {
 			for (int i=0; i< pkgs.length; i++) {
+				if (!packageNames.contains(pkgs[i]))
+					packageNames.add(pkgs[i]);
+				else {
+					throw new Termination ("Invalid input: encountered package \'" + pkgs[i] + "\' in more than one bundle. Duplicate package names are illegal.");					
+				}
 				if (!map.containsKey(pkgs[i])) {
 					map.put(pkgs[i], bundlePath + File.separator + pkgs[i]);	
 				}
-			}			
+			}
 		}	
 		return map;
 	}
@@ -251,7 +260,7 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.83";  // user release . internal rev . fix number
+	private static String  v = "0.2.84";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -407,8 +416,6 @@ public class ProcessUnits {
 		return ParseUnit.current().parseUnits();
 	}
 	protected int translateUnit(HashMap<String, UnitNode> unitMap) throws Exception {
-		
-		ParseUnit cur = ParseUnit.current();
 		
 		int rtn = ParseUnit.current().getCurrUnitNode().getErrorCount();
 		if (rtn == 0) {

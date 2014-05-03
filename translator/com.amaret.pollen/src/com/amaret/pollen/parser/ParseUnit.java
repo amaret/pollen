@@ -1004,6 +1004,12 @@ public class ParseUnit {
 			if (iter > 10)
 				break;
 		}
+		if (iter > 10) {
+			this.reportWarning(topLevelUnit, "checkUnitPassN, n exceeded limit");
+			for (UnitNode u : checkUnitsPass2) {
+				u.setUnitUsed(true); // worst case but will work
+			}
+		}
 		
 		currUnitNode = topLevelUnit;
 		return unitMap;

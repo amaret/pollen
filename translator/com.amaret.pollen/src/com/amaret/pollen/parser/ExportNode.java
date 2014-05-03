@@ -276,7 +276,7 @@ public class ExportNode extends BaseNode implements ISymbolNode {
         // handle the function export
         ISymbolNode fcnDcl = ExportNode.getExportFcnDclnNode(exportedName);
         if (fcnDcl == null || !(fcnDcl instanceof DeclNode.Fcn)) {
-        	currUnit.reportError(exportedName, "exported function not found");
+        	currUnit.reportError(exportedName, "function to be exported not found in (or not accessible to) current scope");
         	return false;
         }
         currUnit.getCurrUnitNode().addFcn(path[1], (Fcn) fcnDcl);

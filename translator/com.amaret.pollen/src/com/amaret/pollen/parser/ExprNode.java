@@ -446,7 +446,7 @@ public class ExprNode extends BaseNode {
 								"'"
 										+ ParseUnit.current()
 												.getNameForMessage(call)
-										+ "': function is not declared in (or visible to) the current scope "
+										+ "': function is not declared in (or not visible to) the current scope "
 										+ symtab.curScope().getScopeName());
 
 					else if (qualifier != null) {
@@ -1117,7 +1117,7 @@ public class ExprNode extends BaseNode {
 						"'"
 								+ ParseUnit.current().getNameForMessage(
 										this.getName().getText())
-								+ "': identifier is not declared in (or visible to) the current scope "
+								+ "': identifier is not declared in (or not visible to) the current scope "
 								+ currUnit.getSymbolTable().curScope()
 										.getScopeName());
 			} else {
@@ -1201,7 +1201,7 @@ public class ExprNode extends BaseNode {
 													.getNameForMessage(
 															this.getName()
 																	.getText())
-											+ "': identifier is not declared in (or visible to) the current scope "
+											+ "': identifier is not declared in (or not visible to) the current scope "
 											+ ParseUnit.current()
 													.getSymbolTable()
 													.curScope().getScopeName());
