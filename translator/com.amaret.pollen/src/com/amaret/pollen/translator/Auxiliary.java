@@ -648,7 +648,8 @@ public class Auxiliary {
 						&& gen.curUnit().getUnitType().getMetaFormals() != null) {
 					DeclNode.Formal f = (Formal) snode;
 					Cat cat = Cat.fromType(f.getTypeSpec());
-					if (f.isMetaArg() && cat.code().equals(Cat.STRING)
+					if (f.isMetaArg() 
+							&& cat instanceof Cat.Scalar
 							&& f.getName().getText().equals(((ExprNode.Ident) b).getName().getText())) {
 						if (f.getInit() instanceof ExprNode.Const) {
 							String injectVal = ((ExprNode.Const) f.getInit())
