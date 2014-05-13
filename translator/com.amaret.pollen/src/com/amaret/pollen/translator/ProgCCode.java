@@ -610,7 +610,6 @@ public class ProgCCode {
     	String n =  decl.getName().getText();
     	
         Object obj;
-        System.out.println(decl.toStringTree());
 
 		obj = ud.getUnitObj().getAny(n);
         if (obj == Value.UNDEF) {
@@ -633,9 +632,6 @@ public class ProgCCode {
 		gen.getFmt().mark();
 		genVal(decl, val);
 		String ss = gen.getFmt().release();
-		boolean dbg = false;
-		if (ss.equals("null"))
-			dbg = true;
 		ss = ss.equals("null") ? ss : addrOf ? "&" + ss : ss;
 		int l = 16 - ss.length() > 0 ? 24 - ss.length() : 4;
 		String spaces = String.format("%"+l+"s", "");
