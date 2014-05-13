@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
@@ -26,10 +27,12 @@ public class ProcessUnits {
 	private static String pollenPrintPkg = "";
 	private static String pollenPrintProxyModule = ""; // where it is
 	private static boolean pollenPrintBindSeen = false;
-	private static boolean gccAvr = false;
 	private static boolean asserts = false;
 	private static boolean warnings = false;
 	private static boolean dashPoption = false;
+	
+	private enum CCompiler { GCC_LOCALHOST, GCC_AVR };
+	static private EnumSet<CCompiler> cCompiler = EnumSet.noneOf(CCompiler.class);
 	
 	public static boolean isDashPoption() {
 		return dashPoption;
@@ -65,11 +68,27 @@ public class ProcessUnits {
 		ProcessUnits.warnings = warnings;
 	}
 	public static boolean isGccAvr() {
-		return gccAvr;
+		return cCompiler.contains(CCompiler.GCC_AVR);
 	}
 	private static void setGccAvr(boolean gccAvr) {
-		ProcessUnits.gccAvr = gccAvr;
+		cCompiler = EnumSet.of(CCompiler.GCC_AVR);
 	}
+	public static boolean isGccLocalHost() {
+		return cCompiler.contains(CCompiler.GCC_LOCALHOST);
+	}
+	private static void setGccLocalHost(boolean gccAvr) {
+		cCompiler = EnumSet.of(CCompiler.GCC_LOCALHOST);
+	}
+	private static String getPropsFileName() {
+		String prefixPath = pollenRoot + File.separator;
+		if (isGccAvr())	
+			// TODO change to props_gccavr
+			return prefixPath + "props";  
+		if (isGccLocalHost())
+			return prefixPath + "props_gcc";
+		return prefixPath + "props"; 
+	}
+
 	public static String getPollenEnvPkg() {
 		return pollenEnvPkg;
 	}
@@ -260,7 +279,7 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.85";  // user release . internal rev . fix number
+	private static String  v = "0.2.86";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -329,6 +348,10 @@ public class ProcessUnits {
 				ProcessUnits.setGccAvr(true);
 				continue;
 			}
+			if (p.equals("-gcc")) { 	// UNDOCUMENTED, for testing: runs gcc
+				ProcessUnits.setGccLocalHost(true);
+				continue;
+			}
 			if (p.equals("-a")) { 		// turns asserts on
 				ProcessUnits.setAsserts(true);
 				continue;
@@ -352,7 +375,7 @@ public class ProcessUnits {
 			}
 			if (!pollenFile.isEmpty()) { // pollen file
 				if (!inputs.pollenFile.isEmpty()) {
-					throw new Termination ("Invalid inputs: translator accepts one pollen file and a set of bundles");					
+					throw new Termination ("Invalid inputs: translator accepts one pollen file (and a set of bundles). More than one pollen file encountered.");					
 				}				
 				inputs.pollenFile = pollenFile;
 				inputPath = pollenFile;
@@ -410,6 +433,23 @@ public class ProcessUnits {
 			PrintStream infoStream, SymbolTable symtab) throws Exception {
 		
 		Inputs files = this.getArgs(args, errorStream);
+		
+		// set up the properties after the args processed
+        for (Property p : Property.values()) {
+            String val = System.getenv(p.name());
+            if (val == null) {
+                System.err.println("pollen.ParseUnit: undefined environment variable: " + p.name());
+                System.exit(1);
+            }
+            props.setProperty(p.name(), val);
+            if (p.name().equals("POLLEN_ROOT"))
+            	pollenRoot = val;
+        }
+        
+        props = new PropsLoader().apply(props, getPropsFileName(), System.err);
+        if (props == null) {
+            System.exit(1); 
+        }
 
 		ParseUnit.initParse(files.pollenFile, props, files.packages, outputStream, errorStream, infoStream, symtab);
 
@@ -458,22 +498,6 @@ public class ProcessUnits {
 		HashMap<String, UnitNode> unitNodes;
 		
         Properties props = new Properties();
-
-        for (Property p : Property.values()) {
-            String val = System.getenv(p.name());
-            if (val == null) {
-                System.err.println("pollen.ParseUnit: undefined environment variable: " + p.name());
-                System.exit(1);
-            }
-            props.setProperty(p.name(), val);
-            if (p.name().equals("POLLEN_ROOT"))
-            	pollenRoot = val;
-        }
-        
-        props = new PropsLoader().apply(props, pollenRoot + File.separator + "props", System.err);
-        if (props == null) {
-            System.exit(1); 
-        }
 
 		unitNodes = this.parseUnit(args, props, outputStream, infoStream, errorStream, symbolTable);
 		

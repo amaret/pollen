@@ -502,7 +502,7 @@ public class Auxiliary {
 	private void genExpr$Call(ExprNode.Call expr) {
 				
  		String n = expr.getName() instanceof ExprNode.Ident ? ((ExprNode.Ident) expr.getName()).getName().getText() : "";
-
+ 		
 		if (n.equals(ParseUnit.INTRINSIC_PREFIX + "assert")) {				
 			if (!ProcessUnits.isAsserts())
 				return;  // suppress call
@@ -643,21 +643,24 @@ public class Auxiliary {
 				// String meta value parameters: the quotes are stripped and the
 				// value is injected into c as a (c) SYMBOL (which is assumed to have
 				// been defined).
+				// Can also inject the values of numeric meta value parameters.
 
 				if (snode instanceof DeclNode.Formal
 						&& gen.curUnit().getUnitType().getMetaFormals() != null) {
 					DeclNode.Formal f = (Formal) snode;
 					Cat cat = Cat.fromType(f.getTypeSpec());
-					if (f.isMetaArg() 
-							&& cat instanceof Cat.Scalar
-							&& f.getName().getText().equals(((ExprNode.Ident) b).getName().getText())) {
-						if (f.getInit() instanceof ExprNode.Const) {
-							String injectVal = ((ExprNode.Const) f.getInit())
-							.getValue().getText();
-							injectVal = injectVal.replaceAll("^\"|\"$", "");
-							injectVal = injectVal.replaceAll("^\'|\'$", "");
-							// gen.fmt.print(injectVal + "\n");
-							gen.getFmt().print(injectVal);
+					if (f.isMetaArg()) {
+						if (!(cat instanceof Cat.Scalar)) {
+							ParseUnit.current().reportError(expr, f.getName().getText() + ": meta arguments in injected C code must have scalar type");
+						}
+						else if (f.getName().getText().equals(((ExprNode.Ident) b).getName().getText())) {
+							if (f.getInit() instanceof ExprNode.Const) { // true by definition
+								String injectVal = ((ExprNode.Const) f.getInit())
+										.getValue().getText();
+								injectVal = injectVal.replaceAll("^\"|\"$", "");
+								injectVal = injectVal.replaceAll("^\'|\'$", "");
+								gen.getFmt().print(injectVal);
+							}
 						}
 					}
 				}
@@ -720,7 +723,8 @@ public class Auxiliary {
 		SymbolEntry sym = expr.getSymbol();
 		if (sym == null) {
 			if (ParseUnit.isIntrinsicCall(expr.getName().getText()))
-				gen.getFmt().print("%1%2%3", gen.uname_target(), expr.getName(), ParseUnit.KIND_EXTERN);
+				gen.getFmt().print(ParseUnit.current().getPollenFunctionOutputName(expr.getName().getText()));
+				//gen.getFmt().print("%1%2%3", gen.uname_target(), expr.getName(), ParseUnit.KIND_EXTERN);
 			else
 				gen.getFmt().print(expr.getName() + " /* ?? missing symbol ?? */ ");
 			return;
@@ -1124,7 +1128,6 @@ public class Auxiliary {
 			genForwardForType(arg);			
 		}		
 	}
-
 
 	void genHeaderInclude(String qn) {
 		String gs = qn.replace('.', '_') + "__M";

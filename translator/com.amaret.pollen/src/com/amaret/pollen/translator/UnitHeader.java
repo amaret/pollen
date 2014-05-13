@@ -3,6 +3,7 @@
  */
 package com.amaret.pollen.translator;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
@@ -518,47 +519,69 @@ public class UnitHeader {
         genVars(unit);
         
     }
-
+    
+    /**
+     * This is the entry routine.
+     * @param unit
+     */
     private void genImports(UnitNode unit) {
-    	boolean title = false;
-        for (ImportNode imp : unit.getImports()) {
-            UnitNode u = imp.getUnit();
-            if (u != null && (u.isModule() || u.isClass())) {
+    	if (unit == null) 
+    		return;
+    	List<String> imported = new ArrayList<String>();
+    	this.genImports(imported, unit, false);
+    }
+
+
+    /**
+     * Generate header includes for used units. 
+     * For compositions, call recursively.
+     * @param imported a list of units already imported. 
+     * @param unit
+     * @param tl title 
+     */
+    private void genImports(List<String> imported, UnitNode unit, boolean tl) {
+
+    	if (unit == null)
+    		return;
+    	for (ImportNode imp : unit.getImports()) {
+    		UnitNode u = imp.getUnit();
+        	boolean title = tl;   
+    		if (u != null) {
     			if (!title) {
     				gen.aux.genTitle("imports");
     				title = true;
     			}
-                gen.aux.genHeaderInclude(u.getQualName());
-            }
-        }
+    			if (u.isUnitUsed()) {
+    				if ((u.isModule() || u.isClass()) && !imported.contains(u.getQualName())) {
+    					gen.aux.genHeaderInclude(u.getQualName());
+    					imported.add(u.getQualName());
+    				}
+    				if (u.isComposition()) {
+    					this.genImports(imported, u, title);
+    					// TODO how are base type imports brought in? 
+    				}
+    			}
+    		}
+    	}
     }
     private void genForwards(UnitNode unit) {
     	
     	gen.aux.genTitle("forward declarations for intrinsics");
-//        gen.getFmt().print("void %1pollen__print_bool(bool b);\n", gen.uname_target());
-//        gen.getFmt().print("void %1pollen__print_int(int32 i);\n", gen.uname_target());
-//        gen.getFmt().print("void %1pollen__print_uint(uint32 u);\n", gen.uname_target());
-//        gen.getFmt().print("void %1pollen__print_str(string s);\n", gen.uname_target());
-//        gen.getFmt().print("void %1pollen__print_x(void* print, void* val);\n", gen.uname_target());
-//        
-//        // if assertions are turned on, generate pollen.assert
-//        if (ProcessUnits.isAsserts()) {
-//            gen.getFmt().print("%tvoid %1pollen__assert__E(bool b, string msg);\n", gen.uname_target());
-//        }             
+    	// if there is no local intrinsic definition, generate a forward
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "reset") == null) {
-            gen.getFmt().print("void %1pollen__reset__E();\n", gen.uname_target());
+        	gen.getFmt().print("void %1();\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_RESET));
         }
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "ready") == null) {
-            gen.getFmt().print("void %1pollen__ready__E();\n", gen.uname_target());
+        	gen.getFmt().print("void %1();\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_READY));
         }
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "shutdown") == null) {
-            gen.getFmt().print("void %1pollen__shutdown__E();\n", gen.uname_target());
+        	gen.getFmt().print("void %1();\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_SHUTDOWN));
         }
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "wake") == null) {
-            gen.getFmt().print("void %1pollen__wake__E(byte id);\n", gen.uname_target());
+        	gen.getFmt().print("void %1(byte id);\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_WAKE));
         }
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "hibernate") == null) {
-            gen.getFmt().print("void %1pollen__hibernate__E(byte id);\n", gen.uname_target());
+        	gen.getFmt().print("void %1(byte id);\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_HIBERNATE));
         }
     }
     

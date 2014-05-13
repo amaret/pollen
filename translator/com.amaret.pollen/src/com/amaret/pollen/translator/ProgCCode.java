@@ -155,32 +155,32 @@ public class ProgCCode {
         
         // Generate defaults for pollen.reset, pollen.ready, pollen.shutdown, pollen.wake, pollen.hibernate.
         // if they do not exist.
-        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "reset") == null) {
+        if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.INTRINSIC_PREFIX + "reset")) {
         	gen.aux.genTitle("pollen.reset()");
             gen.getFmt().print("%tvoid %1pollen__reset__E() {\n%+", gen.uname_target());
             gen.getFmt().print("%t/* empty default */\n");
             gen.getFmt().print("%-}\n");
         }
-        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "ready") == null) {
+        if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.INTRINSIC_PREFIX + "ready")) {
         	gen.aux.genTitle("pollen.ready()");
             gen.getFmt().print("%tvoid %1pollen__ready__E() {\n%+", gen.uname_target());
             gen.getFmt().print("%t/* empty default */\n");
             gen.getFmt().print("%-}\n");
         }
-        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "shutdown") == null) {
+        if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.INTRINSIC_PREFIX + "shutdown")) {
         	gen.aux.genTitle("pollen.shutdown()");
             gen.getFmt().print("%tvoid %1pollen__shutdown__E() {\n%+", gen.uname_target());
             gen.getFmt().print("%tvolatile int dummy = 0xCAFE;\n");
             gen.getFmt().print("%twhile (dummy) ;\n");
             gen.getFmt().print("%-}\n");
         }
-        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "wake") == null) {
+        if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.INTRINSIC_PREFIX + "wake")) {
         	gen.aux.genTitle("pollen.wake(uint8 id)");
             gen.getFmt().print("%tvoid %1pollen__wake__E(byte id) {\n%+", gen.uname_target());
             gen.getFmt().print("%t/* empty default */\n");
             gen.getFmt().print("%-}\n");
         }
-        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "hibernate") == null) {
+        if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.INTRINSIC_PREFIX + "hibernate")) {
         	gen.aux.genTitle("pollen.hibernate(uint8 id)");
             gen.getFmt().print("%tvoid %1pollen__hibernate__E(byte id) {\n%+", gen.uname_target());
             gen.getFmt().print("%t/* empty default */\n");
@@ -189,35 +189,16 @@ public class ProgCCode {
               
         gen.aux.genTitle("main()");
         gen.getFmt().print("int main() {\n%+");
-        gen.getFmt().print("%t%1pollen__reset__E();\n", gen.uname_target());
+        gen.getFmt().print("%t%1();\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_RESET));
         for (UnitDesc ud : getUnitDescriptors()) {
             if (ud.getUnit().lookupFcn(ParseUnit.CTOR_MODULE_TARGET) != null) {
                 genSingleFcnCall(ParseUnit.CTOR_MODULE_TARGET, ud.getUnit());
             }
         }
-        for (UnitDesc ud : getUnitDescriptors()) {
-            UnitNode u = ud.getUnit();
-            if (u == gen.getMainUnit())
-            	continue;
-            if (u.lookupFcn("pollen_ready") != null) {
-                gen.getFmt().print("%t%1_pollen__ready__E();\n", u.getQualName().replace('.', '_'));
-            }
-        }
-        gen.getFmt().print("%t%1pollen__ready__E();\n", gen.uname_target());
-        
-        gen.getFmt().print("%t%1pollen__run__E();\n", gen.uname_target());
-        
-        for (UnitDesc ud : getUnitDescriptors()) {
-            UnitNode u = ud.getUnit();
-            if (u == gen.getMainUnit())
-            	continue;
-            if (u.lookupFcn("pollen_shutdown") != null) {
-                gen.getFmt().print("%t%1_pollen__shutdown__E();\n", u.getQualName().replace('.', '_'));
-            }
-        }
-        gen.getFmt().print("%t%1pollen__shutdown__E();\n", gen.uname_target());
-        gen.getFmt().print("%-}\n");
-       
+        gen.getFmt().print("%t%1();\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_READY));
+        gen.getFmt().print("%t%1();\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_RUN));
+        gen.getFmt().print("%t%1();\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_SHUTDOWN));
+        gen.getFmt().print("%-}\n");       
     }
 
 
@@ -629,6 +610,7 @@ public class ProgCCode {
     	String n =  decl.getName().getText();
     	
         Object obj;
+        System.out.println(decl.toStringTree());
 
 		obj = ud.getUnitObj().getAny(n);
         if (obj == Value.UNDEF) {
@@ -640,15 +622,21 @@ public class ProgCCode {
         //	return;
 
         Object val = Value.toVal(obj);
-                
+               
+        boolean addrOf = false;
 		if (decl instanceof DeclNode.TypedMember && ((DeclNode.TypedMember) decl).isProtocolMember()) {
 			val = genTypedMemberVal(ud, decl, val);
-			gen.getFmt().print("&");          	
+			addrOf = true;
+			//gen.getFmt().print("&");          	
         }
         
 		gen.getFmt().mark();
 		genVal(decl, val);
 		String ss = gen.getFmt().release();
+		boolean dbg = false;
+		if (ss.equals("null"))
+			dbg = true;
+		ss = ss.equals("null") ? ss : addrOf ? "&" + ss : ss;
 		int l = 16 - ss.length() > 0 ? 24 - ss.length() : 4;
 		String spaces = String.format("%"+l+"s", "");
 		gen.getFmt().print("%1,%2/* %3 */\n",ss, spaces, decl.getName());   					

@@ -7,10 +7,6 @@ import com.amaret.pollen.parser.ParseUnit;
 
 public class GccAvr extends GccBase {
 
-//    static final private String CRT_S = "/crt0.s";
-//    static final private String CRT_O = "/crt0.o";
-//    static final private String LNK_CMD = "/lnk.cmd";
-
     {
         typeInfo.put(TypeId.BOOL,   new TypeInfo(2, 1));
         typeInfo.put(TypeId.BYTE,   new TypeInfo(1, 1));
@@ -34,22 +30,18 @@ public class GccAvr extends GccBase {
         ParseUnit curr = ParseUnit.current();
 
         if ("yes".equals(curr.getProperty(ITarget.P_DISABLE))) {       	
-        	//curr.getInfoStream().print("Skiping target compile\n");
         	return;
         } 
         
         String srcFilePath = srcFile.getAbsolutePath();
         
         String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
-//        String asmFile = baseFile + ".s";
-//        String objFile = baseFile + ".o";
         String mapFile = baseFile + ".map";
         String outFile = baseFile + ".out";
         String hexFile = baseFile + ".hex";
 
         String gcc = curr.getProperty(ITarget.P_TOOLSDIR) + "/" + curr.getProperty(ITarget.P_TOOLPREFIX) + "gcc";
         String objcopy = curr.getProperty(ITarget.P_TOOLSDIR) + "/" + curr.getProperty(ITarget.P_TOOLPREFIX) + "objcopy";
-//        String targDir = getTargDir();
         
         String cmd;
         
@@ -57,7 +49,8 @@ public class GccAvr extends GccBase {
         cmd += gcc;
         cmd = addCcOptsPrefix(cmd);
         cmd += " -mmcu=atmega328p"; //+ curr.getProperty(ITarget.P_MCU);
-        
+        //cmd += " -ansi"; // gets usleep() back which is obsolete in c99
+        //cmd += " -I/usr/include";
         cmd += " -I" + curr.getPollenRoot();
         cmd = addCcOpts(cmd);
         cmd += srcFile;

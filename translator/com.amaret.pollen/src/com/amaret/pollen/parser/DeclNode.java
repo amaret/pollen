@@ -513,13 +513,14 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				((DeclNode) calledFcn).callAccessCheck(this, false);
 				ExprNode.Vec eVec = (Vec) (this.getInit() instanceof ExprNode.Vec ? this
 						.getInit() : null);
-				for (ExprNode i : eVec.getVals()) {
-					ISymbolNode calledFcnArrayElem = i instanceof ExprNode.Ident
-							&& i.getSymbol() != null ? i.getSymbol().node()
-							: null;
-					((DeclNode) calledFcnArrayElem)
+				if (eVec != null)
+					for (ExprNode i : eVec.getVals()) {
+						ISymbolNode calledFcnArrayElem = i.getSymbol() != null ? i.getSymbol().node()
+								: null;
+						if (calledFcnArrayElem != null)
+							((DeclNode) calledFcnArrayElem)
 							.callAccessCheck(this, false);
-				}
+					}
 			}
 
 			// this condition means we had '[x]' instead of '[constExpr]' for
@@ -1076,6 +1077,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 					currUnit.reportError(this,
 				        	n + ": pollen lifecycle functions must be defined in modules");
 				}
+				else {
+					ParseUnit.current().putPollenFunction(name.getText());
+				}
 			}
 
 			IScope scopeToUse = currUnit.getSymbolTable().curScope();
@@ -1379,15 +1383,12 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 		public void pass2End() {
 			if (getInit() != null) {
-				// System.out.println("DeclNode.FcnRef.pass2End() " +
-				// this.toStringTree());
 				ExprNode e = getInit();
-				if (e instanceof ExprNode.Ident) {
-					ISymbolNode initVal = (((ExprNode.Ident) e).getSymbol()
-							.node() != null ? e.getSymbol().node() : null);
-					if (initVal != null)
-						((DeclNode) initVal).callAccessCheck(this, true);
-				}
+				ISymbolNode initVal = e.getSymbol() != null ? e.getSymbol()
+						.node() : null;
+				if (initVal != null)
+					((DeclNode) initVal).callAccessCheck(this, true);
+
 			}
 		}
 
@@ -3131,7 +3132,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		}
 		ITypeSpecInit tsi = (ITypeSpecInit) this;
 		ExprNode init = tsi.getInit();
-		if (init instanceof ExprNode.Ident && init.getSymbol() != null
+		if (init != null && init.getSymbol() != null
 				&& init.getSymbol().node() instanceof DeclNode)
 			((DeclNode) init.getSymbol().node()).setUnitUsedForExpr(this);
 		return true;

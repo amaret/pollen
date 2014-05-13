@@ -57,10 +57,10 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 
 	public void setUnitUsed(boolean unitUsed) {
 
-		// if (unitUsed)
-		// System.out.println("...setting unitUsed TRUE for " +
-		// this.getQualName() + (isGeneratedMetaInstance() ? " generated Meta" :
-		// ""));
+//		if (unitUsed)
+//			System.out.println("...setting unitUsed TRUE for " +
+//					this.getQualName() + (isGeneratedMetaInstance() ? " generated Meta" :
+//							""));
 		if (unitUsed && !flags.contains(Flags.UNIT_USED))
 			addFlags(EnumSet.of(Flags.UNIT_USED));
 	}

@@ -535,7 +535,7 @@ public class UnitJScript {
     				SymbolEntry export = compos.getUnit().lookupName(ParseUnit.EXPORT_PREFIX+impC.getName().getText());
     				if (ParseUnit.isDebugMode())
     					System.out.println("  genUse(): Import " + impC.getName() + " in unit " + compos.getUnit().getQualName() + " has isExport " + (impC.isExport() ? "TRUE" : "FALSE") + ", export sym exists " + (export != null ? "TRUE" : "FALSE") );
-    				if (export != null) {
+    				if (export != null || (impC.getUnit() != null && impC.getUnit().isUnitUsed())) {
     					genUse(impC, inserted);
     				}
     				else if (impC.isProtocolBindTarget()) {

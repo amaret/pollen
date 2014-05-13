@@ -113,14 +113,6 @@ public class ExprNode extends BaseNode {
 					if (base.getCat() instanceof Cat.Arr)
 						return ((Cat.Arr) base.getCat()).getBase();
 					return base.getCat();
-					// if (base instanceof ExprNode.Ident) {
-					// SymbolEntry s = ((ExprNode.Ident) base).getSymbol();
-					// if (s != null && s.node() instanceof DeclNode.ITypeSpec)
-					// {
-					// return Cat.fromType(((DeclNode.ITypeSpec) s.node())
-					// .getTypeSpec());
-					// }
-					// }
 				}
 			}
 			return isRight ? this.getRight().getCat() : this.getLeft().getCat();
@@ -143,12 +135,11 @@ public class ExprNode extends BaseNode {
 				TypeRules.checkInit(exprCat, getRight());
 				return;
 			}
-			SymbolEntry l_se = getLeft() instanceof Ident ? ((Ident) getLeft())
-					.getSymbol() : null;
-			SymbolEntry r_se = getRight() instanceof Ident ? ((Ident) getRight())
-					.getSymbol() : null;
 
-			boolean doAccessCheck = l_se != null
+			SymbolEntry l_se = getLeft().getSymbol();
+			SymbolEntry r_se = getRight().getSymbol();
+
+			boolean doAccessCheck = l_se != null && r_se != null
 					&& l_se.node() instanceof DeclNode.FcnRef;
 			TypeNode.Arr at = l_se != null
 					&& l_se.node() instanceof DeclNode.Arr ? ((DeclNode.Arr) l_se
@@ -333,7 +324,7 @@ public class ExprNode extends BaseNode {
 
 			// look up the call identifier here rather than in Expr.Ident
 			// because here we know to check host scope.
-
+			
 			if (getName() != null && getName() instanceof ExprNode.Ident) {
 				ExprNode.Ident ei = (ExprNode.Ident) getName();
 
@@ -393,6 +384,8 @@ public class ExprNode extends BaseNode {
 								// For imports, the qualifier will get output by
 								// translator code.
 								ei.getName().stripQualifiers();
+								// For a module function called via a composition import this sets composition unit to used.
+								((ImportNode)qualifier.node()).getUnit().setUnitUsed(true);
 							}
 						} else {
 							IScope sc = currUnit.getSymbolTable().curScope();
@@ -591,15 +584,7 @@ public class ExprNode extends BaseNode {
 			if (exprCat == null || !(exprCat instanceof Cat.Fcn))
 				return;
 			Cat.Fcn fcncat = (com.amaret.pollen.parser.Cat.Fcn) exprCat; // setExprCat();
-			// if (fcncat == null)
-			// return; // error encountered
-			//
-			// exprCat = fcncat.retCat();
-
 			int argc = getArgs().size();
-			// if (addThisPtrParameter) argc++; // add one for this ptr (already
-			// added in
-			// the parser)
 			int minArgc = fcncat.minArgc();
 			int maxArgc = fcncat.maxArgc();
 
@@ -1807,7 +1792,18 @@ public class ExprNode extends BaseNode {
 		return exprCat;
 	}
 
+	/**
+	 * Handle getSymbol() from either Ident or Self.
+	 * @return return null if not Ident or Self with Ident member, else return symbol
+	 */
 	public SymbolEntry getSymbol() {
+		if (this instanceof Ident)
+			return ((Ident)this).getSymbol();
+		if (this instanceof Self) {
+			ExprNode m = ((Self)this).getMember();
+			if (m instanceof Ident)
+				return ((Ident)m).getSymbol();
+		}
 		return null;
 	}
 
@@ -1820,13 +1816,11 @@ public class ExprNode extends BaseNode {
 	 *         that node else return null.
 	 */
 	public ExprNode.Const getConstInitialValue() {
-		// TODO handle EnumVal
-		ExprNode.Const rtn = null;
 		if (this instanceof ExprNode.Const)
 			return (Const) this;
 		else {
-			if (this instanceof ExprNode.Ident) {
-				SymbolEntry se = ((ExprNode.Ident) this).getSymbol();
+			if (this.getSymbol() != null) {
+				SymbolEntry se = (this).getSymbol();
 				ISymbolNode node = se != null ? se.node() : null;
 				if (node instanceof ITypeSpecInit
 						&& ((ITypeSpecInit) node).getInit() instanceof ExprNode.Const) {

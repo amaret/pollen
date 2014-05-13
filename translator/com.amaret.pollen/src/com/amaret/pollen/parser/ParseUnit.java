@@ -3,6 +3,7 @@ package com.amaret.pollen.parser;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -42,9 +43,15 @@ public class ParseUnit {
 	private HashMap<String, String> packages;
 	private HashMap<String, String> errors;
 	private boolean parseTopLevel = false;
+	private UnitNode topLevelUnit = null;
 	
-	
-	
+	public UnitNode getTopLevelUnit() {
+		return topLevelUnit;
+	}
+	public void setTopLevelUnit(UnitNode topLevelUnit) {
+		this.topLevelUnit = topLevelUnit;
+	}
+
 	private List<String> metaModules = new ArrayList<String>();
 	static private boolean debugMode = false;
 	
@@ -58,6 +65,8 @@ public class ParseUnit {
 	public static final String POLLEN_SHUTDOWN = "pollen.shutdown";
 	public static final String POLLEN_RUN = "pollen.run";
 	public static final String POLLEN_HIBERNATE = "pollen.hibernate";
+	public static final String POLLEN_WAKE = "pollen.wake";
+
 
 	
 	// pollen names, generated
@@ -68,7 +77,6 @@ public class ParseUnit {
 	public static final String INTRINSIC_UNITVAR = INTRINSIC_PREFIX +"unitname";
 	public static final String INTRINSIC_PRINT_PROTOCOL= "PrintProtocol";
 	public static final String INTRINSIC_PRINT_PROXY = "intrinsicPrintProtocol";
-	//pollen.reset(), pollen.ready(), pollen.shutdown(), pollen.run(), pollen.hibernate().
 	public static final String CTOR_CLASS_TARGET = "new_";
 	public static final String CTOR_CLASS_HOST = "new_host";
 	public static final String CTOR_MODULE_TARGET = "targetInit";
@@ -91,6 +99,76 @@ public class ParseUnit {
 		if (s.equals(ParseUnit.INTRINSIC_PREFIX + ParseUnit.DEFAULT_LOOPVAR))
 			return false;			
 		return true;
+	}
+	
+	/**
+	 * Here track the output names of pollen intrinsic functions (which will vary depending on where they are defined).
+	 */
+	private List<String> pollenFunctionList = Arrays.asList("hibernate","ready", "reset", "run", "shutdown", "wake");
+	private Map<String, String> pollenFunctionsFound = new HashMap<String, String>();
+	/**
+	 * Create and store in a map the output name of a pollen intrinsic function
+	 * @param fname
+	 * @return false if something went wrong
+	 */
+	public boolean putPollenFunction(String fname) {
+		// handle both pollen.shutdown and pollen__shutdown formats
+		fname = fname.substring(fname.lastIndexOf("_")+1);
+		fname = fname.substring(fname.lastIndexOf(".")+1);
+		if (pollenFunctionsFound.containsKey(fname)) {
+			reportError(ParseUnit.current().getCurrUnitNode(), "encountered more than one implementation for intrinsic pollen." + fname);
+			return false;
+		}
+		String key = fname;
+		if (!pollenFunctionList.contains(key))
+			return true;
+        String uname = ParseUnit.current().getCurrUnitNode().getName().getText();
+        fname = ParseUnit.current().getCurrUnitNode().getPkgName().getText().replace('.', '_') + '_'  + uname + '_'
+        		+ "pollen__" + fname + ParseUnit.KIND_EXTERN;
+		pollenFunctionsFound.put(key, fname);
+		return true;		
+	}
+	/**
+	 * Return the formatted output name for a pollen intrinsic function
+	 * @param fname
+	 * @return formatted name of the user defined version if there is one or the default name.
+	 */
+	public String getPollenFunctionOutputName(String n)  {
+		String fname = n.substring(n.lastIndexOf("_")+1);
+		fname = fname.substring(n.lastIndexOf(".")+1);
+		if (!pollenFunctionList.contains(fname)) {
+			String uname = ParseUnit.current().getCurrUnitNode().getName().getText();
+			fname = ParseUnit.current().getCurrUnitNode().getPkgName().getText().replace('.', '_') + '_'  + uname + '_'
+					+ n + ParseUnit.KIND_EXTERN; // this can handle non function intrinsics
+			return fname;
+		}
+		String outputName = pollenFunctionsFound.get(fname);
+
+		if (outputName == null) { // no user defined implementation found
+			if (ParseUnit.current().getTopLevelUnit() != null) {
+				UnitNode u = ParseUnit.current().getTopLevelUnit(); // default in top level unit
+				String uname = u.getName().getText();
+				fname = u.getPkgName().getText().replace('.', '_') + '_'  + uname + '_'
+						+ ParseUnit.INTRINSIC_PREFIX + fname + ParseUnit.KIND_EXTERN;
+				return fname;
+			}
+			else return ""; // no top level unit (?)
+		}
+		return outputName;
+	}
+	/**
+	 * @param an intrinsic name	
+	 * @return true if a user defined intrinsic function by this name exists else false
+	 */
+	public boolean foundUserDefinedIntrinsicFunction(String n) {
+		String fname = n.substring(n.lastIndexOf("_")+1);
+		fname = fname.substring(n.lastIndexOf(".")+1);
+		if (!pollenFunctionList.contains(fname)) {
+			return false;
+		}
+		if (pollenFunctionsFound.get(fname) == null)
+			return false;
+		return true;		
 	}
 	/**
 	 * 
@@ -681,7 +759,6 @@ public class ParseUnit {
 			
 			// import is instantiated meta type
 			if (currNode == null && currImport.isSynthesizedFromMeta()) {
-			//if (currSnode == null) { 
 
 				// if this is an instantiated meta type, its pollen file won't exist
 				currNode = findUnit(fromPkg + "." + currImport.getQualName(), "parseImports");
@@ -863,6 +940,9 @@ public class ParseUnit {
 		// }
 		unit.init();
 		unit.setUnitUsed(isParseToplevel()); // top level unit always marked used
+		if (isParseToplevel()) {
+			setTopLevelUnit(unit);
+		}
 
 		if (!(unit.getPkgName().getText().equals(getPackageName()))) {
 			reportError(unit.getPkgName(),
