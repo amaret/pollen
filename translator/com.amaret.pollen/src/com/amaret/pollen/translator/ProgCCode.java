@@ -394,8 +394,7 @@ public class ProgCCode {
     }
 
     private void genPrologue() {
-        gen.getFmt().print("#define pollen__target_name %1\n", ParseUnit.current().getProperty(ITarget.P_NAME));       
-        gen.getFmt().print("#include <pollen.lang/std.h>\n\n");
+        gen.getFmt().print("#include <std.h>\n\n");
         
         for (String k : unitDescsMap.keySet()) {
         	UnitDesc u = unitDescsMap.get(k);

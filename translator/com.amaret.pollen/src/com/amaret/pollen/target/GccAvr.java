@@ -21,68 +21,46 @@ public class GccAvr extends GccBase {
         //typeInfo.put(TypeId.STRING,   new TypeInfo(2, 1));   ????
               
     }
+    protected String addMapFile(String cmd, File srcFile) {
+        
+        String srcFilePath = srcFile.getAbsolutePath();       
+        String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
+        String mapFile = baseFile + ".map";
+        cmd += " -Wl,-Map=" + mapFile + ",--gc-sections";
+        return cmd;
+    }
+    protected String addCcMcu(String cmd) {
+    	String mcu = ParseUnit.current().getProperty(ITarget.P_MCU);
+    	if (mcu == null)
+    		mcu = "atmega328p";
+    	cmd += " -mmcu=" + mcu;  
+    	return cmd;
+    }
+   
+    protected int execCmd(String cmd, boolean useInfoStream) throws Exception {
+        return execCmd(cmd, useInfoStream, null);
+    }
+
     @Override
     public void compile(File srcFile) throws Exception {
     	
-    	if (!ProcessUnits.isGccAvr())
-    		return;
-        
         ParseUnit curr = ParseUnit.current();
 
         if ("yes".equals(curr.getProperty(ITarget.P_DISABLE))) {       	
         	return;
         } 
+        execCompile(srcFile);
         
-        String srcFilePath = srcFile.getAbsolutePath();
-        
-        String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
-        String mapFile = baseFile + ".map";
-        String outFile = baseFile + ".out";
-        String hexFile = baseFile + ".hex";
-
-        String gcc = curr.getProperty(ITarget.P_TOOLSDIR) + "/" + curr.getProperty(ITarget.P_TOOLPREFIX) + "gcc";
-        String objcopy = curr.getProperty(ITarget.P_TOOLSDIR) + "/" + curr.getProperty(ITarget.P_TOOLPREFIX) + "objcopy";
-        
-        String cmd;
-        
-        cmd = "";
-        cmd += gcc;
-        cmd = addCcOptsPrefix(cmd);
-        cmd += " -mmcu=atmega328p"; //+ curr.getProperty(ITarget.P_MCU);
-        //cmd += " -ansi"; // gets usleep() back which is obsolete in c99
-        //cmd += " -I/usr/include";
-        cmd += " -I" + curr.getPollenRoot();
-        cmd = addCcOpts(cmd);
-        cmd += srcFile;
-        cmd += " -Wl,-Map=" + mapFile + ",--gc-sections";
-        //cmd += " -Wa,-ahl=" + asmFile;
-        cmd += " -o " + outFile;
-        cmd = addCcOptsSuffix(cmd);
-        
-        if (execCmd(cmd) != 0) {
-            return;
-        }
-        
-//        if (mustBuild(targDir + CRT_O, targDir + CRT_S)) {
-//            cmd = "";
-//            cmd += gcc;
-//            //cmd += " -mmcu=" + curr.getProperty(ITarget.P_MCU);
-//            cmd += " -c -x assembler-with-cpp " + targDir + CRT_S;
-//            cmd += " -o " + targDir + CRT_O;
-//            if (execCmd(cmd) != 0) {
-//                return;
-//            }
-//        }
-//        
-        cmd = "";
-        cmd += objcopy;
-        cmd += " -I elf32-avr -O ihex " + outFile + " " + hexFile;
-        if (execCmd(cmd) != 0) {
-            return;
-        }
-        
+    } 
+    protected String cmdLoad() {
+		String loader = ParseUnit.current().getProperty(ITarget.P_LOADER);
+        if (!new File(loader).exists())
+        	curr.reportFailure("property file does not specifiy a valid loader tool path");
+		return loader;
     }
-
-
-
+    protected String addLoaderOpts(String cmd) {
+    	cmd = super.addLoaderOpts(cmd);
+    	cmd += " -e -U flash:w:"; // must precede filename
+        return cmd;
+    }
 }

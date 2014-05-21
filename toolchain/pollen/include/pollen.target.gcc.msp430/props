@@ -1,0 +1,16 @@
+pollen.target.class = com.amaret.pollen.target.GccMsp430
+pollen.target.compiler.flags = -ffunction-sections -fdata-sections \
+  -g -Os -std=gnu99 -Wl,--relax -Wl,--gc-sections -Wl,-verbose
+pollen.target.compiler.flags.prefix =
+pollen.target.compiler.flags.suffix =
+# echo commands to stdout
+pollen.target.echo = yes
+pollen.target.name = pollen.target.gcc.msp430
+pollen.target.tools.prefix = msp430-
+pollen.target.mcu = msp430
+pollen.target.tools.home = /usr/local/msp430-toolchain/bin
+pollen.target.loader = 
+pollen.target.loader.flags = 
+pollen.target.objformat.input = elf32-msp430
+pollen.target.objformat.output = ihex
+

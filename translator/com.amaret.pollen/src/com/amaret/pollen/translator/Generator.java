@@ -264,7 +264,7 @@ public class Generator {
             targ = (ITarget) c.newInstance();
         }
         catch (Exception e) {
-            ParseUnit.current().reportFailure(e);
+            //ParseUnit.current().reportFailure(e); not an error, just don't compile
         }
         return targ;
     }
@@ -348,13 +348,16 @@ public class Generator {
 	}
 
 	/**
+	 * If this translation has no props file specified the compile will not happen.
 	 * @param progFile
 	 * @throws Exception
 	 */
 	public void compile() throws Exception {
-		if (ParseUnit.getSeriousErrorCount() == 0 && progFile != null) {
+		if (ParseUnit.getSeriousErrorCount() == 0 && progFile != null
+				&& ParseUnit.current().getProperty(ITarget.P_CLASS) != null) {
 			target = this.loadTarget();
-			target.compile(progFile);
+			if (target != null)
+				target.compile(progFile);
 		}
 	}
 

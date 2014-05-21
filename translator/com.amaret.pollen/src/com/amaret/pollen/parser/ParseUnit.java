@@ -365,17 +365,15 @@ public class ParseUnit {
 	}
 
 	static public enum Property {
-		POLLEN_ROOT
+		POLLEN_TARGET, POLLEN_BUNDLES, POLLEN_ROOT
 	}
 
 	public PrintStream getErrorStream() {
 		return err;
 	}
-
-	public String getPollenRoot() {
-		return ProcessUnits.getPollenRoot();
+	public String getPollenTarget() {
+		return ProcessUnits.getPollenTarget();
 	}
-
 	public PrintStream getInfoStream() {
 		return info;
 	}
@@ -449,6 +447,12 @@ public class ParseUnit {
 		return properties.getProperty(key.name());
 	}
 
+	/**
+	 * 
+	 * @param key
+	 * @return the property for key or null if no key. 
+	 * If key exists but no value specified returns empty string.
+	 */
 	public String getProperty(String key) {
 		return properties.getProperty(key);
 	}

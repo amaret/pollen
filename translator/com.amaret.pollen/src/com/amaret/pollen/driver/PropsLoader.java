@@ -17,14 +17,7 @@ public class PropsLoader {
             errStream.println(e.getMessage());
             return null;
         }
-                
-        
-        String pollenPath = props.getProperty(Property.POLLEN_ROOT.name());
-        if (pollenPath == null) {
-            errStream.println("POLLEN_ROOT must be defined");
-            return null;
-        }
-              
+                              
         return props;
     }
     

@@ -16,28 +16,70 @@ import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.ParseUnit.Property;
 import com.amaret.pollen.parser.SymbolTable;
 import com.amaret.pollen.parser.UnitNode;
+import com.amaret.pollen.target.ITarget;
 import com.amaret.pollen.translator.Generator;
 
 public class ProcessUnits {
 	private static String workingDir = "";
 	private static String pollenRoot = "";
+	private static String pollenTarget = "";
+	private static String pollenBundles = "";
 	private static String pollenEnv = "";
 	private static String pollenEnvPkg = "";
 	private static String pollenPrint = "";
 	private static String pollenPrintPkg = "";
 	private static String pollenPrintProxyModule = ""; // where it is
+	private static String propsOption = "";
+	private static String cFlags="";
 	private static boolean pollenPrintBindSeen = false;
 	private static boolean asserts = false;
 	private static boolean warnings = false;
 	private static boolean dashPoption = false;
+	private static boolean isCompatibilityMode = false;
 	
-	private enum CCompiler { GCC_LOCALHOST, GCC_AVR };
-	static private EnumSet<CCompiler> cCompiler = EnumSet.noneOf(CCompiler.class);
-	
+	public static String getPropsOption() {
+		return propsOption;
+	}
+	private static void setPropsOption(String propsFile) {
+		ProcessUnits.propsOption = propsFile;
+	}
+	private enum CCompiler { NONE, LOCALHOST, AVR, EFM32, MSP430, ARM };
+	static private EnumSet<CCompiler> cCompiler = EnumSet.of(CCompiler.NONE);
+	static private final String TARGET_PREFIX = "pollen.target.gcc.";
+	@SuppressWarnings("serial")
+	private static HashMap<CCompiler, String > targets = new HashMap<CCompiler, String>(){{
+        put(CCompiler.ARM, TARGET_PREFIX+"arm");
+        put(CCompiler.AVR, TARGET_PREFIX+"avr");
+        put(CCompiler.EFM32, TARGET_PREFIX+"efm32");
+        put(CCompiler.MSP430, TARGET_PREFIX+"msp430");
+        put(CCompiler.LOCALHOST, TARGET_PREFIX+"localhost");
+        put(CCompiler.NONE, TARGET_PREFIX+"NOT_SUPPORTED");
+    }};
+	private static HashMap<CCompiler, String > tools_prefix = new HashMap<CCompiler, String>(){{
+        put(CCompiler.ARM, "arm");
+        put(CCompiler.AVR, "avr-");
+        put(CCompiler.EFM32, "arm-none-eabi-");
+        put(CCompiler.MSP430, "msp430-");
+        put(CCompiler.LOCALHOST, "");
+        put(CCompiler.NONE, "NOT_SUPPORTED");
+    }};
+
 	public static boolean isDashPoption() {
 		return dashPoption;
 	}
-	public static void setDashPoption(boolean dashPoption) {
+	private static boolean isCompatibilityMode() {
+		return isCompatibilityMode;
+	}
+	private static void setCompatibilityMode(boolean isCompatibilityMode) {
+		ProcessUnits.isCompatibilityMode = isCompatibilityMode;
+	}
+	public static String getcFlags() {
+		return cFlags;
+	}
+	private static void setcFlags(String cFlags) {
+		ProcessUnits.cFlags = cFlags;
+	}
+	private static void setDashPoption(boolean dashPoption) {
 		ProcessUnits.dashPoption = dashPoption;
 	}
 	/**
@@ -58,35 +100,72 @@ public class ProcessUnits {
 	public static boolean isAsserts() {
 		return asserts;
 	}
-	public static void setAsserts(boolean asserts) {
+	private static void setAsserts(boolean asserts) {
 		ProcessUnits.asserts = asserts;
 	}
 	public static boolean isWarnings() {
 		return warnings;
 	}
-	public static void setWarnings(boolean warnings) {
+	private static void setWarnings(boolean warnings) {
 		ProcessUnits.warnings = warnings;
 	}
-	public static boolean isGccAvr() {
-		return cCompiler.contains(CCompiler.GCC_AVR);
+	public static boolean isAvr() {
+		return cCompiler.contains(CCompiler.AVR);
 	}
-	private static void setGccAvr(boolean gccAvr) {
-		cCompiler = EnumSet.of(CCompiler.GCC_AVR);
+	public static boolean isLocalHost() {
+		return cCompiler.contains(CCompiler.LOCALHOST);
 	}
-	public static boolean isGccLocalHost() {
-		return cCompiler.contains(CCompiler.GCC_LOCALHOST);
+	public static boolean isMsp430() {
+		return cCompiler.contains(CCompiler.MSP430);
 	}
-	private static void setGccLocalHost(boolean gccAvr) {
-		cCompiler = EnumSet.of(CCompiler.GCC_LOCALHOST);
+	public static boolean isArm() {
+		return false; /*cCompiler.contains(CCompiler.ARM);*/
 	}
-	private static String getPropsFileName() {
-		String prefixPath = pollenRoot + File.separator;
-		if (isGccAvr())	
-			// TODO change to props_gccavr
-			return prefixPath + "props";  
-		if (isGccLocalHost())
-			return prefixPath + "props_gcc";
-		return prefixPath + "props"; 
+	public static boolean isEfm32() {
+		return cCompiler.contains(CCompiler.EFM32);
+	}
+
+	private static void setTargetCompiler(CCompiler flag) {
+		if (cCompiler.contains(CCompiler.NONE)) {
+			cCompiler.remove(CCompiler.NONE);
+			cCompiler.add(flag);
+		}
+		else if (cCompiler.contains(flag)) {
+			return; // same option value, > once.
+		}
+		else {
+			throw new Termination("multiple C compiler targets specified on the command line");
+		}
+	}
+
+	private static String getPropsFileName(boolean isCompatibilityMode,
+			Properties props) {
+		String file = "";
+		String f = getPropsOption();
+		if (!f.isEmpty()) // specified on command line
+			file = f;
+		else {
+			String target_props = "";
+			if (cCompiler.contains(CCompiler.NONE))
+				return null; // no props file
+			else
+				for (CCompiler c : cCompiler) {
+					target_props = targets.get(c) + File.separator;
+				}
+			if (!isCompatibilityMode) {
+				file = ProcessUnits.getPollenTarget() + File.separator
+						+ target_props + "props";
+			} else {
+				file = props.getProperty(Property.POLLEN_ROOT.name())
+						+ File.separator + target_props + "props";
+			}
+		}
+		if (new File(file).exists())
+			return file;
+		else {
+			throw new Termination("Invalid input: props file \'" + file
+					+ "\' does not exist");
+		}
 	}
 
 	public static String getPollenEnvPkg() {
@@ -162,10 +241,18 @@ public class ProcessUnits {
 			 workingDir = new File(".").getAbsolutePath();
 		return workingDir;
 	}
-	public static String getPollenRoot() {
-		return pollenRoot;
+	public static String getPollenTarget() {
+		return pollenTarget;
 	}
-
+	private static void setPollenTarget(String pollenTarget) {
+		ProcessUnits.pollenTarget = pollenTarget;
+	}
+	public static String getPollenBundles() {
+		return pollenBundles;
+	}
+	private static void setPollenBundles(String pollenBundles) {
+		ProcessUnits.pollenBundles = pollenBundles;
+	}
 	private static void setWorkingDir(String workingDir) {
 		ProcessUnits.workingDir = workingDir;
 	}
@@ -205,10 +292,11 @@ public class ProcessUnits {
 	private HashMap<String, String> getPackages(final String bundlePath) {
 		
 		String bundleName = bundlePath.substring(bundlePath.lastIndexOf(File.separator)+1);
-		if (pollenRoot.isEmpty()
-				&& (bundleName.equals("pollen-core") /* new */ || bundleName.equals("pollen.core") /* old */ ))	
-			pollenRoot = bundlePath;
-	
+		
+		// later pollenRoot is set from the environment variable - this is irrelevant
+//		if (pollenRoot.isEmpty()
+//				&& (bundleName.equals("pollen-core") /* new */ || bundleName.equals("pollen.core") /* old */ ))	
+//			pollenRoot = bundlePath;
 
 		File bundle = new File(bundlePath);
 
@@ -265,21 +353,47 @@ public class ProcessUnits {
 	}
 	private String helpMessage() {
 
-		String pollenHelp = "Usage: java -jar pollen.jar <options> <bundles> <pollen file> // input files can be in any order \nOptions include:";
+		String pollenHelp = "Usage: java -jar pollen.jar <options> <bundles> <pollen file>"; 
+		pollenHelp += "\n" + " Input files can be in any order.";
+		pollenHelp += "\n" + " For pollen file \"Test.p\" the executeable name will be \"Test-prog.out\".";
+		pollenHelp += "\n" + " But if no target compiler option is specified only C files are produced.";		
+		pollenHelp += "\n" + " Bundles can be specified with \'@<bundle name>\' where '@' expands \n to the value of $POLLEN_BUNDLES.";
+		pollenHelp += " Note that the translator requires that \n $POLLEN_TARGET be specified whereas $POLLEN_BUNDLES is optional.";
+		pollenHelp += "\n" + "";
+		pollenHelp += "\nOptions include:";
+		pollenHelp += "\n" + "  -avr";
+		pollenHelp += "\n" + "\tThe translator will build the output using the avr compiler";
+		pollenHelp += "\n" + "\tand linker.";
+		pollenHelp += "\n" + "  -cFlags \"<flags>\"";
+		pollenHelp += "\n" + "\tSpecifies additional flags to be passed to the target C compiler.";
+		pollenHelp += "\n" + "\tThe default set of C compiler flags is specified in the properties";
+		pollenHelp += "\n" + "\tfile for the target (found in the $POLLEN_TARGET directory).";
+		pollenHelp += "\n" + "  -e <pollen path>";
+		pollenHelp += "\n" + "\tSpecifies fully qualified path to a pollen module that will be";
+		pollenHelp += "\n" + "\tsubstituted for \'pollen.environment\' in import statements.";
+		pollenHelp += "\n" + "  -efm32";
+		pollenHelp += "\n" + "\tThe translator will build the output using the efm32 compiler";
+		pollenHelp += "\n" + "\tand linker.";
+		pollenHelp += "\n" + "  -h\tThis help message.";
+		pollenHelp += "\n" + "  -localhost";
+		pollenHelp += "\n" + "\tThe translator will build the output using the host gcc";
+		pollenHelp += "\n" + "\tcompiler and linker.";
+		pollenHelp += "\n" + "  -msp430";
+		pollenHelp += "\n" + "\tThe translator will build the output using the msp430 compiler";
+		pollenHelp += "\n" + "\tand linker.";
 		pollenHelp += "\n" + "  -o <directory>";
 		pollenHelp += "\n" + "\tSpecifies output directory for pollen output. \n\tFor \'<path>/dir/pollenfile\' the default is \'<path>/dir_out.\'";
-		pollenHelp += "\n" + "  -e <pollen path>";
-		pollenHelp += "\n" + "\tSpecifies fully qualified path to a pollen module that will";
-		pollenHelp += "\n" + "\tbe substituted for \'pollen.environment\' in import statements.";
 		pollenHelp += "\n" + "  -p <pollen path>";
 		pollenHelp += "\n" + "\tSpecifies fully qualified path to a pollen module that will";
 		pollenHelp += "\n" + "\timplement the protocol \'PrintProtocol.p\'.";
-		pollenHelp += "\n" + "  -h\tThis help message.";
+		pollenHelp += "\n" + "  -props <pollen path>";
+		pollenHelp += "\n" + "\tSpecifies fully qualified path to a properties file for a \n\ttarget hardware platform. Default properties files are";
+		pollenHelp += "\n" + "\tfound under the directory specified by $POLLEN_TARGET.";
 		pollenHelp += "\n" + "  -w\tOutput warning messages. (Otherwise suppressed.)";
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.86";  // user release . internal rev . fix number
+	private static String  v = "0.2.87";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -296,6 +410,7 @@ public class ProcessUnits {
 		Inputs inputs = new Inputs();
 		boolean setWorkingDir = false;
 		String inputPath = "";
+		String value = ""; 
 
 		String p = "";
 		for (int i=0; i < args.length; i++) {
@@ -305,8 +420,9 @@ public class ProcessUnits {
 				String odir = (args.length > (++i) ? args[i] : "");
 				if (odir.isEmpty())	
 					continue;
-				if (isRelativePath(odir))	
-					odir = System.getProperty("user.dir" + File.separator + p);
+				odir = getPath(odir, p, errStream);	
+				if (odir == null)
+					continue;				
 				setWorkingDir = true;
 				setWorkingDir(odir);
 				continue;
@@ -320,38 +436,77 @@ public class ProcessUnits {
 				System.exit(0); 
 			}
 			if (p.equals("-e")) {
-				String emod = (args.length > (++i) ? args[i] : "");
-				if (emod.isEmpty())	
+				value = (args.length > (++i) ? args[i] : "");
+				if (value.isEmpty())	
 					continue;
-				if (isRelativePath(emod))	
-					emod = System.getProperty("user.dir" + File.separator + emod);
-				if (!(new File(emod + ".p")).exists())
-					throw new Termination ("Invalid -e usage: must specifiy a fully qualified module for pollen.environment");								
-				pollenEnvPkg = this.putModule(inputs, emod);
-				pollenEnv = emod.substring(emod.lastIndexOf(File.separator)+1);
+				value = getPath(value, p, errStream);	
+				if (value == null)
+					continue;
+				if (!(new File(value + ".p")).exists())
+					throw new Termination ("Invalid -e usage: must specifiy a fully qualified module for pollen.environment");
+				pollenEnvPkg = this.putModule(inputs, value);
+				pollenEnv = value.substring(value.lastIndexOf(File.separator)+1);
 				continue;
 			}
-			if (p.equals("-p")) {
-				String emod = (args.length > (++i) ? args[i] : "");
-				if (emod.isEmpty())	
+			if (p.equals("-props")) {
+				value = (args.length > (++i) ? args[i] : "");
+				if (value.isEmpty())	
 					continue;
-				if (isRelativePath(emod))	
-					emod = System.getProperty("user.dir" + File.separator + emod);
-				if (!(new File(emod + ".p")).exists())
+				value = getPath(value, p, errStream);	
+				if (value == null)
+					continue;
+				if (!(new File(value)).exists())
+					throw new Termination ("Invalid -props usage: could not find properties file \'" + value + "\'");	
+				setPropsOption(value);
+				continue;
+			}
+
+			if (p.equals("-p")) {
+				value = (args.length > (++i) ? args[i] : "");
+				if (value.isEmpty())	
+					continue;
+				value = getPath(value, p, errStream);	
+				if (value == null)
+					continue;				
+				if (!(new File(value + ".p")).exists())
 					throw new Termination ("Invalid -p usage: must specifiy a fully qualified module for pollen.print");								
-				pollenPrintPkg = this.putModule(inputs, emod);
-				setPollenPrint(emod.substring(emod.lastIndexOf(File.separator)+1));
+				pollenPrintPkg = this.putModule(inputs, value);
+				setPollenPrint(value.substring(value.lastIndexOf(File.separator)+1));
 				setDashPoption(true);
 				continue;
 			}
-			if (p.equals("-gccAvr")) { 	// UNDOCUMENTED, for testing: runs gccavr
-				ProcessUnits.setGccAvr(true);
+			if (p.equals("-cFlags")) {
+				value = (args.length > (++i) ? args[i] : "");
+				if (value.isEmpty())	
+					continue;
+				ProcessUnits.setcFlags(value);
 				continue;
 			}
-			if (p.equals("-gcc")) { 	// UNDOCUMENTED, for testing: runs gcc
-				ProcessUnits.setGccLocalHost(true);
+			if (p.equals("-gccAvr")  	// UNDOCUMENTED, in test scripts: runs gccavr
+					|| p.equals("-avr")) {
+				ProcessUnits.setTargetCompiler(CCompiler.AVR);
 				continue;
 			}
+			if (p.equals("-gcc")	    // UNDOCUMENTED, in test scripts: runs gcc
+					|| p.equals("-localhost")) { 	
+				ProcessUnits.setTargetCompiler(CCompiler.LOCALHOST);
+				continue;
+			}
+			if (p.equals("-efm32")) { 	
+				ProcessUnits.setTargetCompiler(CCompiler.EFM32);
+				continue;
+			}
+			if (p.equals("-msp430")) { 	
+				ProcessUnits.setTargetCompiler(CCompiler.MSP430);
+				continue;
+			}
+			if (p.equals("-arm")) { 	
+				// fix when one exists - check tools.prefix
+				throw new Termination ("Invalid translator option '-arm': no properties file for this target");								
+/*				ProcessUnits.setTargetCompiler(CCompiler.ARM);
+				continue;
+*/			}
+
 			if (p.equals("-a")) { 		// turns asserts on
 				ProcessUnits.setAsserts(true);
 				continue;
@@ -363,6 +518,13 @@ public class ProcessUnits {
 			if (p.matches("-[A-z]+")) {
 				errStream.printf("Unknown option \'%s\'. Option skipped (use \'-h\' for list of options).\n", p);
 				continue;
+			}
+			if (p.startsWith("@")) {
+				if (getPollenBundles().isEmpty()) {
+					errStream.printf("$POLLEN_BUNDLES is referenced but not initialized. Command line argument \'" + p + "\' skipped.\n");
+					continue;
+				}
+				p = getPollenBundles() + File.separator + p.substring(1);	
 			}
 
 			if (this.isRelativePath(p)) {
@@ -393,11 +555,29 @@ public class ProcessUnits {
 		}
 		File dir = new File(getWorkingDir());
 		dir.mkdirs();
-
+		
 		if (inputs.pollenFile.isEmpty() || inputs.packages.isEmpty()) {
 			throw new Termination ("Invalid inputs: translator accepts one pollen file and a set of bundles");					
 		}
 		return inputs;
+	}
+	/**
+	 * @param value
+	 * @param option
+	 * @param errStream
+	 * @return the path fully qualified or null if this option should be skipped.
+	 */
+	protected String getPath(String value, String option, PrintStream errStream) {
+		if (value.startsWith("@")) {
+			if (getPollenBundles().isEmpty()) {
+				errStream.printf("$POLLEN_BUNDLES is referenced but not initialized. Command line argument \'" + option + "\' skipped.\n");
+				return null;
+			}
+			value = getPollenBundles() + File.separator + value.substring(1);	
+		}
+		if (isRelativePath(value))	
+			value = System.getProperty("user.dir" + File.separator + value);
+		return value;
 	}
 	/**
 	 * @param inputs
@@ -430,30 +610,85 @@ public class ProcessUnits {
 			Properties props,
 			PrintStream outputStream,
 			PrintStream errorStream, 
-			PrintStream infoStream, SymbolTable symtab) throws Exception {
+			PrintStream infoStream, 
+			SymbolTable symtab) throws Exception {
 		
+		
+		setCompatibilityMode(setupEnvVars(props));
 		Inputs files = this.getArgs(args, errorStream);
-		
-		// set up the properties after the args processed
-        for (Property p : Property.values()) {
-            String val = System.getenv(p.name());
-            if (val == null) {
-                System.err.println("pollen.ParseUnit: undefined environment variable: " + p.name());
-                System.exit(1);
-            }
-            props.setProperty(p.name(), val);
-            if (p.name().equals("POLLEN_ROOT"))
-            	pollenRoot = val;
-        }
-        
-        props = new PropsLoader().apply(props, getPropsFileName(), System.err);
-        if (props == null) {
-            System.exit(1); 
-        }
+		       
+		// set up the target properties after the args processed
+		String propsFile = getPropsFileName(isCompatibilityMode(), props);
+		if (propsFile != null) {
+			props = new PropsLoader().apply(props, propsFile, System.err);
+			if (props == null) {
+				throw new Termination("Could not load properties file \'"
+						+ propsFile + "\'");
+			}
+			for (CCompiler c : cCompiler) {
+				if (!props.get(ITarget.P_TOOLPREFIX)
+						.equals(tools_prefix.get(c))) {
+					throw new Termination(
+							"Invalid input: compiler specified in props file does not match compiler selected by translator option");
+				}
+			}
+		}
 
 		ParseUnit.initParse(files.pollenFile, props, files.packages, outputStream, errorStream, infoStream, symtab);
 
 		return ParseUnit.current().parseUnits();
+	}
+	/**
+	 * Setup environment variables.
+	 * POLLEN_TARGET must be specified. Required files are there (e.g. std.h).
+	 * POLLEN_BUNDLES can be unspecified.
+	 * 
+	 * Handle old (POLLEN_ROOT) vs. new (POLLEN_TARGET) environment variables so test scripts work.
+	 * If no POLLEN_TARGET and there is POLLEN_ROOT, POLLEN_ROOT is used to set POLLEN_TARGET.
+	 * 
+	 * if no POLLEN_BUNDLES specified assume the paths are fully specified on command line.
+	 * @param props
+	 */
+	protected boolean setupEnvVars(Properties props) {
+		for (Property p : Property.values()) {
+			String val = System.getenv(p.name());
+			if (val != null) {
+				props.setProperty(p.name(), val);
+				if (p.name().equals(Property.POLLEN_TARGET.name()))
+					setPollenTarget(val);
+				if (p.name().equals(Property.POLLEN_BUNDLES.name()))
+					setPollenBundles(val);
+			}
+		}
+
+		// If no POLLEN_TARGET, POLLEN_ROOT is used to set POLLEN_TARGET.
+		// This allows use of old tests scripts.
+        if (props.getProperty(Property.POLLEN_TARGET.name()) == null
+        		&& props.getProperty(Property.POLLEN_ROOT.name()) != null) {
+        	
+        	String f = props.getProperty(Property.POLLEN_ROOT.name())+ File.separator + "pollen.lang";
+        	File file = new File(f);
+        	if (file.exists()) {   // an old setup (compatibility mode, for test scripts).
+        		props.setProperty(Property.POLLEN_TARGET.name(), props.getProperty(Property.POLLEN_ROOT.name())+ File.separator + "pollen.lang");
+        		setPollenTarget(props.getProperty(Property.POLLEN_TARGET.name()));
+        		if (props.getProperty(Property.POLLEN_BUNDLES.name()) == null) {
+        			props.setProperty(Property.POLLEN_BUNDLES.name(), props.getProperty(Property.POLLEN_ROOT.name()));
+        			setPollenBundles(props.getProperty(Property.POLLEN_BUNDLES.name()));
+        		}       	
+        		return true;
+        	}
+        	else {
+        		System.err.println("pollen.ParseUnit: undefined environment variable: " + Property.POLLEN_TARGET.name());
+        		System.exit(1);
+        	}        	
+        }
+        // POLLEN_TARGET must be specified. 
+        if (props.getProperty(Property.POLLEN_TARGET.name()) == null && props.getProperty(Property.POLLEN_ROOT.name()) == null) {
+        	System.err.println("pollen.ParseUnit: undefined environment variable: " + Property.POLLEN_TARGET.name());
+        	System.exit(1);
+        }
+
+        return false;
 	}
 	protected int translateUnit(HashMap<String, UnitNode> unitMap) throws Exception {
 		

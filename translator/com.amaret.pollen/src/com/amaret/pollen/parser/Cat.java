@@ -726,7 +726,12 @@ public class Cat implements Cloneable {
     }
         
     public boolean isUnit() {
-        return this instanceof Cat.Agg && ((Cat.Agg) this).aggScope instanceof UnitNode;
+    	if (this instanceof Cat.Agg){
+    		Cat.Agg c = (Agg) this;
+    		if (c.isModule() || c.isClass() || c.isComposition() || c.isProtocol() || c.isEnum())
+    			return true;    		
+    	}
+        return  false;
     }
     
     public boolean isVector() {

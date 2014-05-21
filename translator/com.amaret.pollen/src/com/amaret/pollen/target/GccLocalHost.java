@@ -19,46 +19,27 @@ public class GccLocalHost extends GccBase {
         
              
     }
+    protected String addMapFile(String cmd, File srcFile) {
+    	return cmd;
+    }
+    protected String cmdObjCopy() {
+    	return "";
+    }
+    protected String addObjCopyOpts(String cmd) {
+        return cmd;
+    }
+    protected String addObjCopyFiles(String cmd, File srcFile) {
+        return cmd;
+    }
+
     @Override
     public void compile(File srcFile) throws Exception {
     	
-    	if (!ProcessUnits.isGccLocalHost())
-    		return;
-        
-        ParseUnit curr = ParseUnit.current();
-
-        if ("yes".equals(curr.getProperty(ITarget.P_DISABLE))) {       	
+        if ("yes".equals(ParseUnit.current().getProperty(ITarget.P_DISABLE))) {       	
         	return;
         } 
-        
-        String srcFilePath = srcFile.getAbsolutePath();
-        
-        String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
-        String outFile = baseFile + ".out";
-        String gcc = curr.getProperty(ITarget.P_TOOLSDIR) + "/" + curr.getProperty(ITarget.P_TOOLPREFIX) + "gcc";
-        String objcopy = curr.getProperty(ITarget.P_TOOLSDIR) + "/" + curr.getProperty(ITarget.P_TOOLPREFIX) + "objcopy";
-        
-        String cmd;
-        
-        cmd = "";
-        cmd += gcc;
-        cmd = addCcOptsPrefix(cmd);
-        cmd += " -I" + curr.getPollenRoot();
-        cmd = addCcOpts(cmd);
-        cmd += srcFile;
-        cmd += " -o " + outFile;
-        cmd = addCcOptsSuffix(cmd);
-        
-        if (execCmd(cmd) != 0) {
-            return;
-        }
-        
-        cmd = "";
-        cmd += objcopy;
-        //cmd += " -I elf32-avr -O ihex " + outFile + " " + hexFile;
-        if (execCmd(cmd) != 0) {
-            return;
-        }
+            
+        execCompile(srcFile);
         
     }
 

@@ -1871,7 +1871,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			// only used for intrinsics.
 			if (isIntrinsic() && isIntrinsicUsed()) {
 				ParseUnit.current().getCurrUnitNode().setUnitUsed(true);
-				bindToUnit.setUnitUsed(true);
+				if (bindToUnit != null)
+					bindToUnit.setUnitUsed(true);
 			}
 			setUses();
 			return false;

@@ -1,0 +1,19 @@
+pollen.target.class = com.amaret.pollen.target.GccEfm32
+pollen.target.compiler.flags = -mcpu=cortex-m3 -mthumb -mfix-cortex-m3-ldrd \
+  -fwhole-program -ffunction-sections -fdata-sections -fomit-frame-pointer \
+  -std=gnu99 -Wl,--relax -Wl,--gc-sections
+pollen.target.compiler.flags.prefix =
+pollen.target.compiler.flags.suffix =
+# echo commands to stdout
+pollen.target.echo = yes
+pollen.target.name = pollen.target.gcc.efm32
+pollen.target.tools.prefix = arm-none-eabi-
+pollen.target.mcu = efm32
+pollen.target.tools.home = /Users/amichi/amaret/repos/toolchains/\
+  arm-eabi-toolchain/gcc-arm-none-eabi-4_8-2014q1/bin
+pollen.target.loader = 
+pollen.target.loader.flags = 
+pollen.target.objcopy = /Users/amichi/amaret/repos/toolchains/\
+  arm-eabi-toolchain/gcc-arm-none-eabi-4_8-2014q1/bin/avr-objcopy
+pollen.target.objformat.input = elf32-arm
+pollen.target.objformat.output = ihex

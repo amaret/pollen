@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 
+import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.ParseUnit;
 
 public abstract class BaseTarget implements ITarget {
@@ -12,6 +13,32 @@ public abstract class BaseTarget implements ITarget {
     protected final String addCcOpts(String cmd) {
         return addOpts(cmd, ITarget.P_CCOPTS);
     }
+    /**
+     * Not from properties file: from command line.
+     * @param cmd
+     * @return
+     */
+    protected String addCcFlags(String cmd) {
+    	return cmd + " " + ProcessUnits.getcFlags();
+    }
+    protected String addCcMcu(String cmd) {
+    	String mcu = ParseUnit.current().getProperty(ITarget.P_MCU);
+    	if (mcu == null || mcu.isEmpty())
+    		return cmd;
+    	cmd += " -mmcu=" + mcu;  
+    	return cmd;
+    }
+    protected String addPollenBundles(String cmd) {
+    	if (ProcessUnits.getPollenBundles().isEmpty())
+    		return cmd;
+       return cmd + " -I" + ProcessUnits.getPollenBundles(); 
+    }
+    protected String addPollenTarget(String cmd) {
+    	if (ParseUnit.current().getPollenTarget().isEmpty())
+    		return cmd;
+       return cmd + " -I" + ParseUnit.current().getPollenTarget();
+    }
+
     
     protected final String addCcOptsPrefix(String cmd) {
         return addOpts(cmd, ITarget.P_CCOPTSPRE);
@@ -28,7 +55,44 @@ public abstract class BaseTarget implements ITarget {
         }
         return cmd;
     }
-    
+    protected String addSrcOutFiles(String cmd, File srcFile) {
+        
+        String srcFilePath = srcFile.getAbsolutePath();       
+        String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
+        String outFile = baseFile + ".out";
+        cmd += " " + srcFile + " -o " + outFile;
+        return cmd;
+    }
+    protected String addMapFile(String cmd, File srcFile) {        
+        return cmd;
+    }
+
+    protected String cmdObjCopy() {
+    	return "";
+    }
+    protected String addObjCopyOpts(String cmd) {
+        return cmd;
+    }
+    protected String addObjCopyFiles(String cmd, File srcFile) {
+        return cmd;
+    }
+    protected String cmdLoad() {
+    	return "";
+    }
+    protected String addLoaderOpts(String cmd) {
+    	if (!cmd.isEmpty())
+    		cmd = addOpts(cmd, ITarget.P_LOADER_FLAGS);
+        return cmd;
+    }
+    protected String addLoaderFiles(String cmd, File srcFile) {
+    	if (!cmd.isEmpty()) {
+    		String srcFilePath = srcFile.getAbsolutePath();       
+    		String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
+    		String hexFile = baseFile + ".hex";
+    		cmd += hexFile;
+    	}
+        return cmd;
+    }  
     protected int execCmd(String cmd, boolean useInfoStream) throws Exception {
         return execCmd(cmd, useInfoStream, null);
     }
@@ -42,9 +106,11 @@ public abstract class BaseTarget implements ITarget {
     }
     
     protected int execCmd(String cmd, boolean useInfoStream, File dir) throws Exception {
-        //if ("yes".equals(ParseUnit.current().getProperty(ITarget.P_ECHO))) {
-            ParseUnit.current().getInfoStream().printf("exec: %s\n", cmd);
-        //}
+        if (!cmd.isEmpty() && "yes".equals(ParseUnit.current().getProperty(ITarget.P_ECHO))) {
+            ParseUnit.current().getInfoStream().println("exec: " + cmd);
+        }
+        if (cmd == null || cmd.isEmpty())
+        	return 0;
         Process proc = Runtime.getRuntime().exec(cmd, null, dir);
         BufferedReader procout = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
         String line;
@@ -53,21 +119,12 @@ public abstract class BaseTarget implements ITarget {
             errStream.println(line);
         }
         procout.close();
-        errStream.close();
+        //errStream.close(); 
         return proc.waitFor();
     }
 
     final protected String getTargDir() {
-        ParseUnit curr = ParseUnit.current();
-        return curr.getPollenRoot() + "/" + curr.getProperty(ITarget.P_NAME);
-    }
-    
-    final protected boolean mustBuild(String genFileName, String srcFileName) {
-    	return true; // during development
-    	
-/*        File genFile = new File(genFileName);
-        File srcFile = new File(srcFileName);
-        return !genFile.exists() || srcFile.lastModified() > genFile.lastModified();*/
+        return ProcessUnits.getPollenTarget() + "/" + ParseUnit.current().getProperty(ITarget.P_NAME);
     }
     
 }

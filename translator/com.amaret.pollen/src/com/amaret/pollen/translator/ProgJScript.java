@@ -45,15 +45,15 @@ public class ProgJScript {
     private void genEpilogue(UnitNode main) {
         gen.aux.genTitle("epilogue");
         gen.getFmt().print("$units['%1'].pollen$used = true;\n\n", main.getQualName());
-        File file = new File(ProcessUnits.getPollenRoot() + "/pollen.lang/epilogue.js");
+        File file = new File(ProcessUnits.getPollenTarget() + File.separator + "epilogue.js");
         gen.getFmt().insert(file);
     }
 
     private void genPrologue() {
         gen.aux.genTitle("prologue");
-        File file = new File(ProcessUnits.getPollenRoot());
+        File file = new File(ProcessUnits.getPollenTarget());
         file.mkdirs();
-        file = new File(ProcessUnits.getPollenRoot() + "/pollen.lang/prologue.js");
+        file = new File(ProcessUnits.getPollenTarget() + File.separator + "prologue.js");
         file.mkdirs();
         gen.getFmt().insert(file);
     }
