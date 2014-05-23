@@ -353,34 +353,22 @@ public class ProcessUnits {
 	}
 	private String helpMessage() {
 
-		String pollenHelp = "Usage: java -jar pollen.jar <options> <bundles> <pollen file>"; 
-		pollenHelp += "\n" + " Input files can be in any order.";
-		pollenHelp += "\n" + " For pollen file \"Test.p\" the executeable name will be \"Test-prog.out\".";
-		pollenHelp += "\n" + " But if no target compiler option is specified only C files are produced.";		
-		pollenHelp += "\n" + " Bundles can be specified with \'@<bundle name>\' where '@' expands \n to the value of $POLLEN_BUNDLES.";
-		pollenHelp += " Note that the translator requires that \n $POLLEN_TARGET be specified whereas $POLLEN_BUNDLES is optional.";
+		String pollenHelp = "USAGE: java -jar pollen.jar <options> <bundles> <pollen file>"; 
+        pollenHelp += "\n\n" + " Input files can be in any order.";
+        pollenHelp += "\n" + " For pollen file \"Test.p\" the C output name will be \"Test-prog.out\".";
+        pollenHelp += "\n" + " $POLLEN_TARGET is the root directory for target properties files.";
+        pollenHelp += "\n" + " Bundles can be specified with \'@<bundle name>\' where '@' expands \n to the value of $POLLEN_BUNDLES.";
+        pollenHelp += " Note that the translator requires that \n $POLLEN_TARGET be specified whereas $POLLEN_BUNDLES is optional.";
 		pollenHelp += "\n" + "";
-		pollenHelp += "\nOptions include:";
-		pollenHelp += "\n" + "  -avr";
-		pollenHelp += "\n" + "\tThe translator will build the output using the avr compiler";
-		pollenHelp += "\n" + "\tand linker.";
+		pollenHelp += "\nOPTIONS:";
 		pollenHelp += "\n" + "  -cFlags \"<flags>\"";
 		pollenHelp += "\n" + "\tSpecifies additional flags to be passed to the target C compiler.";
 		pollenHelp += "\n" + "\tThe default set of C compiler flags is specified in the properties";
 		pollenHelp += "\n" + "\tfile for the target (found in the $POLLEN_TARGET directory).";
 		pollenHelp += "\n" + "  -e <pollen path>";
-		pollenHelp += "\n" + "\tSpecifies fully qualified path to a pollen module that will be";
-		pollenHelp += "\n" + "\tsubstituted for \'pollen.environment\' in import statements.";
-		pollenHelp += "\n" + "  -efm32";
 		pollenHelp += "\n" + "\tThe translator will build the output using the efm32 compiler";
 		pollenHelp += "\n" + "\tand linker.";
 		pollenHelp += "\n" + "  -h\tThis help message.";
-		pollenHelp += "\n" + "  -localhost";
-		pollenHelp += "\n" + "\tThe translator will build the output using the host gcc";
-		pollenHelp += "\n" + "\tcompiler and linker.";
-		pollenHelp += "\n" + "  -msp430";
-		pollenHelp += "\n" + "\tThe translator will build the output using the msp430 compiler";
-		pollenHelp += "\n" + "\tand linker.";
 		pollenHelp += "\n" + "  -o <directory>";
 		pollenHelp += "\n" + "\tSpecifies output directory for pollen output. \n\tFor \'<path>/dir/pollenfile\' the default is \'<path>/dir_out.\'";
 		pollenHelp += "\n" + "  -p <pollen path>";
@@ -389,17 +377,28 @@ public class ProcessUnits {
 		pollenHelp += "\n" + "  -props <pollen path>";
 		pollenHelp += "\n" + "\tSpecifies fully qualified path to a properties file for a \n\ttarget hardware platform. Default properties files are";
 		pollenHelp += "\n" + "\tfound under the directory specified by $POLLEN_TARGET.";
-		pollenHelp += "\n" + "  -w\tOutput warning messages. (Otherwise suppressed.)";
+        pollenHelp += "\n" + "  -t <target platform and C compiler>";
+        pollenHelp += "\n" + "\tThe translator will build the output using the compiler and";
+        pollenHelp += "\n" + "\tplatform specified. A properties file for the platform must";
+        pollenHelp += "\n" + "\tbe available either under $POLLEN_TARGET or at the location";
+        pollenHelp += "\n" + "\tspecified by the '-props <path>' option. The available";
+        pollenHelp += "\n" + "\tplatforms and their compilers are:";
+        pollenHelp += "\n" + "\t    avr-gcc        gcc for avr";
+        pollenHelp += "\n" + "\t    efm32-gcc      gcc for efm32";
+        pollenHelp += "\n" + "\t    localhost-gcc  gcc for localhost";
+        pollenHelp += "\n" + "\t    msp430-gcc     gcc for msp430";
+        pollenHelp += "\n" + "\tIf no '-t' option is specified only C files are produced.";  
+ 		pollenHelp += "\n" + "  -v\tOutput translator version.";
+ 		pollenHelp += "\n" + "  -w\tOutput warning messages. (Otherwise suppressed.)";
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.87";  // user release . internal rev . fix number
+	private static String  v = "0.2.88";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
 
 	/**
-	 * 
 	 * @param args - bundles and pollen file, possible options
 	 * @param errStream TODO
 	 * @return a HashMap of packages <name, path>
@@ -482,31 +481,35 @@ public class ProcessUnits {
 				ProcessUnits.setcFlags(value);
 				continue;
 			}
-			if (p.equals("-gccAvr")  	// UNDOCUMENTED, in test scripts: runs gccavr
-					|| p.equals("-avr")) {
+			if (p.equals("-t"))	{
+				value = (args.length > (++i) ? args[i] : "");
+				if (value.isEmpty())	
+					continue;
+				if (value.equals("avr-gcc"))	{
+					ProcessUnits.setTargetCompiler(CCompiler.AVR);
+				}
+				else if (value.equals("msp430-gcc")) {
+					ProcessUnits.setTargetCompiler(CCompiler.MSP430);
+				}
+				else if (value.equals("efm32-gcc"))	{
+					ProcessUnits.setTargetCompiler(CCompiler.EFM32);
+				}
+				else if (value.equals("localhost-gcc"))	{
+					ProcessUnits.setTargetCompiler(CCompiler.LOCALHOST);
+				}
+				else {
+					throw new Termination ("Invalid translator option '-t " + value + "': no properties file for this target");				
+				}
+				continue;
+			}
+			if (p.equals("-gccAvr")) { 	// UNDOCUMENTED, in test scripts: runs gccavr					
 				ProcessUnits.setTargetCompiler(CCompiler.AVR);
 				continue;
 			}
-			if (p.equals("-gcc")	    // UNDOCUMENTED, in test scripts: runs gcc
-					|| p.equals("-localhost")) { 	
+			if (p.equals("-gcc")) {	    // UNDOCUMENTED, in test scripts: runs gcc					 
 				ProcessUnits.setTargetCompiler(CCompiler.LOCALHOST);
 				continue;
 			}
-			if (p.equals("-efm32")) { 	
-				ProcessUnits.setTargetCompiler(CCompiler.EFM32);
-				continue;
-			}
-			if (p.equals("-msp430")) { 	
-				ProcessUnits.setTargetCompiler(CCompiler.MSP430);
-				continue;
-			}
-			if (p.equals("-arm")) { 	
-				// fix when one exists - check tools.prefix
-				throw new Termination ("Invalid translator option '-arm': no properties file for this target");								
-/*				ProcessUnits.setTargetCompiler(CCompiler.ARM);
-				continue;
-*/			}
-
 			if (p.equals("-a")) { 		// turns asserts on
 				ProcessUnits.setAsserts(true);
 				continue;
