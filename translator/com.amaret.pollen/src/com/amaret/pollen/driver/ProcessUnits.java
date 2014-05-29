@@ -366,8 +366,8 @@ public class ProcessUnits {
 		pollenHelp += "\n" + "\tThe default set of C compiler flags is specified in the properties";
 		pollenHelp += "\n" + "\tfile for the target (found in the $POLLEN_TARGET directory).";
 		pollenHelp += "\n" + "  -e <pollen path>";
-		pollenHelp += "\n" + "\tThe translator will build the output using the efm32 compiler";
-		pollenHelp += "\n" + "\tand linker.";
+		pollenHelp += "\n" + "\tSpecifies fully qualified path to a pollen module that will be";
+		pollenHelp += "\n" + "\tsubstituted for \'pollen.environment\' in import statements.";
 		pollenHelp += "\n" + "  -h\tThis help message.";
 		pollenHelp += "\n" + "  -o <directory>";
 		pollenHelp += "\n" + "\tSpecifies output directory for pollen output. \n\tFor \'<path>/dir/pollenfile\' the default is \'<path>/dir_out.\'";
