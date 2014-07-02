@@ -31,6 +31,7 @@ public class ProcessUnits {
 	private static String pollenPrintProxyModule = ""; // where it is
 	private static String propsOption = "";
 	private static String cFlags="";
+	private static String mcu="";
 	private static boolean pollenPrintBindSeen = false;
 	private static boolean asserts = false;
 	private static boolean warnings = false;
@@ -42,6 +43,12 @@ public class ProcessUnits {
 	}
 	private static void setPropsOption(String propsFile) {
 		ProcessUnits.propsOption = propsFile;
+	}
+	public static String getMcu() {
+		return mcu;
+	}
+	private static void setMcu(String mcu) {
+		ProcessUnits.mcu = mcu;
 	}
 	private enum CCompiler { NONE, LOCALHOST, AVR, EFM32, MSP430, ARM };
 	static private EnumSet<CCompiler> cCompiler = EnumSet.of(CCompiler.NONE);
@@ -56,7 +63,7 @@ public class ProcessUnits {
         put(CCompiler.NONE, TARGET_PREFIX+"NOT_SUPPORTED");
     }};
 	private static HashMap<CCompiler, String > tools_prefix = new HashMap<CCompiler, String>(){{
-        put(CCompiler.ARM, "arm");
+        put(CCompiler.ARM, "arm-none-eabi-");
         put(CCompiler.AVR, "avr-");
         put(CCompiler.EFM32, "arm-none-eabi-");
         put(CCompiler.MSP430, "msp430-");
@@ -369,6 +376,7 @@ public class ProcessUnits {
 		pollenHelp += "\n" + "\tSpecifies fully qualified path to a pollen module that will be";
 		pollenHelp += "\n" + "\tsubstituted for \'pollen.environment\' in import statements.";
 		pollenHelp += "\n" + "  -h\tThis help message.";
+		pollenHelp += "\n" + "  -mcu\tSpecify mcu type.";
 		pollenHelp += "\n" + "  -o <directory>";
 		pollenHelp += "\n" + "\tSpecifies output directory for pollen output. \n\tFor \'<path>/dir/pollenfile\' the default is \'<path>/dir_out.\'";
 		pollenHelp += "\n" + "  -p <pollen path>";
@@ -383,17 +391,18 @@ public class ProcessUnits {
         pollenHelp += "\n" + "\tbe available either under $POLLEN_TARGET or at the location";
         pollenHelp += "\n" + "\tspecified by the '-props <path>' option. The available";
         pollenHelp += "\n" + "\tplatforms and their compilers are:";
-        pollenHelp += "\n" + "\t    avr-gcc        gcc for avr";
-        pollenHelp += "\n" + "\t    efm32-gcc      gcc for efm32";
-        pollenHelp += "\n" + "\t    localhost-gcc  gcc for localhost";
-        pollenHelp += "\n" + "\t    msp430-gcc     gcc for msp430";
+        pollenHelp += "\n" + "\t    arm-none-eabi-gcc  gcc for arm";
+        pollenHelp += "\n" + "\t    avr-gcc            gcc for avr";
+        //pollenHelp += "\n" + "\t    efm32-gcc          gcc for efm32";  in but undoc
+        pollenHelp += "\n" + "\t    localhost-gcc      gcc for localhost";
+        //pollenHelp += "\n" + "\t    msp430-gcc         gcc for msp430"; in but undoc
         pollenHelp += "\n" + "\tIf no '-t' option is specified only C files are produced.";  
  		pollenHelp += "\n" + "  -v\tOutput translator version.";
  		pollenHelp += "\n" + "  -w\tOutput warning messages. (Otherwise suppressed.)";
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.88";  // user release . internal rev . fix number
+	private static String  v = "0.2.90";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -481,6 +490,13 @@ public class ProcessUnits {
 				ProcessUnits.setcFlags(value);
 				continue;
 			}
+			if (p.equals("-mcu")) {
+				value = (args.length > (++i) ? args[i] : "");
+				if (value.isEmpty())	
+					continue;
+				ProcessUnits.setMcu(value);
+				continue;
+			}
 			if (p.equals("-t"))	{
 				value = (args.length > (++i) ? args[i] : "");
 				if (value.isEmpty())	
@@ -496,6 +512,9 @@ public class ProcessUnits {
 				}
 				else if (value.equals("localhost-gcc"))	{
 					ProcessUnits.setTargetCompiler(CCompiler.LOCALHOST);
+				}
+				else if (value.equals("arm-none-eabi-gcc"))	{
+					ProcessUnits.setTargetCompiler(CCompiler.ARM);
 				}
 				else {
 					throw new Termination ("Invalid translator option '-t " + value + "': no properties file for this target");				

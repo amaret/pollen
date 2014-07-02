@@ -95,7 +95,7 @@ public abstract class GccBase extends BaseTarget {
 	    cmd = cmdObjCopy();
 	    cmd = addObjCopyOpts(cmd);
 	    cmd = addObjCopyFiles(cmd, srcFile);
-	    
+	    	    
 	    if (execCmd(cmd) != 0) {
 	        return;
 	    }

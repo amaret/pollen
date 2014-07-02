@@ -28,10 +28,13 @@ public class GccEfm32 extends GccBase {
 		return objcopy;
     }
     protected String addCcMcu(String cmd) {
-    	String mcu = ParseUnit.current().getProperty(ITarget.P_MCU);
-    	if (mcu == null)
+    	String mcu = ProcessUnits.getMcu();
+		if (mcu == null || mcu.isEmpty())
+			mcu = ParseUnit.current().getProperty(ITarget.P_MCU);
+		if (mcu == null || mcu.isEmpty())
     		mcu = "efm32";
-    	cmd += " -D" + mcu;  
+		cmd += " -mtune=" + mcu;
+    	//cmd += " -D" + mcu; this option was here but I can't find this option so use the generic arm option 
     	return cmd;
     }   
     protected int execCmd(String cmd, boolean useInfoStream) throws Exception {

@@ -812,9 +812,12 @@ public class ParseUnit {
 						if (!f.exists()) {
 							if (!(new File(pkgPath + File.separator + fromPkg))
 									.exists()) {
+								String add = (fromPkg
+										.equals(ParseUnit.POLLEN_PRINTPKG)) ? " - check $POLLEN_BUNDLES"
+										: "";
 								reportError(getPackageName() + "."
 										+ getFileName(), "missing package \'"
-										+ fromPkg + "\'");
+										+ fromPkg + "\'" + add);
 								continue;
 							}
 						}

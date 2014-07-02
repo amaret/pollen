@@ -40,13 +40,6 @@ pollen.target.objformat.output = hex
 (non-Javadoc)
      * @see com.amaret.pollen.target.BaseTarget#cmdObjCopy()
      */
-    protected String addCcMcu(String cmd) {
-    	String mcu = ParseUnit.current().getProperty(ITarget.P_MCU);
-    	if (mcu == null)
-    		return cmd;
-    	cmd += " -mmcu=" + mcu;  
-    	return cmd;
-    }
     
     protected int execCmd(String cmd, boolean useInfoStream) throws Exception {
         return execCmd(cmd, useInfoStream, null);

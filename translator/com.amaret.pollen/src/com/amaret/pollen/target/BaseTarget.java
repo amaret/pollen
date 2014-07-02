@@ -21,13 +21,17 @@ public abstract class BaseTarget implements ITarget {
     protected String addCcFlags(String cmd) {
     	return cmd + " " + ProcessUnits.getcFlags();
     }
-    protected String addCcMcu(String cmd) {
-    	String mcu = ParseUnit.current().getProperty(ITarget.P_MCU);
-    	if (mcu == null || mcu.isEmpty())
-    		return cmd;
-    	cmd += " -mmcu=" + mcu;  
-    	return cmd;
-    }
+
+	protected String addCcMcu(String cmd) {
+		String mcu = ProcessUnits.getMcu();
+		if (mcu == null || mcu.isEmpty())
+			mcu = ParseUnit.current().getProperty(ITarget.P_MCU);
+		if (mcu == null || mcu.isEmpty())
+			return cmd;
+		cmd += " -mmcu=" + mcu;
+		return cmd;
+	}
+
     protected String addPollenBundles(String cmd) {
     	if (ProcessUnits.getPollenBundles().isEmpty())
     		return cmd;
@@ -106,12 +110,16 @@ public abstract class BaseTarget implements ITarget {
     }
     
     protected int execCmd(String cmd, boolean useInfoStream, File dir) throws Exception {
+    	
         if (!cmd.isEmpty() && "yes".equals(ParseUnit.current().getProperty(ITarget.P_ECHO))) {
             ParseUnit.current().getInfoStream().println("exec: " + cmd);
         }
         if (cmd == null || cmd.isEmpty())
-        	return 0;
-        Process proc = Runtime.getRuntime().exec(cmd, null, dir);
+        	return 0;        
+        // Cloud compiler requires that PATH be passed this way or it is null and ld is not found. 
+        String[] path = { "PATH=/usr/bin:/bin:/usr/sbin:/sbin:" };
+        Process proc = Runtime.getRuntime().exec(cmd, path, dir);
+        
         BufferedReader procout = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
         String line;
         PrintStream errStream = useInfoStream ? ParseUnit.current().getInfoStream() : ParseUnit.current().getErrorStream();

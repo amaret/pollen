@@ -29,13 +29,6 @@ public class GccAvr extends GccBase {
         cmd += " -Wl,-Map=" + mapFile + ",--gc-sections";
         return cmd;
     }
-    protected String addCcMcu(String cmd) {
-    	String mcu = ParseUnit.current().getProperty(ITarget.P_MCU);
-    	if (mcu == null)
-    		mcu = "atmega328p";
-    	cmd += " -mmcu=" + mcu;  
-    	return cmd;
-    }
    
     protected int execCmd(String cmd, boolean useInfoStream) throws Exception {
         return execCmd(cmd, useInfoStream, null);
@@ -54,11 +47,13 @@ public class GccAvr extends GccBase {
     } 
     protected String cmdLoad() {
 		String loader = ParseUnit.current().getProperty(ITarget.P_LOADER);
-        if (!new File(loader).exists())
+        if (!loader.isEmpty() && !new File(loader).exists())
         	curr.reportFailure("property file does not specifiy a valid loader tool path");
 		return loader;
     }
     protected String addLoaderOpts(String cmd) {
+    	if (cmd.isEmpty())
+    		return cmd;
     	cmd = super.addLoaderOpts(cmd);
     	cmd += " -e -U flash:w:"; // must precede filename
         return cmd;
