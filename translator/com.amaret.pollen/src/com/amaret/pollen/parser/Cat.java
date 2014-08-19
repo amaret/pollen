@@ -414,19 +414,19 @@ public class Cat implements Cloneable {
     	static final private HashMap<String,String> codeMap = new HashMap<String,String>();
         
         static {
-        	// "n" is not here but is used for numeric literals
+        	// Cat.NUMLIT or "n" is not here but is used for numeric literals
         	// which should match any numeric type, 
         	// e.g. 'uint8 Var == 0' should pass checks.
-            codeMap.put("bool",     "b");
-            codeMap.put("byte",		"u1");
-            codeMap.put("int8",     "i1");
-            codeMap.put("int16",    "i2");
-            codeMap.put("int32",    "i4");
-            codeMap.put("string",   "s");
-            codeMap.put("uint8",    "u1");
-            codeMap.put("uint16",   "u2");
-            codeMap.put("uint32",   "u4");
-            codeMap.put("void",     "v");
+            codeMap.put("bool",     Cat.BOOL);
+            codeMap.put("byte",		Cat.BYTE);
+            codeMap.put("int8",     Cat.INT8);
+            codeMap.put("int16",    Cat.INT16);
+            codeMap.put("int32",    Cat.INT32);
+            codeMap.put("string",   Cat.STRING);
+            codeMap.put("uint8",    Cat.UINT8);
+            codeMap.put("uint16",   Cat.UINT16);
+            codeMap.put("uint32",   Cat.UINT32);
+            codeMap.put("void",     Cat.VOID);
         }
         
         private char kind;
@@ -466,9 +466,9 @@ public class Cat implements Cloneable {
             case 'v':
                 return "void";
             case 'i':
-                return rank == 1 ? "int8" : rank == 2 ? "int16" : rank == 3 ? "int32" : "int8"; 
+                return rank == 1 ? "int8" : rank == 2 ? "int16" : rank == 4 ? "int32" : "int8"; 
             case 'u':
-                return rank == 1 ? "uint8" : rank == 2 ? "uint16" : rank == 3 ? "uint32" : "uint8"; 
+                return rank == 1 ? "uint8" : rank == 2 ? "uint16" : rank == 4 ? "uint32" : "uint8"; 
             }
             return super.mkType();
         }
@@ -585,9 +585,6 @@ public class Cat implements Cloneable {
         			 return Cat.fromScalarCode(code);       			 
         		 }
         	}
-//				UnitNode u = ((ImportNode) snode).getUnit();
-//				SymbolEntry s2 = u.lookupName(((ImportNode) snode).getUnitName().getText());
-//				return fromSymbolNode(s2.node(), defScope);
         	return fromSymbolNode(((ImportNode) snode).getUnit(), defScope, isRef, false);
         }
         else if (snode instanceof DeclNode.TypedMember) {
@@ -619,7 +616,6 @@ public class Cat implements Cloneable {
         }
     }    
     public static Cat fromType(TypeNode typeNode) {
-    	//boolean isRef = typeNode instanceof TypeNode.Usr ? ((TypeNode.Usr)typeNode).isClassRef() : false;
         return fromType(typeNode, false, ParseUnit.current().getSymbolTable().curScope());
     }
     

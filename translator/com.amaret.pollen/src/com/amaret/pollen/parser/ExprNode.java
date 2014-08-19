@@ -1744,8 +1744,6 @@ public class ExprNode extends BaseNode {
 
 	// ExprNode
 
-	static private final String LENGTH_CODE = Cat.UINT16;
-
 	protected Cat exprCat = Cat.UNKNOWN;
 	protected boolean isConst = false;
 

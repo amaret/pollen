@@ -402,7 +402,7 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.90";  // user release . internal rev . fix number
+	private static String  v = "0.2.91";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -537,7 +537,7 @@ public class ProcessUnits {
 				ProcessUnits.setWarnings(true);
 				continue;
 			}
-			if (p.matches("-[A-z]+")) {
+			if (p.matches("-\\S+")) {
 				errStream.printf("Unknown option \'%s\'. Option skipped (use \'-h\' for list of options).\n", p);
 				continue;
 			}

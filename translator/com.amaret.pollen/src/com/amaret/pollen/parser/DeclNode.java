@@ -592,6 +592,16 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			if (!(getInit() instanceof ExprNode.Vec))
 				return null;
 			ExprNode.Vec v = (Vec) getInit();
+			List<ExprNode> elemVals = v.getVals();
+			for (ExprNode elv : elemVals) {
+				if (elv instanceof ExprNode.New && !this.isHost()) {
+					// When malloc style init is implemented this may become legal but currently it won't work: the
+					// non-host array expects pointer elements which don't exist with the result of bad alignment (segv).  
+					ParseUnit.current().reportSeriousError(this, this.getName().getText() + ": an array declaration with constructor calls as array element initializers must be declared host");
+					break;
+				}
+			}
+			
 			int exprs = (v != null && v.getVals() != null) ? v.getVals().size()
 					: 0;
 			List<ExprNode> dim = getDim().getElems();
