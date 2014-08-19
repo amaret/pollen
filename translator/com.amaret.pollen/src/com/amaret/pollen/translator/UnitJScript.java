@@ -105,12 +105,29 @@ public class UnitJScript {
         		}
         	}
         }
+        
+        boolean doCheckMissingArgs = fcn.isClassHostConstructor() && fcn.getFormals().size() > 0 && body.getStmts().size() > 0;
+        // class host constructors can take parameters and also be called without any parameters (to alloc class array elems
+        // in first phase of array elem init). If called without parameters and user code executes there can be js aborts. 
+        // So check that parameters were passed before executing any user defined code.        
+        String tab = "%t";
+        if (doCheckMissingArgs) {
+        	gen.getFmt().print(tab);
+        	gen.getFmt().print("if (arguments.length == %1) {\n", fcn.getFormals().size()); // then none are missing
+        	tab += "%t";
+        }
+        
         if (!skipBody)
-        	for (StmtNode stmt : body.getStmts()) {
-        		gen.getFmt().print("%t");
+        	for (StmtNode stmt : body.getStmts()) {  // if this is a class host constructor, user defined code is here
+        		gen.getFmt().print(tab);
         		gen.aux.genStmt(stmt);
         		gen.getFmt().print("\n");
         	}
+        
+        if (doCheckMissingArgs) {
+        	gen.getFmt().print("%t}\n");
+        }
+       
         for (DeclNode.Arr arr : arrList) {
         	genDecl(arr); // generate arrays with host variable size at the end of host initializer
         }
