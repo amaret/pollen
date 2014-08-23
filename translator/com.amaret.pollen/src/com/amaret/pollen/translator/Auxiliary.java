@@ -140,7 +140,6 @@ public class Auxiliary {
 				gen.getFmt().print(";}, ");
 			}
 			
-
 			char ch = tc.charAt(1);
 			boolean aggFlg = ch == 'A' || ch == 'V'; // || ch == 'C';
 
@@ -827,6 +826,7 @@ public class Auxiliary {
 	}
 
 	private void genExpr$New(ExprNode.New expr) {
+		System.out.println(expr.toStringTree());
 		
 		if (!expr.getCall().isConstructorCallOnHostVar()) {
         	ParseUnit.current().reportError(expr.getCall().getName(), "non-host invocations of 'new()' are not yet implemented");        	
@@ -1201,6 +1201,7 @@ public class Auxiliary {
 	}
 
 	void genStmt(StmtNode stmt) {
+	
 		switch (stmt.getType()) {
 		case pollenParser.S_ASSIGN:
 			genStmt$Assign((StmtNode.Assign) stmt);

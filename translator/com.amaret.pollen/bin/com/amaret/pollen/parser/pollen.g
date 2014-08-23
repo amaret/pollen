@@ -123,8 +123,21 @@ tokens {
     EnumSet<Flags> typeMods = EnumSet.noneOf(Flags.class);
     
     private class TypeInfo {
+    	boolean hasHostCtor;
+	boolean hasTargCtor;
     	private EnumSet<Flags> uf = EnumSet.noneOf(Flags.class);
 	private String tn = "";  
+	public TypeInfo(boolean hostCtor, boolean targCtor) {
+	            hasHostCtor = hostCtor;
+	            hasTargCtor = targCtor;
+	}
+	public boolean getHostCtor() {
+		return hasHostCtor;
+	}
+	public boolean getTargCtor() {
+		return hasTargCtor;
+	}
+
 	public EnumSet<Flags> getUnitFlags() {
 		if (tn.isEmpty()) // backtracking
 			return getParseUnitFlags();
@@ -184,7 +197,7 @@ tokens {
     private void pushType() {
 
 
-	currType = new TypeInfo();
+	currType = new TypeInfo(hasHostConstructor, hasTargetConstructor);
 	// Needs to be gated by backtracking state.
 	// If backtracking state > 0 this could be exec'd
 	// more than once for a single type.
@@ -199,8 +212,10 @@ tokens {
         if (typeInfoList.size() <= 0) {
     		ParseUnit.current().reportFailure("invalid request");
         }
-	if ( state.backtracking==0 ) {
+        if ( state.backtracking==0 ) {
                	currType = typeInfoList.remove(typeInfoList.size()-1); // pop
+               	hasHostConstructor = currType.getHostCtor();
+               	hasTargetConstructor = currType.getTargCtor();
         }
         if (typeInfoList.size() > 0) {
 		currType = typeInfoList.get(typeInfoList.size()-1);
@@ -481,11 +496,9 @@ classDefinition
 		pushType();
 		String qual = "";
 		String name = "";
-		hasHostConstructor = false;
-		hasTargetConstructor = false;
 }
 @after{
-	popType();
+		popType();
 }
 	:	'class' IDENT
 		{ 
@@ -1247,6 +1260,9 @@ scope {
 	System.out.println("       " + currType.getTypeName() + ", " + currType.getUnitFlags().toString());
 }
    :   (meta! { $unitTypeDefinition::meta = $meta.tree; })  
+   
+   	//importList
+   	
      (
          	      ('module') => moduleDefinition   		
 	|     ('class') =>  classDefinition
@@ -1792,8 +1808,6 @@ stmtCase
 							    ^(E_CONST<ExprNode.Const>["E_CONST", litFlags] INT_LIT))
 	|	'case' (qualName)	':' NL* stmts	-> ^(S_CASE<StmtNode.Case>["S_CASE"] stmts 
 							    ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT[$qualName.text])) // enum val
-							    //^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT))
-							    //^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT[$qualName.text])
 	
 	;
 stmtDoWhile

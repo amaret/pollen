@@ -508,8 +508,8 @@ public class ProgCCode {
     	if (!decl.isHost()) 
     		return;
     	
-//    	System.out.println("host " + decl.getDefiningScope().getScopeName() + "." + decl.getName().getText());
-//    	System.out.println(decl.toStringTree());
+    	//System.out.println("host " + decl.getDefiningScope().getScopeName() + "." + decl.getName().getText());
+    	//System.out.println(decl.toStringTree());
 
         Object val = ud.getUnitObj().getAny(decl.getName());
         if (val == Value.UNDEF) {

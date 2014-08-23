@@ -402,7 +402,7 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.91";  // user release . internal rev . fix number
+	private static String  v = "0.2.92";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}

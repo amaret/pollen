@@ -51,14 +51,6 @@ public class UnitJScript {
         
         boolean class_ctor = fcn.cname().matches(".*" +ParseUnit.CTOR_CLASS_HOST);
         String rtn = class_ctor ? "this" : "$$text";
-    
-        boolean dbg = false;
-        if (dbg) {
-            String n = fcn.cname();
-            if (n.matches(".*" +ParseUnit.CTOR_CLASS_HOST) || n.matches(".*" + ParseUnit.CTOR_MODULE_HOST)) {
-            	System.out.println(fcn.getUnit().getQualName() + "." + n);                 	
-            }          	
-        }
       
         gen.getFmt().print("%t%1%2.%3 = function",
                 gen.uname(),
@@ -266,10 +258,6 @@ public class UnitJScript {
     	
     	if (decl.isIntrinsic() && !decl.isIntrinsicUsed())
     		return;
-    	
-//    	boolean dbg = true;
-//    	if(decl.getName().getText().equals("elements"))
-//    		dbg = false;
     	if (decl.getDefiningScope() == null)
     		return;
     	SymbolEntry se = decl.getDefiningScope().lookupName(decl.getName().getText());
