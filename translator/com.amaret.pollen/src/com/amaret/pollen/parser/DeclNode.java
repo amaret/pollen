@@ -203,6 +203,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 		protected boolean pass1Begin() {
 			super.pass1Begin();
+			
 
 			if (getTypeSpec() != null)
 				getTypeSpec().pass1Begin();
@@ -220,6 +221,20 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			if (this.getParent() instanceof DeclNode.Fcn) {
 				return; // synthesized
 			}
+			if (this.getTypeSpec() instanceof TypeNode.Arr) {
+				TypeNode.Arr typeArr = (com.amaret.pollen.parser.TypeNode.Arr) this.getTypeSpec();
+				TypeNode base = typeArr.getBase();
+				SymbolEntry se = base != null && base instanceof TypeNode.Usr ? ((TypeNode.Usr) base)
+						.getSymbol() : null;
+				ISymbolNode node = se != null && se.node() != null ? se.node()
+						: null;
+				if (node != null && node instanceof DeclNode.Usr
+						&& !((DeclNode.Usr) node).isClass())
+					ParseUnit.current().reportError(this.getName(),
+							"Objects as array elements must have class type");
+				typeArr.setBaseSymbol(se);
+			}
+
 
 			Cat c = this.getTypeCat();
 			if (c instanceof Cat.Agg) {
@@ -314,6 +329,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		public Cat getTypeCat() {
 			if (typeCat == null) {
 				typeCat = Cat.fromType(this.getTypeArr());
+				if (!hasDim()) {
+					((Cat.Arr)typeCat ).setNoDim(true);
+				}
 				// typeCat = Cat.fromSymbolNode(this, this.getDefiningScope());
 			}
 			return typeCat;

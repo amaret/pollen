@@ -25,16 +25,14 @@ function debug_line(where, obj) {
         //$$printf("DBG:" + where + " for unit " + obj.$name + "\n")
 }
 function debug(where, obj) {
-        
-        //$$printf("DBG:" + where + " for unit " + obj.$name + "\n")
 
-                // old:
-        //var names = "";
-        //for (var name in obj) {
-        //      names += "   DBG:" + name + ": ";
-        //      names += obj[name] + '\n';
-        //
-        //$$printf(names)
+    var output = where + ': ';
+    for (var property in obj) {
+          if (typeof obj[property] != 'function')
+              output += property + ': ' + obj[property]+'; ';
+    }
+    $$printf(output + "\n");
+        
 }
 
 // obj is the unit
@@ -79,7 +77,8 @@ function $$sizeof() {
 }
 
 function $$Array( dim, baseD, cname, aggFlg ) {
-    this.$$baseD = baseD;
+    // baseD: a function. Default initializer for elements. Class elements return an object, numeric elements return 0. 
+    this.$$baseD = baseD; 
     this.$$category = '$$Array';
     this.$$dim = dim
     this.$$elems = [];
@@ -92,6 +91,7 @@ function $$Array( dim, baseD, cname, aggFlg ) {
     }
     this.$$len = this.$$elems.length
     this.$$virgin = (this.$$len == 0)
+    //debug("$$Array", this);
 }
 
 $$Array.prototype.$$assign = function( arr ) {

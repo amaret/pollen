@@ -53,14 +53,11 @@ public class Cat implements Cloneable {
          * @param defScope
          * @param isRef
          * @param fcnRef
+         * NOTE all parameters with Class type come in with isRef set but they should have
+         * isTargetClassRef set because we don't pass structs by value. isRef is a redundant ambiguous
+         * field but deleteing it will break things. Look into deleteing it. 
          */
         private Agg(IScope aggScope, IScope defScope, boolean isRef, boolean fcnRef) {
-        	if (aggScope instanceof UnitNode) {
-				UnitNode u = (UnitNode) aggScope;	
-				boolean dbg = false;
-				//if (dbg)
-				//System.out.println(u.getQualName() + (u.isMeta() ? " is meta type " : "") + (u.isGeneratedMetaInstance() ? ", is generated meta instance" : ""));							
-			}
 
 			if (aggScope instanceof ImportNode) {
 				System.out.println("Cat.Agg(): import where unit was expected");				
@@ -216,14 +213,16 @@ public class Cat implements Cloneable {
         
         private Cat baseCat;
         private TypeNode.Arr tarr;
+        private boolean noDim = false;
         
         private Arr(TypeNode.Arr tarr) {
             this.tarr = tarr;
-            if (tarr.isReferenceElems() && tarr.getBaseSymbol() != null){
-            	// array of object references
-            	SymbolEntry sym = tarr.getBaseSymbol();
-            	ISymbolNode node = sym.node();
-    			if (node != null && node instanceof ImportNode) {
+        	SymbolEntry sym = tarr.getBaseSymbol();
+        	ISymbolNode node = (sym != null) ? sym.node() : null;
+        	boolean isClassType = (node instanceof ITypeKind) ? ((ITypeKind) node).isClass() : false;			
+            if (isClassType){
+            	// array of class type elements
+    			if (node instanceof ImportNode) {
     				node = ((ImportNode)node).getUnit().getUnitType();
     			}
             	this.baseCat = Cat.fromSymbolNode(node, sym.scope(), true, false );
@@ -232,7 +231,15 @@ public class Cat implements Cloneable {
             	this.baseCat = Cat.fromType(tarr.getBase());
         }
         
-        public Cat getBase() {
+        public boolean isNoDim() {
+			return noDim;
+		}
+
+		public void setNoDim(boolean noDim) {
+			this.noDim = noDim;
+		}
+
+		public Cat getBase() {
             return baseCat;
         }
 
@@ -260,10 +267,25 @@ public class Cat implements Cloneable {
         @Override protected String mkTypeStr() {
         	return getBase().code() + "$arr";
         }
-        public boolean isClassRef() {      
+        public boolean isClassRef() {   
+        	// TODO this should return true for both host and target case but changing that could break things.
         	return getType().isReferenceElems();  
         }
-        	
+        public boolean isTargetClassRef() {      
+        	return getType().isReferenceElems();  
+        }
+
+        public boolean isHostClassRef() {
+        	TypeNode.Arr t = this.getType();
+        	SymbolEntry se = t.getBaseSymbol();
+        	if (se != null ) {
+        		ISymbolNode n = se.node();
+        		if (n instanceof ITypeKind && ((ITypeKind)n).isClass()) {
+        			return !t.isReferenceElems();
+        		}  
+        	}
+        	return false;
+        }        	
     }
     
     // Cat.Error
@@ -697,6 +719,10 @@ public class Cat implements Cloneable {
     public boolean isFcnRef() {        
     	return false;    
     }
+    /**
+     * 
+     * @return for an agg, delegate to Cat.Agg. Else return true for an array of class references otherwise false.
+     */
     public boolean isRef() {
     	if (this instanceof Cat.Arr){
     		return this.isClassRef();

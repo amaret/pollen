@@ -196,7 +196,7 @@ public class Auxiliary {
 	 * @param postExpr for above could be Index or Call.
 	 * @return "." or "->"
 	 */
-	String mkDerefOp(ExprNode preExpr, ExprNode postExpr) {
+	private String mkSelectionOp(ExprNode preExpr, ExprNode postExpr) {
 		String deref = "";
 		Cat preCat = preExpr.getCat();
 		int preType = preExpr.getType();
@@ -270,7 +270,7 @@ public class Auxiliary {
 							genExpr$Index((Index) e);
 						break;
 					case pollenParser.E_IDENT:						
-						gen.getFmt().print(mkDerefOp(expr, e));
+						gen.getFmt().print(mkSelectionOp(expr, e));
 						genExpr$Ident((Ident) e);
 						break;
 					case pollenParser.E_CALL:
@@ -305,7 +305,7 @@ public class Auxiliary {
 							genExpr2(e, eType);
 						break;
 					case pollenParser.E_IDENT:						
-						gen.getFmt().print(mkDerefOp(expr, e));
+						gen.getFmt().print(mkSelectionOp(expr, e));
 						genExpr2(e, eType);
 						break;
 					case pollenParser.E_CALL:
@@ -386,7 +386,6 @@ public class Auxiliary {
 		String op = expr.getOp().getText();
 		
 		//System.out.println(expr.toStringTree());
-		
 		// Check for modifications of preset variables outside of preset assignments
 		if (expr.isAssign() && left instanceof ExprNode.Ident) {
 			SymbolEntry se = ((ExprNode.Ident)left).getSymbol() != null ? ((ExprNode.Ident)left).getSymbol() : null;
@@ -477,20 +476,18 @@ public class Auxiliary {
 			return;
 		}
 
-		String addrOf = "";
-		String deref = "";
+		String addrOfOrDeref = "";
 		if (cl instanceof Cat.Agg) {
-			if (cl.isClassRef() && !(cr instanceof Cat.Scalar)
-					&& !isHost() && !cr.isRef())
-				addrOf = "&";
-			gen.getFmt().print(" %1 %2", op, addrOf);
+			addrOfOrDeref = mkAddrOfOrDerefOp(cl, cr, expr);
+			gen.getFmt().print(" %1 %2", op, addrOfOrDeref);
 		} else {
 			if (cl instanceof Cat.Arr) {
-				if (expr.isAssign() && expr.hasLeftIndexExpr()
-						&& cr.isClassRef()
-						&& !cl.isClassRef()) // a deref
-					deref = "*";
-				gen.getFmt().print(" %1 %2", op, deref);
+				addrOfOrDeref = this.mkAddrOfOrDerefOp(cl, cr, expr);
+//				if (expr.isAssign() && expr.hasLeftIndexExpr()
+//						&& cr.isClassRef()
+//						&& !cl.isClassRef()) // a deref
+//					deref = "*";
+				gen.getFmt().print(" %1 %2", op, addrOfOrDeref);
 			} else {
 				gen.getFmt().print(" %1 ", op);
 			}
@@ -589,6 +586,13 @@ public class Auxiliary {
 						}
 						else if (((Cat.Agg)arg.getCat()).isHostClassRef())
 							gen.getFmt().print("&");
+					}
+				}
+				else if (arg.getCat() instanceof Cat.Arr) {
+					// we don't have syntax right now on the signature to differentiate between host and target formal parameter arrays
+					// so we choose host memory layout as default.
+					if (((Cat.Arr)arg.getCat()).isTargetClassRef()) {
+						ParseUnit.current().reportSeriousError(expr, "Passing a non-host array of class element type as a parameter is not supported.");						
 					}
 				}
 			}
@@ -1600,6 +1604,7 @@ public class Auxiliary {
 
 					break;
 				case 'i':
+				case 'n':
 					gen.getFmt().print("%1%2print_int((int32)", uname_target, ParseUnit.INTRINSIC_PREFIX);
 					gen.aux.genExpr(expr);
 					gen.getFmt().print(");");
@@ -1630,13 +1635,13 @@ public class Auxiliary {
 		gen.getFmt().print("return");
 		ExprNode.Vec expr = stmt.getVec();
 		String addrOf = "";
+		//System.out.println(stmt.toStringTree());
 		Tree body = stmt.getParent();
 		while (body != null && !(body instanceof BodyNode)) {
 			body = body.getParent();
 		}
 		if (body instanceof BodyNode) {		
 			DeclNode.Fcn f = ((BodyNode) body).getFcn();
-			Cat fcat = f.getTypeCat();
 			TypeNode t = ((BodyNode) body).getFcn().getTypeSpec();
 			if (t instanceof TypeNode.Usr) {
 				
@@ -1649,9 +1654,8 @@ public class Auxiliary {
 				SymbolEntry se;
 				if (ei != null) {
 					Cat rtnCat = ei.getCat();
-					if (rtnCat instanceof Cat.Arr && !(fcat instanceof Cat.Arr))
-						rtnCat = ((Cat.Arr)rtnCat).getBase();
-					addrOf = !(rtnCat.isClassRef() || rtnCat.isRef() || rtnCat.isFcnRef()) && !isHost() ? " &" : "";
+					Cat fcat = f.getTypeCat();
+					addrOf = this.mkAddrOfOrDerefOp(fcat, rtnCat, ei);
 				}
 				
 				se = ((TypeNode.Usr)t).getSymbol();
@@ -1699,7 +1703,7 @@ public class Auxiliary {
 		}
 	}
 
-	void genTitle(String msg) {
+	protected void genTitle(String msg) {
 		if (this.curSkip) {
 			gen.getFmt().print("\n");
 		}
@@ -1716,7 +1720,7 @@ public class Auxiliary {
 	 *            e.g. Argtype argName
 	 * @param flags TODO
 	 */
-	void genTypeWithVarName(TypeNode type, String name, EnumSet<Flags> flags) {
+	protected void genTypeWithVarName(TypeNode type, String name, EnumSet<Flags> flags) {
 		String dim = "";
 		if (type instanceof TypeNode.Arr) {
 			Cat.Arr c = (Arr) Cat.fromType(type);
@@ -1742,7 +1746,6 @@ public class Auxiliary {
 	 * @param arg
 	 */
 	void genForwardedType(TypeNode type, String name, EnumSet<Flags> flags, ITypeSpec arg) {
-				
 		if (type instanceof TypeNode.Usr) {
 			if (((TypeNode.Usr)type).isFunctionRef()) {
 				this.genTypeWithVarName(type, name, flags);	
@@ -1764,7 +1767,7 @@ public class Auxiliary {
 			this.genTypeWithVarName(type, name, flags);
 			return;
 		}	
-		// isPtr should only be true for these types when isHost if false (host means instances not references)
+		// isPtr true for these types when isHost false (host means instances not references)
 		String isPtr = (arg instanceof DeclNode.Arr && ((DeclNode.Arr)arg).isHost()
 				|| arg instanceof DeclNode.TypedMember && ((DeclNode.TypedMember)arg).isHost()) ? " " : "* ";
 
@@ -1797,7 +1800,7 @@ public class Auxiliary {
 		return rtn;
 	}
 
-	String mkPollenCname(String id) {
+	protected String mkPollenCname(String id) {
 		return id.startsWith("pollen.") ? ("pollen__" + id.substring(ParseUnit.INTRINSIC_PREFIX
 				.length())) : id;
 	}
@@ -1815,6 +1818,106 @@ public class Auxiliary {
 		}
 	}
 
+	/**
+	 * Check if this assignment needs '&' or '*' prepended to the assignment source.
+	 * Handles Cat.Agg, Cat.Arr operands.
+	 * TODO handle others - Cat.Fcn, more? 
+	 * @param left lhs of assignment
+	 * @param right rhs of assigmment
+	 * @param ex
+	 * @return the prepend string for a reference assignment
+	 */
+	private String mkAddrOfOrDerefOp(Cat left, Cat right, ExprNode ex) {	
+		
+		boolean hasLeftIndexExpr = false;
+		boolean hasRightIndexExpr = false;
+		boolean isAssign = false;
+		
+		if (ex instanceof ExprNode.Binary) {
+			hasLeftIndexExpr = ((ExprNode.Binary)ex).hasLeftIndexExpr();
+			hasRightIndexExpr = ((ExprNode.Binary)ex).hasRightIndexExpr();			
+			isAssign = ((ExprNode.Binary)ex).isAssign();
+		}
+		else if (ex instanceof ExprNode.Ident){
+			hasRightIndexExpr = ((ExprNode.Ident)ex).hasIndexExpr();
+		}
+		
+
+		if (isHost() || right instanceof Cat.Scalar)
+			return "";	
+		// Lhs array = rhs array
+		if (isAssign && left instanceof Cat.Arr && right instanceof Cat.Arr){
+			// TODO what about return? should 'isAssign' be true?
+			if (!hasLeftIndexExpr && !hasRightIndexExpr) {
+				if (!((Cat.Arr)left).isNoDim()) {				
+					// Assigning array to array. 
+					ParseUnit.current().reportError(ex, "An array declared with dimensions cannot be the LHS of an assignment to another array");
+				}
+				else {
+					// source of assignment to the no dim array can be a target array (just ptr assignment) but not a host array. 
+					if (right.isHostClassRef()) {
+						ParseUnit.current().reportError(ex, "An array declared without dimensions cannot be the LHS of an assignment to a host array");						
+					}					
+				}
+				return "";
+			}
+		}
+
+		// Lhs agg = Rhs agg OR Rhs array
+		if (left instanceof Cat.Agg && left.isClassRef()) {
+			if (right instanceof Cat.Agg) {
+				if (!right.isRef())
+					return "&";	
+				if (!left.isHostClassRef() && right.isHostClassRef())
+					return "&";
+				if (left.isHostClassRef() && right.isTargetClassRef()) {
+					//ParseUnit.current().reportError(ex, "Cannot assign a host class instance to a target class reference");
+					return "*";
+				}
+				//if (left.isTargetClassRef() && right.isTargetClassRef())
+				//	return ""; just fall through: pointer copy
+				//if (left.isHostClassRef() && right.isHostClassRef())
+				//	return ""; just fall through: structure copy
+				return "";
+			}
+			if (right instanceof Cat.Arr && hasRightIndexExpr) {
+				if (!left.isHostClassRef() && right.isHostClassRef())
+					return "&";
+				if (left.isHostClassRef() && right.isTargetClassRef()) {
+					return "*";
+				}
+				// fall through cases as above
+				return "";				
+			}
+
+		}
+		// Lhs arr = Rhs agg OR Rhs array
+		else if (left instanceof Cat.Arr && (left.isTargetClassRef() || left.isHostClassRef())) {
+			if (right instanceof Cat.Agg) {
+				if (!left.isHostClassRef() && right.isHostClassRef())
+					return "&";
+				if (left.isHostClassRef() && (right.isTargetClassRef() || right.isRef())) {
+					return "*";
+				}
+				//if (left.isTargetClassRef() && right.isTargetClassRef())
+				//	return ""; just fall through: pointer copy
+				//if (left.isHostClassRef() && right.isHostClassRef())
+				//	return ""; just fall through: structure copy
+				return "";
+			}
+			if (right instanceof Cat.Arr && hasRightIndexExpr) {
+				if (!left.isHostClassRef() && right.isHostClassRef())
+					return "&";
+				if (left.isHostClassRef() && (right.isTargetClassRef() || right.isRef())) {
+					return "*";
+				}
+				// fall through cases as above
+				return "";				
+			}			
+		}
+		return "";
+	}
+
 	public String mkTypeMods(EnumSet<Flags> tmods) {
 		String res = "";
 
@@ -1830,11 +1933,11 @@ public class Auxiliary {
 		return res;
 	}
 
-	void setHost(boolean ishost) {
+	protected void setHost(boolean ishost) {
 		this.isHost = ishost;
 	}
 
-	boolean isPostExpr(ExprNode e) {
+	private boolean isPostExpr(ExprNode e) {
 		if (e.getParent() instanceof ExprNode.Call) {
 			if (e.childIndex > 1) // name, args, deref
 				return true;
@@ -1850,7 +1953,7 @@ public class Auxiliary {
 		return isHost;
 	}
 
-	void skip() {
+	private void skip() {
 		curSkip = true;
 	}
 

@@ -32,6 +32,7 @@ public class UnitBody {
 		if (fcn.isHost()) {
 			return;
 		}
+		
 		gen.aux.genFcnRefTypeDefs(body.getLocalVars());
 		gen.aux.genTypeWithVarName(fcn.getTypeSpec(), gen.uname_target()
 				+ gen.aux.mkPollenCname(fcn.cname()) + gen.aux.mkSuf(fcn), EnumSet.of(Flags.IS_FCNDECL));

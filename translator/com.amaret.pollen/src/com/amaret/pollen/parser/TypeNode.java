@@ -187,6 +187,11 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
         	// these cases should simplify. too many cases! pull out imports first thing?
         	
         	boolean underscore = true; 
+        	
+        	if (this.getParent() instanceof TypeNode.Arr && this.getParent().getParent() instanceof DeclNode.Formal) {
+        		// can only pass (host) arrays of instances as parameters
+        		underscore = false;
+        	}
         	boolean isTypedef = flags.contains(Flags.IS_FCNREF_TYPEDEF) || flags.contains(Flags.IS_CLASSREF_TYPEDEF);
         	boolean addTypeMods = flags.contains(Flags.IS_DECL);
         	
