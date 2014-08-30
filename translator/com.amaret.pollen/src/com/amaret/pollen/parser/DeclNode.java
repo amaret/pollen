@@ -1315,6 +1315,23 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			rtn = ((BaseNode) getChild(TYPE_LST)).pass1Begin();
 			return rtn;
 		}
+		
+		public void pass2End() {
+			if (this.getTypeSpec() instanceof TypeNode.Arr) {
+				TypeNode.Arr typeArr = (com.amaret.pollen.parser.TypeNode.Arr) this.getTypeSpec();
+				TypeNode base = typeArr.getBase();
+				SymbolEntry se = base != null && base instanceof TypeNode.Usr ? ((TypeNode.Usr) base)
+						.getSymbol() : null;
+				ISymbolNode node = se != null && se.node() != null ? se.node()
+						: null;
+				if (node != null && node instanceof DeclNode.Usr
+						&& !((DeclNode.Usr) node).isClass())
+					ParseUnit.current().reportError(this.getName(),
+							"Objects as array elements must have class type");
+				typeArr.setBaseSymbol(se);
+			}
+
+		}
 
 	}
 

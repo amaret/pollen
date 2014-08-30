@@ -483,10 +483,6 @@ public class Auxiliary {
 		} else {
 			if (cl instanceof Cat.Arr) {
 				addrOfOrDeref = this.mkAddrOfOrDerefOp(cl, cr, expr);
-//				if (expr.isAssign() && expr.hasLeftIndexExpr()
-//						&& cr.isClassRef()
-//						&& !cl.isClassRef()) // a deref
-//					deref = "*";
 				gen.getFmt().print(" %1 %2", op, addrOfOrDeref);
 			} else {
 				gen.getFmt().print(" %1 ", op);
@@ -498,7 +494,7 @@ public class Auxiliary {
 	private void genExpr$Call(ExprNode.Call expr) {
 				
  		String n = expr.getName() instanceof ExprNode.Ident ? ((ExprNode.Ident) expr.getName()).getName().getText() : "";
- 		
+ 		 		
 		if (n.equals(ParseUnit.INTRINSIC_PREFIX + "assert")) {				
 			if (!ProcessUnits.isAsserts())
 				return;  // suppress call

@@ -332,22 +332,29 @@ public class ExprNode extends BaseNode {
 				boolean chkHostScope = symtab.currScopeIsHostFcn()
 						|| isConstructorCallOnHostVar();
 				boolean dbg = false;
-				if (call.equals("Mcu.wait"))
+				if (call.equals("cls.bar"))
 					dbg = true;
 
 				boolean skipLookup = (call.matches(ParseUnit.INTRINSIC_PREFIX
 						+ ".*")) ? true : false;
 
 				if (!skipLookup) {
+					boolean chkParentIdentScope = this.getParent() instanceof ExprNode.Ident
+							&& ((ExprNode.Ident) this.getParent()).getSymbol() != null;
+					boolean chkParentFcnRtnScope = this.getParent() instanceof ExprNode.Call
+							&& ((ExprNode.Call) this.getParent())
+									.getCalledFcn() != null;
 					if (fcn == null
-							&& this.getParent() instanceof ExprNode.Ident
-							&& ((ExprNode.Ident) this.getParent()).getSymbol() != null) {
+							&& (chkParentIdentScope || chkParentFcnRtnScope)) { // more?
 						// this is an access after a dereference:
-						// 'arr[i].fcn()'.
-						// lookup scope for 'fcn()' is the type for arr.
+						// 'arr[i].fcn()' or ref.foo().fcn()
+						// lookup scope for 'fcn()' is from preceding expr.
 
-						IScope sc = ((ExprNode.Ident) this.getParent())
-								.getSymbol().derefScope(false);
+						IScope sc = chkParentIdentScope ? ((ExprNode.Ident) this
+								.getParent()).getSymbol().derefScope(false)
+								: chkParentFcnRtnScope ? ((ExprNode.Call) this
+										.getParent()).getCalledFcn()
+										.derefScope(false) : null;
 						fcn = sc.lookupName(ei.getName().getText());
 						if (fcn != null && fcn.node() instanceof DeclNode) {
 							DeclNode d = (DeclNode) fcn.node();

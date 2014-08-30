@@ -92,10 +92,16 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 				rtn = g.getOutputName(t, null, EnumSet.noneOf(Flags.class));
 			}
 			rtn += " ";
+			
 			Tree tr = this.getParent();
 			while (tr != null && !(tr instanceof DeclNode.FcnTyp))
 				tr = tr.getParent();
-			if (tr instanceof DeclNode.FcnTyp ||
+			
+			ISymbolNode baseType = this.getBaseSymbol() != null ? this.getBaseSymbol().node() : null;
+			// don't deref class types, the define for the name has a dereference already.
+			boolean deref = (!(baseType instanceof DeclNode.Class)) && tr instanceof DeclNode.FcnTyp;
+
+			if (deref ||
 					(!this.hasDim() && flags.contains(Flags.IS_LOCAL)))
 				rtn += "* ";
 			

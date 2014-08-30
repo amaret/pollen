@@ -116,20 +116,23 @@ public class ProcessUnits {
 	private static void setWarnings(boolean warnings) {
 		ProcessUnits.warnings = warnings;
 	}
-	public static boolean isAvr() {
-		return cCompiler.contains(CCompiler.AVR);
-	}
-	public static boolean isLocalHost() {
-		return cCompiler.contains(CCompiler.LOCALHOST);
-	}
-	public static boolean isMsp430() {
-		return cCompiler.contains(CCompiler.MSP430);
-	}
-	public static boolean isArm() {
-		return false; /*cCompiler.contains(CCompiler.ARM);*/
-	}
-	public static boolean isEfm32() {
-		return cCompiler.contains(CCompiler.EFM32);
+	/**
+	 * 
+	 * @param cf an EnumSet containing the CCompiler flag to be checked.
+	 * @return true if that compiler is the current target compiler
+	 */
+	public static boolean isTargetCompiler(EnumSet<CCompiler> cf) {
+		if (cf.contains(CCompiler.ARM))
+			return cCompiler.contains(CCompiler.ARM);
+		if (cf.contains(CCompiler.AVR))
+			return cCompiler.contains(CCompiler.AVR);
+		if (cf.contains(CCompiler.LOCALHOST))
+			return cCompiler.contains(CCompiler.LOCALHOST);
+		if (cf.contains(CCompiler.MSP430))
+			return cCompiler.contains(CCompiler.MSP430);
+		if (cf.contains(CCompiler.EFM32))
+			return cCompiler.contains(CCompiler.EFM32);
+		return false;
 	}
 
 	private static void setTargetCompiler(CCompiler flag) {
@@ -402,7 +405,7 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.93";  // user release . internal rev . fix number
+	private static String  v = "0.2.94";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
