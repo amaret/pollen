@@ -122,7 +122,7 @@ public abstract class BaseTarget implements ITarget {
         
         BufferedReader procout = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
         String line;
-        PrintStream errStream = useInfoStream ? ParseUnit.current().getInfoStream() : ParseUnit.current().getErrorStream();
+		PrintStream errStream = ParseUnit.current().getErrorStream();
         while ((line = procout.readLine()) != null) {
             errStream.println(line);
         }

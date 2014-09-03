@@ -26,6 +26,7 @@ public class ProcessUnits {
 	private static String pollenBundles = "";
 	private static String pollenEnv = "";
 	private static String pollenEnvPkg = "";
+	private static String pollenOutputDefault = ""; // if no -p get it from the bundles dir
 	private static String pollenPrint = "";
 	private static String pollenPrintPkg = "";
 	private static String pollenPrintProxyModule = ""; // where it is
@@ -405,7 +406,7 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.94";  // user release . internal rev . fix number
+	private static String  v = "0.2.95";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -664,6 +665,20 @@ public class ProcessUnits {
 		return ParseUnit.current().parseUnits();
 	}
 	/**
+	 * Default handling of print when no -p 
+	 * @param po
+	 */
+	static private void setPollenOutputDefault(String po) {
+		pollenOutputDefault = po;
+	}
+	/**
+	 * Default handling of print when no -p 
+	 * @return the default location according to environment variables.
+	 */
+	static public String getPollenOutputDefault() {
+		return pollenOutputDefault;
+	}
+	/**
 	 * Setup environment variables.
 	 * POLLEN_TARGET must be specified. Required files are there (e.g. std.h).
 	 * POLLEN_BUNDLES can be unspecified.
@@ -681,8 +696,10 @@ public class ProcessUnits {
 				props.setProperty(p.name(), val);
 				if (p.name().equals(Property.POLLEN_TARGET.name()))
 					setPollenTarget(val);
-				if (p.name().equals(Property.POLLEN_BUNDLES.name()))
+				if (p.name().equals(Property.POLLEN_BUNDLES.name())) {
 					setPollenBundles(val);
+					setPollenOutputDefault(val + File.separator + "pollen-core" + File.separator + "pollen.output");
+				}
 			}
 		}
 
@@ -696,6 +713,7 @@ public class ProcessUnits {
         	if (file.exists()) {   // an old setup (compatibility mode, for test scripts).
         		props.setProperty(Property.POLLEN_TARGET.name(), props.getProperty(Property.POLLEN_ROOT.name())+ File.separator + "pollen.lang");
         		setPollenTarget(props.getProperty(Property.POLLEN_TARGET.name()));
+        		setPollenOutputDefault(props.getProperty(Property.POLLEN_ROOT.name())+ File.separator + "pollen.output");
         		if (props.getProperty(Property.POLLEN_BUNDLES.name()) == null) {
         			props.setProperty(Property.POLLEN_BUNDLES.name(), props.getProperty(Property.POLLEN_ROOT.name()));
         			setPollenBundles(props.getProperty(Property.POLLEN_BUNDLES.name()));
