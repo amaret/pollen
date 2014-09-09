@@ -11,6 +11,8 @@ import java.util.Properties;
 
 import antlr.CommonToken;
 
+import com.amaret.pollen.parser.BaseNode;
+import com.amaret.pollen.parser.ExprNode;
 import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.ParseUnit.Property;
@@ -366,7 +368,8 @@ public class ProcessUnits {
 
 		String pollenHelp = "USAGE: java -jar pollen.jar <options> <bundles> <pollen file>"; 
         pollenHelp += "\n\n" + " Input files can be in any order.";
-        pollenHelp += "\n" + " For pollen file \"Test.p\" the C output name will be \"Test-prog.out\".";
+        pollenHelp += "\n" + " For pollen file \"Test.p\" the C output name will be \"Test-prog.<suffix>\".";
+        pollenHelp += "\n" + " Note that <suffix> can vary depending on the selected target.";
         pollenHelp += "\n" + " $POLLEN_TARGET is the root directory for target properties files.";
         pollenHelp += "\n" + " Bundles can be specified with \'@<bundle name>\' where '@' expands \n to the value of $POLLEN_BUNDLES.";
         pollenHelp += " Note that the translator requires that \n $POLLEN_TARGET be specified whereas $POLLEN_BUNDLES is optional.";
@@ -397,7 +400,7 @@ public class ProcessUnits {
         pollenHelp += "\n" + "\tplatforms and their compilers are:";
         pollenHelp += "\n" + "\t    arm-none-eabi-gcc  gcc for arm";
         pollenHelp += "\n" + "\t    avr-gcc            gcc for avr";
-        //pollenHelp += "\n" + "\t    efm32-gcc          gcc for efm32";  in but undoc
+        pollenHelp += "\n" + "\t    efm32-gcc          gcc for efm32";  
         pollenHelp += "\n" + "\t    localhost-gcc      gcc for localhost";
         //pollenHelp += "\n" + "\t    msp430-gcc         gcc for msp430"; in but undoc
         pollenHelp += "\n" + "\tIf no '-t' option is specified only C files are produced.";  
@@ -640,6 +643,17 @@ public class ProcessUnits {
 			SymbolTable symtab) throws Exception {
 		
 		
+		if (args.length == 1 && args[0] != null && args[0].equals("-h")) {
+			// don't require environment variable setup just for help message
+			System.out.println(helpMessage());
+			System.exit(0);
+		}
+		if (args.length == 1 && args[0] != null && args[0].equals("-v")) {
+			// don't require environment variable setup just for version message
+			System.out.println(version());
+			System.exit(0);
+		}
+
 		setCompatibilityMode(setupEnvVars(props));
 		Inputs files = this.getArgs(args, errorStream);
 		       
@@ -674,8 +688,11 @@ public class ProcessUnits {
 	/**
 	 * Default handling of print when no -p 
 	 * @return the default location according to environment variables.
+	 * TODO this breaks if $POLLEN_BUNDLES is not specified because I 
+	 * have no implementation of pollen.output/PrintProtocol.p for default bind.
+	 * Gets error msg in ParseUnit.parseImports().
 	 */
-	static public String getPollenOutputDefault() {
+	static public String getPollenOutputDefault() {		
 		return pollenOutputDefault;
 	}
 	/**
@@ -687,6 +704,11 @@ public class ProcessUnits {
 	 * If no POLLEN_TARGET and there is POLLEN_ROOT, POLLEN_ROOT is used to set POLLEN_TARGET.
 	 * 
 	 * if no POLLEN_BUNDLES specified assume the paths are fully specified on command line.
+	 * 
+	 * NOTE if $POLLEN_BUNDLES is unspecified, that can break default dcln of PrintProtocol (which is 
+	 * generated for bind of print when -p is not supplied). Anything else? $POLLEN_BUNDLES is defined
+	 * for the cloud compiler so it's acceptable for now. 
+	 * 
 	 * @param props
 	 */
 	protected boolean setupEnvVars(Properties props) {
@@ -717,7 +739,7 @@ public class ProcessUnits {
         		if (props.getProperty(Property.POLLEN_BUNDLES.name()) == null) {
         			props.setProperty(Property.POLLEN_BUNDLES.name(), props.getProperty(Property.POLLEN_ROOT.name()));
         			setPollenBundles(props.getProperty(Property.POLLEN_BUNDLES.name()));
-        		}       	
+        		}     
         		return true;
         	}
         	else {

@@ -26,7 +26,7 @@ public abstract class GccBase extends BaseTarget {
         String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
         String mapFile = baseFile + ".map";
         cmd += " -Wl,-Map=" + mapFile;
-        return cmd;
+        return cmd; //-Wl,-Map,[FILENAME].map'
     }
     protected String cmdObjCopy() {
 		String objcopy = ParseUnit.current().getProperty(ITarget.P_TOOLSDIR)
@@ -84,6 +84,7 @@ public abstract class GccBase extends BaseTarget {
 	    cmd = addPollenBundles(cmd);
 	    cmd = addPollenTarget(cmd);
 	    cmd = addCcMcu(cmd);
+	    cmd = addMapFile(cmd, srcFile);
 	    cmd = addCcOpts(cmd);
 	    cmd = addSrcOutFiles(cmd, srcFile);
 	    cmd = addCcOptsSuffix(cmd);

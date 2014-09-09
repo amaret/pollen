@@ -16,10 +16,15 @@ public class GccEfm32 extends GccBase {
         typeInfo.put(TypeId.UINT8,   new TypeInfo(1, 1));
         typeInfo.put(TypeId.UINT16,  new TypeInfo(2, 1));
         typeInfo.put(TypeId.UINT32,  new TypeInfo(2, 1));
+                      
+    }
+    protected String addMapFile(String cmd, File srcFile) {
         
-        // TODO what is typeinfo for String?
-        //typeInfo.put(TypeId.STRING,   new TypeInfo(2, 1));   ????
-              
+        String srcFilePath = srcFile.getAbsolutePath();       
+        String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
+        String mapFile = baseFile + ".map";
+        cmd += " -Wl,-Map=" + mapFile;
+        return cmd;
     }
     protected String cmdObjCopy() {
 		String objcopy = ParseUnit.current().getProperty(ITarget.P_OBJCOPY);
@@ -32,11 +37,38 @@ public class GccEfm32 extends GccBase {
 		if (mcu == null || mcu.isEmpty())
 			mcu = ParseUnit.current().getProperty(ITarget.P_MCU);
 		if (mcu == null || mcu.isEmpty())
-    		mcu = "efm32";
-		cmd += " -mtune=" + mcu;
-    	//cmd += " -D" + mcu; this option was here but I can't find this option so use the generic arm option 
+    		mcu = "EFM32ZG108F32";
+    	cmd += " -D" + mcu; 
     	return cmd;
     }   
+    protected String addObjCopyFiles(String cmd, File srcFile) {
+        String srcFilePath = srcFile.getAbsolutePath();       
+        String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
+        String outFile = baseFile + ".elf";
+        String hexFile = baseFile + ".bin";
+        cmd += " " + outFile + " " + hexFile;
+        return cmd;
+    }
+
+    protected String addObjCopyOpts(String cmd) {
+    	String input = ParseUnit.current().getProperty(ITarget.P_OBJFORMAT_IN);
+    	String output = ParseUnit.current().getProperty(ITarget.P_OBJFORMAT_OUT);
+    	if (input == null || input.isEmpty())
+    		curr.reportFailure("property file does not specifiy a valid objcopy input format");
+    	if (output == null || output.isEmpty())
+    		curr.reportFailure("property file does not specifiy a valid objcopy output format");
+    	cmd += " -I " + input + " -O " + output;
+        return cmd;
+    }
+    protected String addSrcOutFiles(String cmd, File srcFile) {
+        
+        String srcFilePath = srcFile.getAbsolutePath();       
+        String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
+        String outFile = baseFile + ".elf";
+        cmd += " " + srcFile + " -o " + outFile;
+        return cmd;
+    }
+
     protected int execCmd(String cmd, boolean useInfoStream) throws Exception {
         return execCmd(cmd, useInfoStream, null);
     }

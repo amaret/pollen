@@ -817,6 +817,10 @@ public class ParseUnit {
 														
 							File f = new File(pkgPath + File.separator + fromPkg);
 							String p = (!f.exists()) ? ProcessUnits.getPollenOutputDefault() : pkgPath + File.separator + fromPkg;
+							if (p.isEmpty()) {
+								ParseUnit.current().reportError(currUnitNode, 
+										"unit requires import statement for 'pollen.output/PrintProtocol.p' or set environment variable $POLLEN_BUNDLES.");
+							}
 							currUnit = parseUnit(p + File.separator
 									+ ParseUnit.POLLEN_PRINT_PROTOCOL
 									+ ".p", client, importFromClient);
