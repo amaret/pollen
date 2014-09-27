@@ -404,12 +404,12 @@ public class ProcessUnits {
         pollenHelp += "\n" + "\t    localhost-gcc      gcc for localhost";
         //pollenHelp += "\n" + "\t    msp430-gcc         gcc for msp430"; in but undoc
         pollenHelp += "\n" + "\tIf no '-t' option is specified only C files are produced.";  
- 		pollenHelp += "\n" + "  -v\tOutput translator version.";
+ 		pollenHelp += "\n" + "  -v\tOutput translator version and exit.";
  		pollenHelp += "\n" + "  -w\tOutput warning messages. (Otherwise suppressed.)";
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.95";  // user release . internal rev . fix number
+	private static String  v = "0.2.96";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -799,7 +799,7 @@ public class ProcessUnits {
 		
         Properties props = new Properties();
 
-		unitNodes = this.parseUnit(args, props, outputStream, infoStream, errorStream, symbolTable);
+		unitNodes = this.parseUnit(args, props, outputStream, errorStream, infoStream, symbolTable);
 		
 		return this.translateUnit(unitNodes);
 

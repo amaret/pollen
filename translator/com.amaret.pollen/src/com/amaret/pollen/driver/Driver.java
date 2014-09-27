@@ -13,7 +13,7 @@ public class Driver {
 		
 		try {
 			
-			rtn = pu.processUnits(args, System.out, System.err, System.err);
+			rtn = pu.processUnits(args, System.out, System.err, System.out);
 			
 		} catch (Exception e) {
             e.printStackTrace(System.err);
