@@ -826,7 +826,6 @@ public class Auxiliary {
 	}
 
 	private void genExpr$New(ExprNode.New expr) {
-		System.out.println(expr.toStringTree());
 		
 		if (!expr.getCall().isConstructorCallOnHostVar()) {
         	ParseUnit.current().reportError(expr.getCall().getName(), "non-host invocations of 'new()' are not yet implemented");        	
@@ -1567,28 +1566,14 @@ public class Auxiliary {
 			
 			String catChar = "";
 			for (ExprNode expr : stmt.getArgs()) {
-				switch (expr.getType()) {
-				case pollenParser.E_IDENT:
-					ExprNode.Ident ei = (Ident) expr;
-					Cat cat = ei.getCat();
-					if (cat instanceof Cat.Arr && ei.hasIndexExpr()) {
-						catChar = new Character(((Cat.Arr)cat).getBase().code().charAt(0)).toString();
-					}
-					else
-						catChar = new Character(ei.getCat().code().charAt(0)).toString();
-					
-					break;
-				case pollenParser.E_CONST:
-					ExprNode.Const ec = (Const) expr;
-					catChar = new Character(ec.getCat().code().charAt(0)).toString();
-					break;
-				default:     // why not function returns?
+				catChar = expr.getUltimateCatChar();
+				if (catChar.isEmpty()) {
 					ParseUnit
 					.current()
 					.reportError(stmt,
 							"the print statement supports only qualified names and literals");
 					continue;
-				}	
+				}
 
 				String uname_target = (ParseUnit.getPollenPkg() + "." + ParseUnit.getPollenFile() + ".").replace('.', '_');
 				
@@ -1616,7 +1601,7 @@ public class Auxiliary {
 					gen.getFmt().print(");");
 					break;
 				case 'x': case 'X': case 'C':
-					ParseUnit.current().reportError(stmt, "Unimplemented type for pollen print (a reference or class");
+					ParseUnit.current().reportError(stmt, "Unimplemented type for pollen print (references are not supported)");
 					//	  printfcn = (void**)&vals[i]; /* init print function ptr */
 					//	  (*printfcn)();
 					break;
@@ -1627,11 +1612,10 @@ public class Auxiliary {
 	}
 
 	private void genStmt$Return(StmtNode.Return stmt) {
-		
+				
 		gen.getFmt().print("return");
 		ExprNode.Vec expr = stmt.getVec();
 		String addrOf = "";
-		//System.out.println(stmt.toStringTree());
 		Tree body = stmt.getParent();
 		while (body != null && !(body instanceof BodyNode)) {
 			body = body.getParent();
@@ -1639,7 +1623,7 @@ public class Auxiliary {
 		if (body instanceof BodyNode) {		
 			DeclNode.Fcn f = ((BodyNode) body).getFcn();
 			TypeNode t = ((BodyNode) body).getFcn().getTypeSpec();
-			if (t instanceof TypeNode.Usr) {
+			if (t instanceof TypeNode.Usr || t instanceof TypeNode.Arr) {
 				
 				ExprNode.Ident ei = (Ident) ((expr.getVals().get(0)) instanceof ExprNode.Ident ? (expr.getVals().get(0)) : null);
 				if (ei == null) {
@@ -1653,11 +1637,12 @@ public class Auxiliary {
 					Cat fcat = f.getTypeCat();
 					addrOf = this.mkAddrOfOrDerefOp(fcat, rtnCat, ei);
 				}
-				
-				se = ((TypeNode.Usr)t).getSymbol();
-				ISymbolNode node = se != null ? se.node() : null;
+				ISymbolNode node = null;
+				if (t instanceof TypeNode.Usr) {
+					se = ((TypeNode.Usr)t).getSymbol();
+					node = se != null ? se.node() : null;
+				}								
 				if (node != null) {
-					//addrOf = " &";
 					if (node instanceof ImportNode && ((ImportNode)node).isSynthesizedFromMetaPrimitive())
 						addrOf = "";
 				}	
@@ -1742,6 +1727,7 @@ public class Auxiliary {
 	 * @param arg
 	 */
 	void genForwardedType(TypeNode type, String name, EnumSet<Flags> flags, ITypeSpec arg) {
+		
 		if (type instanceof TypeNode.Usr) {
 			if (((TypeNode.Usr)type).isFunctionRef()) {
 				this.genTypeWithVarName(type, name, flags);	
@@ -1817,7 +1803,7 @@ public class Auxiliary {
 	/**
 	 * Check if this assignment needs '&' or '*' prepended to the assignment source.
 	 * Handles Cat.Agg, Cat.Arr operands.
-	 * TODO handle others - Cat.Fcn, more? 
+	 * TODO handle others - eg. complex expressions where foo()[0].bar() is returned
 	 * @param left lhs of assignment
 	 * @param right rhs of assigmment
 	 * @param ex
@@ -1843,7 +1829,6 @@ public class Auxiliary {
 			return "";	
 		// Lhs array = rhs array
 		if (isAssign && left instanceof Cat.Arr && right instanceof Cat.Arr){
-			// TODO what about return? should 'isAssign' be true?
 			if (!hasLeftIndexExpr && !hasRightIndexExpr) {
 				if (!((Cat.Arr)left).isNoDim()) {				
 					// Assigning array to array. 
@@ -1856,6 +1841,19 @@ public class Auxiliary {
 					}					
 				}
 				return "";
+			}
+		}
+		boolean checkRtn = (right instanceof Cat.Agg && right.isClassRef()); // || right instanceof Cat.Arr;
+		// Returning aggregate: if returned value is host, use '&'
+		if (left instanceof Cat.Fcn && checkRtn){
+			if (ex instanceof ExprNode.Ident) {
+				SymbolEntry s = ex.getSymbol();
+				ISymbolNode n = s !=null ? s.node() : null;
+				String rtn = "";
+				if (n instanceof DeclNode) {
+					rtn = ((DeclNode)n).isHost() ? "&" : "";
+				}
+				return rtn;				
 			}
 		}
 

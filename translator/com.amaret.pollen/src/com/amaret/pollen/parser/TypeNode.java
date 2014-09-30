@@ -98,6 +98,9 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 				tr = tr.getParent();
 			
 			ISymbolNode baseType = this.getBaseSymbol() != null ? this.getBaseSymbol().node() : null;
+			if (baseType instanceof ImportNode) 
+				baseType = ((ImportNode) baseType).getUnit().getUnitType();
+
 			// don't deref class types, the define for the name has a dereference already.
 			boolean deref = (!(baseType instanceof DeclNode.Class)) && tr instanceof DeclNode.FcnTyp;
 

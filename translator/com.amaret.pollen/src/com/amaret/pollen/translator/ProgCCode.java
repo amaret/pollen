@@ -787,7 +787,6 @@ public class ProgCCode {
 		if (is instanceof ImportNode) 
 			is = ((ImportNode) is).getUnit().getUnitType();
 		
-		//System.out.println(is.getName().getText());
     	String n = is.getName().getText();
     	if (cat.aggScope() instanceof DeclNode)
     		n = ((DeclNode)cat.aggScope()).getName().getText();

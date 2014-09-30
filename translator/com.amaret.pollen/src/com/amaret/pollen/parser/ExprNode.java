@@ -643,6 +643,11 @@ public class ExprNode extends BaseNode {
 				}
 
 			}
+			for (int i = 0; i < this.getChildCount(); i++) {
+				BaseNode b = (BaseNode) this.getChild(i);
+				if (b instanceof ExprNode.Call)
+					postExprCallCount++;
+			}
 		}
 
 		/**
@@ -914,23 +919,9 @@ public class ExprNode extends BaseNode {
 												// 'obj'
 
 		private boolean thisPtr = false; // add 'this' to accesses
-		int postExprCallCount = 0; // the number of calls after first expr 'a.b'
-									// in 'a.b.c.d.e...'
 		private boolean isCallThruProtoMbr = false; // Qualifier is protocol
 													// member: use bindTo unit
 													// for the call
-
-		/**
-		 * Because 'this' is fixed up to be a parameter, postExpr calls need
-		 * special handling. arr[0].foo() has this equal 1, clsRef.foo() has
-		 * this equal 0
-		 * 
-		 * @return number of calls after the first expr.
-		 */
-		public int getPostExprCallCount() {
-			return postExprCallCount;
-		}
-
 		public boolean isThisPtr() {
 			if (!thisPtr) {
 				IScope sc = this.getSymbol() != null ? this.getSymbol().scope()
@@ -1230,10 +1221,11 @@ public class ExprNode extends BaseNode {
 										// belonging to its class
 					}
 				}
-				exprCat = this.getCat(); // symbol.node().getTypeCat();
+				exprCat = this.getCat(); 
 
 			}
-			for (int i = 1; i < this.getChildCount(); i++) {
+			//System.out.println(this.toStringTree());
+			for (int i = 0; i < this.getChildCount(); i++) {
 				BaseNode b = (BaseNode) this.getChild(i);
 				if (b instanceof ExprNode.Call)
 					postExprCallCount++;
@@ -1754,9 +1746,24 @@ public class ExprNode extends BaseNode {
 	protected Cat exprCat = Cat.UNKNOWN;
 	protected boolean isConst = false;
 
-	// True when this expr or ident is to the right of a '.'
 	protected boolean postExpr = false;
+	protected int postExprCallCount = 0;
+	/**
+	 * Because 'this' is passed as a parameter, postExpr calls need to load the 'this' expr
+	 * as a parameter. postExprCallCount is the number of calls after the '.'. 
+	 * arr[0].foo() has this equal 1, clsRef.foo() has
+	 * this equal 1, clsRef.foo().bar() has this equal 2.
+	 * 
+	 * @return number of calls after the first '.'.
+	 */
+	public int getPostExprCallCount() {
+		return postExprCallCount;
+	}
 
+	/**
+	 * 
+	 * @return True when this expr or ident is to the right of a '.' else false
+	 */
 	public boolean isPostExpr() {
 		return postExpr;
 	}
@@ -1795,6 +1802,43 @@ public class ExprNode extends BaseNode {
 
 	public Cat getCat() {
 		return exprCat;
+	}
+	/**
+	 * The 'ultimate cat' is the cat of the resolved final expression, e.g. for
+	 *    ref.foo().bar()[i]
+	 * it is the cat of the base type of the array returned by bar().
+	 * @return the ultimate cat
+	 */
+	public Cat getUltimateCat() {
+		ExprNode ex = this;
+		// Get the cat of the 'ultimate' expr
+		if (ex.getPostExprCallCount() > 0) {
+			BaseNode b = ex;
+			int i = 0;
+			while (ex.getChild(i) != null) {
+				b = (BaseNode) ex.getChild(i++);
+			}
+			ex = (ExprNode) (b instanceof ExprNode ? b : ex);
+		}
+
+		return ex.getCat();
+	}
+
+	/**
+	 * @return the type character of the ultimate Cat code, e.g. 'u' or 'i'
+	 */
+	public String getUltimateCatChar() {
+		String catChar;
+		Cat cat = this.getUltimateCat();
+		if (cat instanceof Cat.Arr && this instanceof ExprNode.Ident && ((ExprNode.Ident)this).hasIndexExpr()) {
+			catChar = new Character(((Cat.Arr)cat).getBase().code().charAt(0)).toString();
+		}
+		else if (cat instanceof Cat.Fcn) {
+			catChar = new Character(cat.code().charAt(1)).toString();
+		}
+		else
+			catChar = new Character(cat.code().charAt(0)).toString();
+		return catChar;
 	}
 
 	/**
