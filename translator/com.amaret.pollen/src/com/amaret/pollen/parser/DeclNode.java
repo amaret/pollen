@@ -309,6 +309,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 											// never direct
 		}
 
+		/**
+		 * Return the TypeNode.Arr (not the element type)
+		 * @return
+		 */
 		public TypeNode.Arr getTypeArr() {
 			return (TypeNode.Arr) getChild(BASE);
 		}
@@ -2601,7 +2605,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			if (node == null || sc == null)
 				return qn;
 			IScope scopeOfDcln = sc;
-
+			
 			if (scopeOfDcln instanceof DeclNode.Usr
 					&& !((ITypeKind) scopeOfDcln).isClass()) {
 				scopeOfDcln = scopeOfDcln.getEnclosingScope();
@@ -2620,6 +2624,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 		public String getOutputQNameHost(Generator g, ISymbolNode node,
 				IScope sc, EnumSet<Flags> flags) {
+			
 			boolean thisPtr = flags.contains(Flags.IS_THISPTR);
 			String qn = "";
 			if (node == null || sc == null)
@@ -2709,7 +2714,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 		public String getOutputNameTarget(Generator g, IScope sc,
 				EnumSet<Flags> flags) {
-
+			
 			boolean thisPtr = flags.contains(Flags.IS_THISPTR);
 			thisPtr = thisPtr && !this.getName().getText().equals("this");
 			boolean postExpr = flags.contains(Flags.IS_POSTEXPR);

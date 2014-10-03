@@ -1,8 +1,10 @@
 package com.amaret.pollen.translator;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.Tree;
 
 import com.amaret.pollen.driver.ProcessUnits;
@@ -274,7 +276,6 @@ public class Auxiliary {
 						genExpr$Ident((Ident) e);
 						break;
 					case pollenParser.E_CALL:
-						//System.out.println(expr.toStringTree());
 						gen.getFmt().print(".");
 						genExpr2(e, eType);
 						break;
@@ -329,7 +330,7 @@ public class Auxiliary {
 			genExpr$Binary((ExprNode.Binary) expr);
 			break;
 		case pollenParser.E_CALL:
-			genExpr$Call((ExprNode.Call) expr);
+			genExpr$Call((ExprNode.Call) expr, null);
 			genExprPost(expr);
 			break;
 		case pollenParser.E_QUEST:
@@ -355,10 +356,62 @@ public class Auxiliary {
 				this.genExprCallThruFcnPtrArray((Ident) expr);
 				break;
 			}
-			genExpr$Ident((ExprNode.Ident) expr);
-			if (!isSkipPost()) {
-				genExprPost(expr);
+			if (expr.getPostExprCallCount() == 0) {
+				genExpr$Ident((ExprNode.Ident) expr);
+				if (!isSkipPost()) 
+					genExprPost(expr);
 			}
+			else  {
+				for (int i = expr.getChildCount()-1; i > -1; i--) {
+					BaseNode b = (BaseNode) expr.getChild(i);
+
+					if (b instanceof ExprNode.Call) {
+
+						List<CommonTree> delList = new ArrayList<CommonTree>();
+						ExprNode.Call del = (Call) expr.getChild(i);
+						int j = i++;
+						while (expr.getChild(j) != null) {
+							CommonTree c = (CommonTree) expr.deleteChild(j);
+							delList.add(c);							
+						}
+
+						boolean savepe = del.isPostExpr();
+						int savepecc = expr.getPostExprCallCount();
+						expr.setPostExprCallCount(savepecc-1);
+						del.getName().setPostExpr(false);
+						genExpr$Call(del, expr);
+						del.getName().setPostExpr(savepe);
+						expr.setPostExprCallCount(savepecc);
+
+						for (CommonTree c : delList) {
+							if (c instanceof ExprNode) {
+								ExprNode ex = (ExprNode) c;
+								switch (ex.getType()) {
+								case pollenParser.E_INDEX:
+									//if (!isHost())
+									genExpr2(ex, ex.getType());
+									break;
+								case pollenParser.E_IDENT:						
+									gen.getFmt().print(mkSelectionOp(expr, ex));
+									genExpr2(ex, ex.getType());
+									break;
+								default:
+									break;
+								}
+
+								//genExprPost((ExprNode) c);
+							}
+						}
+						expr.addChild(del);
+						while(!delList.isEmpty()) {
+							expr.addChild(delList.remove(0));
+						}
+						break;
+					}					
+				}
+			}
+			
+
 			break;
 		case pollenParser.E_INDEX:
 			genExpr$Index((ExprNode.Index) expr);
@@ -385,7 +438,6 @@ public class Auxiliary {
 		ExprNode right = expr.getRight();
 		String op = expr.getOp().getText();
 		
-		//System.out.println(expr.toStringTree());
 		// Check for modifications of preset variables outside of preset assignments
 		if (expr.isAssign() && left instanceof ExprNode.Ident) {
 			SymbolEntry se = ((ExprNode.Ident)left).getSymbol() != null ? ((ExprNode.Ident)left).getSymbol() : null;
@@ -491,7 +543,7 @@ public class Auxiliary {
 
 		genExpr(right);
 	}
-	private void genExpr$Call(ExprNode.Call expr) {
+	private void genExpr$Call(ExprNode.Call expr, ExprNode thisExpr) {
 				
  		String n = expr.getName() instanceof ExprNode.Ident ? ((ExprNode.Ident) expr.getName()).getName().getText() : "";
  		 		
@@ -509,7 +561,7 @@ public class Auxiliary {
 		}				
 		genExpr(expr.getName());
 		
-		genCallArgs(expr, null);
+		genCallArgs(expr, thisExpr);
 	}
 	private void genExprCallThruFcnPtrArray(ExprNode.Ident expr) {
 		if (!expr.isCallThruFcnPtrArray())
@@ -528,17 +580,66 @@ public class Auxiliary {
 
 	/**
 	 * @param expr
-	 * @param thisPtr TODO
+	 * @param thisExpr TODO
 	 */
-	void genCallArgs(ExprNode.Call expr, BaseNode thisPtr) {
+	void genCallArgs(ExprNode.Call expr, ExprNode thisExpr) {
+		
 		Cat cat = expr.getName().getCat();
 		Cat.Fcn fcncat = cat instanceof Cat.Fcn ? (Cat.Fcn) cat : null;
 		
 		String sep = "";
 		gen.getFmt().print("(");
 		int argc = 0;
+		
+		if (thisExpr != null) {
+			sep = ", ";
+			SymbolEntry se = null;
+			ISymbolNode n = null;
+			String addrOf = "";
+			String closeP = "";
+			
+			switch (thisExpr.getType()) {
+			case pollenParser.E_IDENT:
+				if (((ExprNode.Ident)thisExpr).hasIndexExpr())	 {
 
-		if (expr.addThisPtrParameter()) {
+					if (((ExprNode.Ident)thisExpr).getCat() instanceof Cat.Arr) {
+						
+						Cat.Arr c = (Arr) ((ExprNode.Ident)thisExpr).getCat();
+						if (c.getType() instanceof TypeNode.Arr) {
+							se = ((TypeNode.Arr)c.getType()).getBaseSymbol();	
+						}
+						se = ((ExprNode.Ident)thisExpr).getSymbol();
+					}
+				}
+				else {
+					se = ((ExprNode.Ident)thisExpr).getSymbol();					
+				}
+				n = se != null ? se.node() : null;
+				if (n instanceof DeclNode && ((DeclNode)n).isHost()) {
+					addrOf = "&(";
+					closeP = ")";					
+				}
+				break;
+			case pollenParser.E_CALL:		
+				se = ((ExprNode.Call)thisExpr).getCalledFcn();
+				n = se != null ? se.node() : null;
+				if (n instanceof DeclNode.Fcn)	{
+					if (((DeclNode.Fcn)n).getTypeSpec() instanceof TypeNode.Usr) {
+						addrOf = "&(";
+						closeP = ")";					
+					}
+				}
+				break;
+			default:
+				break;
+			}
+
+			gen.getFmt().print(addrOf);
+			genExpr(thisExpr);
+			gen.getFmt().print(closeP);
+			
+		}
+		else if (expr.addThisPtrParameter()) {
 			sep = ", ";
 			final String ADDR_OF = "&(";
 			if (expr.getQualifier() != null) {				
@@ -830,7 +931,7 @@ public class Auxiliary {
 		if (!expr.getCall().isConstructorCallOnHostVar()) {
         	ParseUnit.current().reportError(expr.getCall().getName(), "non-host invocations of 'new()' are not yet implemented");        	
         }
-		genExpr$Call(expr.getCall());
+		genExpr$Call(expr.getCall(), null);
 
 	}
 
@@ -1552,7 +1653,6 @@ public class Auxiliary {
 	}
 
 	private void genStmt$Print(StmtNode.Print stmt) {
-		
 		if (isHost()) {
 			gen.getFmt().print("$$printf(");
 			String sep = "";
@@ -1563,10 +1663,11 @@ public class Auxiliary {
 			}
 			gen.getFmt().print(");");
 		} else {
-			
+			boolean firstTime = true;
 			String catChar = "";
 			for (ExprNode expr : stmt.getArgs()) {
 				catChar = expr.getUltimateCatChar();
+				String t = "%t";
 				if (catChar.isEmpty()) {
 					ParseUnit
 					.current()
@@ -1579,26 +1680,33 @@ public class Auxiliary {
 				
 				switch (catChar.charAt(0)) {
 				case 'b':
-					gen.getFmt().print("%1%2print_bool(", uname_target, ParseUnit.INTRINSIC_PREFIX);
+					t = !firstTime ? "\n\t" : "";
+					gen.getFmt().print("%3%1%2print_bool(", uname_target, ParseUnit.INTRINSIC_PREFIX, t);
 					gen.aux.genExpr(expr);
 					gen.getFmt().print(");");
-
+					firstTime = false;
 					break;
 				case 'i':
 				case 'n':
-					gen.getFmt().print("%1%2print_int((int32)", uname_target, ParseUnit.INTRINSIC_PREFIX);
+					t = !firstTime ? "\n\t" : "";
+					gen.getFmt().print("%3%1%2print_int((int32)", uname_target, ParseUnit.INTRINSIC_PREFIX, t);
 					gen.aux.genExpr(expr);
 					gen.getFmt().print(");");
+					firstTime = false;
 					break;
 				case 'u':
-					gen.getFmt().print("%1%2print_uint((uint32)", uname_target, ParseUnit.INTRINSIC_PREFIX);
+					t = !firstTime ? "\n\t" : "";
+					gen.getFmt().print("%3%1%2print_uint((uint32)", uname_target, ParseUnit.INTRINSIC_PREFIX, t);
 					gen.aux.genExpr(expr);
 					gen.getFmt().print(");");
+					firstTime = false;
 					break;
 				case 's':
-					gen.getFmt().print("%1%2print_str((string)", uname_target, ParseUnit.INTRINSIC_PREFIX);
+					t = !firstTime ? "\n\t" : "";
+					gen.getFmt().print("%3%1%2print_str((string)", uname_target, ParseUnit.INTRINSIC_PREFIX, t);
 					gen.aux.genExpr(expr);
 					gen.getFmt().print(");");
+					firstTime = false;
 					break;
 				case 'x': case 'X': case 'C':
 					ParseUnit.current().reportError(stmt, "Unimplemented type for pollen print (references are not supported)");

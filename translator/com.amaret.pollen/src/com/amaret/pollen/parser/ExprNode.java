@@ -332,30 +332,47 @@ public class ExprNode extends BaseNode {
 				boolean chkHostScope = symtab.currScopeIsHostFcn()
 						|| isConstructorCallOnHostVar();
 				boolean dbg = false;
-				if (call.equals("cls.bar"))
+				if (call.equals("getArr"))
 					dbg = true;
 
 				boolean skipLookup = (call.matches(ParseUnit.INTRINSIC_PREFIX
 						+ ".*")) ? true : false;
 
 				if (!skipLookup) {
-					boolean chkParentIdentScope = this.getParent() instanceof ExprNode.Ident
-							&& ((ExprNode.Ident) this.getParent()).getSymbol() != null;
-					boolean chkParentFcnRtnScope = this.getParent() instanceof ExprNode.Call
-							&& ((ExprNode.Call) this.getParent())
-									.getCalledFcn() != null;
+					
+					boolean chkParentScope = this.getParent() instanceof ExprNode.Ident || this.getParent() instanceof ExprNode.Call;
+					
 					if (fcn == null
-							&& (chkParentIdentScope || chkParentFcnRtnScope)) { // more?
-						// this is an access after a dereference:
+							&& chkParentScope) { 
+						
+						// If there is a predecessor expr, this is an access after a dereference:
 						// 'arr[i].fcn()' or ref.foo().fcn()
-						// lookup scope for 'fcn()' is from preceding expr.
+						// lookup scope for 'fcn()' is from predecessor expr.
+						ExprNode pred = this.getPredecessorExpr();
+						
+						SymbolEntry s = pred instanceof ExprNode.Ident ? ((ExprNode.Ident) pred)
+								.getSymbol()
+								: pred instanceof ExprNode.Call ? ((ExprNode.Call) pred)
+										.getCalledFcn()
+										: pred instanceof ExprNode.New ? ((ExprNode.New) pred)
+												.getCall().getCalledFcn(): null;
 
-						IScope sc = chkParentIdentScope ? ((ExprNode.Ident) this
-								.getParent()).getSymbol().derefScope(false)
-								: chkParentFcnRtnScope ? ((ExprNode.Call) this
-										.getParent()).getCalledFcn()
-										.derefScope(false) : null;
-						fcn = sc.lookupName(ei.getName().getText());
+						IScope sc = s != null ? s.derefScope(false) : null;
+						fcn = sc != null ? sc.lookupName(ei.getName().getText()) : null;
+						
+						if (fcn == null) { // try host
+							sc = s != null ? s.derefScope(true) : null;
+							fcn = sc != null ? sc.lookupName(getName().getText(), true) : null;
+						}
+
+//						SymbolEntry s = pred instanceof ExprNode.Ident ? ((ExprNode.Ident) pred)
+//								.getSymbol()
+//								: pred instanceof ExprNode.Call ? ((ExprNode.Call) pred)
+//										.getCalledFcn()
+//										: null;
+//						IScope sc = s != null ? s.derefScope(false) : null;
+//
+// 						fcn = sc != null ? sc.lookupName(ei.getName().getText()) : null;
 						if (fcn != null && fcn.node() instanceof DeclNode) {
 							DeclNode d = (DeclNode) fcn.node();
 							boolean accessible = d.flagsContains(Flags.PUBLIC);
@@ -364,6 +381,33 @@ public class ExprNode extends BaseNode {
 							fcn = (accessible) ? fcn : null;
 						}
 					}
+
+//					boolean chkParentIdentScope = this.getParent() instanceof ExprNode.Ident
+//							&& ((ExprNode.Ident) this.getParent()).getSymbol() != null;
+//					boolean chkParentFcnRtnScope = this.getParent() instanceof ExprNode.Call
+//							&& ((ExprNode.Call) this.getParent())
+//									.getCalledFcn() != null;
+//
+//					if (fcn == null
+//							&& (chkParentIdentScope || chkParentFcnRtnScope)) { // more?
+//						// this is an access after a dereference:
+//						// 'arr[i].fcn()' or ref.foo().fcn()
+//						// lookup scope for 'fcn()' is from preceding expr.
+//
+//						 IScope sc = chkParentIdentScope ? ((ExprNode.Ident) this
+//								.getParent()).getSymbol().derefScope(false)
+//								: chkParentFcnRtnScope ? ((ExprNode.Call) this
+//										.getParent()).getCalledFcn()
+//										.derefScope(false) : null;
+//						fcn = sc.lookupName(ei.getName().getText());
+//						if (fcn != null && fcn.node() instanceof DeclNode) {
+//							DeclNode d = (DeclNode) fcn.node();
+//							boolean accessible = d.flagsContains(Flags.PUBLIC);
+//							accessible |= (d.getUnit() == currUnit
+//									.getCurrUnitNode());
+//							fcn = (accessible) ? fcn : null;
+//						}
+//					}
 
 					if (fcn == null) {
 						fcn = symtab.curScope().lookupName(
@@ -1056,33 +1100,48 @@ public class ExprNode extends BaseNode {
 		protected boolean pass2Begin() {
 			// this used to be pass1Begin() but that creates a requirement that
 			// a variable be declared before it is referenced.
-
+			
 			ParseUnit currUnit = ParseUnit.current();
 			if (ParseUnit.isIntrinsicCall(this.getName().getText()))
 				return super.pass2Begin();
+						
+			boolean dbg = false;
+			if (this.getName().getText().equals("TimerManager.Timer.new_host")) {
+				//System.out.println(this.getParent().toStringTree());
+				dbg = true;
+			}
 
-			// if this is a post expr (it is to the right of '.'), get the
-			// correct parent for scope for lookup.
-			// it may be parent for field after call or array, or it may be
-			// grandparent for call after call or array.
-			ExprNode postExprParent = (ExprNode) ((this.getParent() instanceof ExprNode.Ident && ((ExprNode.Ident) this
-					.getParent()).getSymbol() != null) ? this.getParent()
-					: this.getParent() instanceof ExprNode.Call
-							&& this.getParent().getParent() instanceof ExprNode.Ident
-							&& ((ExprNode.Ident) this.getParent().getParent())
-									.getSymbol() != null ? this.getParent()
-							.getParent() : null);
-
-			if (postExprParent != null) {
+			ExprNode pred = this.getPredecessorExpr();		
+			
+			if (pred != null) {
 
 				// This is an access after an indexed expr or call, such as
 				// 'arr[i].fld'.
 				// lookup scope for 'fld' is the type for arr.
+				
+				SymbolEntry s = pred instanceof ExprNode.Ident ? ((ExprNode.Ident) pred)
+						.getSymbol()
+						: pred instanceof ExprNode.Call ? ((ExprNode.Call) pred)
+								.getCalledFcn()
+								: pred instanceof ExprNode.New ? ((ExprNode.New) pred)
+										.getCall().getCalledFcn(): null;
+				
+				String n = getName().getText();
+				if (pred instanceof ExprNode.New){ // may be qualified by class name
+					if (n.indexOf('.') != -1) 
+						n = n.substring(n.lastIndexOf('.')+1);
+				}
 
-				postExpr = true;
-				IScope sc = ((ExprNode.Ident) postExprParent).getSymbol()
-						.derefScope(false);
-				symbol = sc.lookupName(getName().getText());
+				IScope sc = s != null ? s.derefScope(false) : null;
+				symbol = sc != null ? sc.lookupName(n) : null;
+				
+				if (symbol == null) { // try host
+					sc = s != null ? s.derefScope(true) : null;
+					symbol = sc != null ? sc.lookupName(n, true) : null;
+				}
+				
+				postExpr = (symbol != null) ? true : false;
+				
 				if (symbol != null && symbol.node() instanceof DeclNode) {
 					DeclNode d = (DeclNode) symbol.node();
 					boolean accessible = d.flagsContains(Flags.PUBLIC);
@@ -1224,7 +1283,7 @@ public class ExprNode extends BaseNode {
 				exprCat = this.getCat(); 
 
 			}
-			//System.out.println(this.toStringTree());
+			
 			for (int i = 0; i < this.getChildCount(); i++) {
 				BaseNode b = (BaseNode) this.getChild(i);
 				if (b instanceof ExprNode.Call)
@@ -1455,6 +1514,10 @@ public class ExprNode extends BaseNode {
 			super(ttype, ttext);
 		}
 
+		/**
+		 * TODO this will not work when the deref is from a post expression (not parent)
+		 * @return
+		 */
 		public ExprNode getBase() {
 			return (ExprNode) this.getParent();
 
@@ -1759,6 +1822,91 @@ public class ExprNode extends BaseNode {
 	public int getPostExprCallCount() {
 		return postExprCallCount;
 	}
+	public void setPostExprCallCount(int c) {
+		postExprCallCount = c;
+	}
+	/**
+	 * Get the predecessor expr whose scope will be the starting scope to lookup the current expr result. 
+	 * Dependent on the structure of the syntax tree. It can be the parent, the preceding non-index post expr, or null.
+	 * Returning null means use the local scope.
+	 * 
+	 * This is the structure of the call tree:
+	 *          
+	 *   ID   id1.call(id2,call())[i].call1()[j].call2().call3()
+         |   
+        CALL____________________________
+        / | \     \_      \_     \_      \_  
+       /  |  \       \       \      \       \   
+    ID   ARGS IDX    CALL    IDX    CALL    CALL  // post expression list
+    NAME LIST 
+         /   \   
+        /     \   
+       ID     CALL
+
+	 * 
+	 * @return the predecessor expr or null
+	 */
+    protected ExprNode getPredecessorExpr() {
+    	
+    	if (!(this instanceof ExprNode.Call || this instanceof ExprNode.Ident))
+    		return null;
+    	
+		if (!(this.getParent() instanceof ExprNode.Call
+				|| this.getParent() instanceof ExprNode.Ident 
+				|| this.getParent() instanceof ExprNode.New)) { 
+			return null;
+		}
+    	
+    	boolean chkLocal = false;
+    	
+    	
+    	if (this instanceof ExprNode.Ident) {
+    		
+    		if (this.getParent() instanceof ExprNode.Call) {
+    			if (this == this.getParent().getChild(0))
+    				// this ID is the fcn name node
+    				// get the predecessor expr for the parent call node
+    				return ((ExprNode) this.getParent()).getPredecessorExpr();
+    			else
+    				chkLocal = true;
+    		}
+    	}
+    	
+		ExprNode root = (ExprNode) getParent();
+		ExprNode term = (ExprNode) this;
+		int i = 0;
+		ExprNode precede = null;
+		ExprNode curr = null;
+		for (; i < root.getChildCount(); i++) {
+			precede = (!(curr instanceof ExprNode.Index)) ? curr : precede; // only update for non Index exprs
+			if (root.getChild(i) instanceof ExprNode) {
+				curr = (ExprNode) root.getChild(i);
+				if (curr == term) {
+					if (i == 0) { // only one child, predecessor is root
+						precede = root;
+					}
+					break;
+				}
+			}
+			else if (i == 0 && root instanceof ExprNode.Ident){ // in this case the child is a BaseNode 
+				curr = root;
+			}
+		}
+		if (curr != term)
+			return null;
+		if (chkLocal) {
+			SymbolEntry s = precede instanceof ExprNode.Ident ? ((ExprNode.Ident) precede)
+					.getSymbol()
+					: (precede instanceof ExprNode.Call ? ((Call) precede)
+							.getCalledFcn() : null);
+			IScope sc = s.derefScope(false);
+			if (sc != ParseUnit.current().getSymbolTable().curScope()) {
+				ParseUnit.current().reportSeriousError(this, "'" + ((Ident)this).getName().getText() + "' inaccessible in this context");
+			}
+		}
+		
+		return precede;
+    }
 
 	/**
 	 * 
@@ -1766,6 +1914,9 @@ public class ExprNode extends BaseNode {
 	 */
 	public boolean isPostExpr() {
 		return postExpr;
+	}
+	public void setPostExpr(boolean pe) {
+		postExpr = pe;
 	}
 
 	// hashcode(), equals()

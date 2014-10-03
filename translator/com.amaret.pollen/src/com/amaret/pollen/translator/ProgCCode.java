@@ -508,9 +508,6 @@ public class ProgCCode {
     	if (!decl.isHost()) 
     		return;
     	
-    	//System.out.println("host " + decl.getDefiningScope().getScopeName() + "." + decl.getName().getText());
-    	//System.out.println(decl.toStringTree());
-
         Object val = ud.getUnitObj().getAny(decl.getName());
         if (val == Value.UNDEF) {
             ParseUnit.current().reportError(decl.getName(), "host variable has never been assigned");
@@ -554,7 +551,6 @@ public class ProgCCode {
     				if (v.isHost()) {
     					if (!title) {
     						gen.aux.genTitle("host data definitions (unit " + unit.getName().getText() + ")");
-            				//System.out.println("Current Unit: " + unit.getName().getText());
     						title = true;
     					}
     					genHostVal(ud, v);

@@ -49,13 +49,13 @@ public class Cat implements Cloneable {
 
         /**
          * When a UnitNode is aggScope it indicates a metatype.
-         * @param aggScope
-         * @param defScope
+         * @param aggScope ISymbolNode of the item
+         * @param defScope ISymbolNode of the scope of the item
          * @param isRef
          * @param fcnRef
          * NOTE all parameters with Class type come in with isRef set but they should have
          * isTargetClassRef set because we don't pass structs by value. isRef is a redundant ambiguous
-         * field but deleteing it will break things. Look into deleteing it. 
+         * field but deleting it will break things. Look into deleting it. 
          */
         private Agg(IScope aggScope, IScope defScope, boolean isRef, boolean fcnRef) {
 

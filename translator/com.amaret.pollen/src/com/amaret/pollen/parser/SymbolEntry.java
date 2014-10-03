@@ -50,20 +50,26 @@ public class SymbolEntry {
     			return sc;   	
     	}
     	TypeNode.Usr t = null;
-    	if (this.node() instanceof DeclNode.Arr){
-    		t = (Usr) ((DeclNode.Arr)this.node()).getTypeSpec();			
+    	if (this.node() instanceof DeclNode.Arr) {
+    		if (((DeclNode.Arr)this.node()).getTypeSpec() instanceof TypeNode.Usr)
+    			t = (Usr) ((DeclNode.Arr)this.node()).getTypeSpec();			
 		}
     	else if (this.node() instanceof DeclNode.ITypeSpec) {
     		if (((DeclNode.ITypeSpec) this.node()).getTypeSpec() instanceof TypeNode.Usr) {
     			t = (Usr) ((DeclNode.ITypeSpec) this.node()).getTypeSpec();
-    		}        			
+    		}  
+    		else  if (((DeclNode.ITypeSpec) this.node()).getTypeSpec() instanceof TypeNode.Arr) {
+    			TypeNode.Arr ta = (TypeNode.Arr)((DeclNode.ITypeSpec) this.node()).getTypeSpec();
+    			if (ta.getBase() instanceof TypeNode.Usr)
+    				t = (Usr) ta.getBase();
+    		}
     	}    	
     	else if (this.node() instanceof DeclNode.Formal) {    		
     		if (((Formal) this.node()).getTypeSpec() instanceof TypeNode.Usr) {
     			t = (Usr) ((Formal) this.node()).getTypeSpec();
-     		}        			
+    		}        			
     	}
-
+    	
     	if (t != null) {
     		SymbolEntry s = t.getSymbol();
     		if (s != null) {
@@ -82,6 +88,7 @@ public class SymbolEntry {
     				sc = ((DeclNode.Usr) this.node()).getScopeDeleg();
     		}
     	}
+
     	
     	IScope rtn = (sc == null) ? scope() : sc;
     	
