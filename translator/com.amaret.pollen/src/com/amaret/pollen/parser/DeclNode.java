@@ -2927,6 +2927,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		return (flags.contains(f));
 	}
 
+	/**
+	 * Always the outermost. If DeclNode is in a nested class, returns the unit which contains the class
+	 */
 	public UnitNode getUnit() {
 		return unit;
 	}
@@ -2945,6 +2948,21 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 	@Override
 	public IScope getDefiningScope() {
 		return definingScope;
+	}
+	/**
+	 * A nested class will return its defining type. 
+	 * @return the module, class, or nested class that defines this DeclNode.
+	 */
+	public DeclNode.Usr getDefiningType() {
+		BaseNode b = (BaseNode) this;
+		if (this instanceof DeclNode.Usr && !((DeclNode.Usr)this).isNestedClass())
+			return (Usr) this;
+		while (b.getParent() != null) {
+			b = (BaseNode) b.getParent();
+			if (b instanceof DeclNode.Usr)
+				break;						
+		}
+		return (Usr) b;
 	}
 
 	@Override

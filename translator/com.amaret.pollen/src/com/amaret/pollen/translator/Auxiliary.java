@@ -19,6 +19,7 @@ import com.amaret.pollen.parser.DeclNode.Formal;
 import com.amaret.pollen.parser.DeclNode.ITypeSpec;
 import com.amaret.pollen.parser.DeclNode.Var;
 import com.amaret.pollen.parser.ExprNode;
+import com.amaret.pollen.parser.ExprNode.Binary;
 import com.amaret.pollen.parser.ExprNode.Call;
 import com.amaret.pollen.parser.ExprNode.Const;
 import com.amaret.pollen.parser.ExprNode.Ident;
@@ -330,8 +331,15 @@ public class Auxiliary {
 			genExpr$Binary((ExprNode.Binary) expr);
 			break;
 		case pollenParser.E_CALL:
-			genExpr$Call((ExprNode.Call) expr, null);
-			genExprPost(expr);
+			
+			if (expr.getPostExprCallCount() == 0) {
+				genExpr$Call((ExprNode.Call) expr, null);
+				if (!isSkipPost()) 
+					genExprPost(expr);
+			}
+			else  {
+				mkPostExpr(expr);
+			}
 			break;
 		case pollenParser.E_QUEST:
 			genExpr$Quest((ExprNode.Quest) expr);
@@ -352,6 +360,7 @@ public class Auxiliary {
 			// else error?				
 			break;
 		case pollenParser.E_IDENT:
+			
 			if (((ExprNode.Ident) expr).isCallThruFcnPtrArray() && !isSkipPost()) {
 				this.genExprCallThruFcnPtrArray((Ident) expr);
 				break;
@@ -362,56 +371,9 @@ public class Auxiliary {
 					genExprPost(expr);
 			}
 			else  {
-				for (int i = expr.getChildCount()-1; i > -1; i--) {
-					BaseNode b = (BaseNode) expr.getChild(i);
-
-					if (b instanceof ExprNode.Call) {
-
-						List<CommonTree> delList = new ArrayList<CommonTree>();
-						ExprNode.Call del = (Call) expr.getChild(i);
-						int j = i++;
-						while (expr.getChild(j) != null) {
-							CommonTree c = (CommonTree) expr.deleteChild(j);
-							delList.add(c);							
-						}
-
-						boolean savepe = del.isPostExpr();
-						int savepecc = expr.getPostExprCallCount();
-						expr.setPostExprCallCount(savepecc-1);
-						del.getName().setPostExpr(false);
-						genExpr$Call(del, expr);
-						del.getName().setPostExpr(savepe);
-						expr.setPostExprCallCount(savepecc);
-
-						for (CommonTree c : delList) {
-							if (c instanceof ExprNode) {
-								ExprNode ex = (ExprNode) c;
-								switch (ex.getType()) {
-								case pollenParser.E_INDEX:
-									//if (!isHost())
-									genExpr2(ex, ex.getType());
-									break;
-								case pollenParser.E_IDENT:						
-									gen.getFmt().print(mkSelectionOp(expr, ex));
-									genExpr2(ex, ex.getType());
-									break;
-								default:
-									break;
-								}
-
-								//genExprPost((ExprNode) c);
-							}
-						}
-						expr.addChild(del);
-						while(!delList.isEmpty()) {
-							expr.addChild(delList.remove(0));
-						}
-						break;
-					}					
-				}
+				mkPostExpr(expr);
 			}
 			
-
 			break;
 		case pollenParser.E_INDEX:
 			genExpr$Index((ExprNode.Index) expr);
@@ -429,6 +391,59 @@ public class Auxiliary {
 		case pollenParser.E_VEC:
 			genExpr$Vec((ExprNode.Vec) expr, true);
 			break;
+		}
+	}
+	/**
+	 * @param expr
+	 */
+	protected void mkPostExpr(ExprNode expr) {
+		//System.out.println("mkPostExpr: " + expr.toStringTree());
+		for (int i = expr.getChildCount()-1; i > -1; i--) {
+			BaseNode b = (BaseNode) expr.getChild(i);
+
+			if (b instanceof ExprNode.Call) {
+
+				List<CommonTree> delList = new ArrayList<CommonTree>();
+				ExprNode.Call del = (Call) expr.getChild(i);
+				int j = i++;
+				while (expr.getChild(j) != null) {
+					CommonTree c = (CommonTree) expr.deleteChild(j);
+					delList.add(c);							
+				}
+
+				boolean savepe = del.isPostExpr();
+				int savepecc = expr.getPostExprCallCount();
+				expr.setPostExprCallCount(savepecc-1);
+				del.getName().setPostExpr(false);
+				genExpr$Call(del, expr);
+				del.getName().setPostExpr(savepe);
+				expr.setPostExprCallCount(savepecc);
+
+				for (CommonTree c : delList) {
+					if (c instanceof ExprNode) {
+						ExprNode ex = (ExprNode) c;
+						switch (ex.getType()) {
+						case pollenParser.E_INDEX:
+							//if (!isHost())
+							genExpr2(ex, ex.getType());
+							break;
+						case pollenParser.E_IDENT:						
+							gen.getFmt().print(mkSelectionOp(expr, ex));
+							genExpr2(ex, ex.getType());
+							break;
+						default:
+							break;
+						}
+
+						//genExprPost((ExprNode) c);
+					}
+				}
+				expr.addChild(del);
+				while(!delList.isEmpty()) {
+					expr.addChild(delList.remove(0));
+				}
+				break;
+			}					
 		}
 	}
 
@@ -592,47 +607,55 @@ public class Auxiliary {
 		int argc = 0;
 		
 		if (thisExpr != null) {
-			sep = ", ";
-			SymbolEntry se = null;
-			ISymbolNode n = null;
-			String addrOf = "";
-			String closeP = "";
-			
-			switch (thisExpr.getType()) {
-			case pollenParser.E_IDENT:
-				if (((ExprNode.Ident)thisExpr).hasIndexExpr())	 {
-
-					if (((ExprNode.Ident)thisExpr).getCat() instanceof Cat.Arr) {
-						
-						Cat.Arr c = (Arr) ((ExprNode.Ident)thisExpr).getCat();
-						if (c.getType() instanceof TypeNode.Arr) {
-							se = ((TypeNode.Arr)c.getType()).getBaseSymbol();	
-						}
-						se = ((ExprNode.Ident)thisExpr).getSymbol();
-					}
-				}
-				else {
-					se = ((ExprNode.Ident)thisExpr).getSymbol();					
-				}
-				n = se != null ? se.node() : null;
-				if (n instanceof DeclNode && ((DeclNode)n).isHost()) {
-					addrOf = "&(";
-					closeP = ")";					
-				}
-				break;
-			case pollenParser.E_CALL:		
-				se = ((ExprNode.Call)thisExpr).getCalledFcn();
-				n = se != null ? se.node() : null;
-				if (n instanceof DeclNode.Fcn)	{
-					if (((DeclNode.Fcn)n).getTypeSpec() instanceof TypeNode.Usr) {
-						addrOf = "&(";
-						closeP = ")";					
-					}
-				}
-				break;
-			default:
-				break;
+			//System.out.println("callArgs: thisExpr " + thisExpr.toStringTree());
+			Cat uc = thisExpr.getUltimateCat();
+			if (uc instanceof Cat.Fcn) {
+				uc = ((Cat.Fcn)uc).retCat();
 			}
+			sep = ", ";
+			DeclNode.Fcn f = (expr.getCalledFcn() != null) ? (DeclNode.Fcn) expr.getCalledFcn().node() : null;		
+			Cat thisCat = (f != null) ? Cat.fromSymbolNode(f.getDefiningType(), f.getDefiningType().getDefiningScope(), true, false) : null;			
+			String a = this.mkAddrOfOrDerefOp(thisCat, uc, thisExpr);
+			String addrOf = a.equals("&") ? "&(" : "";
+			String closeP = a.equals("&") ? ")" : "";
+			
+//			SymbolEntry se = null;
+//			ISymbolNode n = null;			
+//			switch (thisExpr.getType()) {
+//			case pollenParser.E_IDENT:
+//				if (((ExprNode.Ident)thisExpr).hasIndexExpr())	 {
+//
+//					if (((ExprNode.Ident)thisExpr).getCat() instanceof Cat.Arr) {
+//
+//						Cat.Arr c = (Arr) ((ExprNode.Ident)thisExpr).getCat();
+//						if (c.getType() instanceof TypeNode.Arr) {
+//							se = ((TypeNode.Arr)c.getType()).getBaseSymbol();	
+//						}
+//						se = ((ExprNode.Ident)thisExpr).getSymbol();
+//					}
+//				}
+//				else {
+//					se = ((ExprNode.Ident)thisExpr).getSymbol();					
+//				}
+//				n = se != null ? se.node() : null;
+//				if (n instanceof DeclNode && ((DeclNode)n).isHost()) {
+//					addrOf = "&(";
+//					closeP = ")";					
+//				}
+//				break;
+//			case pollenParser.E_CALL:		
+//				se = ((ExprNode.Call)thisExpr).getCalledFcn();
+//				n = se != null ? se.node() : null;
+//				if (n instanceof DeclNode.Fcn)	{
+//					if (((DeclNode.Fcn)n).getTypeSpec() instanceof TypeNode.Usr) {
+//						addrOf = "&(";
+//						closeP = ")";					
+//					}
+//				}
+//				break;
+//			default:
+//				break;
+//			}
 
 			gen.getFmt().print(addrOf);
 			genExpr(thisExpr);
@@ -1720,7 +1743,8 @@ public class Auxiliary {
 	}
 
 	private void genStmt$Return(StmtNode.Return stmt) {
-				
+		
+		//System.out.println("Ret:" + stmt.toStringTree());
 		gen.getFmt().print("return");
 		ExprNode.Vec expr = stmt.getVec();
 		String addrOf = "";
@@ -1912,67 +1936,79 @@ public class Auxiliary {
 	 * Check if this assignment needs '&' or '*' prepended to the assignment source.
 	 * Handles Cat.Agg, Cat.Arr operands.
 	 * TODO handle others - eg. complex expressions where foo()[0].bar() is returned
-	 * @param left lhs of assignment
-	 * @param right rhs of assigmment
-	 * @param ex
+	 * @param targCat lhs of assignment
+	 * @param srcCat rhs of assigmment
+	 * @param srcExpr
 	 * @return the prepend string for a reference assignment
 	 */
-	private String mkAddrOfOrDerefOp(Cat left, Cat right, ExprNode ex) {	
+	private String mkAddrOfOrDerefOp(Cat targCat, Cat srcCat, ExprNode srcExpr) {	
+		
+		//System.out.println("mkAddrOf:" + ex.toStringTree());
 		
 		boolean hasLeftIndexExpr = false;
 		boolean hasRightIndexExpr = false;
 		boolean isAssign = false;
 		
-		if (ex instanceof ExprNode.Binary) {
-			hasLeftIndexExpr = ((ExprNode.Binary)ex).hasLeftIndexExpr();
-			hasRightIndexExpr = ((ExprNode.Binary)ex).hasRightIndexExpr();			
-			isAssign = ((ExprNode.Binary)ex).isAssign();
+		if (srcExpr instanceof ExprNode.Binary) {
+			hasLeftIndexExpr = ((ExprNode.Binary)srcExpr).hasLeftIndexExpr();
+			hasRightIndexExpr = ((ExprNode.Binary)srcExpr).hasRightIndexExpr();			
+			isAssign = ((ExprNode.Binary)srcExpr).isAssign();
 		}
-		else if (ex instanceof ExprNode.Ident){
-			hasRightIndexExpr = ((ExprNode.Ident)ex).hasIndexExpr();
+		else {
+			hasRightIndexExpr = srcExpr.hasIndexExpr();
 		}
 		
 
-		if (isHost() || right instanceof Cat.Scalar)
+		if (isHost() || srcCat instanceof Cat.Scalar)
 			return "";	
 		// Lhs array = rhs array
-		if (isAssign && left instanceof Cat.Arr && right instanceof Cat.Arr){
+		if (isAssign && targCat instanceof Cat.Arr && srcCat instanceof Cat.Arr){
 			if (!hasLeftIndexExpr && !hasRightIndexExpr) {
-				if (!((Cat.Arr)left).isNoDim()) {				
+				if (!((Cat.Arr)targCat).isNoDim()) {				
 					// Assigning array to array. 
-					ParseUnit.current().reportError(ex, "An array declared with dimensions cannot be the LHS of an assignment to another array");
+					ParseUnit.current().reportError(srcExpr, "An array declared with dimensions cannot be the LHS of an assignment to another array");
 				}
 				else {
 					// source of assignment to the no dim array can be a target array (just ptr assignment) but not a host array. 
-					if (right.isHostClassRef()) {
-						ParseUnit.current().reportError(ex, "An array declared without dimensions cannot be the LHS of an assignment to a host array");						
+					if (srcCat.isHostClassRef()) {
+						ParseUnit.current().reportError(srcExpr, "An array declared without dimensions cannot be the LHS of an assignment to a host array");						
 					}					
 				}
 				return "";
 			}
 		}
-		boolean checkRtn = (right instanceof Cat.Agg && right.isClassRef()); // || right instanceof Cat.Arr;
+		boolean checkRtn = (srcCat instanceof Cat.Agg && srcCat.isClassRef() || srcCat instanceof Cat.Arr);
 		// Returning aggregate: if returned value is host, use '&'
-		if (left instanceof Cat.Fcn && checkRtn){
-			if (ex instanceof ExprNode.Ident) {
-				SymbolEntry s = ex.getSymbol();
+		if (targCat instanceof Cat.Fcn && checkRtn){
+			if (srcExpr instanceof ExprNode.Ident) {
+				SymbolEntry s = srcExpr.getSymbol();
 				ISymbolNode n = s !=null ? s.node() : null;
 				String rtn = "";
 				if (n instanceof DeclNode) {
-					rtn = ((DeclNode)n).isHost() ? "&" : "";
+					
+					if (((DeclNode)n).isHost()) {
+						
+						if (n instanceof DeclNode.Arr && ((DeclNode.Arr)n).getTypeSpec() instanceof TypeNode.Usr) {
+							TypeNode.Usr t = (Usr) ((DeclNode.Arr)n).getTypeSpec() ;
+							if (((TypeNode.Usr)t).isFunctionRef())
+								return ""; // why!! a host array of fcn refs does not have elems returned with '&'. Regrettable. Is this a C convention?
+						}
+						
+						rtn =  hasRightIndexExpr || !((DeclNode)n).getDefiningType().isClass() ? "&" : "";
+					}					
 				}
 				return rtn;				
 			}
 		}
 
 		// Lhs agg = Rhs agg OR Rhs array
-		if (left instanceof Cat.Agg && left.isClassRef()) {
-			if (right instanceof Cat.Agg) {
-				if (!right.isRef())
+		if (targCat instanceof Cat.Agg && targCat.isClassRef()) {
+			if (srcCat instanceof Cat.Agg) {
+				if (!srcCat.isRef())
 					return "&";	
-				if (!left.isHostClassRef() && right.isHostClassRef())
+				if (!targCat.isHostClassRef() && srcCat.isHostClassRef())
 					return "&";
-				if (left.isHostClassRef() && right.isTargetClassRef()) {
+				if (targCat.isHostClassRef() && srcCat.isTargetClassRef()) {
 					//ParseUnit.current().reportError(ex, "Cannot assign a host class instance to a target class reference");
 					return "*";
 				}
@@ -1982,10 +2018,10 @@ public class Auxiliary {
 				//	return ""; just fall through: structure copy
 				return "";
 			}
-			if (right instanceof Cat.Arr && hasRightIndexExpr) {
-				if (!left.isHostClassRef() && right.isHostClassRef())
+			if (srcCat instanceof Cat.Arr && hasRightIndexExpr) {
+				if (!targCat.isHostClassRef() && srcCat.isHostClassRef())
 					return "&";
-				if (left.isHostClassRef() && right.isTargetClassRef()) {
+				if (targCat.isHostClassRef() && srcCat.isTargetClassRef()) {
 					return "*";
 				}
 				// fall through cases as above
@@ -1994,11 +2030,11 @@ public class Auxiliary {
 
 		}
 		// Lhs arr = Rhs agg OR Rhs array
-		else if (left instanceof Cat.Arr && (left.isTargetClassRef() || left.isHostClassRef())) {
-			if (right instanceof Cat.Agg) {
-				if (!left.isHostClassRef() && right.isHostClassRef())
+		else if (targCat instanceof Cat.Arr && (targCat.isTargetClassRef() || targCat.isHostClassRef())) {
+			if (srcCat instanceof Cat.Agg) {
+				if (!targCat.isHostClassRef() && srcCat.isHostClassRef())
 					return "&";
-				if (left.isHostClassRef() && (right.isTargetClassRef() || right.isRef())) {
+				if (targCat.isHostClassRef() && (srcCat.isTargetClassRef() || srcCat.isRef())) {
 					return "*";
 				}
 				//if (left.isTargetClassRef() && right.isTargetClassRef())
@@ -2007,10 +2043,10 @@ public class Auxiliary {
 				//	return ""; just fall through: structure copy
 				return "";
 			}
-			if (right instanceof Cat.Arr && hasRightIndexExpr) {
-				if (!left.isHostClassRef() && right.isHostClassRef())
+			if (srcCat instanceof Cat.Arr && hasRightIndexExpr) {
+				if (!targCat.isHostClassRef() && srcCat.isHostClassRef())
 					return "&";
-				if (left.isHostClassRef() && (right.isTargetClassRef() || right.isRef())) {
+				if (targCat.isHostClassRef() && (srcCat.isTargetClassRef() || srcCat.isRef())) {
 					return "*";
 				}
 				// fall through cases as above

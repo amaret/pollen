@@ -80,7 +80,6 @@ public class ExprNode extends BaseNode {
 		 * @return most refined Cat for the expr subtree E.g. cat for count in
 		 *         'arr[i].count'
 		 */
-
 		private Cat getSubExprCat(boolean isRight) {
 			ExprNode e = isRight ? this.getRight() : this.getLeft();
 			if (e.getChildren().isEmpty())
@@ -332,7 +331,7 @@ public class ExprNode extends BaseNode {
 				boolean chkHostScope = symtab.currScopeIsHostFcn()
 						|| isConstructorCallOnHostVar();
 				boolean dbg = false;
-				if (call.equals("getArr"))
+				if (call.equals("print_i"))
 					dbg = true;
 
 				boolean skipLookup = (call.matches(ParseUnit.INTRINSIC_PREFIX
@@ -349,6 +348,7 @@ public class ExprNode extends BaseNode {
 						// 'arr[i].fcn()' or ref.foo().fcn()
 						// lookup scope for 'fcn()' is from predecessor expr.
 						ExprNode pred = this.getPredecessorExpr();
+						setPostExpr(pred!=null);
 						
 						SymbolEntry s = pred instanceof ExprNode.Ident ? ((ExprNode.Ident) pred)
 								.getSymbol()
@@ -687,6 +687,7 @@ public class ExprNode extends BaseNode {
 				}
 
 			}
+			//System.out.println(this.toStringTree());
 			for (int i = 0; i < this.getChildCount(); i++) {
 				BaseNode b = (BaseNode) this.getChild(i);
 				if (b instanceof ExprNode.Call)
@@ -1283,7 +1284,7 @@ public class ExprNode extends BaseNode {
 				exprCat = this.getCat(); 
 
 			}
-			
+			//System.out.println(this.toStringTree());
 			for (int i = 0; i < this.getChildCount(); i++) {
 				BaseNode b = (BaseNode) this.getChild(i);
 				if (b instanceof ExprNode.Call)
@@ -1848,6 +1849,8 @@ public class ExprNode extends BaseNode {
 	 */
     protected ExprNode getPredecessorExpr() {
     	
+    	//System.out.println("getPred: " + this.getParent().toStringTree());
+    	
     	if (!(this instanceof ExprNode.Call || this instanceof ExprNode.Ident))
     		return null;
     	
@@ -1909,12 +1912,15 @@ public class ExprNode extends BaseNode {
     }
 
 	/**
-	 * 
 	 * @return True when this expr or ident is to the right of a '.' else false
 	 */
 	public boolean isPostExpr() {
 		return postExpr;
 	}
+	/**
+	 * True when this expr or ident is to the right of a '.' else false
+	 * @param pe
+	 */
 	public void setPostExpr(boolean pe) {
 		postExpr = pe;
 	}
@@ -1963,15 +1969,19 @@ public class ExprNode extends BaseNode {
 	public Cat getUltimateCat() {
 		ExprNode ex = this;
 		// Get the cat of the 'ultimate' expr
+		BaseNode rtn = null;
 		if (ex.getPostExprCallCount() > 0) {
 			BaseNode b = ex;
 			int i = 0;
 			while (ex.getChild(i) != null) {
-				b = (BaseNode) ex.getChild(i++);
+				b = (BaseNode) ex.getChild(i++);	
+				if (b instanceof ExprNode.Ident || b instanceof ExprNode.Call || b instanceof ExprNode.New || b instanceof ExprNode.Self)
+					rtn = b;
 			}
-			ex = (ExprNode) (b instanceof ExprNode ? b : ex);
+			ex = (ExprNode) (rtn instanceof ExprNode ? rtn : ex);
 		}
 
+		//System.out.println("ultimateCat ex: " + (rtn != null ? rtn.toStringTree() : ex.toStringTree()));
 		return ex.getCat();
 	}
 
@@ -1991,6 +2001,29 @@ public class ExprNode extends BaseNode {
 			catChar = new Character(cat.code().charAt(0)).toString();
 		return catChar;
 	}
+	/**
+	 * 
+	 * @return true if this ExprNode has an ExprNode Index child
+	 */
+	public boolean hasIndexExpr() {
+		if (this instanceof ExprNode.Binary) {
+			return (((ExprNode.Binary)this).hasLeftIndexExpr() || ((ExprNode.Binary)this).hasRightIndexExpr());
+		}
+		ExprNode e = this;
+		if (this instanceof ExprNode.Index)
+			return true;
+		if (e.getChildren().isEmpty())
+			return false;
+		for (int i = 0; i < e.getChildren().size(); i++) {
+			if (!(e.getChild(i) instanceof ExprNode))
+				continue;
+			if (e.getChild(i) instanceof ExprNode.Index) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	/**
 	 * Handle getSymbol() from either Ident or Self.

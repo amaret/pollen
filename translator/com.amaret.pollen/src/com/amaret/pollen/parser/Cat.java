@@ -580,11 +580,11 @@ public class Cat implements Cloneable {
     	return null;
     }
  
-    static Cat fromSymbolNode(ISymbolNode snode, IScope defScope) {
+    public static Cat fromSymbolNode(ISymbolNode snode, IScope defScope) {
         return fromSymbolNode(snode, defScope, false, false);
     }
 
-    static Cat fromSymbolNode(ISymbolNode snode, IScope defScope, boolean isRef, boolean isFcnRef) {
+    public static Cat fromSymbolNode(ISymbolNode snode, IScope defScope, boolean isRef, boolean isFcnRef) {
     	
     	//System.out.println("Cat.fromSymbolNode(): " + snode.getName().getText());
     	
