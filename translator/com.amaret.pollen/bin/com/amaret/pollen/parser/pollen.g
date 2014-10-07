@@ -1749,6 +1749,9 @@ stmtReturn
 		-> ^(S_RETURN<StmtNode.Return>["S_RETURN"] ^(E_VEC<ExprNode.Vec>["E_VEC"] ^(LIST<ListNode>["LIST"] expr+)))
 	|	'return'  (expr)  delim	
 		-> ^(S_RETURN<StmtNode.Return>["S_RETURN"] ^(E_VEC<ExprNode.Vec>["E_VEC"] ^(LIST<ListNode>["LIST"] expr)))
+	|	'return'  delim	
+		-> ^(S_RETURN<StmtNode.Return>["S_RETURN"])
+
 	;
 stmtBreak
 	:	'break' delim -> ^(S_BREAK<StmtNode.Break>["S_BREAK"])
@@ -1950,10 +1953,10 @@ varDim
 	;
 initializer
 	: expr // restrict
-	| '{' initializer_list ','? '}' -> initializer_list
+	| '{' NL* initializer_list ','? NL* '}' -> initializer_list
 	;
 initializer_list
-	: initializer (',' NL* initializer)* ->  ^(E_VEC<ExprNode.Vec>["E_VEC"]  ^(LIST<ListNode>["LIST"] initializer+))
+	: initializer (NL* ',' NL* initializer)* ->  ^(E_VEC<ExprNode.Vec>["E_VEC"]  ^(LIST<ListNode>["LIST"] initializer+))
 	;
 varDeclList  // int x, y=3, z=3, a
 @init {

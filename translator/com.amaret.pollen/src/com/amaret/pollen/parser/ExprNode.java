@@ -331,7 +331,7 @@ public class ExprNode extends BaseNode {
 				boolean chkHostScope = symtab.currScopeIsHostFcn()
 						|| isConstructorCallOnHostVar();
 				boolean dbg = false;
-				if (call.equals("print_i"))
+				if (call.equals("getF"))
 					dbg = true;
 
 				boolean skipLookup = (call.matches(ParseUnit.INTRINSIC_PREFIX
@@ -362,17 +362,9 @@ public class ExprNode extends BaseNode {
 						
 						if (fcn == null) { // try host
 							sc = s != null ? s.derefScope(true) : null;
-							fcn = sc != null ? sc.lookupName(getName().getText(), true) : null;
+							fcn = sc != null ? sc.lookupName(ei.getName().getText(), true) : null;
 						}
 
-//						SymbolEntry s = pred instanceof ExprNode.Ident ? ((ExprNode.Ident) pred)
-//								.getSymbol()
-//								: pred instanceof ExprNode.Call ? ((ExprNode.Call) pred)
-//										.getCalledFcn()
-//										: null;
-//						IScope sc = s != null ? s.derefScope(false) : null;
-//
-// 						fcn = sc != null ? sc.lookupName(ei.getName().getText()) : null;
 						if (fcn != null && fcn.node() instanceof DeclNode) {
 							DeclNode d = (DeclNode) fcn.node();
 							boolean accessible = d.flagsContains(Flags.PUBLIC);
@@ -381,33 +373,6 @@ public class ExprNode extends BaseNode {
 							fcn = (accessible) ? fcn : null;
 						}
 					}
-
-//					boolean chkParentIdentScope = this.getParent() instanceof ExprNode.Ident
-//							&& ((ExprNode.Ident) this.getParent()).getSymbol() != null;
-//					boolean chkParentFcnRtnScope = this.getParent() instanceof ExprNode.Call
-//							&& ((ExprNode.Call) this.getParent())
-//									.getCalledFcn() != null;
-//
-//					if (fcn == null
-//							&& (chkParentIdentScope || chkParentFcnRtnScope)) { // more?
-//						// this is an access after a dereference:
-//						// 'arr[i].fcn()' or ref.foo().fcn()
-//						// lookup scope for 'fcn()' is from preceding expr.
-//
-//						 IScope sc = chkParentIdentScope ? ((ExprNode.Ident) this
-//								.getParent()).getSymbol().derefScope(false)
-//								: chkParentFcnRtnScope ? ((ExprNode.Call) this
-//										.getParent()).getCalledFcn()
-//										.derefScope(false) : null;
-//						fcn = sc.lookupName(ei.getName().getText());
-//						if (fcn != null && fcn.node() instanceof DeclNode) {
-//							DeclNode d = (DeclNode) fcn.node();
-//							boolean accessible = d.flagsContains(Flags.PUBLIC);
-//							accessible |= (d.getUnit() == currUnit
-//									.getCurrUnitNode());
-//							fcn = (accessible) ? fcn : null;
-//						}
-//					}
 
 					if (fcn == null) {
 						fcn = symtab.curScope().lookupName(
@@ -441,15 +406,20 @@ public class ExprNode extends BaseNode {
 						} else {
 							IScope sc = currUnit.getSymbolTable().curScope();
 							while (!(sc instanceof DeclNode.Usr)) {
+								
 								sc = sc.getEnclosingScope();
 								if (sc instanceof DeclNode.Usr
 										&& ((DeclNode.Usr) sc).isClass()) {
+									DeclNode.Fcn f = (Fcn) (fcn.node() instanceof DeclNode.Fcn ? fcn.node() : null);
+									boolean thisQualifier = f != null ? f.getDefiningType() == sc : false;
 									// if calling a method in current class,
 									// 'this'
 									// is the qualifier
-									qualifier = symtab.curScope().lookupName(
-											"this", false);
-									ei.setQualifier(qualifier);
+									if (thisQualifier) {
+										qualifier = symtab.curScope().lookupName(
+												"this", false);
+										ei.setQualifier(qualifier);
+									}
 								}
 							}
 						}

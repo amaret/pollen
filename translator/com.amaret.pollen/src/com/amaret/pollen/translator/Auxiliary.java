@@ -221,37 +221,6 @@ public class Auxiliary {
 		return deref;
 	}
 	/**
-	 * A pollen expr of the form 'p.foo().bar()' becomes 'bar(foo(p))'.
-	 * Generate so that the 'this' ptr is the first parameter. 
-	 * C side only. 
-	 * @param expr
-	 */
-	void genExprPostCall(ExprNode.Ident expr) {
-		if (isHost())
-			return;
-		for (int i = 1; i < expr.getChildCount(); i++) {
-			BaseNode b = (BaseNode) expr.getChild(i);
-			if (b instanceof ExprNode.Call) {
-				SymbolEntry se = ((ExprNode.Call)b).getCalledFcn();
-				ISymbolNode node = se != null ? se.node() : null;
-				if (node != null && node instanceof DeclNode.Fcn) {
-					if (!((DeclNode.Fcn)node).isMethod()) {
-						ParseUnit.current().reportError(expr, node.getName().getText() + ": found module function. This call expression requires a class method.");
-						return;
-					}					
-				}
-			}						
-		}
-		for (int i = expr.getChildCount() - 1; i > 0; i-- ) {
-			BaseNode b = (BaseNode) expr.getChild(i);
-			if (!(b instanceof ExprNode.Call))
-				continue;
-			
-			
-		}
-		
-	}
-	/**
 	 * For a nested (post) method call, generate the this ptr. 
 	 * @param expr
 	 */
@@ -295,6 +264,7 @@ public class Auxiliary {
 	 * @param expr
 	 */
 	void genExprPost(ExprNode expr) {
+		
 		if (expr.getChildCount() > 1) {
 			for (int i = 1; i < expr.getChildCount(); i++) {
 				BaseNode b = (BaseNode) expr.getChild(i);
@@ -332,7 +302,8 @@ public class Auxiliary {
 			break;
 		case pollenParser.E_CALL:
 			
-			if (expr.getPostExprCallCount() == 0) {
+			if (expr.getPostExprCallCount() == 0 || isHost()) {
+				
 				genExpr$Call((ExprNode.Call) expr, null);
 				if (!isSkipPost()) 
 					genExprPost(expr);
@@ -365,7 +336,8 @@ public class Auxiliary {
 				this.genExprCallThruFcnPtrArray((Ident) expr);
 				break;
 			}
-			if (expr.getPostExprCallCount() == 0) {
+			
+			if (expr.getPostExprCallCount() == 0 || isHost()) {
 				genExpr$Ident((ExprNode.Ident) expr);
 				if (!isSkipPost()) 
 					genExprPost(expr);
@@ -1744,9 +1716,8 @@ public class Auxiliary {
 
 	private void genStmt$Return(StmtNode.Return stmt) {
 		
-		//System.out.println("Ret:" + stmt.toStringTree());
 		gen.getFmt().print("return");
-		ExprNode.Vec expr = stmt.getVec();
+		ExprNode.Vec expr = stmt.getVec(); // can be null!
 		String addrOf = "";
 		Tree body = stmt.getParent();
 		while (body != null && !(body instanceof BodyNode)) {

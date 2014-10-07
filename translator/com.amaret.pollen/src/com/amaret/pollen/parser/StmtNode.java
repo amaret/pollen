@@ -541,18 +541,19 @@ public class StmtNode extends BaseNode {
         	}
            
 			ExprNode.Vec v = getVec();
+			if (v == null) 
+				return;
 			for (ExprNode expr : v.getVals()) {
 				for (TypeNode t : l) {
 					Cat retcat = Cat.fromType(t);
-		        	boolean dbg = false;
-		        	String s;
-		        	if (expr instanceof ExprNode.Binary && ((ExprNode.Binary)expr).getLeft() instanceof ExprNode.Ident){
-		        		ExprNode.Ident ei = (Ident) ((ExprNode.Binary)expr).getLeft();
-		            	s = ei.getName().getText();
-		        	} 
-					Cat valcat = (expr instanceof ExprNode.SubExprCat) ? ((ExprNode.SubExprCat) expr)
-							.getSubExprCat()
-							: expr.getCat();
+		        	Cat valcat = (expr.getPostExprCallCount() > 0) ? 
+		        			(expr.getUltimateCat())
+		        			: (expr instanceof ExprNode.SubExprCat) ? ((ExprNode.SubExprCat) expr)
+		        					.getSubExprCat()
+		        					: expr.getCat();
+					
+					if (valcat instanceof Cat.Fcn)
+						valcat = ((Cat.Fcn)valcat).retCat();
 					
 					if (TypeRules.preCheck(valcat) == null) {
 						

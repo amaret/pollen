@@ -902,6 +902,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		public String getOutputQNameHost(Generator g, ISymbolNode qualifier,
 				IScope sc, EnumSet<Flags> flags) {
 			boolean thisPtr = flags.contains(Flags.IS_THISPTR);
+			boolean isPostExpr = flags.contains(Flags.IS_POSTEXPR);
 			String qn = "";
 			if (sc == null)
 				return this.getName().getText();
@@ -910,14 +911,25 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			if (scopeOfDcln instanceof ImportNode
 					&& ((ImportNode) scopeOfDcln).isExport()) {
 				// an exported function
-				scopeOfDcln = ((ImportNode) scopeOfDcln).getUnit(); // this.getUnit();
+				scopeOfDcln = ((ImportNode) scopeOfDcln).getUnit(); 
 			}
 			if (scopeOfDcln instanceof UnitNode
 					&& ((UnitNode) scopeOfDcln).isComposition()) {
 				scopeOfDcln = this.getUnit();
 			}
-			if (scopeOfDcln == g.curUnit() || qualifier == null)
+			if (scopeOfDcln != g.curUnit() && qualifier == null)  {
+				// check for cascaded ref, e.g. qualifier precedes this name in an expr, such as foo().bar()
+				IScope isc = scopeOfDcln;
+				while (isc != null && !(isc instanceof UnitNode))
+					isc = isc.getEnclosingScope();
+				if (isc != null && isc != g.curUnit() && isPostExpr)
+					return this.getName().getText(); // no qualifiers
 				return (g.uname() + "." + this.getName().getText());
+			}
+
+			if (scopeOfDcln == g.curUnit() || qualifier == null)  {
+				return (g.uname() + "." + this.getName().getText());
+			}
 
 			qn = (scopeOfDcln instanceof UnitNode ? ((UnitNode) scopeOfDcln)
 					.getQualName()
