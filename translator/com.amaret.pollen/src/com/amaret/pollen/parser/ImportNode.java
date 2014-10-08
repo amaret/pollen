@@ -278,6 +278,7 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 	public void bindUnit(UnitNode impUnit) {
 		unit = impUnit;
         cat = Cat.fromSymbolNode(unit, unit.getDefiningScope());
+//        System.out.println(this.toStringTree());
 //        String bound = (flags.contains(Flags.UNIT_USED)) ? "BOUND " : "";
 //        System.out.println("bindUnit: " + flags + " " + impUnit.getQualName());
 //        System.out.println(bound + "ImportNode.bindUnit(): import " + this.getQualName() + " bound to unit " + impUnit.toStringTree());

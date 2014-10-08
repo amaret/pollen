@@ -804,6 +804,8 @@ public class ParseUnit {
 						// 'from c import m'
 						// In that case fromPkg contains the composition name
 						// 'c'.
+//						System.out.println("parseImports, currNode:   " + ((Tree)currNode).toStringTree());
+//						System.out.println("parseImports, currImport: " + currImport.toStringTree());
 						currImport.setFromComposImportModule(true);
 						pkgPath = path.substring(0, path
 								.lastIndexOf(File.separator));

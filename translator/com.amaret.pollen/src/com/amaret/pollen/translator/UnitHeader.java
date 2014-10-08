@@ -140,8 +140,10 @@ public class UnitHeader {
 				
 		gen.getFmt().print("typedef ");
 		EnumSet<Flags> f = EnumSet.noneOf(Flags.class);
-		if (decl.isClassRef())
+		if (decl.isClassRef()) {
 			f.add(Flags.IS_CLASSREF_TYPEDEF);
+			gen.getFmt().print("struct "); // sometimes if this is missing it is an error, otherwise not at all (?)
+		}
 		gen.aux.genTypeWithVarName(decl.getTypeSpec(), gen.uname_target() + decl.getName()
 				+ "__TYPE", f);
 		gen.getFmt().print(";\n");
