@@ -1589,11 +1589,18 @@ public class Auxiliary {
 				// actually perhaps just eliminate genlocals
 			
 			if (decl.getInit() != null) {
+				TypeNode tn = decl.getTypeSpec();;
 				if (decl.isPeggedOnDcln()) {
-					gen.getFmt().print("%1 = ", decl.getName());
-					TypeNode tn = decl.getTypeSpec();;
+					if (arrayNoDim) {
+						// declare as ptr and index like array						
+						genTypeWithVarName(tn, "* " + decl.getName(), EnumSet.noneOf(Flags.class));
+					}
+					else 
+						gen.getFmt().print("%1", decl.getName());
+					gen.getFmt().print(" = ");
+					
 					String n = gen.getOutputName(tn, null, EnumSet.noneOf((Flags.class)));
-					if (!isHost()) gen.getFmt().print("(%1) &", n);
+					if (!isHost()) gen.getFmt().print("(%1*) &", n);
 					genExpr(decl.getInit());
 					gen.getFmt().print(";");
 				}
