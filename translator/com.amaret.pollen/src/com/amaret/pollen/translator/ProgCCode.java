@@ -699,11 +699,13 @@ public class ProgCCode {
         	gen.getFmt().print("null");
         }
         else if (val instanceof String) {
+			String quot = cast.getName().getText().equals("byte") ? "'" // treat as character
+					: "\"";
         	if (cat instanceof Cat.Agg) {
         		gen.getFmt().print("%1", val.toString());
         	}
         	else
-        		gen.getFmt().print("\"%1\"", val.toString());
+        		gen.getFmt().print(quot + "%1" + quot, val.toString());
         }
         else if (cat instanceof Cat.Scalar) {
             if (val instanceof Number) {

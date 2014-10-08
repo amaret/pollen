@@ -235,25 +235,7 @@ public class TypeRules {
             ses.reportError(init, "expecting a value of type <" + declCat.mkType() + ">");
             return;
         }
-        // currently unused
-//        Cat.Agg aggCat = (Cat.Agg) declCat;
-//        IScope scope = aggCat.aggScope();
-//        if (scope instanceof DeclNode.Class) {
-//            scope = ((DeclNode.Class) scope).findChild();
-//        }
-//        List<ExprNode> vals = init.getVals();
-//        int k = -1;
-//        for (BaseNode id : init.getIds()) {
-//            k += 1;
-//            ISymbolNode snode = TypeRules.checkSelector(scope, scope.resolveSymbol(id.getAtom()), id.getAtom(), true);
-//            if (snode == null) {
-//                continue;
-//            }
-//           checkInit(snode.getTypeCat(), vals.get(k), genArgs);
-//        }
-//        if (!genArgs) {
-//            init.setCat(declCat);
-//        }
+
     }
 
     static private void checkInitVec(Cat declCat, ExprNode.Vec init, boolean genArgs) {
@@ -359,8 +341,10 @@ public class TypeRules {
     		if (t.isHost())
     			ParseUnit.current().reportError(errorNode, "LHS of pegging operator assignment cannot be a host data member");   
     	}
+    	if (src_cat.code().equals("s"))
+    		return;
     	if (!(src_cat instanceof Cat.Arr)) {
-    		ParseUnit.current().reportError(errorNode, "RHS of pegging operator assignment must be an array expression"); 
+    		ParseUnit.current().reportError(errorNode, "RHS of pegging operator assignment must be an array expression or a string"); 
     	} else {
     		Cat cb = ((Arr) src_cat).getBase();
     		boolean errorFlag = false;
@@ -518,6 +502,9 @@ public class TypeRules {
 				mkBinary(OP_ASSIGN, "p|r|s|P.+|F.+|R.+|A.+", "\\1|v", "$1"),
 				mkBinary(OP_ASSIGN, "A.+", "\\1", "$1"),
 				mkBinary(OP_ASSIGN, "A(.+)", "V\\2", "$1"),
+				mkBinary(OP_ASSIGN, "s", "u1", "$1"),
+
+
 				
 				// p, r, P, R, bygone types
 				//mkBinary(OP_ASSIGN, "p", "p|s|v|P.+|R.+", "$1"),

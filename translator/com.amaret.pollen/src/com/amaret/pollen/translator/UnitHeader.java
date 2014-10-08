@@ -200,12 +200,13 @@ public class UnitHeader {
 			}
 			else
 				if (fld instanceof DeclNode.ITypeSpec && !(fld instanceof DeclNode.Fcn)) {
+        			String name = (fld instanceof DeclNode.Arr && !((DeclNode.Arr)fld).hasDim()) ? "* " : "";
+        			name += fld.getName().getText();
 					gen.getFmt().print("%t");
-					gen.aux.genForwardedType(((DeclNode.ITypeSpec) fld).getTypeSpec(), "" + fld.getName(), EnumSet.noneOf(Flags.class), (ITypeSpec) fld);       		
-					//gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), "" + fld.getName(), EnumSet.noneOf(Flags.class));       		
-
+					gen.aux.genForwardedType(((DeclNode.ITypeSpec) fld).getTypeSpec(), "" + name, EnumSet.noneOf(Flags.class), (ITypeSpec) fld);       		
 				}
-    		if (fld instanceof DeclNode.Arr) {
+			
+    		if (fld instanceof DeclNode.Arr && ((DeclNode.Arr)fld).hasDim()) {
     			((DeclNode.Arr)fld).checkDims();
     			genArrDims(fld);
     		}
@@ -308,7 +309,6 @@ public class UnitHeader {
         			String name = (fld instanceof DeclNode.Arr && !((DeclNode.Arr)fld).hasDim()) ? "* " : "";
         			name += fld.getName().getText();
 					gen.aux.genForwardedType(((DeclNode.ITypeSpec) fld).getTypeSpec(), name, EnumSet.noneOf(Flags.class), (ITypeSpec) fld);       		
-        			//gen.aux.genTypeWithVarName(((DeclNode.ITypeSpec) fld).getTypeSpec(), name, EnumSet.noneOf(Flags.class));
         		}
         		if (fld instanceof DeclNode.Arr && ((DeclNode.Arr)fld).hasDim()) {
         			genArrDims(((DeclNode.Arr)fld));

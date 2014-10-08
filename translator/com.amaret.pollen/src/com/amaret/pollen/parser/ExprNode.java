@@ -800,7 +800,8 @@ public class ExprNode extends BaseNode {
 				currUnit.getCurrUnitNode().addString(vs);
 				exprCat = Cat.fromScalarCode(Cat.STRING);
 			} else if (vs.startsWith("'")) {
-				if (vs.length() > 3) {
+				boolean escaped = vs.matches("'\\\\.'"); // '\0' for example
+				if (vs.length() > 3 && !escaped) {
 					this.getLitFlags().add(LitFlags.STR);
 					this.getLitFlags().remove(LitFlags.CHR);
 					currUnit.reportError(

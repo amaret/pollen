@@ -424,7 +424,7 @@ public class Auxiliary {
 		ExprNode left = expr.getLeft();
 		ExprNode right = expr.getRight();
 		String op = expr.getOp().getText();
-		
+				
 		// Check for modifications of preset variables outside of preset assignments
 		if (expr.isAssign() && left instanceof ExprNode.Ident) {
 			SymbolEntry se = ((ExprNode.Ident)left).getSymbol() != null ? ((ExprNode.Ident)left).getSymbol() : null;
@@ -517,11 +517,14 @@ public class Auxiliary {
 
 		String addrOfOrDeref = "";
 		if (cl instanceof Cat.Agg) {
-			addrOfOrDeref = mkAddrOfOrDerefOp(cl, cr, expr);
+			addrOfOrDeref = mkAddrOfOrDerefOpOrCast(cl, cr, expr);
+			gen.getFmt().print(" %1 %2", op, addrOfOrDeref);
+		} else if (cr instanceof Cat.Arr && ((Cat.Arr)cr).isNoDim()) {
+			addrOfOrDeref = mkAddrOfOrDerefOpOrCast(cl, cr, expr);
 			gen.getFmt().print(" %1 %2", op, addrOfOrDeref);
 		} else {
 			if (cl instanceof Cat.Arr) {
-				addrOfOrDeref = this.mkAddrOfOrDerefOp(cl, cr, expr);
+				addrOfOrDeref = this.mkAddrOfOrDerefOpOrCast(cl, cr, expr);
 				gen.getFmt().print(" %1 %2", op, addrOfOrDeref);
 			} else {
 				gen.getFmt().print(" %1 ", op);
@@ -587,7 +590,7 @@ public class Auxiliary {
 			sep = ", ";
 			DeclNode.Fcn f = (expr.getCalledFcn() != null) ? (DeclNode.Fcn) expr.getCalledFcn().node() : null;		
 			Cat thisCat = (f != null) ? Cat.fromSymbolNode(f.getDefiningType(), f.getDefiningType().getDefiningScope(), true, false) : null;			
-			String a = this.mkAddrOfOrDerefOp(thisCat, uc, thisExpr);
+			String a = this.mkAddrOfOrDerefOpOrCast(thisCat, uc, thisExpr);
 			String addrOf = a.equals("&") ? "&(" : "";
 			String closeP = a.equals("&") ? ")" : "";
 			
@@ -1507,6 +1510,9 @@ public class Auxiliary {
 		genExpr(stmt.getRef());
 		gen.getFmt().print(" = ");
 		if (stmt.isPegArray()) {
+			Cat c = stmt.getArr().getCat();
+			if (c.code().equals("s"))
+				gen.getFmt().print("(char*) ");
 			genExpr(stmt.getArr());
 			gen.getFmt().print(";");
 		}
@@ -1738,7 +1744,7 @@ public class Auxiliary {
 				if (ei != null) {
 					Cat rtnCat = ei.getCat();
 					Cat fcat = f.getTypeCat();
-					addrOf = this.mkAddrOfOrDerefOp(fcat, rtnCat, ei);
+					addrOf = this.mkAddrOfOrDerefOpOrCast(fcat, rtnCat, ei);
 				}
 				ISymbolNode node = null;
 				if (t instanceof TypeNode.Usr) {
@@ -1907,12 +1913,13 @@ public class Auxiliary {
 	 * Check if this assignment needs '&' or '*' prepended to the assignment source.
 	 * Handles Cat.Agg, Cat.Arr operands.
 	 * TODO handle others - eg. complex expressions where foo()[0].bar() is returned
+	 * Can also handle cast.
 	 * @param targCat lhs of assignment
 	 * @param srcCat rhs of assigmment
 	 * @param srcExpr
-	 * @return the prepend string for a reference assignment
+	 * @return the prepend string for an assignment
 	 */
-	private String mkAddrOfOrDerefOp(Cat targCat, Cat srcCat, ExprNode srcExpr) {	
+	private String mkAddrOfOrDerefOpOrCast(Cat targCat, Cat srcCat, ExprNode srcExpr) {	
 		
 		//System.out.println("mkAddrOf:" + ex.toStringTree());
 		
@@ -1929,23 +1936,33 @@ public class Auxiliary {
 			hasRightIndexExpr = srcExpr.hasIndexExpr();
 		}
 		
+		// nodimByteArr = "hello world"
+		if (targCat instanceof Cat.Arr && ((Cat.Arr)targCat).isNoDim() && srcCat.code().equals("s") && isAssign) {
+			return ("(char*) ");
+		}
+		
 
 		if (isHost() || srcCat instanceof Cat.Scalar)
 			return "";	
-		// Lhs array = rhs array
-		if (isAssign && targCat instanceof Cat.Arr && srcCat instanceof Cat.Arr){
-			if (!hasLeftIndexExpr && !hasRightIndexExpr) {
-				if (!((Cat.Arr)targCat).isNoDim()) {				
-					// Assigning array to array. 
-					ParseUnit.current().reportError(srcExpr, "An array declared with dimensions cannot be the LHS of an assignment to another array");
+		if (isAssign && srcCat instanceof Cat.Arr) { 
+			// Lhs array = rhs array
+			if (isAssign && targCat instanceof Cat.Arr && srcCat instanceof Cat.Arr){
+				if (!hasLeftIndexExpr && !hasRightIndexExpr) {
+					if (!((Cat.Arr)targCat).isNoDim()) {				
+						// Assigning array to array. 
+						ParseUnit.current().reportError(srcExpr, "An array declared with dimensions cannot be the LHS of an assignment to another array");
+					}
+					else {
+						// source of assignment to the no dim array can be a target array (just ptr assignment) but not a host array. 
+						if (srcCat.isHostClassRef()) {
+							ParseUnit.current().reportError(srcExpr, "An array declared without dimensions cannot be the LHS of an assignment to a host array");						
+						}					
+					}
+					return "";
 				}
-				else {
-					// source of assignment to the no dim array can be a target array (just ptr assignment) but not a host array. 
-					if (srcCat.isHostClassRef()) {
-						ParseUnit.current().reportError(srcExpr, "An array declared without dimensions cannot be the LHS of an assignment to a host array");						
-					}					
-				}
-				return "";
+			}
+			if (((Cat.Arr)srcCat).isNoDim() && hasRightIndexExpr && targCat.code().equals("s")) {
+				return "&";
 			}
 		}
 		boolean checkRtn = (srcCat instanceof Cat.Agg && srcCat.isClassRef() || srcCat instanceof Cat.Arr);
