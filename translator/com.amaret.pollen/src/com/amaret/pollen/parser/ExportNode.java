@@ -186,8 +186,7 @@ public class ExportNode extends BaseNode implements ISymbolNode {
      */
     @Override
     protected boolean pass1Begin() {
-    	ParseUnit currUnit = ParseUnit.current();
-    	
+    	ParseUnit currUnit = ParseUnit.current();    	
 
         Atom exportedName = getName();
         if (exportedName.getText().matches(ParseUnit.INTRINSIC_PREFIX + ".*")) {

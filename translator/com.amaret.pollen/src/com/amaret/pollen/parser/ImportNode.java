@@ -270,20 +270,14 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
     @Override
     public void setEnclosingScope(IScope scope) {
     }
-
-	/**
-	 * Connect the importNode to its defining Unit (unitNode). 
-	 * @param impUnit
-	 */
-	public void bindUnit(UnitNode impUnit) {
-		unit = impUnit;
-        cat = Cat.fromSymbolNode(unit, unit.getDefiningScope());
-//        System.out.println(this.toStringTree());
-//        String bound = (flags.contains(Flags.UNIT_USED)) ? "BOUND " : "";
-//        System.out.println("bindUnit: " + flags + " " + impUnit.getQualName());
-//        System.out.println(bound + "ImportNode.bindUnit(): import " + this.getQualName() + " bound to unit " + impUnit.toStringTree());
-        impUnit.setUnitUsed(flags.contains(Flags.UNIT_USED));
-        if (this.isFromComposImportModule()) {
+    @Override
+    protected boolean pass2Begin() {
+        return true;
+    }
+	@Override
+	protected void pass2End() {
+		// consistency check : must be done late in processing or exports may not have been handled yet.
+        if (unit != null && this.isFromComposImportModule()) {
         	// check that this unit which was imported from a composition was exported by that composition
 			SymbolEntry currExportSym = null;
 			ISymbolNode currExportSnode = null;
@@ -296,6 +290,19 @@ public class ImportNode extends BaseNode implements ISymbolNode, IScope, IUnitWr
 				ParseUnit.current().reportError(this.getUnitName(), "not an exported unit");
 			}
         }
+	}
+	/**
+	 * Connect the importNode to its defining Unit (unitNode). 
+	 * @param impUnit
+	 */
+	public void bindUnit(UnitNode impUnit) {
+		unit = impUnit;
+        cat = Cat.fromSymbolNode(unit, unit.getDefiningScope());
+        
+//        String bound = (flags.contains(Flags.UNIT_USED)) ? "BOUND " : "";
+//        System.out.println("bindUnit: " + flags + " " + impUnit.getQualName());
+//        System.out.println(bound + "ImportNode.bindUnit(): import " + this.getQualName() + " bound to unit " + impUnit.toStringTree());
+        impUnit.setUnitUsed(flags.contains(Flags.UNIT_USED));
         boolean saveDbg = ParseUnit.isDebugMode();
         ParseUnit.setDebugMode(false);
         if (ParseUnit.isDebugMode()) {
