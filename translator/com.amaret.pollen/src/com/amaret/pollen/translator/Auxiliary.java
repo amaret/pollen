@@ -1242,21 +1242,33 @@ public class Auxiliary {
 	 * Note the field type which is typedef'd can be either a function reference variable type or base type of an array of same.
 	 * @param fields. DeclNodes for the class or module or function locals.
 	 */
-
 	public void genFcnRefTypeDefs(List<DeclNode> fields) {
 		for (DeclNode fld : fields) {     
 			if (fld instanceof DeclNode.ITypeSpec) {
 				TypeNode t = ((DeclNode.ITypeSpec) fld).getTypeSpec();
-				if (t instanceof TypeNode.Usr && ((TypeNode.Usr)t).isFunctionRef()) {
-					String s = gen.getOutputName(t, null, EnumSet.of(Flags.IS_FCNREF_TYPEDEF));
-					if (!gen.getFcnRefTypedefs().contains(s)) { // must be unique or c gives error
-						gen.getFcnRefTypedefs().add(s);
-						gen.getFmt().print("%ttypedef ");
-						gen.getFmt().print("%1;\n", s);
+				genFcnRefTypeDef(t); 
+				if (fld instanceof DeclNode.Fcn) {
+					for (DeclNode.Formal f : ((DeclNode.Fcn)fld).getFormals()) {
+						if (f instanceof DeclNode.ITypeSpec)
+							genFcnRefTypeDef(((DeclNode.ITypeSpec) f).getTypeSpec());						
 					}
-				}  
+				}
 			}
         }
+	}
+	/**
+	 * Generate and save the typedefs that will be needed for fcn refs.
+	 * @param t
+	 */
+	protected void genFcnRefTypeDef(TypeNode t) {
+		if (t instanceof TypeNode.Usr && ((TypeNode.Usr)t).isFunctionRef()) {
+			String s = gen.getOutputName(t, null, EnumSet.of(Flags.IS_FCNREF_TYPEDEF));
+			if (!gen.getFcnRefTypedefs().contains(s)) { // must be unique or c gives error
+				gen.getFcnRefTypedefs().add(s);
+				gen.getFmt().print("%ttypedef ");
+				gen.getFmt().print("%1;\n", s);
+			}
+		}
 	}
 
 	void genLocals(List<DeclNode> localVars) {
