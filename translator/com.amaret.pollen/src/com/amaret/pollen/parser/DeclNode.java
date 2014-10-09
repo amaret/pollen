@@ -2874,7 +2874,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 					&& !(init instanceof ExprNode.Call)) {
 				Cat baseCat = ((Cat.Arr) init.getCat()).getBase();
 				TypeRules.checkInit(tsi.getTypeCat(), init, baseCat, false);
-			} else if (init != null) {
+			} else if (this instanceof DeclNode.Arr && this.isPeggedOnDcln()) {
+				TypeRules.checkPeg(this, init.getCat(), this);
+			} 
+			else if (init != null) {
 				TypeRules.checkInit(tsi.getTypeCat(), init);
 			}
 			setCheckInitDone(true);

@@ -517,14 +517,14 @@ public class Auxiliary {
 
 		String addrOfOrDeref = "";
 		if (cl instanceof Cat.Agg) {
-			addrOfOrDeref = mkAddrOfOrDerefOpOrCast(cl, cr, expr);
+			addrOfOrDeref = mkAddrOfOrDerefOpOrCast(cl, cr, expr, false);
 			gen.getFmt().print(" %1 %2", op, addrOfOrDeref);
 		} else if (cr instanceof Cat.Arr && ((Cat.Arr)cr).isNoDim()) {
-			addrOfOrDeref = mkAddrOfOrDerefOpOrCast(cl, cr, expr);
+			addrOfOrDeref = mkAddrOfOrDerefOpOrCast(cl, cr, expr, false);
 			gen.getFmt().print(" %1 %2", op, addrOfOrDeref);
 		} else {
 			if (cl instanceof Cat.Arr) {
-				addrOfOrDeref = this.mkAddrOfOrDerefOpOrCast(cl, cr, expr);
+				addrOfOrDeref = this.mkAddrOfOrDerefOpOrCast(cl, cr, expr, false);
 				gen.getFmt().print(" %1 %2", op, addrOfOrDeref);
 			} else {
 				gen.getFmt().print(" %1 ", op);
@@ -590,7 +590,7 @@ public class Auxiliary {
 			sep = ", ";
 			DeclNode.Fcn f = (expr.getCalledFcn() != null) ? (DeclNode.Fcn) expr.getCalledFcn().node() : null;		
 			Cat thisCat = (f != null) ? Cat.fromSymbolNode(f.getDefiningType(), f.getDefiningType().getDefiningScope(), true, false) : null;			
-			String a = this.mkAddrOfOrDerefOpOrCast(thisCat, uc, thisExpr);
+			String a = this.mkAddrOfOrDerefOpOrCast(thisCat, uc, thisExpr, false);
 			String addrOf = a.equals("&") ? "&(" : "";
 			String closeP = a.equals("&") ? ")" : "";
 			
@@ -1586,10 +1586,9 @@ public class Auxiliary {
 			
 			if (decl.isConst() && !arrayInit)
 				continue; // const arrays need another tweak I suspect, then can eliminate this arrayInit check
-				// actually perhaps just eliminate genlocals
 			
 			if (decl.getInit() != null) {
-				TypeNode tn = decl.getTypeSpec();;
+				TypeNode tn = decl.getTypeSpec();
 				if (decl.isPeggedOnDcln()) {
 					if (arrayNoDim) {
 						// declare as ptr and index like array						
@@ -1597,10 +1596,11 @@ public class Auxiliary {
 					}
 					else 
 						gen.getFmt().print("%1", decl.getName());
+					String addrOf = this.mkAddrOfOrDerefOpOrCast(decl.getTypeCat(), decl.getInit().getCat(), decl.getInit(), true);
 					gen.getFmt().print(" = ");
 					
 					String n = gen.getOutputName(tn, null, EnumSet.noneOf((Flags.class)));
-					if (!isHost()) gen.getFmt().print("(%1*) &", n);
+					if (!isHost()) gen.getFmt().print(addrOf, n);
 					genExpr(decl.getInit());
 					gen.getFmt().print(";");
 				}
@@ -1763,7 +1763,7 @@ public class Auxiliary {
 				if (ei != null) {
 					Cat rtnCat = ei.getCat();
 					Cat fcat = f.getTypeCat();
-					addrOf = this.mkAddrOfOrDerefOpOrCast(fcat, rtnCat, ei);
+					addrOf = this.mkAddrOfOrDerefOpOrCast(fcat, rtnCat, ei, false);
 				}
 				ISymbolNode node = null;
 				if (t instanceof TypeNode.Usr) {
@@ -1936,15 +1936,16 @@ public class Auxiliary {
 	 * @param targCat lhs of assignment
 	 * @param srcCat rhs of assigmment
 	 * @param srcExpr
+	 * @param assign true if this is an assignment from init expr
 	 * @return the prepend string for an assignment
 	 */
-	private String mkAddrOfOrDerefOpOrCast(Cat targCat, Cat srcCat, ExprNode srcExpr) {	
+	private String mkAddrOfOrDerefOpOrCast(Cat targCat, Cat srcCat, ExprNode srcExpr, boolean assign) {	
 		
 		//System.out.println("mkAddrOf:" + ex.toStringTree());
 		
 		boolean hasLeftIndexExpr = false;
 		boolean hasRightIndexExpr = false;
-		boolean isAssign = false;
+		boolean isAssign = assign;
 		
 		if (srcExpr instanceof ExprNode.Binary) {
 			hasLeftIndexExpr = ((ExprNode.Binary)srcExpr).hasLeftIndexExpr();
