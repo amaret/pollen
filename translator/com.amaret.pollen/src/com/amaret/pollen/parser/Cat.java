@@ -17,6 +17,7 @@ public class Cat implements Cloneable {
     public static final String INT8 = "i1"; 
     public static final String INT16 = "i2"; 
     public static final String INT32 = "i4"; 
+    public static final String FLOAT = "f";
     public static final String NUMLIT = "n"; 
     public static final String STRING = "s"; 
     public static final String UINT = "u"; 
@@ -26,6 +27,7 @@ public class Cat implements Cloneable {
     public static final String VOID = "v"; 
     // aggregate
     public static final String CLASS = "C";
+    public static final String FCN = "F"; // used with fcn rtn, e.g "Fb" for boolean return
     public static final String USR = "X";
     public static final String TYP_MEMBER = "X"; 
     public static final String FCN_REF = "x";
@@ -369,7 +371,7 @@ public class Cat implements Cloneable {
         
         @Override
         protected String mkCode() {
-            return "F" + retCat().mkCode();
+            return Cat.FCN + retCat().mkCode();
         }
         
         @Override protected String mkType(String quals) {
@@ -444,6 +446,7 @@ public class Cat implements Cloneable {
             codeMap.put("int8",     Cat.INT8);
             codeMap.put("int16",    Cat.INT16);
             codeMap.put("int32",    Cat.INT32);
+            codeMap.put("float", 	Cat.FLOAT);
             codeMap.put("string",   Cat.STRING);
             codeMap.put("uint8",    Cat.UINT8);
             codeMap.put("uint16",   Cat.UINT16);
@@ -491,6 +494,8 @@ public class Cat implements Cloneable {
                 return rank == 1 ? "int8" : rank == 2 ? "int16" : rank == 4 ? "int32" : "int8"; 
             case 'u':
                 return rank == 1 ? "uint8" : rank == 2 ? "uint16" : rank == 4 ? "uint32" : "uint8"; 
+            case 'f':
+            	return "float";
             }
             return super.mkType();
         }

@@ -331,6 +331,11 @@ public class TypeRules {
     	if (target == null) {
     		return; 
     	}  		
+    	if (target instanceof DeclNode) {
+    		if (((DeclNode)target).isPeggedOnDcln() && ((DeclNode)target).isHost())	{
+    			ParseUnit.current().reportSeriousError(target, "A host variable cannot be pegged on its declaration");
+    		}
+    	}
     	if (!(target instanceof DeclNode.TypedMember || target instanceof DeclNode.Arr)) {
 			ParseUnit.current().reportError(errorNode, "LHS of pegging operator assignment must be a typed member");   
     	}
@@ -431,7 +436,6 @@ public class TypeRules {
 
     static Cat checkUnary(String op, Cat operand, String err) {
         String code = operand.mkCode();
-        boolean dbg = false;
 
         if (op.equals("*")) {
             if (code.startsWith("s")) {
@@ -442,8 +446,6 @@ public class TypeRules {
         int opKinds = uryOpTab.get(op);
         Cat rtn = mkResult(matchRules(opKinds, code, unaryRules), operand, null, err);
         
-        if (rtn instanceof Cat.Error)
-        	dbg = true;
         return rtn;
     }
 
@@ -493,73 +495,77 @@ public class TypeRules {
 		binaryRules = new Rule[] {
 
 				mkBinary(OP_ASSIGN, "b|n", "b|n", "$1"),
-				mkBinary(OP_ASSIGN, "u4", "ua", "$1"),
 				mkBinary(OP_ASSIGN, "x.+", "F.+|v|x.+", "$1"),				
 				mkBinary(OP_ASSIGN, "u.+", "FA\\1", "$1"),
 				mkBinary(OP_ASSIGN, "i.+", "FA\\1", "$1"),
 				mkBinary(OP_ASSIGN, "C.+|X.+", "C.+|X.+|v", "$1"),
 				mkBinary(OP_ASSIGN, "C.+", "u1|i1", "$1"),
-				mkBinary(OP_ASSIGN, "p|r|s|P.+|F.+|R.+|A.+", "\\1|v", "$1"),
+				mkBinary(OP_ASSIGN, "s|F.+|A.+", "\\1|v", "$1"),
 				mkBinary(OP_ASSIGN, "A.+", "\\1", "$1"),
 				mkBinary(OP_ASSIGN, "A(.+)", "V\\2", "$1"),
 				mkBinary(OP_ASSIGN, "s", "u1", "$1"),
 
 
 				
-				// p, r, P, R, bygone types
+				// p, r, P, R, ua, ui bygone types
+				//mkBinary(OP_ASSIGN, "u4", "ua", "$1"),
+				//mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "ia", "ia|i0|n", "$1"),
+				//mkBinary(OP_ADD|OP_MULT, "n|ia|i0", "ia", "$2"),
+				//mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, "ua", "n|ua", "$1"),
+				//mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n|ua", "ua", "$2"),
+				//mkBinary(OP_ASSIGN, "p|r|s|P.+|F.+|R.+|A.+", "\\1|v", "$1"),
 				//mkBinary(OP_ASSIGN, "p", "p|s|v|P.+|R.+", "$1"),
 				//mkBinary(OP_ASSIGN, "r", "R.+|S.+", "$1"),
 				//mkBinary(OP_ASSIGN, "s", "Pu1", "$1"),
 				//mkBinary(OP_ASSIGN, "R(.+)", "\\2", "$1"),
 				//mkBinary(OP_ASSIGN, "R(.+)", "r", "$1"),
+				//mkBinary(OP_PADD, "p|s|P.+", "n|i0|i1|i2|i4|u1|u2|u4", "$1", TARG_DOMAIN),
+				//mkBinary(OP_PSUB, "p|s|P.+", "\\1", "n", TARG_DOMAIN),
+				//mkBinary(OP_EQ|OP_REL, "i0|i1|i2|i4|ia|u1|u2|u4|ua|b", "\\1|n", "b"),
+				//mkBinary(OP_EQ|OP_REL, "n", "i0|i1|i2|i4|ia|u1|u2|u4|ua|b", "b"),
+				//mkBinary(OP_EQ|OP_REL, "i0|i1|i2|i4|ia|u1|u2|u4|ua|b", "\\1|n", "b"),
+				//mkBinary(OP_EQ|OP_REL, "i0|i1|i2|i4|ia", "i0|i1|i2|i4|ia", "b"),
+				//mkBinary(OP_EQ|OP_REL, "p|s|P.+|F.+", "\\1", "b", TARG_DOMAIN),
+				//mkBinary(OP_EQ, "x.+|C.+", "F.+|v", "b"),
+				//mkBinary(OP_EQ, "p|s|X.+|A.+|P.+|F.+|R.+", "v", "b"),
+				//mkBinary(OP_EQ, "v", "p|s|X.+|A.+|P.+|F.+|R.+", "b"),
+				//mkBinary(OP_EQ, "A.+|R.+", "\\1", "b"),
 
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "i0", "i0|n", "$1"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "i1", "i0|i1|n", "$1"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "i2", "i0|i1|i2|n", "$1"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "i4", "i0|i1|i2|i4|n", "$1"),
-				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "ia", "ia|i0|n", "$1"),
 
 				mkBinary(OP_ADD|OP_MULT, "i0|i1|n", "i1", "$2"),
 				mkBinary(OP_ADD|OP_MULT, "i0|i1|i2|n", "i2", "$2"),
 				mkBinary(OP_ADD|OP_MULT, "i0|i1|i2|i4|n", "i4", "$2"),
-				mkBinary(OP_ADD|OP_MULT, "n|ia|i0", "ia", "$2"),
 
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, Cat.UINT8, "n|u1|u2|u4", "$1"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, "u2", "n|u1|u2|u4", "$1"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, "u4", "n|u1|u2|u4", "$1"),
-				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, "ua", "n|ua", "$1"),
 
 				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n|u1", Cat.UINT8, "$2"),
 				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n|u1|u2", "u2", "$2"),
 				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n|u1|u2|u4", "u4", "$2"),
-				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n|ua", "ua", "$2"),
-
 				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n", "n", "$1"),
-
-				//mkBinary(OP_PADD, "p|s|P.+", "n|i0|i1|i2|i4|u1|u2|u4", "$1", TARG_DOMAIN),
-				//mkBinary(OP_PSUB, "p|s|P.+", "\\1", "n", TARG_DOMAIN),
 
 				mkBinary(OP_SADD, "s", "s", "$1", HOST_DOMAIN),
 
 				mkBinary(OP_COND, "b", "b", "b"),
 
-				mkBinary(OP_EQ|OP_REL, "i0|i1|i2|i4|ia|u1|u2|u4|ua|b", "\\1|n", "b"),
-				mkBinary(OP_EQ|OP_REL, "n", "i0|i1|i2|i4|ia|u1|u2|u4|ua|b", "b"),
-				mkBinary(OP_EQ|OP_REL, "i0|i1|i2|i4|ia|u1|u2|u4|ua|b", "\\1|n", "b"),
-				mkBinary(OP_EQ|OP_REL, "i0|i1|i2|i4|ia", "i0|i1|i2|i4|ia", "b"),
-				mkBinary(OP_EQ|OP_REL, "u1|u2|u4|ua", "u1|u2|u4|ua", "b"),
-
+				mkBinary(OP_EQ|OP_REL, "i0|i1|i2|i4|u1|u2|u4|b", "\\1|n", "b"),
+				mkBinary(OP_EQ|OP_REL, "n", "i0|i1|i2|i4|u1|u2|u4|b", "b"),
+				mkBinary(OP_EQ|OP_REL, "i0|i1|i2|i4|u1|u2|u4|b", "\\1|n", "b"),
+				mkBinary(OP_EQ|OP_REL, "i0|i1|i2|i4", "i0|i1|i2|i4", "b"),
+				mkBinary(OP_EQ|OP_REL, "u1|u2|u4", "u1|u2|u4", "b"),
 				mkBinary(OP_EQ|OP_REL, "n", "n", "b"),
-
 				mkBinary(OP_EQ|OP_REL, "s", "s", "b", HOST_DOMAIN),
-
-				mkBinary(OP_EQ|OP_REL, "p|s|P.+|F.+", "\\1", "b", TARG_DOMAIN),
+				mkBinary(OP_EQ|OP_REL, "s|F.+", "\\1", "b", TARG_DOMAIN),
 
 				mkBinary(OP_EQ, "x.+|C.+", "F.+|v", "b"),
-
-				mkBinary(OP_EQ, "p|s|X.+|A.+|P.+|F.+|R.+", "v", "b"),
-				mkBinary(OP_EQ, "v", "p|s|X.+|A.+|P.+|F.+|R.+", "b"),
-				mkBinary(OP_EQ, "A.+|R.+", "\\1", "b"),
+				mkBinary(OP_EQ, "s|X.+|A.+|F.+", "v", "b"),
+				mkBinary(OP_EQ, "v", "s|X.+|A.+|F.+", "b"),
+				mkBinary(OP_EQ, "A.+", "\\1", "b"),
 				mkBinary(OP_EQ, "A(.+)", "V\\2", "b"),
 				mkBinary(OP_EQ, "V\\2", "A(.+)", "b"),
 
@@ -570,8 +576,8 @@ public class TypeRules {
 				mkUnary(OP_ADD, "i.", "$1"),
 				mkUnary(OP_ADD, "n", "i0"),
 				mkUnary(OP_BOOL, "u.|n", "$1"),
-				mkUnary(OP_COND, "b|i.|n|p|s|u.|A.+|F.+|P.+|R.+|x.+|C.+|X.+", "b"),
-				mkUnary(OP_INC, "i.|u.|n|p|s|P.+", "$1"),
+				mkUnary(OP_COND, "b|i.|n|s|u.|A.+|F.+|x.+|C.+|X.+", "b"),
+				mkUnary(OP_INC, "i.|u.|n|s", "$1"),
 				mkUnary(OP_SEL, Cat.UINT8, "$1"),
 				mkUnary(OP_SEL, "i1|i2|i4|u1|u2|u4|s", "$1", HOST_DOMAIN),
 		};

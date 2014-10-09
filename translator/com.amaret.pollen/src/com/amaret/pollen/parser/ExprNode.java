@@ -1534,11 +1534,10 @@ public class ExprNode extends BaseNode {
 			if (basecat == null)
 				dbg = true;
 			exprCat = TypeRules.preCheck(basecat);
-			// cat1 == Cat.INJECT || cat1 == Cat.UNKNOWN || cat1 instanceof
 			// Cat.Error
 			if (exprCat != null
 					&& (exprCat == Cat.INJECT || exprCat instanceof Cat.Error)) {
-				return; // true;
+				return; 
 			}
 			if (basecat instanceof Cat.Arr) {
 				exprCat = ((Cat.Arr) basecat).getBase();
@@ -1550,7 +1549,7 @@ public class ExprNode extends BaseNode {
 				ParseUnit.current().reportError(getBase(),
 						"value cannot be indexed");
 			}
-			// return true;
+			
 		}
 
 	}

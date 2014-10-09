@@ -1693,7 +1693,9 @@ stmtBind
 			if ($qualName.text.equals(ParseUnit.POLLEN_PRINT_PROXY)) {
 			
 			           if (ProcessUnits.isDashPoption()) {
-			               ParseUnit.current().reportError(ParseUnit.POLLEN_PRINT_PROXY, "Invalid bind of intrinsic print protocol member:  '-p' option is in use");
+			               ParseUnit.current().
+			               reportError(ParseUnit.POLLEN_PRINT_PROXY, 
+			               "Either the '-p' option to bind a print protocol can be used or a print protocol can be bound in code - but both cannot be used at once");
 			           }
 			           if (getParserTypeInfoListSize() > 1) {
 			               ParseUnit.current().reportError(ParseUnit.POLLEN_PRINT_PROXY, "Invalid bind of intrinsic print protocol member: not allowed in nested class");
@@ -1999,6 +2001,7 @@ builtinType  returns [EnumSet<LitFlags> f]
     |   'int8'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
     |   'int16'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
     |   'int32'   		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'float'  		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
     |   'string'  		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.STR);}
     |   'uint8'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
     |   'uint16'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
