@@ -446,7 +446,7 @@ public class Cat implements Cloneable {
             codeMap.put("int8",     Cat.INT8);
             codeMap.put("int16",    Cat.INT16);
             codeMap.put("int32",    Cat.INT32);
-            codeMap.put("float", 	Cat.FLOAT);
+            codeMap.put("real", 	Cat.FLOAT);
             codeMap.put("string",   Cat.STRING);
             codeMap.put("uint8",    Cat.UINT8);
             codeMap.put("uint16",   Cat.UINT16);
@@ -480,7 +480,7 @@ public class Cat implements Cloneable {
         	return false;
         }
         
-        private String mkStdType() {
+        public String mkStdType() {
             switch (kind) {
             case 'b':
                 return "bool";

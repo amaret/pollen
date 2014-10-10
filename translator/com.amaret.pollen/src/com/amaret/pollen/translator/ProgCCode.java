@@ -123,6 +123,10 @@ public class ProgCCode {
         genIntrinsicPrintCall("print_int", "i");
         gen.getFmt().print("%-}\n");
         
+        gen.getFmt().print("%tvoid %1pollen__print_real(float f) {\n%+", gen.uname_target());
+        genIntrinsicPrintCall("print_real", "f");
+        gen.getFmt().print("%-}\n");
+        
         gen.getFmt().print("%tvoid %1pollen__print_uint(uint32 u) {\n%+", gen.uname_target());
         genIntrinsicPrintCall("print_uint", "u");
         gen.getFmt().print("%-}\n");

@@ -493,18 +493,21 @@ public class TypeRules {
 		uryOpTab.put("S",   OP_SEL);
 
 		binaryRules = new Rule[] {
+				
+				
+				// $1 or $2 identifies whether the src or targ cat is the cat of the result
 
 				mkBinary(OP_ASSIGN, "b|n", "b|n", "$1"),
 				mkBinary(OP_ASSIGN, "x.+", "F.+|v|x.+", "$1"),				
 				mkBinary(OP_ASSIGN, "u.+", "FA\\1", "$1"),
 				mkBinary(OP_ASSIGN, "i.+", "FA\\1", "$1"),
+				mkBinary(OP_ASSIGN, "f", "FA\\1", "$1"),
 				mkBinary(OP_ASSIGN, "C.+|X.+", "C.+|X.+|v", "$1"),
 				mkBinary(OP_ASSIGN, "C.+", "u1|i1", "$1"),
 				mkBinary(OP_ASSIGN, "s|F.+|A.+", "\\1|v", "$1"),
 				mkBinary(OP_ASSIGN, "A.+", "\\1", "$1"),
 				mkBinary(OP_ASSIGN, "A(.+)", "V\\2", "$1"),
 				mkBinary(OP_ASSIGN, "s", "u1", "$1"),
-
 
 				
 				// p, r, P, R, ua, ui bygone types
@@ -535,7 +538,7 @@ public class TypeRules {
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "i1", "i0|i1|n", "$1"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "i2", "i0|i1|i2|n", "$1"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "i4", "i0|i1|i2|i4|n", "$1"),
-
+				
 				mkBinary(OP_ADD|OP_MULT, "i0|i1|n", "i1", "$2"),
 				mkBinary(OP_ADD|OP_MULT, "i0|i1|i2|n", "i2", "$2"),
 				mkBinary(OP_ADD|OP_MULT, "i0|i1|i2|i4|n", "i4", "$2"),
@@ -548,16 +551,23 @@ public class TypeRules {
 				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n|u1|u2", "u2", "$2"),
 				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n|u1|u2|u4", "u4", "$2"),
 				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n", "n", "$1"),
+				
+				// float: are these right?
+				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "f", "i0|i1|i2|i4|n|f", "$1"),
+				mkBinary(OP_ADD|OP_MULT, "i0|i1|i2|i4|n|f", "f", "$2"),
+				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, "f", "n|u1|u2|u4|f", "$1"),
+				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n|u1|u2|u4|f", "f", "$2"),
 
 				mkBinary(OP_SADD, "s", "s", "$1", HOST_DOMAIN),
 
 				mkBinary(OP_COND, "b", "b", "b"),
 
-				mkBinary(OP_EQ|OP_REL, "i0|i1|i2|i4|u1|u2|u4|b", "\\1|n", "b"),
-				mkBinary(OP_EQ|OP_REL, "n", "i0|i1|i2|i4|u1|u2|u4|b", "b"),
-				mkBinary(OP_EQ|OP_REL, "i0|i1|i2|i4|u1|u2|u4|b", "\\1|n", "b"),
+				mkBinary(OP_EQ|OP_REL, "i0|i1|i2|i4|u1|u2|u4|b|f", "\\1|n", "b"),
+				mkBinary(OP_EQ|OP_REL, "n", "i0|i1|i2|i4|u1|u2|u4|b|f", "b"),
+				mkBinary(OP_EQ|OP_REL, "i0|i1|i2|i4|u1|u2|u4|b|f", "\\1|n", "b"),
 				mkBinary(OP_EQ|OP_REL, "i0|i1|i2|i4", "i0|i1|i2|i4", "b"),
 				mkBinary(OP_EQ|OP_REL, "u1|u2|u4", "u1|u2|u4", "b"),
+				mkBinary(OP_EQ|OP_REL, "f", "f", "b"),
 				mkBinary(OP_EQ|OP_REL, "n", "n", "b"),
 				mkBinary(OP_EQ|OP_REL, "s", "s", "b", HOST_DOMAIN),
 				mkBinary(OP_EQ|OP_REL, "s|F.+", "\\1", "b", TARG_DOMAIN),

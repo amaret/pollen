@@ -1721,6 +1721,13 @@ public class Auxiliary {
 					gen.getFmt().print(");");
 					firstTime = false;
 					break;
+				case 'f':
+					t = !firstTime ? "\n\t" : "";
+					gen.getFmt().print("%3%1%2print_real((float)", uname_target, ParseUnit.INTRINSIC_PREFIX, t);
+					gen.aux.genExpr(expr);
+					gen.getFmt().print(");");
+					firstTime = false;
+					break;
 				case 's':
 					t = !firstTime ? "\n\t" : "";
 					gen.getFmt().print("%3%1%2print_str((string)", uname_target, ParseUnit.INTRINSIC_PREFIX, t);

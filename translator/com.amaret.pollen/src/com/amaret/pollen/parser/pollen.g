@@ -2001,7 +2001,7 @@ builtinType  returns [EnumSet<LitFlags> f]
     |   'int8'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
     |   'int16'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
     |   'int32'   		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
-    |   'float'  		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'real'  		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
     |   'string'  		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.STR);}
     |   'uint8'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
     |   'uint16'		{$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}

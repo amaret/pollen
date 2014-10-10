@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.antlr.runtime.tree.Tree;
 
+import com.amaret.pollen.parser.Cat.Scalar;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.target.ITarget.TypeId;
 import com.amaret.pollen.target.ITarget.TypeInfo;
@@ -440,20 +441,6 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
     static public class Std extends TypeNode implements IOutputName {
 
         static final private int IDENT = 0;
-        static final private HashMap<String,TypeId> tidMap = new HashMap<String,TypeId>();
-        
-        // TODO this doesn't map to c platform, fix that.
-        static {
-            tidMap.put("Bool",      TypeId.BOOL);
-            tidMap.put("Bool",      TypeId.BYTE);
-            tidMap.put("Int8",      TypeId.INT8);
-            tidMap.put("Int16",     TypeId.INT16);
-            tidMap.put("Int32",     TypeId.INT32);
-            tidMap.put("String",    TypeId.STRING);
-            tidMap.put("UInt8",    TypeId.INT8);
-            tidMap.put("UInt16",    TypeId.INT16);
-            tidMap.put("UInt32",    TypeId.INT32);
-        }
         
         Std(int ttype, String ttext, EnumSet<Flags> flags) {
 			super(ttype, ttext, flags);
@@ -468,8 +455,9 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
         }
         public String getOutputNameTarget(Generator g, IScope sc, EnumSet<Flags> flags) {
         	boolean addTypeMods = flags.contains(Flags.IS_DECL);
-        	String rtn = getIdent().getText();
-			if (addTypeMods) {
+        	Cat.Scalar t = (Scalar) Cat.fromType(this);
+        	String rtn = t.kind() != 'u' ? t.mkStdType() : this.getIdent().getText(); // preserve the textual distinction between byte and uint8
+        	if (addTypeMods) {
 				rtn = g.getAux().mkTypeMods(getModifiers()) + rtn;
 			}
 			return rtn;
