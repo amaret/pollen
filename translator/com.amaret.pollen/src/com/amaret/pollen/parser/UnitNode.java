@@ -41,14 +41,12 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 	static final List<String> lifecycleMethods = Arrays.asList(
 			ParseUnit.POLLEN_RESET, ParseUnit.POLLEN_READY,
 			ParseUnit.POLLEN_SHUTDOWN, ParseUnit.POLLEN_HIBERNATE,
-			ParseUnit.POLLEN_RUN);
+			ParseUnit.POLLEN_RUN, 
+			// these versions are massaged for output
+			"pollen__reset", "pollen__ready", "pollen__shutdown", "pollen__hibernate", "pollen__run");
 
 	public void addFlags(EnumSet<Flags> e) {
-		// System.out.println("UnitNode.addFlags() before add " +
-		// flags.toString());
 		flags.addAll(e);
-		// System.out.println("UnitNode.addFlags() after add " +
-		// flags.toString());
 	}
 
 	public boolean isUnitUsed() {

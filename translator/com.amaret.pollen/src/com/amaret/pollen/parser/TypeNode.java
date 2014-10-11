@@ -457,6 +457,7 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
         	boolean addTypeMods = flags.contains(Flags.IS_DECL);
         	Cat.Scalar t = (Scalar) Cat.fromType(this);
         	String rtn = t.kind() != 'u' ? t.mkStdType() : this.getIdent().getText(); // preserve the textual distinction between byte and uint8
+        	//rtn = t.mkStdType();
         	if (addTypeMods) {
 				rtn = g.getAux().mkTypeMods(getModifiers()) + rtn;
 			}
