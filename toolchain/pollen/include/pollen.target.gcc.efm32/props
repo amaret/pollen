@@ -1,14 +1,14 @@
 pollen.target.class = com.amaret.pollen.target.GccEfm32
-pollen.target.compiler.flags = -I/home/pops/cbundles/silabs/efm32/clib/emlib/inc \
-  -I/home/pops/cbundles/silabs/efm32/clib/emlib/src \
-  -I/home/pops/cbundles/silabs/efm32/clib/EnergyMicro/EFM32ZG/Include \
-  -I/home/pops/cbundles/silabs/efm32/clib/EnergyMicro/EFM32ZG/Source \
-  -I/home/pops/cbundles/silabs/efm32/clib/CMSIS/Include \
+pollen.target.compiler.flags = -I/home/ops/cbundles/silabs/efm32/emlib/inc \
+  -I/home/ops/cbundles/silabs/efm32/emlib/src \
+  -I/home/ops/cbundles/silabs/efm32/EnergyMicro/EFM32ZG/Include \
+  -I/home/ops/cbundles/silabs/efm32/EnergyMicro/EFM32ZG/Source \
+  -I/home/ops/cbundles/silabs/efm32/CMSIS/Include \
   -mcpu=cortex-m0plus -mthumb -fwhole-program  -ffunction-sections \
   -fdata-sections -fomit-frame-pointer -std=gnu99  -D__NO_SYSTEM_INIT -Wextra -DDEBUG_EFM -DDEBUG -g \
-  -O0 /home/pops/cbundles/silabs/efm32/clib/EnergyMicro/EFM32ZG/Source/GCC/startup_efm32zg.S \
+  -O0 /home/ops/cbundles/silabs/efm32/EnergyMicro/EFM32ZG/Source/GCC/startup_efm32zg.S \
   -Wl,--start-group -lgcc -lc -lnosys -Wl,--end-group -Xlinker \
-  -T/home/pops/cbundles/silabs/efm32/clib/EnergyMicro/EFM32ZG/Source/GCC/efm32zg.ld -Wl,--gc-sections
+  -T/home/ops/cbundles/silabs/efm32/EnergyMicro/EFM32ZG/Source/GCC/efm32zg.ld -Wl,--gc-sections
 pollen.target.compiler.flags.prefix =
 pollen.target.compiler.flags.suffix =
 # echo commands to stdout
