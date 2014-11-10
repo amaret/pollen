@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import com.amaret.pollen.parser.Cat.Agg;
 import com.amaret.pollen.parser.Cat.Arr;
+import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.parser.DeclNode.TypedMember;
 
 public class TypeRules {
@@ -198,6 +199,9 @@ public class TypeRules {
 	}
 
     static void checkInit(Cat declCat, ExprNode init) {
+    	boolean dbg = false;
+    	if (init.getCat() == null)
+    		dbg = true;
         checkInit(declCat, init, init.getCat(), false);
     }
     static private void checkInit(Cat declCat, ExprNode init, boolean genArgs) {
@@ -223,7 +227,12 @@ public class TypeRules {
         if (resCat instanceof Cat.Error) {
         	if (declCat.isAggTyp() && ((Cat.Agg)declCat).aggScope() instanceof DeclNode) { // error message with name & linenum
         		IScope d = ((Cat.Agg)declCat).aggScope();
-        		ParseUnit.current().reportError( ((DeclNode)d).getName(), ((Cat.Error) resCat).getMsg());
+        		if (d instanceof ITypeKind && ((ITypeKind)d).isEnum()) {
+        			// serious because it can cause javascript abort
+        			ParseUnit.current().reportSeriousError( ((DeclNode)d).getName(), "illegal initialization type for enum");
+        		}
+        		else 
+        			ParseUnit.current().reportError( ((DeclNode)d).getName(), ((Cat.Error) resCat).getMsg());
         	}
         	else 
         		ParseUnit.current().reportError(init, ((Cat.Error) resCat).getMsg());

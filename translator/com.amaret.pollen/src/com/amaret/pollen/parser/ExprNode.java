@@ -424,6 +424,13 @@ public class ExprNode extends BaseNode {
 							}
 						}
 					}
+					if (qualifier != null) {
+						ISymbolNode qn = qualifier.node();
+						if (qn.getTypeCat() instanceof Cat.Scalar) {
+							// Eg coding error : pin.get() where pin is a uint32. 
+							ParseUnit.current().reportSeriousError(this,ei.getName().getText() + "(): qualifier for call is invalid (qualifer has scalar type)");
+						}				
+					}
 
 					if (fcn == null) {
 						// Could be a host function accessed through a non-host
@@ -519,6 +526,8 @@ public class ExprNode extends BaseNode {
 
 			}
 			exprCat = mkExprCat();
+			if (exprCat == null)
+				exprCat = Cat.UNKNOWN;
 			return super.pass2Begin();
 		}
 
@@ -1927,6 +1936,10 @@ public class ExprNode extends BaseNode {
 		this.token = new Atom(ttype, ttext);
 	}
 
+	/**
+	 * Currently - could return null.
+	 * @return
+	 */
 	public Cat getCat() {
 		return exprCat;
 	}

@@ -828,8 +828,9 @@ public class Auxiliary {
 			return;
 		}
 		if (expr.getQualifier() == null && expr.getName().getText().indexOf('.') != -1)
-			System.out.println("ExprIdent: no qualifier symbol for " + expr.getName().getText());
-//		if (expr.getName().getText().equals("on")) {
+			System.out.println("ExprIdent: no qualifier symbol for " + expr.getName().getText());		
+		
+//		if (expr.getName().getText().equals("pin.get")) {
 //			System.out.println("xyz");			
 //		}
 

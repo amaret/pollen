@@ -409,9 +409,23 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.108";  // user release . internal rev . fix number
+	private static String  v = "0.2.109";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
+	}
+	/**
+	 * If a pollen file supplied on the command line has .p suffix, strip it. 
+	 * @param filename.p
+	 * @return filename
+	 */
+	private String stripSuffix(String value) {
+		if (value == null)
+			return "";
+		int suf = value.lastIndexOf(".p");
+		if (suf != -1 && value.substring(suf).equals(".p")) {
+			value = value.substring(0, value.lastIndexOf(".p"));
+		}	
+		return value;
 	}
 
 	/**
@@ -455,8 +469,7 @@ public class ProcessUnits {
 				if (value.isEmpty())	
 					continue;
 				value = getPath(value, p, errStream);	
-				if (value == null)
-					continue;
+				value = stripSuffix(value);
 				if (!(new File(value + ".p")).exists())
 					throw new Termination ("Invalid -e usage: must specifiy a fully qualified module for pollen.environment");
 				pollenEnvPkg = this.putModule(inputs, value);
@@ -481,8 +494,7 @@ public class ProcessUnits {
 				if (value.isEmpty())	
 					continue;
 				value = getPath(value, p, errStream);	
-				if (value == null)
-					continue;				
+				value = stripSuffix(value);
 				if (!(new File(value + ".p")).exists())
 					throw new Termination ("Invalid -p usage: must specifiy a fully qualified module for pollen.print");								
 				pollenPrintPkg = this.putModule(inputs, value);

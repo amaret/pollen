@@ -1543,6 +1543,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 	// DeclNode.TypedMember
 	// For proxy (protocol member) or a member with class type
+	// Also can declare variables with an enum type. 
+	// TODO put the enum typed variables in a subclass. 
 	static public class TypedMember extends DeclNode.Var implements
 			ITypeSpecInit, IScope, IUnitWrapper, ITypeKind,
 			IOutputQualifiedName {
@@ -1560,6 +1562,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 									// class is its containing unit.
 		boolean isClassRef = false;
 		boolean isNestedClassRef = false;
+		boolean isEnum = false;
 
 		// for protocol members
 		private UnitNode bindToUnit = null; // the module to which this protocol
@@ -1810,6 +1813,9 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			isClassRef = (snode != null && snode instanceof ITypeKind && ((ITypeKind) snode)
 					.isClass());
 			isNestedClassRef = false;
+			isEnum = (snode != null && snode instanceof ITypeKind && ((ITypeKind) snode)
+					.isEnum());
+
 			if (isClassRef) {
 				DeclNode.Usr tmp = (Usr) (snode instanceof DeclNode.Usr ? snode
 						: snode instanceof ImportNode ? ((ImportNode) snode)
@@ -1886,7 +1892,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				} else {
 					String n = typeUnit.getName().getText();
 					if (!typeUnit.isClass() && !this.isFcnRef() && !isClassRef
-							&& !isSynthFromMeta) {
+							&& !isEnum && !isSynthFromMeta) {
 						ParseUnit
 								.current()
 								.reportError(getTypeName(),
@@ -1923,6 +1929,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 						this.bindModule(u, t); // bind it
 					}
 				}
+			} else if (isEnum && init != null) {
+				TypeRules.checkInit(tsi.getTypeCat(), init);
 			}
 			setUses();
 		}
@@ -2111,6 +2119,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 		@Override
 		public boolean isEnum() {
+			if (isEnum)
+				return true;
 			if (typeUnit != null)
 				return typeUnit.isEnum();
 			return false;
@@ -2829,10 +2839,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		protected boolean pass1Begin() {
 			super.pass1Begin();
 			ParseUnit currUnit = ParseUnit.current();
-
-			if (currUnit.getCurrUnitNode().isComposition()) {
-
-			}
 
 			if (isPublic()) {
 				currUnit.reportError(getName(), "variables can't be \'public\'");
