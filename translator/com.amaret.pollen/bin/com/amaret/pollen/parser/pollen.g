@@ -223,16 +223,16 @@ tokens {
     }
     
     // decode text into literal value for enums. handles hex, octal, decimal, etc. 
-    byte decode(org.antlr.runtime.CommonToken t) {
+    int decode(org.antlr.runtime.CommonToken t) {
             
     	try {
     		int i = Integer.decode(t.getText());
     		if (i < 0)
     			ParseUnit.current().reportError(t, "enum values cannot be negative");
     		byte b = (byte) i;
-    		if (b != i)
-    			ParseUnit.current().reportError(t, "enum values must fit in 8 bits");
-    		return (b);
+    		if (b != i &&  i != 0x80)
+        			ParseUnit.current().reportError(t, "enum values must fit in 8 bits");
+    		return (i);
     	} catch (NumberFormatException e) {
     		ParseUnit.current().reportError(t, "number format error for enum value " + t.getText());	
     		return 0;
