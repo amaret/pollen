@@ -229,10 +229,12 @@ tokens {
     		int i = Integer.decode(t.getText());
     		if (i < 0)
     			ParseUnit.current().reportError(t, "enum values cannot be negative");
-    		byte b = (byte) i;
-    		if (b != i &&  i != 0x80)
-        			ParseUnit.current().reportError(t, "enum values must fit in 8 bits");
-    		return (i);
+    		else {
+    			byte b = (byte) i;
+    			if (b != i &&  i != 0x80)
+        				ParseUnit.current().reportError(t, "enum values must fit in 8 bits");
+        		}
+    		return (i & 0xFF);
     	} catch (NumberFormatException e) {
     		ParseUnit.current().reportError(t, "number format error for enum value " + t.getText());	
     		return 0;

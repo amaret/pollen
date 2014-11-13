@@ -183,7 +183,7 @@ public class UnitJScript {
     }
     private void genDecl$Fcn(DeclNode.Fcn decl) {
         if (!decl.isHost()) {
-            String n = decl.getName().getText().replace('.', '_');
+           String n = decl.getName().getText().replace('.', '_');
             gen.getAux().setHost(false); // this is a host context but the name is generated for target context.
             String s = gen.getOutputQName(decl, (ISymbolNode) decl.getEnclosingScope(),decl.getDefiningScope(), EnumSet.noneOf(Flags.class ));
             gen.getAux().setHost(true);

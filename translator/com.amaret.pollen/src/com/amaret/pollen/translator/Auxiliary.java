@@ -679,7 +679,7 @@ public class Auxiliary {
 							genTypeWithVarName(f.getTypeSpec(), null, EnumSet.noneOf(Flags.class));
 							gen.getFmt().print(")&");
 						}
-						else if (((Cat.Agg)arg.getCat()).isHostClassRef())
+						else if (((Cat.Agg)arg.getCat()).isHostClassRef() && !isHost())
 							gen.getFmt().print("&");
 					}
 				}

@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g 2014-11-10 18:30:35
+// $ANTLR 3.4 /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g 2014-11-11 13:21:22
 
     package com.amaret.pollen.parser;
     import java.util.EnumSet;
@@ -378,10 +378,12 @@ public TreeAdaptor getTreeAdaptor() {
         		int i = Integer.decode(t.getText());
         		if (i < 0)
         			ParseUnit.current().reportError(t, "enum values cannot be negative");
-        		byte b = (byte) i;
-        		if (b != i &&  i != 0x80)
-            			ParseUnit.current().reportError(t, "enum values must fit in 8 bits");
-        		return (i);
+        		else {
+        			byte b = (byte) i;
+        			if (b != i &&  i != 0x80)
+            				ParseUnit.current().reportError(t, "enum values must fit in 8 bits");
+            		}
+        		return (i & 0xFF);
         	} catch (NumberFormatException e) {
         		ParseUnit.current().reportError(t, "number format error for enum value " + t.getText());	
         		return 0;
@@ -557,7 +559,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "unit"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:459:1: unit : ( NL )* unitPackage -> ^( UNIT[\"UNIT\"] unitPackage ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:461:1: unit : ( NL )* unitPackage -> ^( UNIT[\"UNIT\"] unitPackage ) ;
     public final pollenParser.unit_return unit() throws RecognitionException {
         pollenParser.unit_return retval = new pollenParser.unit_return();
         retval.start = input.LT(1);
@@ -576,10 +578,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 1) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:460:5: ( ( NL )* unitPackage -> ^( UNIT[\"UNIT\"] unitPackage ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:460:9: ( NL )* unitPackage
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:462:5: ( ( NL )* unitPackage -> ^( UNIT[\"UNIT\"] unitPackage ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:462:9: ( NL )* unitPackage
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:460:9: ( NL )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:462:9: ( NL )*
             loop1:
             do {
                 int alt1=2;
@@ -592,7 +594,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt1) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:460:10: NL
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:462:10: NL
             	    {
             	    NL1=(Atom)match(input,NL,FOLLOW_NL_in_unit679); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_NL.add(NL1);
@@ -627,9 +629,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 460:29: -> ^( UNIT[\"UNIT\"] unitPackage )
+            // 462:29: -> ^( UNIT[\"UNIT\"] unitPackage )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:460:32: ^( UNIT[\"UNIT\"] unitPackage )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:462:32: ^( UNIT[\"UNIT\"] unitPackage )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -688,7 +690,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "unitPackage"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:462:1: unitPackage : stmtPackage importList importIntrinsicPrint stmtInjectionList unitTypeDefinition stmtInjectionList pollenEOF -> stmtPackage importList stmtInjectionList unitTypeDefinition stmtInjectionList ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:464:1: unitPackage : stmtPackage importList importIntrinsicPrint stmtInjectionList unitTypeDefinition stmtInjectionList pollenEOF -> stmtPackage importList stmtInjectionList unitTypeDefinition stmtInjectionList ;
     public final pollenParser.unitPackage_return unitPackage() throws RecognitionException {
         unitPackage_stack.push(new unitPackage_scope());
         pollenParser.unitPackage_return retval = new pollenParser.unitPackage_return();
@@ -722,8 +724,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 2) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:466:2: ( stmtPackage importList importIntrinsicPrint stmtInjectionList unitTypeDefinition stmtInjectionList pollenEOF -> stmtPackage importList stmtInjectionList unitTypeDefinition stmtInjectionList )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:466:11: stmtPackage importList importIntrinsicPrint stmtInjectionList unitTypeDefinition stmtInjectionList pollenEOF
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:468:2: ( stmtPackage importList importIntrinsicPrint stmtInjectionList unitTypeDefinition stmtInjectionList pollenEOF -> stmtPackage importList stmtInjectionList unitTypeDefinition stmtInjectionList )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:468:11: stmtPackage importList importIntrinsicPrint stmtInjectionList unitTypeDefinition stmtInjectionList pollenEOF
             {
             pushFollow(FOLLOW_stmtPackage_in_unitPackage723);
             stmtPackage3=stmtPackage();
@@ -777,7 +779,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_pollenEOF.add(pollenEOF9.getTree());
 
             // AST REWRITE
-            // elements: stmtInjectionList, stmtInjectionList, importList, stmtPackage, unitTypeDefinition
+            // elements: unitTypeDefinition, importList, stmtInjectionList, stmtPackage, stmtInjectionList
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -789,7 +791,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 473:15: -> stmtPackage importList stmtInjectionList unitTypeDefinition stmtInjectionList
+            // 475:15: -> stmtPackage importList stmtInjectionList unitTypeDefinition stmtInjectionList
             {
                 adaptor.addChild(root_0, stream_stmtPackage.nextTree());
 
@@ -843,7 +845,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "pollenEOF"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:475:1: pollenEOF : EOF !;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:477:1: pollenEOF : EOF !;
     public final pollenParser.pollenEOF_return pollenEOF() throws RecognitionException {
         pollenParser.pollenEOF_return retval = new pollenParser.pollenEOF_return();
         retval.start = input.LT(1);
@@ -859,8 +861,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 3) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:476:2: ( EOF !)
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:476:4: EOF !
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:478:2: ( EOF !)
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:478:4: EOF !
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -901,7 +903,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtInjectionList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:481:1: stmtInjectionList : ( stmtInjection )* -> ^( LIST[\"LIST\"] ( stmtInjection )* ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:483:1: stmtInjectionList : ( stmtInjection )* -> ^( LIST[\"LIST\"] ( stmtInjection )* ) ;
     public final pollenParser.stmtInjectionList_return stmtInjectionList() throws RecognitionException {
         pollenParser.stmtInjectionList_return retval = new pollenParser.stmtInjectionList_return();
         retval.start = input.LT(1);
@@ -917,10 +919,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 4) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:482:2: ( ( stmtInjection )* -> ^( LIST[\"LIST\"] ( stmtInjection )* ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:482:3: ( stmtInjection )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:484:2: ( ( stmtInjection )* -> ^( LIST[\"LIST\"] ( stmtInjection )* ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:484:3: ( stmtInjection )*
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:482:3: ( stmtInjection )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:484:3: ( stmtInjection )*
             loop2:
             do {
                 int alt2=2;
@@ -933,7 +935,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt2) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:482:4: stmtInjection
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:484:4: stmtInjection
             	    {
             	    pushFollow(FOLLOW_stmtInjection_in_stmtInjectionList875);
             	    stmtInjection11=stmtInjection();
@@ -964,16 +966,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 482:20: -> ^( LIST[\"LIST\"] ( stmtInjection )* )
+            // 484:20: -> ^( LIST[\"LIST\"] ( stmtInjection )* )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:482:23: ^( LIST[\"LIST\"] ( stmtInjection )* )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:484:23: ^( LIST[\"LIST\"] ( stmtInjection )* )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ListNode(LIST, "LIST")
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:482:48: ( stmtInjection )*
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:484:48: ( stmtInjection )*
                 while ( stream_stmtInjection.hasNext() ) {
                     adaptor.addChild(root_1, stream_stmtInjection.nextTree());
 
@@ -1024,7 +1026,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtPackage"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:484:1: stmtPackage : ( 'package' qualName delim -> ^( S_PACKAGE[pkg] qualName ) | -> ^( S_PACKAGE[pkg] ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:486:1: stmtPackage : ( 'package' qualName delim -> ^( S_PACKAGE[pkg] qualName ) | -> ^( S_PACKAGE[pkg] ) );
     public final pollenParser.stmtPackage_return stmtPackage() throws RecognitionException {
         pollenParser.stmtPackage_return retval = new pollenParser.stmtPackage_return();
         retval.start = input.LT(1);
@@ -1049,7 +1051,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 5) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:488:2: ( 'package' qualName delim -> ^( S_PACKAGE[pkg] qualName ) | -> ^( S_PACKAGE[pkg] ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:490:2: ( 'package' qualName delim -> ^( S_PACKAGE[pkg] qualName ) | -> ^( S_PACKAGE[pkg] ) )
             int alt3=2;
             int LA3_0 = input.LA(1);
 
@@ -1069,7 +1071,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt3) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:488:4: 'package' qualName delim
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:490:4: 'package' qualName delim
                     {
                     string_literal12=(Atom)match(input,173,FOLLOW_173_in_stmtPackage905); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_173.add(string_literal12);
@@ -1102,9 +1104,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 488:29: -> ^( S_PACKAGE[pkg] qualName )
+                    // 490:29: -> ^( S_PACKAGE[pkg] qualName )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:488:32: ^( S_PACKAGE[pkg] qualName )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:490:32: ^( S_PACKAGE[pkg] qualName )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -1125,7 +1127,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:489:4: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:491:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -1140,9 +1142,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 489:4: -> ^( S_PACKAGE[pkg] )
+                    // 491:4: -> ^( S_PACKAGE[pkg] )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:489:7: ^( S_PACKAGE[pkg] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:491:7: ^( S_PACKAGE[pkg] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -1195,7 +1197,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtExport"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:491:1: stmtExport : 'export' qualName delim -> ^( EXPORT[\"EXPORT\"] qualName ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:493:1: stmtExport : 'export' qualName delim -> ^( EXPORT[\"EXPORT\"] qualName ) ;
     public final pollenParser.stmtExport_return stmtExport() throws RecognitionException {
         pollenParser.stmtExport_return retval = new pollenParser.stmtExport_return();
         retval.start = input.LT(1);
@@ -1217,8 +1219,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 6) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:492:5: ( 'export' qualName delim -> ^( EXPORT[\"EXPORT\"] qualName ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:492:9: 'export' qualName delim
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:494:5: ( 'export' qualName delim -> ^( EXPORT[\"EXPORT\"] qualName ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:494:9: 'export' qualName delim
             {
             string_literal15=(Atom)match(input,155,FOLLOW_155_in_stmtExport944); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_155.add(string_literal15);
@@ -1251,9 +1253,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 492:33: -> ^( EXPORT[\"EXPORT\"] qualName )
+            // 494:33: -> ^( EXPORT[\"EXPORT\"] qualName )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:492:36: ^( EXPORT[\"EXPORT\"] qualName )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:494:36: ^( EXPORT[\"EXPORT\"] qualName )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -1306,7 +1308,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "classDefinition"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:494:1: classDefinition : 'class' IDENT extendsClause implementsClause braceOpen classFeatureList[name] braceClose -> ^( D_CLASS[\"D_CLASS\", getParseUnitFlags(), qual] IDENT classFeatureList extendsClause implementsClause ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:496:1: classDefinition : 'class' IDENT extendsClause implementsClause braceOpen classFeatureList[name] braceClose -> ^( D_CLASS[\"D_CLASS\", getParseUnitFlags(), qual] IDENT classFeatureList extendsClause implementsClause ) ;
     public final pollenParser.classDefinition_return classDefinition() throws RecognitionException {
         pollenParser.classDefinition_return retval = new pollenParser.classDefinition_return();
         retval.start = input.LT(1);
@@ -1345,8 +1347,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 7) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:503:2: ( 'class' IDENT extendsClause implementsClause braceOpen classFeatureList[name] braceClose -> ^( D_CLASS[\"D_CLASS\", getParseUnitFlags(), qual] IDENT classFeatureList extendsClause implementsClause ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:503:4: 'class' IDENT extendsClause implementsClause braceOpen classFeatureList[name] braceClose
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:505:2: ( 'class' IDENT extendsClause implementsClause braceOpen classFeatureList[name] braceClose -> ^( D_CLASS[\"D_CLASS\", getParseUnitFlags(), qual] IDENT classFeatureList extendsClause implementsClause ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:505:4: 'class' IDENT extendsClause implementsClause braceOpen classFeatureList[name] braceClose
             {
             string_literal18=(Atom)match(input,145,FOLLOW_145_in_classDefinition983); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_145.add(string_literal18);
@@ -1401,7 +1403,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceClose.add(braceClose24.getTree());
 
             // AST REWRITE
-            // elements: classFeatureList, extendsClause, implementsClause, IDENT
+            // elements: IDENT, classFeatureList, implementsClause, extendsClause
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -1413,9 +1415,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 515:3: -> ^( D_CLASS[\"D_CLASS\", getParseUnitFlags(), qual] IDENT classFeatureList extendsClause implementsClause )
+            // 517:3: -> ^( D_CLASS[\"D_CLASS\", getParseUnitFlags(), qual] IDENT classFeatureList extendsClause implementsClause )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:515:6: ^( D_CLASS[\"D_CLASS\", getParseUnitFlags(), qual] IDENT classFeatureList extendsClause implementsClause )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:517:6: ^( D_CLASS[\"D_CLASS\", getParseUnitFlags(), qual] IDENT classFeatureList extendsClause implementsClause )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -1481,7 +1483,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "classFeatureList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:518:1: classFeatureList[String n] : ( classFeature )* classHostCtor[fh] classTargCtor[ft] intrinsicUnitName[n] intrinsicPrintProxy -> ^( LIST[\"LIST\"] ( classFeature )* classHostCtor classTargCtor intrinsicUnitName intrinsicPrintProxy ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:520:1: classFeatureList[String n] : ( classFeature )* classHostCtor[fh] classTargCtor[ft] intrinsicUnitName[n] intrinsicPrintProxy -> ^( LIST[\"LIST\"] ( classFeature )* classHostCtor classTargCtor intrinsicUnitName intrinsicPrintProxy ) ;
     public final pollenParser.classFeatureList_return classFeatureList(String n) throws RecognitionException {
         pollenParser.classFeatureList_return retval = new pollenParser.classFeatureList_return();
         retval.start = input.LT(1);
@@ -1515,10 +1517,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 8) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:525:2: ( ( classFeature )* classHostCtor[fh] classTargCtor[ft] intrinsicUnitName[n] intrinsicPrintProxy -> ^( LIST[\"LIST\"] ( classFeature )* classHostCtor classTargCtor intrinsicUnitName intrinsicPrintProxy ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:525:4: ( classFeature )* classHostCtor[fh] classTargCtor[ft] intrinsicUnitName[n] intrinsicPrintProxy
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:527:2: ( ( classFeature )* classHostCtor[fh] classTargCtor[ft] intrinsicUnitName[n] intrinsicPrintProxy -> ^( LIST[\"LIST\"] ( classFeature )* classHostCtor classTargCtor intrinsicUnitName intrinsicPrintProxy ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:527:4: ( classFeature )* classHostCtor[fh] classTargCtor[ft] intrinsicUnitName[n] intrinsicPrintProxy
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:525:4: ( classFeature )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:527:4: ( classFeature )*
             loop4:
             do {
                 int alt4=2;
@@ -1531,7 +1533,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt4) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:525:4: classFeature
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:527:4: classFeature
             	    {
             	    pushFollow(FOLLOW_classFeature_in_classFeatureList1054);
             	    classFeature25=classFeature();
@@ -1578,7 +1580,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_intrinsicPrintProxy.add(intrinsicPrintProxy29.getTree());
 
             // AST REWRITE
-            // elements: classTargCtor, classFeature, classHostCtor, intrinsicPrintProxy, intrinsicUnitName
+            // elements: classFeature, intrinsicPrintProxy, classHostCtor, intrinsicUnitName, classTargCtor
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -1590,16 +1592,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 526:4: -> ^( LIST[\"LIST\"] ( classFeature )* classHostCtor classTargCtor intrinsicUnitName intrinsicPrintProxy )
+            // 528:4: -> ^( LIST[\"LIST\"] ( classFeature )* classHostCtor classTargCtor intrinsicUnitName intrinsicPrintProxy )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:526:7: ^( LIST[\"LIST\"] ( classFeature )* classHostCtor classTargCtor intrinsicUnitName intrinsicPrintProxy )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:528:7: ^( LIST[\"LIST\"] ( classFeature )* classHostCtor classTargCtor intrinsicUnitName intrinsicPrintProxy )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ListNode(LIST, "LIST")
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:527:9: ( classFeature )*
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:529:9: ( classFeature )*
                 while ( stream_classFeature.hasNext() ) {
                     adaptor.addChild(root_1, stream_classFeature.nextTree());
 
@@ -1658,7 +1660,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "classFeature"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:533:1: classFeature : ( fcnDefinition | enumDefinition | fieldDeclaration | classDefinition | injectionDecl );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:535:1: classFeature : ( fcnDefinition | enumDefinition | fieldDeclaration | classDefinition | injectionDecl );
     public final pollenParser.classFeature_return classFeature() throws RecognitionException {
         pollenParser.classFeature_return retval = new pollenParser.classFeature_return();
         retval.start = input.LT(1);
@@ -1685,7 +1687,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 9) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:537:5: ( fcnDefinition | enumDefinition | fieldDeclaration | classDefinition | injectionDecl )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:539:5: ( fcnDefinition | enumDefinition | fieldDeclaration | classDefinition | injectionDecl )
             int alt5=5;
             switch ( input.LA(1) ) {
             case 178:
@@ -1778,7 +1780,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt5) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:537:9: fcnDefinition
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:539:9: fcnDefinition
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -1793,7 +1795,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:538:9: enumDefinition
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:540:9: enumDefinition
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -1808,7 +1810,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:539:9: fieldDeclaration
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:541:9: fieldDeclaration
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -1823,7 +1825,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:540:9: classDefinition
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:542:9: classDefinition
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -1838,7 +1840,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:541:9: injectionDecl
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:543:9: injectionDecl
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -1887,7 +1889,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "classHostCtor"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:544:1: classHostCtor[EnumSet<Flags> fh] : ({...}? -> ^( D_FCN_DEF[\"D_FCN_DEF\", fh] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_HOST] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) ) | -> NIL );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:546:1: classHostCtor[EnumSet<Flags> fh] : ({...}? -> ^( D_FCN_DEF[\"D_FCN_DEF\", fh] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_HOST] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) ) | -> NIL );
     public final pollenParser.classHostCtor_return classHostCtor(EnumSet<Flags> fh) throws RecognitionException {
         pollenParser.classHostCtor_return retval = new pollenParser.classHostCtor_return();
         retval.start = input.LT(1);
@@ -1907,7 +1909,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 10) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:553:2: ({...}? -> ^( D_FCN_DEF[\"D_FCN_DEF\", fh] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_HOST] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) ) | -> NIL )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:555:2: ({...}? -> ^( D_FCN_DEF[\"D_FCN_DEF\", fh] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_HOST] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) ) | -> NIL )
             int alt6=2;
             int LA6_0 = input.LA(1);
 
@@ -1957,7 +1959,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt6) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:553:5: {...}?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:555:5: {...}?
                     {
                     if ( !((!hasHostConstructor )) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -1977,37 +1979,37 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 553:29: -> ^( D_FCN_DEF[\"D_FCN_DEF\", fh] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_HOST] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) )
+                    // 555:29: -> ^( D_FCN_DEF[\"D_FCN_DEF\", fh] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_HOST] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:554:4: ^( D_FCN_DEF[\"D_FCN_DEF\", fh] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_HOST] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:556:4: ^( D_FCN_DEF[\"D_FCN_DEF\", fh] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_HOST] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.Fcn(D_FCN_DEF, "D_FCN_DEF", fh)
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:555:4: ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_HOST] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:557:4: ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_HOST] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.FcnTyp(D_FCN_CTOR, "D_FCN_CTOR")
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:556:5: ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:558:5: ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) ) )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
                         new TypeNode.Lst(T_LST, "T_LST", fh)
                         , root_3);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:557:6: ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:559:6: ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) )
                         {
                         BaseNode root_4 = (BaseNode)adaptor.nil();
                         root_4 = (BaseNode)adaptor.becomeRoot(
                         new ListNode(LIST, "LIST")
                         , root_4);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:557:31: ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:559:31: ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] )
                         {
                         BaseNode root_5 = (BaseNode)adaptor.nil();
                         root_5 = (BaseNode)adaptor.becomeRoot(
@@ -2034,7 +2036,7 @@ public TreeAdaptor getTreeAdaptor() {
                         adaptor.addChild(root_1, root_2);
                         }
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:559:4: ^( LIST[\"LIST\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:561:4: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -2044,14 +2046,14 @@ public TreeAdaptor getTreeAdaptor() {
                         adaptor.addChild(root_1, root_2);
                         }
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:560:4: ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:562:4: ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.Formal(D_FORMAL, "D_FORMAL", fh)
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:561:5: ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:563:5: ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -2072,14 +2074,14 @@ public TreeAdaptor getTreeAdaptor() {
                         adaptor.addChild(root_1, root_2);
                         }
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:563:4: ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:565:4: ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new BodyNode(FCNBODY, "FCNBODY")
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:563:35: ^( LIST[\"LIST\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:565:35: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -2089,7 +2091,7 @@ public TreeAdaptor getTreeAdaptor() {
                         adaptor.addChild(root_2, root_3);
                         }
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:563:61: ^( LIST[\"LIST\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:565:61: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -2114,7 +2116,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:565:4: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:567:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -2129,7 +2131,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 565:4: -> NIL
+                    // 567:4: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -2178,7 +2180,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "classTargCtor"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:567:1: classTargCtor[EnumSet<Flags> ft] : ({...}? -> ^( D_FCN_DEF[\"D_FCN_DEF\", ft] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_TARGET] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) ) | -> NIL );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:569:1: classTargCtor[EnumSet<Flags> ft] : ({...}? -> ^( D_FCN_DEF[\"D_FCN_DEF\", ft] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_TARGET] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) ) | -> NIL );
     public final pollenParser.classTargCtor_return classTargCtor(EnumSet<Flags> ft) throws RecognitionException {
         pollenParser.classTargCtor_return retval = new pollenParser.classTargCtor_return();
         retval.start = input.LT(1);
@@ -2197,7 +2199,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 11) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:575:2: ({...}? -> ^( D_FCN_DEF[\"D_FCN_DEF\", ft] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_TARGET] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) ) | -> NIL )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:577:2: ({...}? -> ^( D_FCN_DEF[\"D_FCN_DEF\", ft] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_TARGET] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) ) | -> NIL )
             int alt7=2;
             int LA7_0 = input.LA(1);
 
@@ -2247,7 +2249,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt7) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:575:4: {...}?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:577:4: {...}?
                     {
                     if ( !((!hasTargetConstructor)) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -2267,37 +2269,37 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 575:29: -> ^( D_FCN_DEF[\"D_FCN_DEF\", ft] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_TARGET] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) )
+                    // 577:29: -> ^( D_FCN_DEF[\"D_FCN_DEF\", ft] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_TARGET] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:576:5: ^( D_FCN_DEF[\"D_FCN_DEF\", ft] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_TARGET] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:578:5: ^( D_FCN_DEF[\"D_FCN_DEF\", ft] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_TARGET] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.Fcn(D_FCN_DEF, "D_FCN_DEF", ft)
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:577:5: ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_TARGET] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:579:5: ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) ) ) IDENT[ParseUnit.CTOR_CLASS_TARGET] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.FcnTyp(D_FCN_CTOR, "D_FCN_CTOR")
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:578:6: ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:580:6: ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) ) )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
                         new TypeNode.Lst(T_LST, "T_LST", ft)
                         , root_3);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:579:7: ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:581:7: ^( LIST[\"LIST\"] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) )
                         {
                         BaseNode root_4 = (BaseNode)adaptor.nil();
                         root_4 = (BaseNode)adaptor.becomeRoot(
                         new ListNode(LIST, "LIST")
                         , root_4);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:579:32: ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:581:32: ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] )
                         {
                         BaseNode root_5 = (BaseNode)adaptor.nil();
                         root_5 = (BaseNode)adaptor.becomeRoot(
@@ -2324,7 +2326,7 @@ public TreeAdaptor getTreeAdaptor() {
                         adaptor.addChild(root_1, root_2);
                         }
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:581:5: ^( LIST[\"LIST\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:583:5: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -2334,14 +2336,14 @@ public TreeAdaptor getTreeAdaptor() {
                         adaptor.addChild(root_1, root_2);
                         }
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:582:5: ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:584:5: ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.Formal(D_FORMAL, "D_FORMAL", ft)
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:583:6: ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:585:6: ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -2362,14 +2364,14 @@ public TreeAdaptor getTreeAdaptor() {
                         adaptor.addChild(root_1, root_2);
                         }
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:585:5: ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:587:5: ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new BodyNode(FCNBODY, "FCNBODY")
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:585:36: ^( LIST[\"LIST\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:587:36: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -2379,7 +2381,7 @@ public TreeAdaptor getTreeAdaptor() {
                         adaptor.addChild(root_2, root_3);
                         }
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:585:62: ^( LIST[\"LIST\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:587:62: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -2404,7 +2406,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:587:4: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:589:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -2419,7 +2421,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 587:4: -> NIL
+                    // 589:4: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -2474,7 +2476,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "moduleDefinition"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:596:1: moduleDefinition : 'module' IDENT extendsClause implementsClause braceOpen moduleFeatureList[name] braceClose -> ^( D_MODULE[\"D_MODULE\", getParseUnitFlags(), qual] IDENT moduleFeatureList extendsClause implementsClause ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:598:1: moduleDefinition : 'module' IDENT extendsClause implementsClause braceOpen moduleFeatureList[name] braceClose -> ^( D_MODULE[\"D_MODULE\", getParseUnitFlags(), qual] IDENT moduleFeatureList extendsClause implementsClause ) ;
     public final pollenParser.moduleDefinition_return moduleDefinition() throws RecognitionException {
         moduleDefinition_stack.push(new moduleDefinition_scope());
         pollenParser.moduleDefinition_return retval = new pollenParser.moduleDefinition_return();
@@ -2516,8 +2518,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 12) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:610:2: ( 'module' IDENT extendsClause implementsClause braceOpen moduleFeatureList[name] braceClose -> ^( D_MODULE[\"D_MODULE\", getParseUnitFlags(), qual] IDENT moduleFeatureList extendsClause implementsClause ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:610:7: 'module' IDENT extendsClause implementsClause braceOpen moduleFeatureList[name] braceClose
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:612:2: ( 'module' IDENT extendsClause implementsClause braceOpen moduleFeatureList[name] braceClose -> ^( D_MODULE[\"D_MODULE\", getParseUnitFlags(), qual] IDENT moduleFeatureList extendsClause implementsClause ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:612:7: 'module' IDENT extendsClause implementsClause braceOpen moduleFeatureList[name] braceClose
             {
             string_literal35=(Atom)match(input,169,FOLLOW_169_in_moduleDefinition1621); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_169.add(string_literal35);
@@ -2572,7 +2574,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceClose.add(braceClose41.getTree());
 
             // AST REWRITE
-            // elements: implementsClause, extendsClause, IDENT, moduleFeatureList
+            // elements: extendsClause, moduleFeatureList, IDENT, implementsClause
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2584,9 +2586,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 622:4: -> ^( D_MODULE[\"D_MODULE\", getParseUnitFlags(), qual] IDENT moduleFeatureList extendsClause implementsClause )
+            // 624:4: -> ^( D_MODULE[\"D_MODULE\", getParseUnitFlags(), qual] IDENT moduleFeatureList extendsClause implementsClause )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:622:7: ^( D_MODULE[\"D_MODULE\", getParseUnitFlags(), qual] IDENT moduleFeatureList extendsClause implementsClause )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:624:7: ^( D_MODULE[\"D_MODULE\", getParseUnitFlags(), qual] IDENT moduleFeatureList extendsClause implementsClause )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -2653,7 +2655,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "moduleFeatureList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:628:1: moduleFeatureList[String n] : ( moduleFeature )* moduleHostCtor[fh] moduleTargCtor[ft] intrinsicUnitName[n] intrinsicPrintProxy -> ^( LIST[\"LIST\"] ( moduleFeature )* moduleHostCtor moduleTargCtor intrinsicUnitName intrinsicPrintProxy ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:630:1: moduleFeatureList[String n] : ( moduleFeature )* moduleHostCtor[fh] moduleTargCtor[ft] intrinsicUnitName[n] intrinsicPrintProxy -> ^( LIST[\"LIST\"] ( moduleFeature )* moduleHostCtor moduleTargCtor intrinsicUnitName intrinsicPrintProxy ) ;
     public final pollenParser.moduleFeatureList_return moduleFeatureList(String n) throws RecognitionException {
         pollenParser.moduleFeatureList_return retval = new pollenParser.moduleFeatureList_return();
         retval.start = input.LT(1);
@@ -2687,10 +2689,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 13) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:635:2: ( ( moduleFeature )* moduleHostCtor[fh] moduleTargCtor[ft] intrinsicUnitName[n] intrinsicPrintProxy -> ^( LIST[\"LIST\"] ( moduleFeature )* moduleHostCtor moduleTargCtor intrinsicUnitName intrinsicPrintProxy ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:635:4: ( moduleFeature )* moduleHostCtor[fh] moduleTargCtor[ft] intrinsicUnitName[n] intrinsicPrintProxy
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:637:2: ( ( moduleFeature )* moduleHostCtor[fh] moduleTargCtor[ft] intrinsicUnitName[n] intrinsicPrintProxy -> ^( LIST[\"LIST\"] ( moduleFeature )* moduleHostCtor moduleTargCtor intrinsicUnitName intrinsicPrintProxy ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:637:4: ( moduleFeature )* moduleHostCtor[fh] moduleTargCtor[ft] intrinsicUnitName[n] intrinsicPrintProxy
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:635:4: ( moduleFeature )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:637:4: ( moduleFeature )*
             loop8:
             do {
                 int alt8=2;
@@ -2703,7 +2705,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt8) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:635:4: moduleFeature
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:637:4: moduleFeature
             	    {
             	    pushFollow(FOLLOW_moduleFeature_in_moduleFeatureList1722);
             	    moduleFeature42=moduleFeature();
@@ -2750,7 +2752,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_intrinsicPrintProxy.add(intrinsicPrintProxy46.getTree());
 
             // AST REWRITE
-            // elements: intrinsicUnitName, moduleHostCtor, intrinsicPrintProxy, moduleTargCtor, moduleFeature
+            // elements: moduleHostCtor, moduleTargCtor, intrinsicPrintProxy, intrinsicUnitName, moduleFeature
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2762,16 +2764,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 636:4: -> ^( LIST[\"LIST\"] ( moduleFeature )* moduleHostCtor moduleTargCtor intrinsicUnitName intrinsicPrintProxy )
+            // 638:4: -> ^( LIST[\"LIST\"] ( moduleFeature )* moduleHostCtor moduleTargCtor intrinsicUnitName intrinsicPrintProxy )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:636:7: ^( LIST[\"LIST\"] ( moduleFeature )* moduleHostCtor moduleTargCtor intrinsicUnitName intrinsicPrintProxy )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:638:7: ^( LIST[\"LIST\"] ( moduleFeature )* moduleHostCtor moduleTargCtor intrinsicUnitName intrinsicPrintProxy )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ListNode(LIST, "LIST")
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:637:5: ( moduleFeature )*
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:639:5: ( moduleFeature )*
                 while ( stream_moduleFeature.hasNext() ) {
                     adaptor.addChild(root_1, stream_moduleFeature.nextTree());
 
@@ -2830,7 +2832,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "intrinsicPrintProxy"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:644:1: intrinsicPrintProxy : ({...}? -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR, Flags.BIND, Flags.PROTOCOL_MEMBER)] ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] ) IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] ^( E_TYP[\"E_TYP\"] ^( T_USR[\"T_USR\", EnumSet.noneOf(Flags.class)] IDENT[ProcessUnits.getPollenPrint()] ) ) ) |{...}? -> ^( D_VAR[\"D_VAR\", flags] ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] ) IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] ) | -> NIL );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:646:1: intrinsicPrintProxy : ({...}? -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR, Flags.BIND, Flags.PROTOCOL_MEMBER)] ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] ) IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] ^( E_TYP[\"E_TYP\"] ^( T_USR[\"T_USR\", EnumSet.noneOf(Flags.class)] IDENT[ProcessUnits.getPollenPrint()] ) ) ) |{...}? -> ^( D_VAR[\"D_VAR\", flags] ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] ) IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] ) | -> NIL );
     public final pollenParser.intrinsicPrintProxy_return intrinsicPrintProxy() throws RecognitionException {
         pollenParser.intrinsicPrintProxy_return retval = new pollenParser.intrinsicPrintProxy_return();
         retval.start = input.LT(1);
@@ -2849,7 +2851,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 14) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:652:2: ({...}? -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR, Flags.BIND, Flags.PROTOCOL_MEMBER)] ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] ) IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] ^( E_TYP[\"E_TYP\"] ^( T_USR[\"T_USR\", EnumSet.noneOf(Flags.class)] IDENT[ProcessUnits.getPollenPrint()] ) ) ) |{...}? -> ^( D_VAR[\"D_VAR\", flags] ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] ) IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] ) | -> NIL )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:654:2: ({...}? -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR, Flags.BIND, Flags.PROTOCOL_MEMBER)] ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] ) IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] ^( E_TYP[\"E_TYP\"] ^( T_USR[\"T_USR\", EnumSet.noneOf(Flags.class)] IDENT[ProcessUnits.getPollenPrint()] ) ) ) |{...}? -> ^( D_VAR[\"D_VAR\", flags] ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] ) IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] ) | -> NIL )
             int alt9=3;
             int LA9_0 = input.LA(1);
 
@@ -2905,7 +2907,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt9) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:652:4: {...}?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:654:4: {...}?
                     {
                     if ( !((ProcessUnits.doEmitPrintProxyViaDashP())) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -2925,16 +2927,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 653:4: -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR, Flags.BIND, Flags.PROTOCOL_MEMBER)] ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] ) IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] ^( E_TYP[\"E_TYP\"] ^( T_USR[\"T_USR\", EnumSet.noneOf(Flags.class)] IDENT[ProcessUnits.getPollenPrint()] ) ) )
+                    // 655:4: -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR, Flags.BIND, Flags.PROTOCOL_MEMBER)] ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] ) IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] ^( E_TYP[\"E_TYP\"] ^( T_USR[\"T_USR\", EnumSet.noneOf(Flags.class)] IDENT[ProcessUnits.getPollenPrint()] ) ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:653:7: ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR, Flags.BIND, Flags.PROTOCOL_MEMBER)] ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] ) IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] ^( E_TYP[\"E_TYP\"] ^( T_USR[\"T_USR\", EnumSet.noneOf(Flags.class)] IDENT[ProcessUnits.getPollenPrint()] ) ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:655:7: ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR, Flags.BIND, Flags.PROTOCOL_MEMBER)] ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] ) IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] ^( E_TYP[\"E_TYP\"] ^( T_USR[\"T_USR\", EnumSet.noneOf(Flags.class)] IDENT[ProcessUnits.getPollenPrint()] ) ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.TypedMember(D_VAR, "D_VAR", EnumSet.of(Flags.INTRINSIC_VAR, Flags.BIND, Flags.PROTOCOL_MEMBER))
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:654:5: ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:656:5: ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -2952,14 +2954,14 @@ public TreeAdaptor getTreeAdaptor() {
                         (BaseNode)adaptor.create(IDENT, ParseUnit.INTRINSIC_PRINT_PROXY)
                         );
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:658:6: ^( E_TYP[\"E_TYP\"] ^( T_USR[\"T_USR\", EnumSet.noneOf(Flags.class)] IDENT[ProcessUnits.getPollenPrint()] ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:660:6: ^( E_TYP[\"E_TYP\"] ^( T_USR[\"T_USR\", EnumSet.noneOf(Flags.class)] IDENT[ProcessUnits.getPollenPrint()] ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Typ(E_TYP, "E_TYP")
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:659:7: ^( T_USR[\"T_USR\", EnumSet.noneOf(Flags.class)] IDENT[ProcessUnits.getPollenPrint()] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:661:7: ^( T_USR[\"T_USR\", EnumSet.noneOf(Flags.class)] IDENT[ProcessUnits.getPollenPrint()] )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -2988,7 +2990,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:663:7: {...}?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:665:7: {...}?
                     {
                     if ( !((ProcessUnits.doEmitPrintProxyViaBind())) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -3008,16 +3010,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 664:4: -> ^( D_VAR[\"D_VAR\", flags] ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] ) IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] )
+                    // 666:4: -> ^( D_VAR[\"D_VAR\", flags] ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] ) IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:664:7: ^( D_VAR[\"D_VAR\", flags] ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] ) IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:666:7: ^( D_VAR[\"D_VAR\", flags] ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] ) IDENT[ParseUnit.INTRINSIC_PRINT_PROXY] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.TypedMember(D_VAR, "D_VAR", flags)
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:665:5: ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:667:5: ^( T_USR[\"T_USR\", EnumSet.of(Flags.INTRINSIC_VAR)] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -3047,7 +3049,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:670:6: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:672:6: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -3062,7 +3064,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 670:6: -> NIL
+                    // 672:6: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -3111,7 +3113,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "intrinsicUnitName"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:676:1: intrinsicUnitName[String n] : ({...}? -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR)] ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] ) IDENT[ParseUnit.INTRINSIC_UNITVAR] ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] ) ) | -> NIL );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:678:1: intrinsicUnitName[String n] : ({...}? -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR)] ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] ) IDENT[ParseUnit.INTRINSIC_UNITVAR] ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] ) ) | -> NIL );
     public final pollenParser.intrinsicUnitName_return intrinsicUnitName(String n) throws RecognitionException {
         pollenParser.intrinsicUnitName_return retval = new pollenParser.intrinsicUnitName_return();
         retval.start = input.LT(1);
@@ -3123,7 +3125,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 15) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:677:2: ({...}? -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR)] ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] ) IDENT[ParseUnit.INTRINSIC_UNITVAR] ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] ) ) | -> NIL )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:679:2: ({...}? -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR)] ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] ) IDENT[ParseUnit.INTRINSIC_UNITVAR] ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] ) ) | -> NIL )
             int alt10=2;
             int LA10_0 = input.LA(1);
 
@@ -3173,7 +3175,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt10) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:677:4: {...}?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:679:4: {...}?
                     {
                     if ( !((true)) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -3193,16 +3195,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 677:12: -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR)] ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] ) IDENT[ParseUnit.INTRINSIC_UNITVAR] ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] ) )
+                    // 679:12: -> ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR)] ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] ) IDENT[ParseUnit.INTRINSIC_UNITVAR] ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:677:15: ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR)] ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] ) IDENT[ParseUnit.INTRINSIC_UNITVAR] ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:679:15: ^( D_VAR[\"D_VAR\", EnumSet.of(Flags.INTRINSIC_VAR)] ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] ) IDENT[ParseUnit.INTRINSIC_UNITVAR] ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.Var(D_VAR, "D_VAR", EnumSet.of(Flags.INTRINSIC_VAR))
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:678:6: ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:680:6: ^( T_STD[\"T_STD\", EnumSet.of(Flags.INTRINSIC_VAR)] QNAME[\"string\"] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -3220,7 +3222,7 @@ public TreeAdaptor getTreeAdaptor() {
                         (BaseNode)adaptor.create(IDENT, ParseUnit.INTRINSIC_UNITVAR)
                         );
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:682:6: ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:684:6: ^( E_CONST[\"E_CONST\", EnumSet.of(LitFlags.STR)] STRING[\"\\\"\" + n + \"\\\"\"] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -3246,7 +3248,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:686:6: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:688:6: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -3261,7 +3263,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 686:6: -> NIL
+                    // 688:6: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -3310,7 +3312,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "moduleHostCtor"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:688:1: moduleHostCtor[EnumSet<Flags> fh] : ({...}? -> ^( D_FCN_DEF[\"D_FCN_DEF\", fh] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", fh] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_HOST] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) ) | -> NIL );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:690:1: moduleHostCtor[EnumSet<Flags> fh] : ({...}? -> ^( D_FCN_DEF[\"D_FCN_DEF\", fh] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", fh] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_HOST] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) ) | -> NIL );
     public final pollenParser.moduleHostCtor_return moduleHostCtor(EnumSet<Flags> fh) throws RecognitionException {
         pollenParser.moduleHostCtor_return retval = new pollenParser.moduleHostCtor_return();
         retval.start = input.LT(1);
@@ -3325,7 +3327,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 16) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:692:2: ({...}? -> ^( D_FCN_DEF[\"D_FCN_DEF\", fh] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", fh] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_HOST] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) ) | -> NIL )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:694:2: ({...}? -> ^( D_FCN_DEF[\"D_FCN_DEF\", fh] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", fh] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_HOST] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) ) | -> NIL )
             int alt11=2;
             int LA11_0 = input.LA(1);
 
@@ -3375,7 +3377,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt11) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:692:8: {...}?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:694:8: {...}?
                     {
                     if ( !((!hasHostConstructor )) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -3395,37 +3397,37 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 692:32: -> ^( D_FCN_DEF[\"D_FCN_DEF\", fh] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", fh] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_HOST] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) )
+                    // 694:32: -> ^( D_FCN_DEF[\"D_FCN_DEF\", fh] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", fh] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_HOST] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:693:7: ^( D_FCN_DEF[\"D_FCN_DEF\", fh] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", fh] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_HOST] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:695:7: ^( D_FCN_DEF[\"D_FCN_DEF\", fh] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", fh] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_HOST] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.Fcn(D_FCN_DEF, "D_FCN_DEF", fh)
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:694:7: ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", fh] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_HOST] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:696:7: ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", fh] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_HOST] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.FcnTyp(D_FCN_CTOR, "D_FCN_CTOR")
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:695:8: ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", fh] VOID[\"void\"] ) ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:697:8: ^( T_LST[\"T_LST\", fh] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", fh] VOID[\"void\"] ) ) )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
                         new TypeNode.Lst(T_LST, "T_LST", fh)
                         , root_3);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:696:9: ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", fh] VOID[\"void\"] ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:698:9: ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", fh] VOID[\"void\"] ) )
                         {
                         BaseNode root_4 = (BaseNode)adaptor.nil();
                         root_4 = (BaseNode)adaptor.becomeRoot(
                         new ListNode(LIST, "LIST")
                         , root_4);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:696:34: ^( T_STD[\"T_STD\", fh] VOID[\"void\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:698:34: ^( T_STD[\"T_STD\", fh] VOID[\"void\"] )
                         {
                         BaseNode root_5 = (BaseNode)adaptor.nil();
                         root_5 = (BaseNode)adaptor.becomeRoot(
@@ -3452,7 +3454,7 @@ public TreeAdaptor getTreeAdaptor() {
                         adaptor.addChild(root_1, root_2);
                         }
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:698:7: ^( LIST[\"LIST\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:700:7: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -3462,14 +3464,14 @@ public TreeAdaptor getTreeAdaptor() {
                         adaptor.addChild(root_1, root_2);
                         }
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:699:7: ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:701:7: ^( D_FORMAL[\"D_FORMAL\", fh] ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] ) IDENT[\"this\"] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.Formal(D_FORMAL, "D_FORMAL", fh)
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:700:8: ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:702:8: ^( T_USR[\"T_USR\", fh] IDENT[currType.getTypeName()] )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -3490,14 +3492,14 @@ public TreeAdaptor getTreeAdaptor() {
                         adaptor.addChild(root_1, root_2);
                         }
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:701:7: ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:703:7: ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new BodyNode(FCNBODY, "FCNBODY")
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:701:38: ^( LIST[\"LIST\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:703:38: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -3507,7 +3509,7 @@ public TreeAdaptor getTreeAdaptor() {
                         adaptor.addChild(root_2, root_3);
                         }
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:701:64: ^( LIST[\"LIST\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:703:64: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -3532,7 +3534,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:703:4: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:705:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -3547,7 +3549,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 703:4: -> NIL
+                    // 705:4: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -3596,7 +3598,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "moduleTargCtor"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:705:1: moduleTargCtor[EnumSet<Flags> ft] : ({...}? -> ^( D_FCN_DEF[\"D_FCN_DEF\", ft] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", ft] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_TARGET] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) ) | -> NIL );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:707:1: moduleTargCtor[EnumSet<Flags> ft] : ({...}? -> ^( D_FCN_DEF[\"D_FCN_DEF\", ft] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", ft] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_TARGET] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) ) | -> NIL );
     public final pollenParser.moduleTargCtor_return moduleTargCtor(EnumSet<Flags> ft) throws RecognitionException {
         pollenParser.moduleTargCtor_return retval = new pollenParser.moduleTargCtor_return();
         retval.start = input.LT(1);
@@ -3611,7 +3613,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 17) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:709:2: ({...}? -> ^( D_FCN_DEF[\"D_FCN_DEF\", ft] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", ft] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_TARGET] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) ) | -> NIL )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:711:2: ({...}? -> ^( D_FCN_DEF[\"D_FCN_DEF\", ft] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", ft] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_TARGET] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) ) | -> NIL )
             int alt12=2;
             int LA12_0 = input.LA(1);
 
@@ -3661,7 +3663,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt12) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:709:7: {...}?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:711:7: {...}?
                     {
                     if ( !((!hasTargetConstructor)) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -3681,37 +3683,37 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 709:32: -> ^( D_FCN_DEF[\"D_FCN_DEF\", ft] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", ft] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_TARGET] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) )
+                    // 711:32: -> ^( D_FCN_DEF[\"D_FCN_DEF\", ft] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", ft] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_TARGET] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:710:8: ^( D_FCN_DEF[\"D_FCN_DEF\", ft] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", ft] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_TARGET] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:712:8: ^( D_FCN_DEF[\"D_FCN_DEF\", ft] ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", ft] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_TARGET] ) ^( LIST[\"LIST\"] ) ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.Fcn(D_FCN_DEF, "D_FCN_DEF", ft)
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:711:7: ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", ft] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_TARGET] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:713:7: ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", ft] VOID[\"void\"] ) ) ) IDENT[ParseUnit.CTOR_MODULE_TARGET] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.FcnTyp(D_FCN_CTOR, "D_FCN_CTOR")
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:712:8: ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", ft] VOID[\"void\"] ) ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:714:8: ^( T_LST[\"T_LST\", ft] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", ft] VOID[\"void\"] ) ) )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
                         new TypeNode.Lst(T_LST, "T_LST", ft)
                         , root_3);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:713:9: ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", ft] VOID[\"void\"] ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:715:9: ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", ft] VOID[\"void\"] ) )
                         {
                         BaseNode root_4 = (BaseNode)adaptor.nil();
                         root_4 = (BaseNode)adaptor.becomeRoot(
                         new ListNode(LIST, "LIST")
                         , root_4);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:713:34: ^( T_STD[\"T_STD\", ft] VOID[\"void\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:715:34: ^( T_STD[\"T_STD\", ft] VOID[\"void\"] )
                         {
                         BaseNode root_5 = (BaseNode)adaptor.nil();
                         root_5 = (BaseNode)adaptor.becomeRoot(
@@ -3738,7 +3740,7 @@ public TreeAdaptor getTreeAdaptor() {
                         adaptor.addChild(root_1, root_2);
                         }
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:715:7: ^( LIST[\"LIST\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:717:7: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -3748,14 +3750,14 @@ public TreeAdaptor getTreeAdaptor() {
                         adaptor.addChild(root_1, root_2);
                         }
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:716:7: ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:718:7: ^( D_FORMAL[\"D_FORMAL\", ft] ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] ) IDENT[\"this\"] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.Formal(D_FORMAL, "D_FORMAL", ft)
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:717:8: ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:719:8: ^( T_USR[\"T_USR\", ft] IDENT[currType.getTypeName()] )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -3776,14 +3778,14 @@ public TreeAdaptor getTreeAdaptor() {
                         adaptor.addChild(root_1, root_2);
                         }
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:719:7: ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:721:7: ^( FCNBODY[\"FCNBODY\"] ^( LIST[\"LIST\"] ) ^( LIST[\"LIST\"] ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new BodyNode(FCNBODY, "FCNBODY")
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:719:38: ^( LIST[\"LIST\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:721:38: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -3793,7 +3795,7 @@ public TreeAdaptor getTreeAdaptor() {
                         adaptor.addChild(root_2, root_3);
                         }
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:719:64: ^( LIST[\"LIST\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:721:64: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -3818,7 +3820,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:721:4: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:723:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -3833,7 +3835,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 721:4: -> NIL
+                    // 723:4: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -3888,7 +3890,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "moduleFeature"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:723:1: moduleFeature : ( fcnDefinition | varDeclaration | enumDefinition | classDefinition | injectionDecl );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:725:1: moduleFeature : ( fcnDefinition | varDeclaration | enumDefinition | classDefinition | injectionDecl );
     public final pollenParser.moduleFeature_return moduleFeature() throws RecognitionException {
         moduleFeature_stack.push(new moduleFeature_scope());
         pollenParser.moduleFeature_return retval = new pollenParser.moduleFeature_return();
@@ -3917,7 +3919,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 18) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:731:2: ( fcnDefinition | varDeclaration | enumDefinition | classDefinition | injectionDecl )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:733:2: ( fcnDefinition | varDeclaration | enumDefinition | classDefinition | injectionDecl )
             int alt13=5;
             switch ( input.LA(1) ) {
             case IDENT:
@@ -4010,7 +4012,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt13) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:731:6: fcnDefinition
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:733:6: fcnDefinition
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -4025,7 +4027,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:732:9: varDeclaration
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:734:9: varDeclaration
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -4040,7 +4042,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:733:6: enumDefinition
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:735:6: enumDefinition
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -4055,7 +4057,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:734:6: classDefinition
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:736:6: classDefinition
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -4070,7 +4072,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:735:6: injectionDecl
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:737:6: injectionDecl
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -4120,7 +4122,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "enumUnitDefinition"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:738:2: enumUnitDefinition : 'enum' ! enumBodyDefinition ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:740:2: enumUnitDefinition : 'enum' ! enumBodyDefinition ;
     public final pollenParser.enumUnitDefinition_return enumUnitDefinition() throws RecognitionException {
         pollenParser.enumUnitDefinition_return retval = new pollenParser.enumUnitDefinition_return();
         retval.start = input.LT(1);
@@ -4141,8 +4143,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 19) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:744:3: ( 'enum' ! enumBodyDefinition )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:744:5: 'enum' ! enumBodyDefinition
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:746:3: ( 'enum' ! enumBodyDefinition )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:746:5: 'enum' ! enumBodyDefinition
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -4191,7 +4193,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "enumDefinition"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:746:1: enumDefinition : ( 'public' !)? 'enum' ! enumBodyDefinition ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:748:1: enumDefinition : ( 'public' !)? 'enum' ! enumBodyDefinition ;
     public final pollenParser.enumDefinition_return enumDefinition() throws RecognitionException {
         pollenParser.enumDefinition_return retval = new pollenParser.enumDefinition_return();
         retval.start = input.LT(1);
@@ -4214,13 +4216,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 20) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:750:2: ( ( 'public' !)? 'enum' ! enumBodyDefinition )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:750:4: ( 'public' !)? 'enum' ! enumBodyDefinition
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:752:2: ( ( 'public' !)? 'enum' ! enumBodyDefinition )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:752:4: ( 'public' !)? 'enum' ! enumBodyDefinition
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:750:4: ( 'public' !)?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:752:4: ( 'public' !)?
             int alt14=2;
             int LA14_0 = input.LA(1);
 
@@ -4229,7 +4231,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt14) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:750:5: 'public' !
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:752:5: 'public' !
                     {
                     string_literal54=(Atom)match(input,178,FOLLOW_178_in_enumDefinition2721); if (state.failed) return retval;
 
@@ -4291,7 +4293,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "enumBodyDefinition"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:754:1: enumBodyDefinition : ( IDENT braceOpen enumList braceClose ) -> ^( D_ENUM[\"D_ENUM\", getParseUnitFlags(), qual] IDENT enumList ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:756:1: enumBodyDefinition : ( IDENT braceOpen enumList braceClose ) -> ^( D_ENUM[\"D_ENUM\", getParseUnitFlags(), qual] IDENT enumList ) ;
     public final pollenParser.enumBodyDefinition_return enumBodyDefinition() throws RecognitionException {
         enumBodyDefinition_stack.push(new enumBodyDefinition_scope());
         pollenParser.enumBodyDefinition_return retval = new pollenParser.enumBodyDefinition_return();
@@ -4322,11 +4324,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 21) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:766:2: ( ( IDENT braceOpen enumList braceClose ) -> ^( D_ENUM[\"D_ENUM\", getParseUnitFlags(), qual] IDENT enumList ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:766:13: ( IDENT braceOpen enumList braceClose )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:768:2: ( ( IDENT braceOpen enumList braceClose ) -> ^( D_ENUM[\"D_ENUM\", getParseUnitFlags(), qual] IDENT enumList ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:768:13: ( IDENT braceOpen enumList braceClose )
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:766:13: ( IDENT braceOpen enumList braceClose )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:766:14: IDENT braceOpen enumList braceClose
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:768:13: ( IDENT braceOpen enumList braceClose )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:768:14: IDENT braceOpen enumList braceClose
             {
             IDENT57=(Atom)match(input,IDENT,FOLLOW_IDENT_in_enumBodyDefinition2769); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_IDENT.add(IDENT57);
@@ -4372,7 +4374,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: IDENT, enumList
+            // elements: enumList, IDENT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -4384,9 +4386,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 782:3: -> ^( D_ENUM[\"D_ENUM\", getParseUnitFlags(), qual] IDENT enumList )
+            // 784:3: -> ^( D_ENUM[\"D_ENUM\", getParseUnitFlags(), qual] IDENT enumList )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:782:6: ^( D_ENUM[\"D_ENUM\", getParseUnitFlags(), qual] IDENT enumList )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:784:6: ^( D_ENUM[\"D_ENUM\", getParseUnitFlags(), qual] IDENT enumList )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -4449,7 +4451,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "enumList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:785:1: enumList : enumElement ( ',' ( delim )? enumElement )* -> ^( LIST[\"LIST\"] ( enumElement )+ ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:787:1: enumList : enumElement ( ',' ( delim )? enumElement )* -> ^( LIST[\"LIST\"] ( enumElement )+ ) ;
     public final pollenParser.enumList_return enumList() throws RecognitionException {
         pollenParser.enumList_return retval = new pollenParser.enumList_return();
         retval.start = input.LT(1);
@@ -4473,8 +4475,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 22) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:786:2: ( enumElement ( ',' ( delim )? enumElement )* -> ^( LIST[\"LIST\"] ( enumElement )+ ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:786:4: enumElement ( ',' ( delim )? enumElement )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:788:2: ( enumElement ( ',' ( delim )? enumElement )* -> ^( LIST[\"LIST\"] ( enumElement )+ ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:788:4: enumElement ( ',' ( delim )? enumElement )*
             {
             pushFollow(FOLLOW_enumElement_in_enumList2818);
             enumElement61=enumElement();
@@ -4483,7 +4485,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_enumElement.add(enumElement61.getTree());
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:786:16: ( ',' ( delim )? enumElement )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:788:16: ( ',' ( delim )? enumElement )*
             loop16:
             do {
                 int alt16=2;
@@ -4496,13 +4498,13 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt16) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:786:17: ',' ( delim )? enumElement
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:788:17: ',' ( delim )? enumElement
             	    {
             	    char_literal62=(Atom)match(input,129,FOLLOW_129_in_enumList2821); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_129.add(char_literal62);
 
 
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:786:21: ( delim )?
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:788:21: ( delim )?
             	    int alt15=2;
             	    int LA15_0 = input.LA(1);
 
@@ -4518,7 +4520,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    switch (alt15) {
             	        case 1 :
-            	            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:786:22: delim
+            	            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:788:22: delim
             	            {
             	            pushFollow(FOLLOW_delim_in_enumList2824);
             	            delim63=delim();
@@ -4562,9 +4564,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 786:44: -> ^( LIST[\"LIST\"] ( enumElement )+ )
+            // 788:44: -> ^( LIST[\"LIST\"] ( enumElement )+ )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:786:47: ^( LIST[\"LIST\"] ( enumElement )+ )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:788:47: ^( LIST[\"LIST\"] ( enumElement )+ )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -4624,7 +4626,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "enumElement"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:789:1: enumElement : ( IDENT ASSIGN enumVal -> ^( D_ENUMVAL[\"D_ENUMVAL\", getParseUnitFlags()] IDENT enumVal ) | IDENT -> ^( D_ENUMVAL[\"D_ENUMVAL\", getParseUnitFlags()] IDENT INT_LIT[ctext] ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:791:1: enumElement : ( IDENT ASSIGN enumVal -> ^( D_ENUMVAL[\"D_ENUMVAL\", getParseUnitFlags()] IDENT enumVal ) | IDENT -> ^( D_ENUMVAL[\"D_ENUMVAL\", getParseUnitFlags()] IDENT INT_LIT[ctext] ) );
     public final pollenParser.enumElement_return enumElement() throws RecognitionException {
         pollenParser.enumElement_return retval = new pollenParser.enumElement_return();
         retval.start = input.LT(1);
@@ -4651,7 +4653,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 23) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:793:2: ( IDENT ASSIGN enumVal -> ^( D_ENUMVAL[\"D_ENUMVAL\", getParseUnitFlags()] IDENT enumVal ) | IDENT -> ^( D_ENUMVAL[\"D_ENUMVAL\", getParseUnitFlags()] IDENT INT_LIT[ctext] ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:795:2: ( IDENT ASSIGN enumVal -> ^( D_ENUMVAL[\"D_ENUMVAL\", getParseUnitFlags()] IDENT enumVal ) | IDENT -> ^( D_ENUMVAL[\"D_ENUMVAL\", getParseUnitFlags()] IDENT INT_LIT[ctext] ) )
             int alt17=2;
             int LA17_0 = input.LA(1);
 
@@ -4683,7 +4685,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt17) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:793:5: IDENT ASSIGN enumVal
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:795:5: IDENT ASSIGN enumVal
                     {
                     IDENT65=(Atom)match(input,IDENT,FOLLOW_IDENT_in_enumElement2860); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT65);
@@ -4701,7 +4703,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_enumVal.add(enumVal67.getTree());
 
                     // AST REWRITE
-                    // elements: IDENT, enumVal
+                    // elements: enumVal, IDENT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -4713,9 +4715,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 794:3: -> ^( D_ENUMVAL[\"D_ENUMVAL\", getParseUnitFlags()] IDENT enumVal )
+                    // 796:3: -> ^( D_ENUMVAL[\"D_ENUMVAL\", getParseUnitFlags()] IDENT enumVal )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:794:6: ^( D_ENUMVAL[\"D_ENUMVAL\", getParseUnitFlags()] IDENT enumVal )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:796:6: ^( D_ENUMVAL[\"D_ENUMVAL\", getParseUnitFlags()] IDENT enumVal )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -4740,7 +4742,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:795:4: IDENT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:797:4: IDENT
                     {
                     IDENT68=(Atom)match(input,IDENT,FOLLOW_IDENT_in_enumElement2887); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT68);
@@ -4764,9 +4766,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 800:4: -> ^( D_ENUMVAL[\"D_ENUMVAL\", getParseUnitFlags()] IDENT INT_LIT[ctext] )
+                    // 802:4: -> ^( D_ENUMVAL[\"D_ENUMVAL\", getParseUnitFlags()] IDENT INT_LIT[ctext] )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:800:7: ^( D_ENUMVAL[\"D_ENUMVAL\", getParseUnitFlags()] IDENT INT_LIT[ctext] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:802:7: ^( D_ENUMVAL[\"D_ENUMVAL\", getParseUnitFlags()] IDENT INT_LIT[ctext] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -4827,7 +4829,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "enumVal"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:802:1: enumVal : ( INT_LIT | OCT_LIT | HEX_LIT );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:804:1: enumVal : ( INT_LIT | OCT_LIT | HEX_LIT );
     public final pollenParser.enumVal_return enumVal() throws RecognitionException {
         pollenParser.enumVal_return retval = new pollenParser.enumVal_return();
         retval.start = input.LT(1);
@@ -4847,7 +4849,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 24) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:806:2: ( INT_LIT | OCT_LIT | HEX_LIT )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:808:2: ( INT_LIT | OCT_LIT | HEX_LIT )
             int alt18=3;
             switch ( input.LA(1) ) {
             case INT_LIT:
@@ -4876,7 +4878,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt18) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:806:4: INT_LIT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:808:4: INT_LIT
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -4894,7 +4896,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:807:4: OCT_LIT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:809:4: OCT_LIT
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -4912,7 +4914,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:808:4: HEX_LIT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:810:4: HEX_LIT
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -4967,7 +4969,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "protocolDefinition"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:810:1: protocolDefinition : 'protocol' IDENT extendsClause implementsClause braceOpen protocolFeatureList braceClose -> ^( D_PROTOCOL[\"D_PROTOCOL\", getParseUnitFlags(), qual] IDENT protocolFeatureList extendsClause implementsClause ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:812:1: protocolDefinition : 'protocol' IDENT extendsClause implementsClause braceOpen protocolFeatureList braceClose -> ^( D_PROTOCOL[\"D_PROTOCOL\", getParseUnitFlags(), qual] IDENT protocolFeatureList extendsClause implementsClause ) ;
     public final pollenParser.protocolDefinition_return protocolDefinition() throws RecognitionException {
         pollenParser.protocolDefinition_return retval = new pollenParser.protocolDefinition_return();
         retval.start = input.LT(1);
@@ -5005,8 +5007,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 25) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:818:2: ( 'protocol' IDENT extendsClause implementsClause braceOpen protocolFeatureList braceClose -> ^( D_PROTOCOL[\"D_PROTOCOL\", getParseUnitFlags(), qual] IDENT protocolFeatureList extendsClause implementsClause ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:818:4: 'protocol' IDENT extendsClause implementsClause braceOpen protocolFeatureList braceClose
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:820:2: ( 'protocol' IDENT extendsClause implementsClause braceOpen protocolFeatureList braceClose -> ^( D_PROTOCOL[\"D_PROTOCOL\", getParseUnitFlags(), qual] IDENT protocolFeatureList extendsClause implementsClause ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:820:4: 'protocol' IDENT extendsClause implementsClause braceOpen protocolFeatureList braceClose
             {
             string_literal72=(Atom)match(input,176,FOLLOW_176_in_protocolDefinition2965); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_176.add(string_literal72);
@@ -5059,7 +5061,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceClose.add(braceClose78.getTree());
 
             // AST REWRITE
-            // elements: extendsClause, implementsClause, protocolFeatureList, IDENT
+            // elements: implementsClause, IDENT, protocolFeatureList, extendsClause
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -5071,9 +5073,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 828:3: -> ^( D_PROTOCOL[\"D_PROTOCOL\", getParseUnitFlags(), qual] IDENT protocolFeatureList extendsClause implementsClause )
+            // 830:3: -> ^( D_PROTOCOL[\"D_PROTOCOL\", getParseUnitFlags(), qual] IDENT protocolFeatureList extendsClause implementsClause )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:828:6: ^( D_PROTOCOL[\"D_PROTOCOL\", getParseUnitFlags(), qual] IDENT protocolFeatureList extendsClause implementsClause )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:830:6: ^( D_PROTOCOL[\"D_PROTOCOL\", getParseUnitFlags(), qual] IDENT protocolFeatureList extendsClause implementsClause )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -5139,7 +5141,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "protocolFeatureList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:831:1: protocolFeatureList : ( protocolFeature )* -> ^( LIST[\"LIST\"] ( protocolFeature )* ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:833:1: protocolFeatureList : ( protocolFeature )* -> ^( LIST[\"LIST\"] ( protocolFeature )* ) ;
     public final pollenParser.protocolFeatureList_return protocolFeatureList() throws RecognitionException {
         pollenParser.protocolFeatureList_return retval = new pollenParser.protocolFeatureList_return();
         retval.start = input.LT(1);
@@ -5155,10 +5157,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 26) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:832:2: ( ( protocolFeature )* -> ^( LIST[\"LIST\"] ( protocolFeature )* ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:832:4: ( protocolFeature )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:834:2: ( ( protocolFeature )* -> ^( LIST[\"LIST\"] ( protocolFeature )* ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:834:4: ( protocolFeature )*
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:832:4: ( protocolFeature )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:834:4: ( protocolFeature )*
             loop19:
             do {
                 int alt19=2;
@@ -5171,7 +5173,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt19) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:832:4: protocolFeature
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:834:4: protocolFeature
             	    {
             	    pushFollow(FOLLOW_protocolFeature_in_protocolFeatureList3027);
             	    protocolFeature79=protocolFeature();
@@ -5202,16 +5204,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 832:21: -> ^( LIST[\"LIST\"] ( protocolFeature )* )
+            // 834:21: -> ^( LIST[\"LIST\"] ( protocolFeature )* )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:832:24: ^( LIST[\"LIST\"] ( protocolFeature )* )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:834:24: ^( LIST[\"LIST\"] ( protocolFeature )* )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ListNode(LIST, "LIST")
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:832:49: ( protocolFeature )*
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:834:49: ( protocolFeature )*
                 while ( stream_protocolFeature.hasNext() ) {
                     adaptor.addChild(root_1, stream_protocolFeature.nextTree());
 
@@ -5262,7 +5264,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "protocolFeature"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:834:1: protocolFeature : ( enumDefinition | fcnDeclaration | injectionDecl );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:836:1: protocolFeature : ( enumDefinition | fcnDeclaration | injectionDecl );
     public final pollenParser.protocolFeature_return protocolFeature() throws RecognitionException {
         pollenParser.protocolFeature_return retval = new pollenParser.protocolFeature_return();
         retval.start = input.LT(1);
@@ -5285,7 +5287,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 27) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:838:5: ( enumDefinition | fcnDeclaration | injectionDecl )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:840:5: ( enumDefinition | fcnDeclaration | injectionDecl )
             int alt20=3;
             switch ( input.LA(1) ) {
             case 178:
@@ -5347,7 +5349,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt20) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:838:9: enumDefinition
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:840:9: enumDefinition
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -5362,7 +5364,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:9: fcnDeclaration
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:841:9: fcnDeclaration
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -5377,7 +5379,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:840:9: injectionDecl
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:842:9: injectionDecl
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -5426,7 +5428,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "compositionDefinition"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:842:1: compositionDefinition : 'composition' IDENT extendsClause implementsClause braceOpen compositionFeatureList braceClose -> ^( D_COMPOSITION[\"D_COMPOSITION\", getParseUnitFlags(), qual] IDENT compositionFeatureList extendsClause implementsClause ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:844:1: compositionDefinition : 'composition' IDENT extendsClause implementsClause braceOpen compositionFeatureList braceClose -> ^( D_COMPOSITION[\"D_COMPOSITION\", getParseUnitFlags(), qual] IDENT compositionFeatureList extendsClause implementsClause ) ;
     public final pollenParser.compositionDefinition_return compositionDefinition() throws RecognitionException {
         pollenParser.compositionDefinition_return retval = new pollenParser.compositionDefinition_return();
         retval.start = input.LT(1);
@@ -5464,8 +5466,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 28) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:850:2: ( 'composition' IDENT extendsClause implementsClause braceOpen compositionFeatureList braceClose -> ^( D_COMPOSITION[\"D_COMPOSITION\", getParseUnitFlags(), qual] IDENT compositionFeatureList extendsClause implementsClause ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:850:4: 'composition' IDENT extendsClause implementsClause braceOpen compositionFeatureList braceClose
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:852:2: ( 'composition' IDENT extendsClause implementsClause braceOpen compositionFeatureList braceClose -> ^( D_COMPOSITION[\"D_COMPOSITION\", getParseUnitFlags(), qual] IDENT compositionFeatureList extendsClause implementsClause ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:852:4: 'composition' IDENT extendsClause implementsClause braceOpen compositionFeatureList braceClose
             {
             string_literal83=(Atom)match(input,146,FOLLOW_146_in_compositionDefinition3103); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_146.add(string_literal83);
@@ -5520,7 +5522,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceClose.add(braceClose89.getTree());
 
             // AST REWRITE
-            // elements: compositionFeatureList, IDENT, implementsClause, extendsClause
+            // elements: extendsClause, compositionFeatureList, implementsClause, IDENT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -5532,9 +5534,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 862:4: -> ^( D_COMPOSITION[\"D_COMPOSITION\", getParseUnitFlags(), qual] IDENT compositionFeatureList extendsClause implementsClause )
+            // 864:4: -> ^( D_COMPOSITION[\"D_COMPOSITION\", getParseUnitFlags(), qual] IDENT compositionFeatureList extendsClause implementsClause )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:862:7: ^( D_COMPOSITION[\"D_COMPOSITION\", getParseUnitFlags(), qual] IDENT compositionFeatureList extendsClause implementsClause )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:864:7: ^( D_COMPOSITION[\"D_COMPOSITION\", getParseUnitFlags(), qual] IDENT compositionFeatureList extendsClause implementsClause )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -5600,7 +5602,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "compositionFeatureList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:865:1: compositionFeatureList : ( compositionFeature )* intrinsicPrintProxy -> ^( LIST[\"LIST\"] ( compositionFeature )* intrinsicPrintProxy ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:867:1: compositionFeatureList : ( compositionFeature )* intrinsicPrintProxy -> ^( LIST[\"LIST\"] ( compositionFeature )* intrinsicPrintProxy ) ;
     public final pollenParser.compositionFeatureList_return compositionFeatureList() throws RecognitionException {
         pollenParser.compositionFeatureList_return retval = new pollenParser.compositionFeatureList_return();
         retval.start = input.LT(1);
@@ -5619,10 +5621,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 29) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:866:2: ( ( compositionFeature )* intrinsicPrintProxy -> ^( LIST[\"LIST\"] ( compositionFeature )* intrinsicPrintProxy ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:866:4: ( compositionFeature )* intrinsicPrintProxy
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:868:2: ( ( compositionFeature )* intrinsicPrintProxy -> ^( LIST[\"LIST\"] ( compositionFeature )* intrinsicPrintProxy ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:868:4: ( compositionFeature )* intrinsicPrintProxy
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:866:4: ( compositionFeature )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:868:4: ( compositionFeature )*
             loop21:
             do {
                 int alt21=2;
@@ -5635,7 +5637,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt21) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:866:4: compositionFeature
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:868:4: compositionFeature
             	    {
             	    pushFollow(FOLLOW_compositionFeature_in_compositionFeatureList3173);
             	    compositionFeature90=compositionFeature();
@@ -5673,16 +5675,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 868:3: -> ^( LIST[\"LIST\"] ( compositionFeature )* intrinsicPrintProxy )
+            // 870:3: -> ^( LIST[\"LIST\"] ( compositionFeature )* intrinsicPrintProxy )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:868:6: ^( LIST[\"LIST\"] ( compositionFeature )* intrinsicPrintProxy )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:870:6: ^( LIST[\"LIST\"] ( compositionFeature )* intrinsicPrintProxy )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ListNode(LIST, "LIST")
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:868:31: ( compositionFeature )*
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:870:31: ( compositionFeature )*
                 while ( stream_compositionFeature.hasNext() ) {
                     adaptor.addChild(root_1, stream_compositionFeature.nextTree());
 
@@ -5735,7 +5737,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "compositionFeature"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:870:1: compositionFeature : ( stmtExport | fcnDefinitionHost | enumDefinition | varDeclaration | injectionDecl );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:872:1: compositionFeature : ( stmtExport | fcnDefinitionHost | enumDefinition | varDeclaration | injectionDecl );
     public final pollenParser.compositionFeature_return compositionFeature() throws RecognitionException {
         pollenParser.compositionFeature_return retval = new pollenParser.compositionFeature_return();
         retval.start = input.LT(1);
@@ -5762,7 +5764,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 30) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:874:3: ( stmtExport | fcnDefinitionHost | enumDefinition | varDeclaration | injectionDecl )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:876:3: ( stmtExport | fcnDefinitionHost | enumDefinition | varDeclaration | injectionDecl )
             int alt22=5;
             switch ( input.LA(1) ) {
             case 155:
@@ -5855,7 +5857,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt22) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:874:6: stmtExport
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:876:6: stmtExport
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -5870,7 +5872,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:875:8: fcnDefinitionHost
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:877:8: fcnDefinitionHost
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -5885,7 +5887,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:876:8: enumDefinition
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:878:8: enumDefinition
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -5900,7 +5902,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:877:8: varDeclaration
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:879:8: varDeclaration
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -5915,7 +5917,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:878:8: injectionDecl
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:880:8: injectionDecl
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -5973,7 +5975,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtImport"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:880:1: stmtImport : ( 'from' ! importFrom | ( 'import' qualName ( metaArguments )? importAs delim ) -> ^( IMPORT[\"IMPORT\", importFlags] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:882:1: stmtImport : ( 'from' ! importFrom | ( 'import' qualName ( metaArguments )? importAs delim ) -> ^( IMPORT[\"IMPORT\", importFlags] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? ) );
     public final pollenParser.stmtImport_return stmtImport() throws RecognitionException {
         stmtImport_stack.push(new stmtImport_scope());
         pollenParser.stmtImport_return retval = new pollenParser.stmtImport_return();
@@ -6016,7 +6018,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 31) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:897:3: ( 'from' ! importFrom | ( 'import' qualName ( metaArguments )? importAs delim ) -> ^( IMPORT[\"IMPORT\", importFlags] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:899:3: ( 'from' ! importFrom | ( 'import' qualName ( metaArguments )? importAs delim ) -> ^( IMPORT[\"IMPORT\", importFlags] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? ) )
             int alt24=2;
             int LA24_0 = input.LA(1);
 
@@ -6036,7 +6038,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt24) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:897:8: 'from' ! importFrom
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:899:8: 'from' ! importFrom
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -6053,10 +6055,10 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:899:8: ( 'import' qualName ( metaArguments )? importAs delim )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:901:8: ( 'import' qualName ( metaArguments )? importAs delim )
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:899:8: ( 'import' qualName ( metaArguments )? importAs delim )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:899:9: 'import' qualName ( metaArguments )? importAs delim
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:901:8: ( 'import' qualName ( metaArguments )? importAs delim )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:901:9: 'import' qualName ( metaArguments )? importAs delim
                     {
                     string_literal99=(Atom)match(input,163,FOLLOW_163_in_stmtImport3291); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_163.add(string_literal99);
@@ -6089,7 +6091,7 @@ public TreeAdaptor getTreeAdaptor() {
                         			}
                         		}
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:919:25: ( metaArguments )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:921:25: ( metaArguments )?
                     int alt23=2;
                     int LA23_0 = input.LA(1);
 
@@ -6102,7 +6104,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt23) {
                         case 1 :
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:919:26: metaArguments
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:921:26: metaArguments
                             {
                             pushFollow(FOLLOW_metaArguments_in_stmtImport3331);
                             metaArguments101=metaArguments();
@@ -6141,7 +6143,7 @@ public TreeAdaptor getTreeAdaptor() {
                                              }
 
                     // AST REWRITE
-                    // elements: importAs, metaArguments
+                    // elements: metaArguments, importAs
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -6153,9 +6155,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 925:10: -> ^( IMPORT[\"IMPORT\", importFlags] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? )
+                    // 927:10: -> ^( IMPORT[\"IMPORT\", importFlags] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:925:13: ^( IMPORT[\"IMPORT\", importFlags] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:927:13: ^( IMPORT[\"IMPORT\", importFlags] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -6172,7 +6174,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         adaptor.addChild(root_1, stream_importAs.nextTree());
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:925:109: ( metaArguments )?
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:927:109: ( metaArguments )?
                         if ( stream_metaArguments.hasNext() ) {
                             adaptor.addChild(root_1, stream_metaArguments.nextTree());
 
@@ -6227,7 +6229,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "importFrom"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:933:1: importFrom : (q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim ) -> ^( IMPORT[\"IMPORT\", importFlags] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:935:1: importFrom : (q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim ) -> ^( IMPORT[\"IMPORT\", importFlags] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? ) ;
     public final pollenParser.importFrom_return importFrom() throws RecognitionException {
         pollenParser.importFrom_return retval = new pollenParser.importFrom_return();
         retval.start = input.LT(1);
@@ -6260,11 +6262,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 32) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:941:5: ( (q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim ) -> ^( IMPORT[\"IMPORT\", importFlags] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:941:10: (q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:943:5: ( (q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim ) -> ^( IMPORT[\"IMPORT\", importFlags] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:943:10: (q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim )
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:941:10: (q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:941:11: q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:943:10: (q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:943:11: q1= qualName 'import' q2= qualName ( metaArguments )? importAs delim
             {
             pushFollow(FOLLOW_qualName_in_importFrom3488);
             q1=qualName();
@@ -6302,7 +6304,7 @@ public TreeAdaptor getTreeAdaptor() {
                 				throw new PollenException("Missing module specification for pollen.environment", input);
                 		}
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:960:24: ( metaArguments )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:962:24: ( metaArguments )?
             int alt25=2;
             int LA25_0 = input.LA(1);
 
@@ -6315,7 +6317,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt25) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:960:25: metaArguments
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:962:25: metaArguments
                     {
                     pushFollow(FOLLOW_metaArguments_in_importFrom3554);
                     metaArguments105=metaArguments();
@@ -6366,9 +6368,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 965:10: -> ^( IMPORT[\"IMPORT\", importFlags] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? )
+            // 967:10: -> ^( IMPORT[\"IMPORT\", importFlags] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:965:13: ^( IMPORT[\"IMPORT\", importFlags] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:967:13: ^( IMPORT[\"IMPORT\", importFlags] IDENT[$stmtImport::qpkg] IDENT[$stmtImport::qimp] importAs ( metaArguments )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -6385,7 +6387,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_importAs.nextTree());
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:965:116: ( metaArguments )?
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:967:116: ( metaArguments )?
                 if ( stream_metaArguments.hasNext() ) {
                     adaptor.addChild(root_1, stream_metaArguments.nextTree());
 
@@ -6439,7 +6441,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "importAs"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:968:1: importAs : ( 'as' q1= qualName -> qualName | -> NIL );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:970:1: importAs : ( 'as' q1= qualName -> qualName | -> NIL );
     public final pollenParser.importAs_return importAs() throws RecognitionException {
         pollenParser.importAs_return retval = new pollenParser.importAs_return();
         retval.start = input.LT(1);
@@ -6458,7 +6460,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 33) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:969:2: ( 'as' q1= qualName -> qualName | -> NIL )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:971:2: ( 'as' q1= qualName -> qualName | -> NIL )
             int alt26=2;
             int LA26_0 = input.LA(1);
 
@@ -6478,7 +6480,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt26) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:969:4: 'as' q1= qualName
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:971:4: 'as' q1= qualName
                     {
                     string_literal108=(Atom)match(input,140,FOLLOW_140_in_importAs3658); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_140.add(string_literal108);
@@ -6506,7 +6508,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 971:3: -> qualName
+                    // 973:3: -> qualName
                     {
                         adaptor.addChild(root_0, stream_qualName.nextTree());
 
@@ -6519,7 +6521,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:973:4: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:975:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -6534,7 +6536,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 973:4: -> NIL
+                    // 975:4: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -6583,7 +6585,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "importList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:976:1: importList : stmtImports ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:978:1: importList : stmtImports ;
     public final pollenParser.importList_return importList() throws RecognitionException {
         pollenParser.importList_return retval = new pollenParser.importList_return();
         retval.start = input.LT(1);
@@ -6599,8 +6601,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 34) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:977:2: ( stmtImports )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:977:6: stmtImports
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:979:2: ( stmtImports )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:979:6: stmtImports
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -6647,7 +6649,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtImports"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:979:1: stmtImports : ( ( stmtImport )+ -> ^( LIST[\"LIST\"] ( stmtImport )+ ) | -> ^( LIST[\"LIST\"] ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:981:1: stmtImports : ( ( stmtImport )+ -> ^( LIST[\"LIST\"] ( stmtImport )+ ) | -> ^( LIST[\"LIST\"] ) );
     public final pollenParser.stmtImports_return stmtImports() throws RecognitionException {
         pollenParser.stmtImports_return retval = new pollenParser.stmtImports_return();
         retval.start = input.LT(1);
@@ -6663,7 +6665,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 35) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:980:2: ( ( stmtImport )+ -> ^( LIST[\"LIST\"] ( stmtImport )+ ) | -> ^( LIST[\"LIST\"] ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:982:2: ( ( stmtImport )+ -> ^( LIST[\"LIST\"] ( stmtImport )+ ) | -> ^( LIST[\"LIST\"] ) )
             int alt28=2;
             int LA28_0 = input.LA(1);
 
@@ -6683,9 +6685,9 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt28) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:980:4: ( stmtImport )+
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:982:4: ( stmtImport )+
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:980:4: ( stmtImport )+
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:982:4: ( stmtImport )+
                     int cnt27=0;
                     loop27:
                     do {
@@ -6699,7 +6701,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt27) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:980:4: stmtImport
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:982:4: stmtImport
                     	    {
                     	    pushFollow(FOLLOW_stmtImport_in_stmtImports3708);
                     	    stmtImport110=stmtImport();
@@ -6735,9 +6737,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 980:17: -> ^( LIST[\"LIST\"] ( stmtImport )+ )
+                    // 982:17: -> ^( LIST[\"LIST\"] ( stmtImport )+ )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:980:20: ^( LIST[\"LIST\"] ( stmtImport )+ )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:982:20: ^( LIST[\"LIST\"] ( stmtImport )+ )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -6765,7 +6767,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:981:4: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:983:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -6780,9 +6782,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 981:4: -> ^( LIST[\"LIST\"] )
+                    // 983:4: -> ^( LIST[\"LIST\"] )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:981:7: ^( LIST[\"LIST\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:983:7: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -6841,7 +6843,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "importIntrinsicPrint"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:989:1: importIntrinsicPrint : m1= importPrintImpl m2= importPrintProtocol ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:991:1: importIntrinsicPrint : m1= importPrintImpl m2= importPrintProtocol ;
     public final pollenParser.importIntrinsicPrint_return importIntrinsicPrint() throws RecognitionException {
         importIntrinsicPrint_stack.push(new importIntrinsicPrint_scope());
         pollenParser.importIntrinsicPrint_return retval = new pollenParser.importIntrinsicPrint_return();
@@ -6863,8 +6865,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 36) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1005:2: (m1= importPrintImpl m2= importPrintProtocol )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1005:5: m1= importPrintImpl m2= importPrintProtocol
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1007:2: (m1= importPrintImpl m2= importPrintProtocol )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1007:5: m1= importPrintImpl m2= importPrintProtocol
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -6931,7 +6933,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "importPrintImpl"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1009:1: importPrintImpl : ({...}? -> ^( IMPORT[\"IMPORT\", EnumSet.of(Flags.UNIT_USED)] IDENT[ProcessUnits.getPollenPrintPkg()] IDENT[ProcessUnits.getPollenPrint()] NIL ) | -> NIL );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1011:1: importPrintImpl : ({...}? -> ^( IMPORT[\"IMPORT\", EnumSet.of(Flags.UNIT_USED)] IDENT[ProcessUnits.getPollenPrintPkg()] IDENT[ProcessUnits.getPollenPrint()] NIL ) | -> NIL );
     public final pollenParser.importPrintImpl_return importPrintImpl() throws RecognitionException {
         pollenParser.importPrintImpl_return retval = new pollenParser.importPrintImpl_return();
         retval.start = input.LT(1);
@@ -6943,7 +6945,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 37) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1010:2: ({...}? -> ^( IMPORT[\"IMPORT\", EnumSet.of(Flags.UNIT_USED)] IDENT[ProcessUnits.getPollenPrintPkg()] IDENT[ProcessUnits.getPollenPrint()] NIL ) | -> NIL )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1012:2: ({...}? -> ^( IMPORT[\"IMPORT\", EnumSet.of(Flags.UNIT_USED)] IDENT[ProcessUnits.getPollenPrintPkg()] IDENT[ProcessUnits.getPollenPrint()] NIL ) | -> NIL )
             int alt29=2;
             switch ( input.LA(1) ) {
             case INJECT:
@@ -7097,7 +7099,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt29) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1010:4: {...}?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1012:4: {...}?
                     {
                     if ( !((ProcessUnits.doImportPrintImpl())) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -7117,9 +7119,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1011:6: -> ^( IMPORT[\"IMPORT\", EnumSet.of(Flags.UNIT_USED)] IDENT[ProcessUnits.getPollenPrintPkg()] IDENT[ProcessUnits.getPollenPrint()] NIL )
+                    // 1013:6: -> ^( IMPORT[\"IMPORT\", EnumSet.of(Flags.UNIT_USED)] IDENT[ProcessUnits.getPollenPrintPkg()] IDENT[ProcessUnits.getPollenPrint()] NIL )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1011:9: ^( IMPORT[\"IMPORT\", EnumSet.of(Flags.UNIT_USED)] IDENT[ProcessUnits.getPollenPrintPkg()] IDENT[ProcessUnits.getPollenPrint()] NIL )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1013:9: ^( IMPORT[\"IMPORT\", EnumSet.of(Flags.UNIT_USED)] IDENT[ProcessUnits.getPollenPrintPkg()] IDENT[ProcessUnits.getPollenPrint()] NIL )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -7150,7 +7152,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1015:6: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1017:6: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -7165,7 +7167,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1015:6: -> NIL
+                    // 1017:6: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -7214,7 +7216,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "importPrintProtocol"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1019:1: importPrintProtocol : ({...}? -> ^( IMPORT[\"IMPORT\", (EnumSet.of(Flags.UNIT_USED))] IDENT[ParseUnit.POLLEN_PRINTPKG] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] NIL ) | -> NIL );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1021:1: importPrintProtocol : ({...}? -> ^( IMPORT[\"IMPORT\", (EnumSet.of(Flags.UNIT_USED))] IDENT[ParseUnit.POLLEN_PRINTPKG] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] NIL ) | -> NIL );
     public final pollenParser.importPrintProtocol_return importPrintProtocol() throws RecognitionException {
         pollenParser.importPrintProtocol_return retval = new pollenParser.importPrintProtocol_return();
         retval.start = input.LT(1);
@@ -7226,7 +7228,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 38) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1020:2: ({...}? -> ^( IMPORT[\"IMPORT\", (EnumSet.of(Flags.UNIT_USED))] IDENT[ParseUnit.POLLEN_PRINTPKG] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] NIL ) | -> NIL )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1022:2: ({...}? -> ^( IMPORT[\"IMPORT\", (EnumSet.of(Flags.UNIT_USED))] IDENT[ParseUnit.POLLEN_PRINTPKG] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] NIL ) | -> NIL )
             int alt30=2;
             switch ( input.LA(1) ) {
             case INJECT:
@@ -7380,7 +7382,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt30) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1020:4: {...}?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1022:4: {...}?
                     {
                     if ( !((ProcessUnits.doImportPrintProtocol())) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -7400,9 +7402,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1021:6: -> ^( IMPORT[\"IMPORT\", (EnumSet.of(Flags.UNIT_USED))] IDENT[ParseUnit.POLLEN_PRINTPKG] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] NIL )
+                    // 1023:6: -> ^( IMPORT[\"IMPORT\", (EnumSet.of(Flags.UNIT_USED))] IDENT[ParseUnit.POLLEN_PRINTPKG] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] NIL )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1021:9: ^( IMPORT[\"IMPORT\", (EnumSet.of(Flags.UNIT_USED))] IDENT[ParseUnit.POLLEN_PRINTPKG] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] NIL )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1023:9: ^( IMPORT[\"IMPORT\", (EnumSet.of(Flags.UNIT_USED))] IDENT[ParseUnit.POLLEN_PRINTPKG] IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL] NIL )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -7433,7 +7435,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1025:6: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1027:6: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -7448,7 +7450,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1025:6: -> NIL
+                    // 1027:6: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -7497,7 +7499,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "meta"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1027:1: meta : ({...}? 'meta' ! ( braceOpen metaParmsGen braceClose ) | -> LIST[\"LIST\"] );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1029:1: meta : ({...}? 'meta' ! ( braceOpen metaParmsGen braceClose ) | -> LIST[\"LIST\"] );
     public final pollenParser.meta_return meta() throws RecognitionException {
         pollenParser.meta_return retval = new pollenParser.meta_return();
         retval.start = input.LT(1);
@@ -7521,7 +7523,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 39) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1033:2: ({...}? 'meta' ! ( braceOpen metaParmsGen braceClose ) | -> LIST[\"LIST\"] )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1035:2: ({...}? 'meta' ! ( braceOpen metaParmsGen braceClose ) | -> LIST[\"LIST\"] )
             int alt31=2;
             int LA31_0 = input.LA(1);
 
@@ -7541,7 +7543,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt31) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1033:4: {...}? 'meta' ! ( braceOpen metaParmsGen braceClose )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1035:4: {...}? 'meta' ! ( braceOpen metaParmsGen braceClose )
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -7555,8 +7557,8 @@ public TreeAdaptor getTreeAdaptor() {
 
                     if ( state.backtracking==0 ) { metaFlags.add(Flags.META);}
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1035:4: ( braceOpen metaParmsGen braceClose )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1035:5: braceOpen metaParmsGen braceClose
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1037:4: ( braceOpen metaParmsGen braceClose )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1037:5: braceOpen metaParmsGen braceClose
                     {
                     pushFollow(FOLLOW_braceOpen_in_meta3934);
                     braceOpen112=braceOpen();
@@ -7585,7 +7587,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1040:6: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1042:6: 
                     {
                     if ( state.backtracking==0 ) { isMetaInstance = false;}
 
@@ -7602,7 +7604,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1040:33: -> LIST[\"LIST\"]
+                    // 1042:33: -> LIST[\"LIST\"]
                     {
                         adaptor.addChild(root_0, 
                         new ListNode(LIST, "LIST")
@@ -7658,7 +7660,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "metaParmsGen"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1043:1: metaParmsGen : m1= metaParmGen ( NL )* ( ',' ( NL )* m2= metaParmGen )* -> ^( LIST[\"LIST\"] ( metaParmGen )+ ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1045:1: metaParmsGen : m1= metaParmGen ( NL )* ( ',' ( NL )* m2= metaParmGen )* -> ^( LIST[\"LIST\"] ( metaParmGen )+ ) ;
     public final pollenParser.metaParmsGen_return metaParmsGen() throws RecognitionException {
         metaParmsGen_stack.push(new metaParmsGen_scope());
         pollenParser.metaParmsGen_return retval = new pollenParser.metaParmsGen_return();
@@ -7689,8 +7691,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 40) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1060:2: (m1= metaParmGen ( NL )* ( ',' ( NL )* m2= metaParmGen )* -> ^( LIST[\"LIST\"] ( metaParmGen )+ ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1060:4: m1= metaParmGen ( NL )* ( ',' ( NL )* m2= metaParmGen )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1062:2: (m1= metaParmGen ( NL )* ( ',' ( NL )* m2= metaParmGen )* -> ^( LIST[\"LIST\"] ( metaParmGen )+ ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1062:4: m1= metaParmGen ( NL )* ( ',' ( NL )* m2= metaParmGen )*
             {
             pushFollow(FOLLOW_metaParmGen_in_metaParmsGen4010);
             m1=metaParmGen();
@@ -7701,7 +7703,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             if ( state.backtracking==0 ) { ((metaParmsGen_scope)metaParmsGen_stack.peek()).l.add((m1!=null?((BaseNode)m1.tree):null)); }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1060:55: ( NL )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1062:55: ( NL )*
             loop32:
             do {
                 int alt32=2;
@@ -7720,7 +7722,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt32) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1060:55: NL
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1062:55: NL
             	    {
             	    NL115=(Atom)match(input,NL,FOLLOW_NL_in_metaParmsGen4014); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_NL.add(NL115);
@@ -7735,7 +7737,7 @@ public TreeAdaptor getTreeAdaptor() {
             } while (true);
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1061:3: ( ',' ( NL )* m2= metaParmGen )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1063:3: ( ',' ( NL )* m2= metaParmGen )*
             loop34:
             do {
                 int alt34=2;
@@ -7748,13 +7750,13 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt34) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1061:5: ',' ( NL )* m2= metaParmGen
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1063:5: ',' ( NL )* m2= metaParmGen
             	    {
             	    char_literal116=(Atom)match(input,129,FOLLOW_129_in_metaParmsGen4021); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_129.add(char_literal116);
 
 
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1061:9: ( NL )*
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1063:9: ( NL )*
             	    loop33:
             	    do {
             	        int alt33=2;
@@ -7767,7 +7769,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             	        switch (alt33) {
             	    	case 1 :
-            	    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1061:9: NL
+            	    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1063:9: NL
             	    	    {
             	    	    NL117=(Atom)match(input,NL,FOLLOW_NL_in_metaParmsGen4023); if (state.failed) return retval; 
             	    	    if ( state.backtracking==0 ) stream_NL.add(NL117);
@@ -7813,9 +7815,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1064:3: -> ^( LIST[\"LIST\"] ( metaParmGen )+ )
+            // 1066:3: -> ^( LIST[\"LIST\"] ( metaParmGen )+ )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1064:6: ^( LIST[\"LIST\"] ( metaParmGen )+ )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1066:6: ^( LIST[\"LIST\"] ( metaParmGen )+ )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -7890,7 +7892,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "metaParmGen"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1082:1: metaParmGen : ( 'type' IDENT ( '=' typeName )? -> ^( IMPORT[\"IMPORT\", flags] IDENT[from] IDENT[name] IDENT[as] ) | builtinType id= IDENT ( '=' primitiveLit )? -> ^( D_FORMAL[\"D_FORMAL\", flags] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType ) IDENT ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] ) ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1084:1: metaParmGen : ( 'type' IDENT ( '=' typeName )? -> ^( IMPORT[\"IMPORT\", flags] IDENT[from] IDENT[name] IDENT[as] ) | builtinType id= IDENT ( '=' primitiveLit )? -> ^( D_FORMAL[\"D_FORMAL\", flags] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType ) IDENT ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] ) ) );
     public final pollenParser.metaParmGen_return metaParmGen() throws RecognitionException {
         metaParmGen_stack.push(new metaParmGen_scope());
         pollenParser.metaParmGen_return retval = new pollenParser.metaParmGen_return();
@@ -7940,7 +7942,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 41) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1107:2: ( 'type' IDENT ( '=' typeName )? -> ^( IMPORT[\"IMPORT\", flags] IDENT[from] IDENT[name] IDENT[as] ) | builtinType id= IDENT ( '=' primitiveLit )? -> ^( D_FORMAL[\"D_FORMAL\", flags] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType ) IDENT ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] ) ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1109:2: ( 'type' IDENT ( '=' typeName )? -> ^( IMPORT[\"IMPORT\", flags] IDENT[from] IDENT[name] IDENT[as] ) | builtinType id= IDENT ( '=' primitiveLit )? -> ^( D_FORMAL[\"D_FORMAL\", flags] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType ) IDENT ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] ) ) )
             int alt37=2;
             int LA37_0 = input.LA(1);
 
@@ -7960,7 +7962,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt37) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1107:4: 'type' IDENT ( '=' typeName )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1109:4: 'type' IDENT ( '=' typeName )?
                     {
                     string_literal118=(Atom)match(input,184,FOLLOW_184_in_metaParmGen4081); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_184.add(string_literal118);
@@ -7970,7 +7972,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT119);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1107:17: ( '=' typeName )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1109:17: ( '=' typeName )?
                     int alt35=2;
                     int LA35_0 = input.LA(1);
 
@@ -7979,7 +7981,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt35) {
                         case 1 :
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1107:19: '=' typeName
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1109:19: '=' typeName
                             {
                             char_literal120=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_metaParmGen4087); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_ASSIGN.add(char_literal120);
@@ -8077,9 +8079,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1171:4: -> ^( IMPORT[\"IMPORT\", flags] IDENT[from] IDENT[name] IDENT[as] )
+                    // 1173:4: -> ^( IMPORT[\"IMPORT\", flags] IDENT[from] IDENT[name] IDENT[as] )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1171:7: ^( IMPORT[\"IMPORT\", flags] IDENT[from] IDENT[name] IDENT[as] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1173:7: ^( IMPORT[\"IMPORT\", flags] IDENT[from] IDENT[name] IDENT[as] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -8110,7 +8112,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1174:7: builtinType id= IDENT ( '=' primitiveLit )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1176:7: builtinType id= IDENT ( '=' primitiveLit )?
                     {
                     pushFollow(FOLLOW_builtinType_in_metaParmGen4134);
                     builtinType122=builtinType();
@@ -8123,7 +8125,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_IDENT.add(id);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1174:28: ( '=' primitiveLit )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1176:28: ( '=' primitiveLit )?
                     int alt36=2;
                     int LA36_0 = input.LA(1);
 
@@ -8132,7 +8134,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt36) {
                         case 1 :
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1174:29: '=' primitiveLit
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1176:29: '=' primitiveLit
                             {
                             char_literal123=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_metaParmGen4141); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_ASSIGN.add(char_literal123);
@@ -8195,7 +8197,7 @@ public TreeAdaptor getTreeAdaptor() {
                     	 		}
 
                     // AST REWRITE
-                    // elements: IDENT, builtinType, IDENT
+                    // elements: IDENT, IDENT, builtinType
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -8207,16 +8209,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1215:3: -> ^( D_FORMAL[\"D_FORMAL\", flags] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType ) IDENT ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] ) )
+                    // 1217:3: -> ^( D_FORMAL[\"D_FORMAL\", flags] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType ) IDENT ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1215:6: ^( D_FORMAL[\"D_FORMAL\", flags] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType ) IDENT ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1217:6: ^( D_FORMAL[\"D_FORMAL\", flags] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType ) IDENT ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.Formal(D_FORMAL, "D_FORMAL", flags)
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1216:4: ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1218:4: ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] builtinType )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -8232,7 +8234,7 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_IDENT.nextNode()
                         );
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1218:5: ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1220:5: ^( E_CONST[\"E_CONST\", lf] IDENT[ctext] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -8299,7 +8301,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "metaArguments"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1223:1: metaArguments : ( '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}' -> ^( LIST[\"LIST\"] ( metaArgument )+ ) | '{' '}' -> LIST[\"LIST\"] );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1225:1: metaArguments : ( '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}' -> ^( LIST[\"LIST\"] ( metaArgument )+ ) | '{' '}' -> LIST[\"LIST\"] );
     public final pollenParser.metaArguments_return metaArguments() throws RecognitionException {
         pollenParser.metaArguments_return retval = new pollenParser.metaArguments_return();
         retval.start = input.LT(1);
@@ -8337,7 +8339,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 42) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:4: ( '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}' -> ^( LIST[\"LIST\"] ( metaArgument )+ ) | '{' '}' -> LIST[\"LIST\"] )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:4: ( '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}' -> ^( LIST[\"LIST\"] ( metaArgument )+ ) | '{' '}' -> LIST[\"LIST\"] )
             int alt42=2;
             int LA42_0 = input.LA(1);
 
@@ -8369,7 +8371,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt42) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:13: '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:13: '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}'
                     {
                     char_literal125=(Atom)match(input,190,FOLLOW_190_in_metaArguments4236); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_190.add(char_literal125);
@@ -8382,7 +8384,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_metaArgument.add(metaArgument126.getTree());
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:30: ( NL )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:30: ( NL )*
                     loop38:
                     do {
                         int alt38=2;
@@ -8395,7 +8397,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt38) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:31: NL
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:31: NL
                     	    {
                     	    NL127=(Atom)match(input,NL,FOLLOW_NL_in_metaArguments4241); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_NL.add(NL127);
@@ -8410,7 +8412,7 @@ public TreeAdaptor getTreeAdaptor() {
                     } while (true);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:36: ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:36: ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )*
                     loop41:
                     do {
                         int alt41=2;
@@ -8423,16 +8425,16 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt41) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:37: ',' ( ( NL )* ) metaArgument ( ( NL )* )
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:37: ',' ( ( NL )* ) metaArgument ( ( NL )* )
                     	    {
                     	    char_literal128=(Atom)match(input,129,FOLLOW_129_in_metaArguments4246); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_129.add(char_literal128);
 
 
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:41: ( ( NL )* )
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:42: ( NL )*
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:41: ( ( NL )* )
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:42: ( NL )*
                     	    {
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:42: ( NL )*
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:42: ( NL )*
                     	    loop39:
                     	    do {
                     	        int alt39=2;
@@ -8451,7 +8453,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                     	        switch (alt39) {
                     	    	case 1 :
-                    	    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:42: NL
+                    	    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:42: NL
                     	    	    {
                     	    	    NL129=(Atom)match(input,NL,FOLLOW_NL_in_metaArguments4249); if (state.failed) return retval; 
                     	    	    if ( state.backtracking==0 ) stream_NL.add(NL129);
@@ -8476,10 +8478,10 @@ public TreeAdaptor getTreeAdaptor() {
                     	    if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) stream_metaArgument.add(metaArgument130.getTree());
 
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:60: ( ( NL )* )
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:61: ( NL )*
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:60: ( ( NL )* )
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:61: ( NL )*
                     	    {
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:61: ( NL )*
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:61: ( NL )*
                     	    loop40:
                     	    do {
                     	        int alt40=2;
@@ -8492,7 +8494,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                     	        switch (alt40) {
                     	    	case 1 :
-                    	    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:61: NL
+                    	    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:61: NL
                     	    	    {
                     	    	    NL131=(Atom)match(input,NL,FOLLOW_NL_in_metaArguments4256); if (state.failed) return retval; 
                     	    	    if ( state.backtracking==0 ) stream_NL.add(NL131);
@@ -8536,9 +8538,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1225:6: -> ^( LIST[\"LIST\"] ( metaArgument )+ )
+                    // 1227:6: -> ^( LIST[\"LIST\"] ( metaArgument )+ )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1225:9: ^( LIST[\"LIST\"] ( metaArgument )+ )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1227:9: ^( LIST[\"LIST\"] ( metaArgument )+ )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -8566,7 +8568,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:6: '{' '}'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1228:6: '{' '}'
                     {
                     char_literal133=(Atom)match(input,190,FOLLOW_190_in_metaArguments4289); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_190.add(char_literal133);
@@ -8589,7 +8591,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1226:19: -> LIST[\"LIST\"]
+                    // 1228:19: -> LIST[\"LIST\"]
                     {
                         adaptor.addChild(root_0, 
                         new ListNode(LIST, "LIST")
@@ -8638,7 +8640,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "metaArgument"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1229:1: metaArgument : ( primitiveLit | typeNameScalar | -> NIL );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1231:1: metaArgument : ( primitiveLit | typeNameScalar | -> NIL );
     public final pollenParser.metaArgument_return metaArgument() throws RecognitionException {
         pollenParser.metaArgument_return retval = new pollenParser.metaArgument_return();
         retval.start = input.LT(1);
@@ -8656,7 +8658,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 43) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1230:2: ( primitiveLit | typeNameScalar | -> NIL )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1232:2: ( primitiveLit | typeNameScalar | -> NIL )
             int alt43=3;
             switch ( input.LA(1) ) {
             case CHAR:
@@ -8706,7 +8708,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt43) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1230:4: primitiveLit
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1232:4: primitiveLit
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -8721,7 +8723,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1231:4: typeNameScalar
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1233:4: typeNameScalar
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -8736,7 +8738,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1232:5: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1234:5: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -8751,7 +8753,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1232:5: -> NIL
+                    // 1234:5: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -8800,7 +8802,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "typeName"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1234:1: typeName : typeNameScalar ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1236:1: typeName : typeNameScalar ;
     public final pollenParser.typeName_return typeName() throws RecognitionException {
         pollenParser.typeName_return retval = new pollenParser.typeName_return();
         retval.start = input.LT(1);
@@ -8816,8 +8818,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 44) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1235:2: ( typeNameScalar )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1235:4: typeNameScalar
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1237:2: ( typeNameScalar )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1237:4: typeNameScalar
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -8864,7 +8866,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "typeNameScalar"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1237:1: typeNameScalar : ( builtinType -> ^( T_STD[\"T_STD\", typeMods] builtinType ) | userTypeName );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1239:1: typeNameScalar : ( builtinType -> ^( T_STD[\"T_STD\", typeMods] builtinType ) | userTypeName );
     public final pollenParser.typeNameScalar_return typeNameScalar() throws RecognitionException {
         pollenParser.typeNameScalar_return retval = new pollenParser.typeNameScalar_return();
         retval.start = input.LT(1);
@@ -8882,7 +8884,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 45) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1238:2: ( builtinType -> ^( T_STD[\"T_STD\", typeMods] builtinType ) | userTypeName )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1240:2: ( builtinType -> ^( T_STD[\"T_STD\", typeMods] builtinType ) | userTypeName )
             int alt44=2;
             int LA44_0 = input.LA(1);
 
@@ -8902,7 +8904,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt44) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1238:4: builtinType
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1240:4: builtinType
                     {
                     pushFollow(FOLLOW_builtinType_in_typeNameScalar4357);
                     builtinType138=builtinType();
@@ -8924,9 +8926,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1238:16: -> ^( T_STD[\"T_STD\", typeMods] builtinType )
+                    // 1240:16: -> ^( T_STD[\"T_STD\", typeMods] builtinType )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1238:19: ^( T_STD[\"T_STD\", typeMods] builtinType )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1240:19: ^( T_STD[\"T_STD\", typeMods] builtinType )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -8947,7 +8949,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1239:4: userTypeName
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1241:4: userTypeName
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -8996,7 +8998,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "userTypeName"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1241:1: userTypeName : qualName -> ^( T_USR[\"T_USR\", typeMods] qualName ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1243:1: userTypeName : qualName -> ^( T_USR[\"T_USR\", typeMods] qualName ) ;
     public final pollenParser.userTypeName_return userTypeName() throws RecognitionException {
         pollenParser.userTypeName_return retval = new pollenParser.userTypeName_return();
         retval.start = input.LT(1);
@@ -9012,8 +9014,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 46) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1242:2: ( qualName -> ^( T_USR[\"T_USR\", typeMods] qualName ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1242:4: qualName
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1244:2: ( qualName -> ^( T_USR[\"T_USR\", typeMods] qualName ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1244:4: qualName
             {
             pushFollow(FOLLOW_qualName_in_userTypeName4386);
             qualName140=qualName();
@@ -9035,9 +9037,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1242:13: -> ^( T_USR[\"T_USR\", typeMods] qualName )
+            // 1244:13: -> ^( T_USR[\"T_USR\", typeMods] qualName )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1242:16: ^( T_USR[\"T_USR\", typeMods] qualName )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1244:16: ^( T_USR[\"T_USR\", typeMods] qualName )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -9090,7 +9092,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "typeNameArray"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1244:1: typeNameArray : ( builtinType -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_STD[\"T_STD\", typeMods] builtinType ) ) | userTypeNameArr );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1246:1: typeNameArray : ( builtinType -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_STD[\"T_STD\", typeMods] builtinType ) ) | userTypeNameArr );
     public final pollenParser.typeNameArray_return typeNameArray() throws RecognitionException {
         pollenParser.typeNameArray_return retval = new pollenParser.typeNameArray_return();
         retval.start = input.LT(1);
@@ -9108,7 +9110,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 47) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1245:2: ( builtinType -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_STD[\"T_STD\", typeMods] builtinType ) ) | userTypeNameArr )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1247:2: ( builtinType -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_STD[\"T_STD\", typeMods] builtinType ) ) | userTypeNameArr )
             int alt45=2;
             int LA45_0 = input.LA(1);
 
@@ -9128,7 +9130,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt45) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1245:4: builtinType
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1247:4: builtinType
                     {
                     pushFollow(FOLLOW_builtinType_in_typeNameArray4412);
                     builtinType141=builtinType();
@@ -9150,16 +9152,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1245:16: -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_STD[\"T_STD\", typeMods] builtinType ) )
+                    // 1247:16: -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_STD[\"T_STD\", typeMods] builtinType ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1245:19: ^( T_ARR[\"T_ARR\", typeMods] ^( T_STD[\"T_STD\", typeMods] builtinType ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1247:19: ^( T_ARR[\"T_ARR\", typeMods] ^( T_STD[\"T_STD\", typeMods] builtinType ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new TypeNode.Arr(T_ARR, "T_ARR", typeMods)
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1245:60: ^( T_STD[\"T_STD\", typeMods] builtinType )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1247:60: ^( T_STD[\"T_STD\", typeMods] builtinType )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -9183,7 +9185,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1246:4: userTypeNameArr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1248:4: userTypeNameArr
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -9232,7 +9234,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "userTypeNameArr"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1248:1: userTypeNameArr : qualName -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_USR[\"T_USR\", typeMods] qualName ) ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1250:1: userTypeNameArr : qualName -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_USR[\"T_USR\", typeMods] qualName ) ) ;
     public final pollenParser.userTypeNameArr_return userTypeNameArr() throws RecognitionException {
         pollenParser.userTypeNameArr_return retval = new pollenParser.userTypeNameArr_return();
         retval.start = input.LT(1);
@@ -9248,8 +9250,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 48) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1249:2: ( qualName -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_USR[\"T_USR\", typeMods] qualName ) ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1249:4: qualName
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1251:2: ( qualName -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_USR[\"T_USR\", typeMods] qualName ) ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1251:4: qualName
             {
             pushFollow(FOLLOW_qualName_in_userTypeNameArr4451);
             qualName143=qualName();
@@ -9271,16 +9273,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1249:13: -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_USR[\"T_USR\", typeMods] qualName ) )
+            // 1251:13: -> ^( T_ARR[\"T_ARR\", typeMods] ^( T_USR[\"T_USR\", typeMods] qualName ) )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1249:16: ^( T_ARR[\"T_ARR\", typeMods] ^( T_USR[\"T_USR\", typeMods] qualName ) )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1251:16: ^( T_ARR[\"T_ARR\", typeMods] ^( T_USR[\"T_USR\", typeMods] qualName ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new TypeNode.Arr(T_ARR, "T_ARR", typeMods)
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1249:57: ^( T_USR[\"T_USR\", typeMods] qualName )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1251:57: ^( T_USR[\"T_USR\", typeMods] qualName )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
@@ -9343,7 +9345,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "unitTypeDefinition"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1252:1: unitTypeDefinition : ( meta !) ( ( 'module' )=> moduleDefinition | ( 'class' )=> classDefinition | ( 'protocol' )=> protocolDefinition | ( 'composition' )=> compositionDefinition | ( 'enum' )=> enumUnitDefinition ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1254:1: unitTypeDefinition : ( meta !) ( ( 'module' )=> moduleDefinition | ( 'class' )=> classDefinition | ( 'protocol' )=> protocolDefinition | ( 'composition' )=> compositionDefinition | ( 'enum' )=> enumUnitDefinition ) ;
     public final pollenParser.unitTypeDefinition_return unitTypeDefinition() throws RecognitionException {
         unitTypeDefinition_stack.push(new unitTypeDefinition_scope());
         pollenParser.unitTypeDefinition_return retval = new pollenParser.unitTypeDefinition_return();
@@ -9370,14 +9372,14 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 49) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1262:4: ( ( meta !) ( ( 'module' )=> moduleDefinition | ( 'class' )=> classDefinition | ( 'protocol' )=> protocolDefinition | ( 'composition' )=> compositionDefinition | ( 'enum' )=> enumUnitDefinition ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1262:8: ( meta !) ( ( 'module' )=> moduleDefinition | ( 'class' )=> classDefinition | ( 'protocol' )=> protocolDefinition | ( 'composition' )=> compositionDefinition | ( 'enum' )=> enumUnitDefinition )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1264:4: ( ( meta !) ( ( 'module' )=> moduleDefinition | ( 'class' )=> classDefinition | ( 'protocol' )=> protocolDefinition | ( 'composition' )=> compositionDefinition | ( 'enum' )=> enumUnitDefinition ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1264:8: ( meta !) ( ( 'module' )=> moduleDefinition | ( 'class' )=> classDefinition | ( 'protocol' )=> protocolDefinition | ( 'composition' )=> compositionDefinition | ( 'enum' )=> enumUnitDefinition )
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1262:8: ( meta !)
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1262:9: meta !
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1264:8: ( meta !)
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1264:9: meta !
             {
             pushFollow(FOLLOW_meta_in_unitTypeDefinition4499);
             meta144=meta();
@@ -9390,7 +9392,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1266:6: ( ( 'module' )=> moduleDefinition | ( 'class' )=> classDefinition | ( 'protocol' )=> protocolDefinition | ( 'composition' )=> compositionDefinition | ( 'enum' )=> enumUnitDefinition )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1268:6: ( ( 'module' )=> moduleDefinition | ( 'class' )=> classDefinition | ( 'protocol' )=> protocolDefinition | ( 'composition' )=> compositionDefinition | ( 'enum' )=> enumUnitDefinition )
             int alt46=5;
             int LA46_0 = input.LA(1);
 
@@ -9419,7 +9421,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt46) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1267:17: ( 'module' )=> moduleDefinition
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1269:17: ( 'module' )=> moduleDefinition
                     {
                     pushFollow(FOLLOW_moduleDefinition_in_unitTypeDefinition4550);
                     moduleDefinition145=moduleDefinition();
@@ -9431,7 +9433,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1268:8: ( 'class' )=> classDefinition
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1270:8: ( 'class' )=> classDefinition
                     {
                     pushFollow(FOLLOW_classDefinition_in_unitTypeDefinition4571);
                     classDefinition146=classDefinition();
@@ -9443,7 +9445,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1269:11: ( 'protocol' )=> protocolDefinition
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1271:11: ( 'protocol' )=> protocolDefinition
                     {
                     pushFollow(FOLLOW_protocolDefinition_in_unitTypeDefinition4589);
                     protocolDefinition147=protocolDefinition();
@@ -9455,7 +9457,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1270:11: ( 'composition' )=> compositionDefinition
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1272:11: ( 'composition' )=> compositionDefinition
                     {
                     pushFollow(FOLLOW_compositionDefinition_in_unitTypeDefinition4608);
                     compositionDefinition148=compositionDefinition();
@@ -9467,7 +9469,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1271:11: ( 'enum' )=> enumUnitDefinition
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1273:11: ( 'enum' )=> enumUnitDefinition
                     {
                     pushFollow(FOLLOW_enumUnitDefinition_in_unitTypeDefinition4627);
                     enumUnitDefinition149=enumUnitDefinition();
@@ -9523,7 +9525,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "extendsClause"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1274:1: extendsClause : ( 'extends' qualName -> qualName | -> NIL );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1276:1: extendsClause : ( 'extends' qualName -> qualName | -> NIL );
     public final pollenParser.extendsClause_return extendsClause() throws RecognitionException {
         pollenParser.extendsClause_return retval = new pollenParser.extendsClause_return();
         retval.start = input.LT(1);
@@ -9542,7 +9544,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 50) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1275:5: ( 'extends' qualName -> qualName | -> NIL )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1277:5: ( 'extends' qualName -> qualName | -> NIL )
             int alt47=2;
             int LA47_0 = input.LA(1);
 
@@ -9562,7 +9564,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt47) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1275:9: 'extends' qualName
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1277:9: 'extends' qualName
                     {
                     string_literal150=(Atom)match(input,156,FOLLOW_156_in_extendsClause4652); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_156.add(string_literal150);
@@ -9593,7 +9595,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1280:6: -> qualName
+                    // 1282:6: -> qualName
                     {
                         adaptor.addChild(root_0, stream_qualName.nextTree());
 
@@ -9606,7 +9608,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1281:8: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1283:8: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -9621,7 +9623,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1281:8: -> NIL
+                    // 1283:8: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -9670,7 +9672,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "implementsClause"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1284:1: implementsClause : ( 'implements' qualName -> qualName | -> NIL );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1286:1: implementsClause : ( 'implements' qualName -> qualName | -> NIL );
     public final pollenParser.implementsClause_return implementsClause() throws RecognitionException {
         pollenParser.implementsClause_return retval = new pollenParser.implementsClause_return();
         retval.start = input.LT(1);
@@ -9689,7 +9691,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 51) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1285:5: ( 'implements' qualName -> qualName | -> NIL )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1287:5: ( 'implements' qualName -> qualName | -> NIL )
             int alt48=2;
             int LA48_0 = input.LA(1);
 
@@ -9709,7 +9711,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt48) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1285:9: 'implements' qualName
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1287:9: 'implements' qualName
                     {
                     string_literal152=(Atom)match(input,162,FOLLOW_162_in_implementsClause4699); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_162.add(string_literal152);
@@ -9741,7 +9743,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1291:6: -> qualName
+                    // 1293:6: -> qualName
                     {
                         adaptor.addChild(root_0, stream_qualName.nextTree());
 
@@ -9754,7 +9756,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1292:8: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1294:8: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -9769,7 +9771,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1292:8: -> NIL
+                    // 1294:8: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -9818,7 +9820,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "braceClose"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1294:1: braceClose : ( NL !)* '}' ! ( NL !)* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1296:1: braceClose : ( NL !)* '}' ! ( NL !)* ;
     public final pollenParser.braceClose_return braceClose() throws RecognitionException {
         pollenParser.braceClose_return retval = new pollenParser.braceClose_return();
         retval.start = input.LT(1);
@@ -9838,13 +9840,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 52) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1295:5: ( ( NL !)* '}' ! ( NL !)* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1295:10: ( NL !)* '}' ! ( NL !)*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1297:5: ( ( NL !)* '}' ! ( NL !)* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1297:10: ( NL !)* '}' ! ( NL !)*
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1295:10: ( NL !)*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1297:10: ( NL !)*
             loop49:
             do {
                 int alt49=2;
@@ -9857,7 +9859,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt49) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1295:11: NL !
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1297:11: NL !
             	    {
             	    NL154=(Atom)match(input,NL,FOLLOW_NL_in_braceClose4748); if (state.failed) return retval;
 
@@ -9872,7 +9874,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             char_literal155=(Atom)match(input,193,FOLLOW_193_in_braceClose4753); if (state.failed) return retval;
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1295:22: ( NL !)*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1297:22: ( NL !)*
             loop50:
             do {
                 int alt50=2;
@@ -9891,7 +9893,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt50) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1295:23: NL !
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1297:23: NL !
             	    {
             	    NL156=(Atom)match(input,NL,FOLLOW_NL_in_braceClose4757); if (state.failed) return retval;
 
@@ -9939,7 +9941,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "braceCloseAtEOF"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1297:1: braceCloseAtEOF : ( ( NL !)* ) '}' ! ( NL !)* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1299:1: braceCloseAtEOF : ( ( NL !)* ) '}' ! ( NL !)* ;
     public final pollenParser.braceCloseAtEOF_return braceCloseAtEOF() throws RecognitionException {
         pollenParser.braceCloseAtEOF_return retval = new pollenParser.braceCloseAtEOF_return();
         retval.start = input.LT(1);
@@ -9959,16 +9961,16 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 53) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1300:5: ( ( ( NL !)* ) '}' ! ( NL !)* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1300:9: ( ( NL !)* ) '}' ! ( NL !)*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1302:5: ( ( ( NL !)* ) '}' ! ( NL !)* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1302:9: ( ( NL !)* ) '}' ! ( NL !)*
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1300:9: ( ( NL !)* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1300:10: ( NL !)*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1302:9: ( ( NL !)* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1302:10: ( NL !)*
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1300:12: ( NL !)*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1302:12: ( NL !)*
             loop51:
             do {
                 int alt51=2;
@@ -9981,7 +9983,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt51) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1300:12: NL !
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1302:12: NL !
             	    {
             	    NL157=(Atom)match(input,NL,FOLLOW_NL_in_braceCloseAtEOF4781); if (state.failed) return retval;
 
@@ -9999,7 +10001,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             char_literal158=(Atom)match(input,193,FOLLOW_193_in_braceCloseAtEOF4786); if (state.failed) return retval;
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1300:21: ( NL !)*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1302:21: ( NL !)*
             loop52:
             do {
                 int alt52=2;
@@ -10012,7 +10014,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt52) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1300:22: NL !
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1302:22: NL !
             	    {
             	    NL159=(Atom)match(input,NL,FOLLOW_NL_in_braceCloseAtEOF4790); if (state.failed) return retval;
 
@@ -10060,7 +10062,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "braceOpen"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1303:1: braceOpen : ( NL !)* '{' ! ( NL !)* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1305:1: braceOpen : ( NL !)* '{' ! ( NL !)* ;
     public final pollenParser.braceOpen_return braceOpen() throws RecognitionException {
         pollenParser.braceOpen_return retval = new pollenParser.braceOpen_return();
         retval.start = input.LT(1);
@@ -10080,13 +10082,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 54) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1304:5: ( ( NL !)* '{' ! ( NL !)* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1304:10: ( NL !)* '{' ! ( NL !)*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1306:5: ( ( NL !)* '{' ! ( NL !)* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1306:10: ( NL !)* '{' ! ( NL !)*
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1304:10: ( NL !)*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1306:10: ( NL !)*
             loop53:
             do {
                 int alt53=2;
@@ -10099,7 +10101,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt53) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1304:11: NL !
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1306:11: NL !
             	    {
             	    NL160=(Atom)match(input,NL,FOLLOW_NL_in_braceOpen4815); if (state.failed) return retval;
 
@@ -10114,7 +10116,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             char_literal161=(Atom)match(input,190,FOLLOW_190_in_braceOpen4820); if (state.failed) return retval;
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1304:22: ( NL !)*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1306:22: ( NL !)*
             loop54:
             do {
                 int alt54=2;
@@ -10133,7 +10135,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt54) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1304:23: NL !
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1306:23: NL !
             	    {
             	    NL162=(Atom)match(input,NL,FOLLOW_NL_in_braceOpen4824); if (state.failed) return retval;
 
@@ -10181,7 +10183,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "equalityOp"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1306:1: equalityOp : ( EQ | NOT_EQ );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1308:1: equalityOp : ( EQ | NOT_EQ );
     public final pollenParser.equalityOp_return equalityOp() throws RecognitionException {
         pollenParser.equalityOp_return retval = new pollenParser.equalityOp_return();
         retval.start = input.LT(1);
@@ -10197,7 +10199,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 55) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1307:2: ( EQ | NOT_EQ )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1309:2: ( EQ | NOT_EQ )
             // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             root_0 = (BaseNode)adaptor.nil();
@@ -10255,7 +10257,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "relationalOp"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1309:1: relationalOp : ( LT | GT | LT_EQ | GT_EQ );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1311:1: relationalOp : ( LT | GT | LT_EQ | GT_EQ );
     public final pollenParser.relationalOp_return relationalOp() throws RecognitionException {
         pollenParser.relationalOp_return retval = new pollenParser.relationalOp_return();
         retval.start = input.LT(1);
@@ -10271,7 +10273,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 56) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1310:2: ( LT | GT | LT_EQ | GT_EQ )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1312:2: ( LT | GT | LT_EQ | GT_EQ )
             // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             root_0 = (BaseNode)adaptor.nil();
@@ -10329,7 +10331,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "shiftOp"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1312:1: shiftOp : ( '<<' | '>>' );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1314:1: shiftOp : ( '<<' | '>>' );
     public final pollenParser.shiftOp_return shiftOp() throws RecognitionException {
         pollenParser.shiftOp_return retval = new pollenParser.shiftOp_return();
         retval.start = input.LT(1);
@@ -10345,7 +10347,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 57) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1313:2: ( '<<' | '>>' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1315:2: ( '<<' | '>>' )
             // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             root_0 = (BaseNode)adaptor.nil();
@@ -10403,7 +10405,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "incDecOp"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1315:1: incDecOp : ( INC | DEC );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1317:1: incDecOp : ( INC | DEC );
     public final pollenParser.incDecOp_return incDecOp() throws RecognitionException {
         pollenParser.incDecOp_return retval = new pollenParser.incDecOp_return();
         retval.start = input.LT(1);
@@ -10419,7 +10421,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 58) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1316:2: ( INC | DEC )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1318:2: ( INC | DEC )
             // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             root_0 = (BaseNode)adaptor.nil();
@@ -10477,7 +10479,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "addSubOp"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1318:1: addSubOp : ( PLUS | MINUS );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1320:1: addSubOp : ( PLUS | MINUS );
     public final pollenParser.addSubOp_return addSubOp() throws RecognitionException {
         pollenParser.addSubOp_return retval = new pollenParser.addSubOp_return();
         retval.start = input.LT(1);
@@ -10493,7 +10495,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 59) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1319:2: ( PLUS | MINUS )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1321:2: ( PLUS | MINUS )
             // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             root_0 = (BaseNode)adaptor.nil();
@@ -10551,7 +10553,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "assignOp"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1321:1: assignOp : ( ADD_EQ | SUB_EQ | MUL_EQ | DIV_EQ | MOD_EQ | LSHFT_EQ | RSHFT_EQ | BITAND_EQ | BITXOR_EQ | BITOR_EQ );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1323:1: assignOp : ( ADD_EQ | SUB_EQ | MUL_EQ | DIV_EQ | MOD_EQ | LSHFT_EQ | RSHFT_EQ | BITAND_EQ | BITXOR_EQ | BITOR_EQ );
     public final pollenParser.assignOp_return assignOp() throws RecognitionException {
         pollenParser.assignOp_return retval = new pollenParser.assignOp_return();
         retval.start = input.LT(1);
@@ -10567,7 +10569,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 60) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1322:2: ( ADD_EQ | SUB_EQ | MUL_EQ | DIV_EQ | MOD_EQ | LSHFT_EQ | RSHFT_EQ | BITAND_EQ | BITXOR_EQ | BITOR_EQ )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1324:2: ( ADD_EQ | SUB_EQ | MUL_EQ | DIV_EQ | MOD_EQ | LSHFT_EQ | RSHFT_EQ | BITAND_EQ | BITXOR_EQ | BITOR_EQ )
             // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             root_0 = (BaseNode)adaptor.nil();
@@ -10625,7 +10627,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "multDivModOp"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1324:1: multDivModOp : ( '*' | '/' | '%' );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1326:1: multDivModOp : ( '*' | '/' | '%' );
     public final pollenParser.multDivModOp_return multDivModOp() throws RecognitionException {
         pollenParser.multDivModOp_return retval = new pollenParser.multDivModOp_return();
         retval.start = input.LT(1);
@@ -10641,7 +10643,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 61) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1325:2: ( '*' | '/' | '%' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1327:2: ( '*' | '/' | '%' )
             // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             root_0 = (BaseNode)adaptor.nil();
@@ -10699,7 +10701,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "logicalNotOp"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1327:1: logicalNotOp : LOG_NOT ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1329:1: logicalNotOp : LOG_NOT ;
     public final pollenParser.logicalNotOp_return logicalNotOp() throws RecognitionException {
         pollenParser.logicalNotOp_return retval = new pollenParser.logicalNotOp_return();
         retval.start = input.LT(1);
@@ -10715,8 +10717,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 62) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1328:2: ( LOG_NOT )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1328:5: LOG_NOT
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1330:2: ( LOG_NOT )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1330:5: LOG_NOT
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -10764,7 +10766,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "bitwiseNotOp"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1330:1: bitwiseNotOp : BIT_NOT ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1332:1: bitwiseNotOp : BIT_NOT ;
     public final pollenParser.bitwiseNotOp_return bitwiseNotOp() throws RecognitionException {
         pollenParser.bitwiseNotOp_return retval = new pollenParser.bitwiseNotOp_return();
         retval.start = input.LT(1);
@@ -10780,8 +10782,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 63) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1331:2: ( BIT_NOT )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1331:4: BIT_NOT
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1333:2: ( BIT_NOT )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1333:4: BIT_NOT
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -10829,7 +10831,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1333:1: exprList : ( expr ( ',' expr )* -> ^( LIST[\"LIST\"] ( expr )+ ) | -> LIST[\"LIST\"] );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1335:1: exprList : ( expr ( ',' expr )* -> ^( LIST[\"LIST\"] ( expr )+ ) | -> LIST[\"LIST\"] );
     public final pollenParser.exprList_return exprList() throws RecognitionException {
         pollenParser.exprList_return retval = new pollenParser.exprList_return();
         retval.start = input.LT(1);
@@ -10850,7 +10852,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 64) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1334:2: ( expr ( ',' expr )* -> ^( LIST[\"LIST\"] ( expr )+ ) | -> LIST[\"LIST\"] )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1336:2: ( expr ( ',' expr )* -> ^( LIST[\"LIST\"] ( expr )+ ) | -> LIST[\"LIST\"] )
             int alt56=2;
             int LA56_0 = input.LA(1);
 
@@ -10870,7 +10872,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt56) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1334:4: expr ( ',' expr )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1336:4: expr ( ',' expr )*
                     {
                     pushFollow(FOLLOW_expr_in_exprList5024);
                     expr172=expr();
@@ -10879,7 +10881,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_expr.add(expr172.getTree());
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1334:9: ( ',' expr )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1336:9: ( ',' expr )*
                     loop55:
                     do {
                         int alt55=2;
@@ -10892,7 +10894,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt55) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1334:10: ',' expr
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1336:10: ',' expr
                     	    {
                     	    char_literal173=(Atom)match(input,129,FOLLOW_129_in_exprList5027); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_129.add(char_literal173);
@@ -10927,9 +10929,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1335:3: -> ^( LIST[\"LIST\"] ( expr )+ )
+                    // 1337:3: -> ^( LIST[\"LIST\"] ( expr )+ )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1335:6: ^( LIST[\"LIST\"] ( expr )+ )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1337:6: ^( LIST[\"LIST\"] ( expr )+ )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -10957,7 +10959,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1336:4: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1338:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -10972,7 +10974,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1336:4: -> LIST[\"LIST\"]
+                    // 1338:4: -> LIST[\"LIST\"]
                     {
                         adaptor.addChild(root_0, 
                         new ListNode(LIST, "LIST")
@@ -11021,7 +11023,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "expr"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1338:1: expr : ( exprLogicalOr '?' expr ':' expr -> ^( E_QUEST[\"E_QUEST\"] exprLogicalOr expr expr ) | exprLogicalOr );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1340:1: expr : ( exprLogicalOr '?' expr ':' expr -> ^( E_QUEST[\"E_QUEST\"] exprLogicalOr expr expr ) | exprLogicalOr );
     public final pollenParser.expr_return expr() throws RecognitionException {
         pollenParser.expr_return retval = new pollenParser.expr_return();
         retval.start = input.LT(1);
@@ -11050,7 +11052,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 65) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1339:2: ( exprLogicalOr '?' expr ':' expr -> ^( E_QUEST[\"E_QUEST\"] exprLogicalOr expr expr ) | exprLogicalOr )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1341:2: ( exprLogicalOr '?' expr ':' expr -> ^( E_QUEST[\"E_QUEST\"] exprLogicalOr expr expr ) | exprLogicalOr )
             int alt57=2;
             int LA57_0 = input.LA(1);
 
@@ -11082,7 +11084,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt57) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1339:4: exprLogicalOr '?' expr ':' expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1341:4: exprLogicalOr '?' expr ':' expr
                     {
                     pushFollow(FOLLOW_exprLogicalOr_in_expr5068);
                     exprLogicalOr175=exprLogicalOr();
@@ -11114,7 +11116,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_expr.add(expr179.getTree());
 
                     // AST REWRITE
-                    // elements: expr, exprLogicalOr, expr
+                    // elements: expr, expr, exprLogicalOr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -11126,9 +11128,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1339:36: -> ^( E_QUEST[\"E_QUEST\"] exprLogicalOr expr expr )
+                    // 1341:36: -> ^( E_QUEST[\"E_QUEST\"] exprLogicalOr expr expr )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1339:39: ^( E_QUEST[\"E_QUEST\"] exprLogicalOr expr expr )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1341:39: ^( E_QUEST[\"E_QUEST\"] exprLogicalOr expr expr )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -11153,7 +11155,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1340:4: exprLogicalOr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1342:4: exprLogicalOr
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -11202,7 +11204,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprLogicalOr"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1342:1: exprLogicalOr : ( exprLogicalAnd -> exprLogicalAnd ) ( '||' exprLogicalAnd -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd ) )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1344:1: exprLogicalOr : ( exprLogicalAnd -> exprLogicalAnd ) ( '||' exprLogicalAnd -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd ) )* ;
     public final pollenParser.exprLogicalOr_return exprLogicalOr() throws RecognitionException {
         pollenParser.exprLogicalOr_return retval = new pollenParser.exprLogicalOr_return();
         retval.start = input.LT(1);
@@ -11223,11 +11225,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 66) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1343:2: ( ( exprLogicalAnd -> exprLogicalAnd ) ( '||' exprLogicalAnd -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd ) )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1343:4: ( exprLogicalAnd -> exprLogicalAnd ) ( '||' exprLogicalAnd -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1345:2: ( ( exprLogicalAnd -> exprLogicalAnd ) ( '||' exprLogicalAnd -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd ) )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1345:4: ( exprLogicalAnd -> exprLogicalAnd ) ( '||' exprLogicalAnd -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd ) )*
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1343:4: ( exprLogicalAnd -> exprLogicalAnd )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1343:5: exprLogicalAnd
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1345:4: ( exprLogicalAnd -> exprLogicalAnd )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1345:5: exprLogicalAnd
             {
             pushFollow(FOLLOW_exprLogicalAnd_in_exprLogicalOr5117);
             exprLogicalAnd181=exprLogicalAnd();
@@ -11249,7 +11251,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1343:20: -> exprLogicalAnd
+            // 1345:20: -> exprLogicalAnd
             {
                 adaptor.addChild(root_0, stream_exprLogicalAnd.nextTree());
 
@@ -11262,7 +11264,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1344:3: ( '||' exprLogicalAnd -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1346:3: ( '||' exprLogicalAnd -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd ) )*
             loop58:
             do {
                 int alt58=2;
@@ -11281,7 +11283,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt58) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1345:4: '||' exprLogicalAnd
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1347:4: '||' exprLogicalAnd
             	    {
             	    string_literal182=(Atom)match(input,192,FOLLOW_192_in_exprLogicalOr5131); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_192.add(string_literal182);
@@ -11295,7 +11297,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprLogicalAnd.add(exprLogicalAnd183.getTree());
 
             	    // AST REWRITE
-            	    // elements: 192, exprLogicalOr, exprLogicalAnd
+            	    // elements: exprLogicalOr, 192, exprLogicalAnd
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -11307,9 +11309,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 1346:5: -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd )
+            	    // 1348:5: -> ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd )
             	    {
-            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1346:8: ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd )
+            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1348:8: ^( E_BINARY[\"E_BINARY\"] '||' $exprLogicalOr exprLogicalAnd )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -11377,7 +11379,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprLogicalAnd"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1349:1: exprLogicalAnd : ( exprBitwiseOr -> exprBitwiseOr ) ( '&&' exprBitwiseOr -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr ) )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1351:1: exprLogicalAnd : ( exprBitwiseOr -> exprBitwiseOr ) ( '&&' exprBitwiseOr -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr ) )* ;
     public final pollenParser.exprLogicalAnd_return exprLogicalAnd() throws RecognitionException {
         pollenParser.exprLogicalAnd_return retval = new pollenParser.exprLogicalAnd_return();
         retval.start = input.LT(1);
@@ -11398,11 +11400,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 67) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1350:2: ( ( exprBitwiseOr -> exprBitwiseOr ) ( '&&' exprBitwiseOr -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr ) )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1350:4: ( exprBitwiseOr -> exprBitwiseOr ) ( '&&' exprBitwiseOr -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1352:2: ( ( exprBitwiseOr -> exprBitwiseOr ) ( '&&' exprBitwiseOr -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr ) )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1352:4: ( exprBitwiseOr -> exprBitwiseOr ) ( '&&' exprBitwiseOr -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr ) )*
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1350:4: ( exprBitwiseOr -> exprBitwiseOr )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1350:5: exprBitwiseOr
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1352:4: ( exprBitwiseOr -> exprBitwiseOr )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1352:5: exprBitwiseOr
             {
             pushFollow(FOLLOW_exprBitwiseOr_in_exprLogicalAnd5172);
             exprBitwiseOr184=exprBitwiseOr();
@@ -11424,7 +11426,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1350:19: -> exprBitwiseOr
+            // 1352:19: -> exprBitwiseOr
             {
                 adaptor.addChild(root_0, stream_exprBitwiseOr.nextTree());
 
@@ -11437,7 +11439,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1351:2: ( '&&' exprBitwiseOr -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1353:2: ( '&&' exprBitwiseOr -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr ) )*
             loop59:
             do {
                 int alt59=2;
@@ -11456,7 +11458,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt59) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1352:3: '&&' exprBitwiseOr
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1354:3: '&&' exprBitwiseOr
             	    {
             	    string_literal185=(Atom)match(input,124,FOLLOW_124_in_exprLogicalAnd5184); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_124.add(string_literal185);
@@ -11470,7 +11472,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprBitwiseOr.add(exprBitwiseOr186.getTree());
 
             	    // AST REWRITE
-            	    // elements: exprBitwiseOr, exprLogicalAnd, 124
+            	    // elements: 124, exprBitwiseOr, exprLogicalAnd
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -11482,9 +11484,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 1353:4: -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr )
+            	    // 1355:4: -> ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr )
             	    {
-            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1353:7: ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr )
+            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1355:7: ^( E_BINARY[\"E_BINARY\"] '&&' $exprLogicalAnd exprBitwiseOr )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -11552,7 +11554,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprBitwiseOr"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1356:1: exprBitwiseOr : ( exprBitwiseXor -> exprBitwiseXor ) ( '|' exprBitwiseXor -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor ) )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1358:1: exprBitwiseOr : ( exprBitwiseXor -> exprBitwiseXor ) ( '|' exprBitwiseXor -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor ) )* ;
     public final pollenParser.exprBitwiseOr_return exprBitwiseOr() throws RecognitionException {
         pollenParser.exprBitwiseOr_return retval = new pollenParser.exprBitwiseOr_return();
         retval.start = input.LT(1);
@@ -11573,11 +11575,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 68) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1357:2: ( ( exprBitwiseXor -> exprBitwiseXor ) ( '|' exprBitwiseXor -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor ) )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1357:4: ( exprBitwiseXor -> exprBitwiseXor ) ( '|' exprBitwiseXor -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1359:2: ( ( exprBitwiseXor -> exprBitwiseXor ) ( '|' exprBitwiseXor -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor ) )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1359:4: ( exprBitwiseXor -> exprBitwiseXor ) ( '|' exprBitwiseXor -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor ) )*
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1357:4: ( exprBitwiseXor -> exprBitwiseXor )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1357:5: exprBitwiseXor
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1359:4: ( exprBitwiseXor -> exprBitwiseXor )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1359:5: exprBitwiseXor
             {
             pushFollow(FOLLOW_exprBitwiseXor_in_exprBitwiseOr5223);
             exprBitwiseXor187=exprBitwiseXor();
@@ -11599,7 +11601,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1357:20: -> exprBitwiseXor
+            // 1359:20: -> exprBitwiseXor
             {
                 adaptor.addChild(root_0, stream_exprBitwiseXor.nextTree());
 
@@ -11612,7 +11614,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1358:2: ( '|' exprBitwiseXor -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1360:2: ( '|' exprBitwiseXor -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor ) )*
             loop60:
             do {
                 int alt60=2;
@@ -11631,7 +11633,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt60) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1359:3: '|' exprBitwiseXor
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1361:3: '|' exprBitwiseXor
             	    {
             	    char_literal188=(Atom)match(input,191,FOLLOW_191_in_exprBitwiseOr5235); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_191.add(char_literal188);
@@ -11645,7 +11647,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprBitwiseXor.add(exprBitwiseXor189.getTree());
 
             	    // AST REWRITE
-            	    // elements: 191, exprBitwiseOr, exprBitwiseXor
+            	    // elements: exprBitwiseOr, exprBitwiseXor, 191
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -11657,9 +11659,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 1360:3: -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor )
+            	    // 1362:3: -> ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor )
             	    {
-            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1360:6: ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor )
+            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1362:6: ^( E_BINARY[\"E_BINARY\"] '|' $exprBitwiseOr exprBitwiseXor )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -11727,7 +11729,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprBitwiseXor"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1363:1: exprBitwiseXor : ( exprBitwiseAnd -> exprBitwiseAnd ) ( '^' exprBitwiseAnd -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd ) )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1365:1: exprBitwiseXor : ( exprBitwiseAnd -> exprBitwiseAnd ) ( '^' exprBitwiseAnd -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd ) )* ;
     public final pollenParser.exprBitwiseXor_return exprBitwiseXor() throws RecognitionException {
         pollenParser.exprBitwiseXor_return retval = new pollenParser.exprBitwiseXor_return();
         retval.start = input.LT(1);
@@ -11748,11 +11750,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 69) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1364:2: ( ( exprBitwiseAnd -> exprBitwiseAnd ) ( '^' exprBitwiseAnd -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd ) )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1364:4: ( exprBitwiseAnd -> exprBitwiseAnd ) ( '^' exprBitwiseAnd -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1366:2: ( ( exprBitwiseAnd -> exprBitwiseAnd ) ( '^' exprBitwiseAnd -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd ) )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1366:4: ( exprBitwiseAnd -> exprBitwiseAnd ) ( '^' exprBitwiseAnd -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd ) )*
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1364:4: ( exprBitwiseAnd -> exprBitwiseAnd )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1364:5: exprBitwiseAnd
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1366:4: ( exprBitwiseAnd -> exprBitwiseAnd )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1366:5: exprBitwiseAnd
             {
             pushFollow(FOLLOW_exprBitwiseAnd_in_exprBitwiseXor5273);
             exprBitwiseAnd190=exprBitwiseAnd();
@@ -11774,7 +11776,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1364:20: -> exprBitwiseAnd
+            // 1366:20: -> exprBitwiseAnd
             {
                 adaptor.addChild(root_0, stream_exprBitwiseAnd.nextTree());
 
@@ -11787,7 +11789,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1365:2: ( '^' exprBitwiseAnd -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1367:2: ( '^' exprBitwiseAnd -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd ) )*
             loop61:
             do {
                 int alt61=2;
@@ -11806,7 +11808,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt61) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1366:3: '^' exprBitwiseAnd
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1368:3: '^' exprBitwiseAnd
             	    {
             	    char_literal191=(Atom)match(input,139,FOLLOW_139_in_exprBitwiseXor5285); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_139.add(char_literal191);
@@ -11820,7 +11822,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprBitwiseAnd.add(exprBitwiseAnd192.getTree());
 
             	    // AST REWRITE
-            	    // elements: exprBitwiseAnd, 139, exprBitwiseXor
+            	    // elements: 139, exprBitwiseXor, exprBitwiseAnd
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -11832,9 +11834,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 1367:3: -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd )
+            	    // 1369:3: -> ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd )
             	    {
-            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1367:6: ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd )
+            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1369:6: ^( E_BINARY[\"E_BINARY\"] '^' $exprBitwiseXor exprBitwiseAnd )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -11902,7 +11904,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprBitwiseAnd"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1370:1: exprBitwiseAnd : ( exprEquality -> exprEquality ) ( '&' exprEquality -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality ) )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1372:1: exprBitwiseAnd : ( exprEquality -> exprEquality ) ( '&' exprEquality -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality ) )* ;
     public final pollenParser.exprBitwiseAnd_return exprBitwiseAnd() throws RecognitionException {
         pollenParser.exprBitwiseAnd_return retval = new pollenParser.exprBitwiseAnd_return();
         retval.start = input.LT(1);
@@ -11923,11 +11925,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 70) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1371:2: ( ( exprEquality -> exprEquality ) ( '&' exprEquality -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality ) )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1371:4: ( exprEquality -> exprEquality ) ( '&' exprEquality -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1373:2: ( ( exprEquality -> exprEquality ) ( '&' exprEquality -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality ) )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1373:4: ( exprEquality -> exprEquality ) ( '&' exprEquality -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality ) )*
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1371:4: ( exprEquality -> exprEquality )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1371:5: exprEquality
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1373:4: ( exprEquality -> exprEquality )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1373:5: exprEquality
             {
             pushFollow(FOLLOW_exprEquality_in_exprBitwiseAnd5323);
             exprEquality193=exprEquality();
@@ -11949,7 +11951,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1371:18: -> exprEquality
+            // 1373:18: -> exprEquality
             {
                 adaptor.addChild(root_0, stream_exprEquality.nextTree());
 
@@ -11962,7 +11964,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1372:2: ( '&' exprEquality -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1374:2: ( '&' exprEquality -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality ) )*
             loop62:
             do {
                 int alt62=2;
@@ -11981,7 +11983,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt62) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1373:3: '&' exprEquality
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1375:3: '&' exprEquality
             	    {
             	    char_literal194=(Atom)match(input,125,FOLLOW_125_in_exprBitwiseAnd5335); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_125.add(char_literal194);
@@ -11995,7 +11997,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprEquality.add(exprEquality195.getTree());
 
             	    // AST REWRITE
-            	    // elements: 125, exprBitwiseAnd, exprEquality
+            	    // elements: exprEquality, 125, exprBitwiseAnd
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -12007,9 +12009,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 1374:3: -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality )
+            	    // 1376:3: -> ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality )
             	    {
-            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1374:6: ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality )
+            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1376:6: ^( E_BINARY[\"E_BINARY\"] '&' $exprBitwiseAnd exprEquality )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -12077,7 +12079,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprEquality"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1377:1: exprEquality : ( exprRelational -> exprRelational ) ( equalityOp exprRelational -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational ) )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1379:1: exprEquality : ( exprRelational -> exprRelational ) ( equalityOp exprRelational -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational ) )* ;
     public final pollenParser.exprEquality_return exprEquality() throws RecognitionException {
         pollenParser.exprEquality_return retval = new pollenParser.exprEquality_return();
         retval.start = input.LT(1);
@@ -12098,11 +12100,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 71) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1378:2: ( ( exprRelational -> exprRelational ) ( equalityOp exprRelational -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational ) )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1378:4: ( exprRelational -> exprRelational ) ( equalityOp exprRelational -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1380:2: ( ( exprRelational -> exprRelational ) ( equalityOp exprRelational -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational ) )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1380:4: ( exprRelational -> exprRelational ) ( equalityOp exprRelational -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational ) )*
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1378:4: ( exprRelational -> exprRelational )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1378:5: exprRelational
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1380:4: ( exprRelational -> exprRelational )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1380:5: exprRelational
             {
             pushFollow(FOLLOW_exprRelational_in_exprEquality5373);
             exprRelational196=exprRelational();
@@ -12124,7 +12126,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1378:20: -> exprRelational
+            // 1380:20: -> exprRelational
             {
                 adaptor.addChild(root_0, stream_exprRelational.nextTree());
 
@@ -12137,7 +12139,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1379:2: ( equalityOp exprRelational -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1381:2: ( equalityOp exprRelational -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational ) )*
             loop63:
             do {
                 int alt63=2;
@@ -12156,7 +12158,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt63) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1380:3: equalityOp exprRelational
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1382:3: equalityOp exprRelational
             	    {
             	    pushFollow(FOLLOW_equalityOp_in_exprEquality5386);
             	    equalityOp197=equalityOp();
@@ -12173,7 +12175,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprRelational.add(exprRelational198.getTree());
 
             	    // AST REWRITE
-            	    // elements: equalityOp, exprEquality, exprRelational
+            	    // elements: equalityOp, exprRelational, exprEquality
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -12185,9 +12187,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 1381:3: -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational )
+            	    // 1383:3: -> ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational )
             	    {
-            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1381:6: ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational )
+            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1383:6: ^( E_BINARY[\"E_BINARY\"] equalityOp $exprEquality exprRelational )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -12253,7 +12255,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprRelational"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1384:1: exprRelational : ( exprShift -> exprShift ) ( relationalOp exprShift -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift ) )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1386:1: exprRelational : ( exprShift -> exprShift ) ( relationalOp exprShift -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift ) )* ;
     public final pollenParser.exprRelational_return exprRelational() throws RecognitionException {
         pollenParser.exprRelational_return retval = new pollenParser.exprRelational_return();
         retval.start = input.LT(1);
@@ -12274,11 +12276,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 72) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1385:2: ( ( exprShift -> exprShift ) ( relationalOp exprShift -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift ) )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1385:4: ( exprShift -> exprShift ) ( relationalOp exprShift -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1387:2: ( ( exprShift -> exprShift ) ( relationalOp exprShift -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift ) )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1387:4: ( exprShift -> exprShift ) ( relationalOp exprShift -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift ) )*
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1385:4: ( exprShift -> exprShift )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1385:5: exprShift
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1387:4: ( exprShift -> exprShift )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1387:5: exprShift
             {
             pushFollow(FOLLOW_exprShift_in_exprRelational5424);
             exprShift199=exprShift();
@@ -12300,7 +12302,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1385:15: -> exprShift
+            // 1387:15: -> exprShift
             {
                 adaptor.addChild(root_0, stream_exprShift.nextTree());
 
@@ -12313,7 +12315,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1386:2: ( relationalOp exprShift -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1388:2: ( relationalOp exprShift -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift ) )*
             loop64:
             do {
                 int alt64=2;
@@ -12332,7 +12334,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt64) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1387:3: relationalOp exprShift
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1389:3: relationalOp exprShift
             	    {
             	    pushFollow(FOLLOW_relationalOp_in_exprRelational5437);
             	    relationalOp200=relationalOp();
@@ -12349,7 +12351,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprShift.add(exprShift201.getTree());
 
             	    // AST REWRITE
-            	    // elements: exprShift, exprRelational, relationalOp
+            	    // elements: relationalOp, exprRelational, exprShift
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -12361,9 +12363,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 1388:3: -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift )
+            	    // 1390:3: -> ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift )
             	    {
-            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1388:6: ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift )
+            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1390:6: ^( E_BINARY[\"E_BINARY\"] relationalOp $exprRelational exprShift )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -12429,7 +12431,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprShift"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1391:1: exprShift : ( exprAddSub -> exprAddSub ) ( shiftOp exprAddSub -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub ) )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1393:1: exprShift : ( exprAddSub -> exprAddSub ) ( shiftOp exprAddSub -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub ) )* ;
     public final pollenParser.exprShift_return exprShift() throws RecognitionException {
         pollenParser.exprShift_return retval = new pollenParser.exprShift_return();
         retval.start = input.LT(1);
@@ -12450,11 +12452,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 73) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1392:2: ( ( exprAddSub -> exprAddSub ) ( shiftOp exprAddSub -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub ) )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1392:4: ( exprAddSub -> exprAddSub ) ( shiftOp exprAddSub -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1394:2: ( ( exprAddSub -> exprAddSub ) ( shiftOp exprAddSub -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub ) )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1394:4: ( exprAddSub -> exprAddSub ) ( shiftOp exprAddSub -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub ) )*
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1392:4: ( exprAddSub -> exprAddSub )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1392:5: exprAddSub
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1394:4: ( exprAddSub -> exprAddSub )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1394:5: exprAddSub
             {
             pushFollow(FOLLOW_exprAddSub_in_exprShift5476);
             exprAddSub202=exprAddSub();
@@ -12476,7 +12478,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1392:16: -> exprAddSub
+            // 1394:16: -> exprAddSub
             {
                 adaptor.addChild(root_0, stream_exprAddSub.nextTree());
 
@@ -12489,7 +12491,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1393:2: ( shiftOp exprAddSub -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1395:2: ( shiftOp exprAddSub -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub ) )*
             loop65:
             do {
                 int alt65=2;
@@ -12508,7 +12510,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt65) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1394:3: shiftOp exprAddSub
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1396:3: shiftOp exprAddSub
             	    {
             	    pushFollow(FOLLOW_shiftOp_in_exprShift5489);
             	    shiftOp203=shiftOp();
@@ -12525,7 +12527,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprAddSub.add(exprAddSub204.getTree());
 
             	    // AST REWRITE
-            	    // elements: shiftOp, exprAddSub, exprShift
+            	    // elements: exprShift, exprAddSub, shiftOp
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -12537,9 +12539,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 1395:3: -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub )
+            	    // 1397:3: -> ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub )
             	    {
-            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1395:6: ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub )
+            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1397:6: ^( E_BINARY[\"E_BINARY\"] shiftOp $exprShift exprAddSub )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -12605,7 +12607,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprAddSub"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1398:1: exprAddSub : ( exprMultDiv -> exprMultDiv ) ( addSubOp exprMultDiv -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv ) )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1400:1: exprAddSub : ( exprMultDiv -> exprMultDiv ) ( addSubOp exprMultDiv -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv ) )* ;
     public final pollenParser.exprAddSub_return exprAddSub() throws RecognitionException {
         pollenParser.exprAddSub_return retval = new pollenParser.exprAddSub_return();
         retval.start = input.LT(1);
@@ -12626,11 +12628,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 74) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1399:2: ( ( exprMultDiv -> exprMultDiv ) ( addSubOp exprMultDiv -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv ) )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1399:4: ( exprMultDiv -> exprMultDiv ) ( addSubOp exprMultDiv -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1401:2: ( ( exprMultDiv -> exprMultDiv ) ( addSubOp exprMultDiv -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv ) )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1401:4: ( exprMultDiv -> exprMultDiv ) ( addSubOp exprMultDiv -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv ) )*
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1399:4: ( exprMultDiv -> exprMultDiv )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1399:5: exprMultDiv
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1401:4: ( exprMultDiv -> exprMultDiv )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1401:5: exprMultDiv
             {
             pushFollow(FOLLOW_exprMultDiv_in_exprAddSub5529);
             exprMultDiv205=exprMultDiv();
@@ -12652,7 +12654,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1399:17: -> exprMultDiv
+            // 1401:17: -> exprMultDiv
             {
                 adaptor.addChild(root_0, stream_exprMultDiv.nextTree());
 
@@ -12665,7 +12667,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1400:2: ( addSubOp exprMultDiv -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1402:2: ( addSubOp exprMultDiv -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv ) )*
             loop66:
             do {
                 int alt66=2;
@@ -12684,7 +12686,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt66) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1401:3: addSubOp exprMultDiv
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1403:3: addSubOp exprMultDiv
             	    {
             	    pushFollow(FOLLOW_addSubOp_in_exprAddSub5541);
             	    addSubOp206=addSubOp();
@@ -12701,7 +12703,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprMultDiv.add(exprMultDiv207.getTree());
 
             	    // AST REWRITE
-            	    // elements: exprAddSub, addSubOp, exprMultDiv
+            	    // elements: exprAddSub, exprMultDiv, addSubOp
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -12713,9 +12715,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 1402:3: -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv )
+            	    // 1404:3: -> ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv )
             	    {
-            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1402:6: ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv )
+            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1404:6: ^( E_BINARY[\"E_BINARY\"] addSubOp $exprAddSub exprMultDiv )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -12781,7 +12783,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprMultDiv"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1405:1: exprMultDiv : ( exprUnary -> exprUnary ) ( multDivModOp exprUnary -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary ) )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1407:1: exprMultDiv : ( exprUnary -> exprUnary ) ( multDivModOp exprUnary -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary ) )* ;
     public final pollenParser.exprMultDiv_return exprMultDiv() throws RecognitionException {
         pollenParser.exprMultDiv_return retval = new pollenParser.exprMultDiv_return();
         retval.start = input.LT(1);
@@ -12802,11 +12804,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 75) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1406:2: ( ( exprUnary -> exprUnary ) ( multDivModOp exprUnary -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary ) )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1406:4: ( exprUnary -> exprUnary ) ( multDivModOp exprUnary -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1408:2: ( ( exprUnary -> exprUnary ) ( multDivModOp exprUnary -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary ) )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1408:4: ( exprUnary -> exprUnary ) ( multDivModOp exprUnary -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary ) )*
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1406:4: ( exprUnary -> exprUnary )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1406:5: exprUnary
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1408:4: ( exprUnary -> exprUnary )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1408:5: exprUnary
             {
             pushFollow(FOLLOW_exprUnary_in_exprMultDiv5586);
             exprUnary208=exprUnary();
@@ -12828,7 +12830,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1406:15: -> exprUnary
+            // 1408:15: -> exprUnary
             {
                 adaptor.addChild(root_0, stream_exprUnary.nextTree());
 
@@ -12841,7 +12843,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1407:2: ( multDivModOp exprUnary -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary ) )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1409:2: ( multDivModOp exprUnary -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary ) )*
             loop67:
             do {
                 int alt67=2;
@@ -12860,7 +12862,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt67) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1408:3: multDivModOp exprUnary
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1410:3: multDivModOp exprUnary
             	    {
             	    pushFollow(FOLLOW_multDivModOp_in_exprMultDiv5598);
             	    multDivModOp209=multDivModOp();
@@ -12889,9 +12891,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             	    root_0 = (BaseNode)adaptor.nil();
-            	    // 1409:3: -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary )
+            	    // 1411:3: -> ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary )
             	    {
-            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1409:6: ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary )
+            	        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1411:6: ^( E_BINARY[\"E_BINARY\"] multDivModOp $exprMultDiv exprUnary )
             	        {
             	        BaseNode root_1 = (BaseNode)adaptor.nil();
             	        root_1 = (BaseNode)adaptor.becomeRoot(
@@ -12957,7 +12959,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprNew"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1412:1: exprNew : 'new' qualName fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ( fieldOrArrayAccess )? ) ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1414:1: exprNew : 'new' qualName fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ( fieldOrArrayAccess )? ) ) ;
     public final pollenParser.exprNew_return exprNew() throws RecognitionException {
         pollenParser.exprNew_return retval = new pollenParser.exprNew_return();
         retval.start = input.LT(1);
@@ -12987,8 +12989,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 76) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1419:2: ( 'new' qualName fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ( fieldOrArrayAccess )? ) ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1419:4: 'new' qualName fcnArgumentList ( fieldOrArrayAccess )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1421:2: ( 'new' qualName fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ( fieldOrArrayAccess )? ) ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1421:4: 'new' qualName fcnArgumentList ( fieldOrArrayAccess )?
             {
             string_literal211=(Atom)match(input,170,FOLLOW_170_in_exprNew5642); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_170.add(string_literal211);
@@ -13008,7 +13010,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_fcnArgumentList.add(fcnArgumentList213.getTree());
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1419:35: ( fieldOrArrayAccess )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1421:35: ( fieldOrArrayAccess )?
             int alt68=2;
             int LA68_0 = input.LA(1);
 
@@ -13024,7 +13026,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt68) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1419:35: fieldOrArrayAccess
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1421:35: fieldOrArrayAccess
                     {
                     pushFollow(FOLLOW_fieldOrArrayAccess_in_exprNew5648);
                     fieldOrArrayAccess214=fieldOrArrayAccess();
@@ -13052,23 +13054,23 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1420:2: -> ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ( fieldOrArrayAccess )? ) )
+            // 1422:2: -> ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ( fieldOrArrayAccess )? ) )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1420:5: ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ( fieldOrArrayAccess )? ) )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1422:5: ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ( fieldOrArrayAccess )? ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ExprNode.New(E_NEW, "E_NEW")
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1421:4: ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ( fieldOrArrayAccess )? )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1423:4: ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ( fieldOrArrayAccess )? )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
                 new ExprNode.Call(E_CALL, "E_CALL")
                 , root_2);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1422:4: ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1424:4: ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] )
                 {
                 BaseNode root_3 = (BaseNode)adaptor.nil();
                 root_3 = (BaseNode)adaptor.becomeRoot(
@@ -13084,7 +13086,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_2, stream_fcnArgumentList.nextTree());
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1422:93: ( fieldOrArrayAccess )?
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1424:93: ( fieldOrArrayAccess )?
                 if ( stream_fieldOrArrayAccess.hasNext() ) {
                     adaptor.addChild(root_2, stream_fieldOrArrayAccess.nextTree());
 
@@ -13138,7 +13140,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprUnary"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1424:1: exprUnary : ( primitiveLit | injectionCode | arrayLit -> ^( E_VEC[\"E_VEC\"] arrayLit ) | logicalNotOp expr -> ^( E_UNARY[\"E_UNARY\"] expr logicalNotOp ) | bitwiseNotOp expr -> ^( E_UNARY[\"E_UNARY\"] expr bitwiseNotOp ) | MINUS expr -> ^( E_UNARY[\"E_UNARY\"] expr MINUS ) | '(' expr ')' -> ^( E_PAREN[\"E_PAREN\"] expr ) | varOrFcnOrArray incDecOp -> ^( E_UNARY[\"E_UNARY\", true] varOrFcnOrArray incDecOp ) | varOrFcnOrArray | incDecOp varOrFcnOrArray -> ^( E_UNARY[\"E_UNARY\"] varOrFcnOrArray incDecOp ) | exprNew );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1426:1: exprUnary : ( primitiveLit | injectionCode | arrayLit -> ^( E_VEC[\"E_VEC\"] arrayLit ) | logicalNotOp expr -> ^( E_UNARY[\"E_UNARY\"] expr logicalNotOp ) | bitwiseNotOp expr -> ^( E_UNARY[\"E_UNARY\"] expr bitwiseNotOp ) | MINUS expr -> ^( E_UNARY[\"E_UNARY\"] expr MINUS ) | '(' expr ')' -> ^( E_PAREN[\"E_PAREN\"] expr ) | varOrFcnOrArray incDecOp -> ^( E_UNARY[\"E_UNARY\", true] varOrFcnOrArray incDecOp ) | varOrFcnOrArray | incDecOp varOrFcnOrArray -> ^( E_UNARY[\"E_UNARY\"] varOrFcnOrArray incDecOp ) | exprNew );
     public final pollenParser.exprUnary_return exprUnary() throws RecognitionException {
         pollenParser.exprUnary_return retval = new pollenParser.exprUnary_return();
         retval.start = input.LT(1);
@@ -13196,7 +13198,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 77) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1425:2: ( primitiveLit | injectionCode | arrayLit -> ^( E_VEC[\"E_VEC\"] arrayLit ) | logicalNotOp expr -> ^( E_UNARY[\"E_UNARY\"] expr logicalNotOp ) | bitwiseNotOp expr -> ^( E_UNARY[\"E_UNARY\"] expr bitwiseNotOp ) | MINUS expr -> ^( E_UNARY[\"E_UNARY\"] expr MINUS ) | '(' expr ')' -> ^( E_PAREN[\"E_PAREN\"] expr ) | varOrFcnOrArray incDecOp -> ^( E_UNARY[\"E_UNARY\", true] varOrFcnOrArray incDecOp ) | varOrFcnOrArray | incDecOp varOrFcnOrArray -> ^( E_UNARY[\"E_UNARY\"] varOrFcnOrArray incDecOp ) | exprNew )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1427:2: ( primitiveLit | injectionCode | arrayLit -> ^( E_VEC[\"E_VEC\"] arrayLit ) | logicalNotOp expr -> ^( E_UNARY[\"E_UNARY\"] expr logicalNotOp ) | bitwiseNotOp expr -> ^( E_UNARY[\"E_UNARY\"] expr bitwiseNotOp ) | MINUS expr -> ^( E_UNARY[\"E_UNARY\"] expr MINUS ) | '(' expr ')' -> ^( E_PAREN[\"E_PAREN\"] expr ) | varOrFcnOrArray incDecOp -> ^( E_UNARY[\"E_UNARY\", true] varOrFcnOrArray incDecOp ) | varOrFcnOrArray | incDecOp varOrFcnOrArray -> ^( E_UNARY[\"E_UNARY\"] varOrFcnOrArray incDecOp ) | exprNew )
             int alt69=11;
             switch ( input.LA(1) ) {
             case CHAR:
@@ -13303,7 +13305,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt69) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1425:4: primitiveLit
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1427:4: primitiveLit
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -13318,7 +13320,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1426:4: injectionCode
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1428:4: injectionCode
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -13333,7 +13335,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1427:4: arrayLit
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1429:4: arrayLit
                     {
                     pushFollow(FOLLOW_arrayLit_in_exprUnary5719);
                     arrayLit217=arrayLit();
@@ -13355,9 +13357,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1427:16: -> ^( E_VEC[\"E_VEC\"] arrayLit )
+                    // 1429:16: -> ^( E_VEC[\"E_VEC\"] arrayLit )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1427:19: ^( E_VEC[\"E_VEC\"] arrayLit )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1429:19: ^( E_VEC[\"E_VEC\"] arrayLit )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -13378,7 +13380,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1428:4: logicalNotOp expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1430:4: logicalNotOp expr
                     {
                     pushFollow(FOLLOW_logicalNotOp_in_exprUnary5741);
                     logicalNotOp218=logicalNotOp();
@@ -13407,9 +13409,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1428:25: -> ^( E_UNARY[\"E_UNARY\"] expr logicalNotOp )
+                    // 1430:25: -> ^( E_UNARY[\"E_UNARY\"] expr logicalNotOp )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1428:28: ^( E_UNARY[\"E_UNARY\"] expr logicalNotOp )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1430:28: ^( E_UNARY[\"E_UNARY\"] expr logicalNotOp )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -13432,7 +13434,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1429:4: bitwiseNotOp expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1431:4: bitwiseNotOp expr
                     {
                     pushFollow(FOLLOW_bitwiseNotOp_in_exprUnary5768);
                     bitwiseNotOp220=bitwiseNotOp();
@@ -13449,7 +13451,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_expr.add(expr221.getTree());
 
                     // AST REWRITE
-                    // elements: bitwiseNotOp, expr
+                    // elements: expr, bitwiseNotOp
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -13461,9 +13463,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1429:26: -> ^( E_UNARY[\"E_UNARY\"] expr bitwiseNotOp )
+                    // 1431:26: -> ^( E_UNARY[\"E_UNARY\"] expr bitwiseNotOp )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1429:29: ^( E_UNARY[\"E_UNARY\"] expr bitwiseNotOp )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1431:29: ^( E_UNARY[\"E_UNARY\"] expr bitwiseNotOp )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -13486,7 +13488,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 6 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1430:4: MINUS expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1432:4: MINUS expr
                     {
                     MINUS222=(Atom)match(input,MINUS,FOLLOW_MINUS_in_exprUnary5796); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_MINUS.add(MINUS222);
@@ -13512,9 +13514,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1430:18: -> ^( E_UNARY[\"E_UNARY\"] expr MINUS )
+                    // 1432:18: -> ^( E_UNARY[\"E_UNARY\"] expr MINUS )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1430:21: ^( E_UNARY[\"E_UNARY\"] expr MINUS )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1432:21: ^( E_UNARY[\"E_UNARY\"] expr MINUS )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -13539,7 +13541,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 7 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1431:4: '(' expr ')'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1433:4: '(' expr ')'
                     {
                     char_literal224=(Atom)match(input,126,FOLLOW_126_in_exprUnary5823); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_126.add(char_literal224);
@@ -13569,9 +13571,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1431:20: -> ^( E_PAREN[\"E_PAREN\"] expr )
+                    // 1433:20: -> ^( E_PAREN[\"E_PAREN\"] expr )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1431:23: ^( E_PAREN[\"E_PAREN\"] expr )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1433:23: ^( E_PAREN[\"E_PAREN\"] expr )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -13592,7 +13594,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 8 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1432:4: varOrFcnOrArray incDecOp
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1434:4: varOrFcnOrArray incDecOp
                     {
                     pushFollow(FOLLOW_varOrFcnOrArray_in_exprUnary5850);
                     varOrFcnOrArray227=varOrFcnOrArray();
@@ -13609,7 +13611,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_incDecOp.add(incDecOp228.getTree());
 
                     // AST REWRITE
-                    // elements: incDecOp, varOrFcnOrArray
+                    // elements: varOrFcnOrArray, incDecOp
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -13621,9 +13623,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1432:31: -> ^( E_UNARY[\"E_UNARY\", true] varOrFcnOrArray incDecOp )
+                    // 1434:31: -> ^( E_UNARY[\"E_UNARY\", true] varOrFcnOrArray incDecOp )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1432:34: ^( E_UNARY[\"E_UNARY\", true] varOrFcnOrArray incDecOp )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1434:34: ^( E_UNARY[\"E_UNARY\", true] varOrFcnOrArray incDecOp )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -13646,7 +13648,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 9 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1433:4: varOrFcnOrArray
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1435:4: varOrFcnOrArray
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -13661,7 +13663,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 10 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1434:4: incDecOp varOrFcnOrArray
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1436:4: incDecOp varOrFcnOrArray
                     {
                     pushFollow(FOLLOW_incDecOp_in_exprUnary5880);
                     incDecOp230=incDecOp();
@@ -13690,9 +13692,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1434:31: -> ^( E_UNARY[\"E_UNARY\"] varOrFcnOrArray incDecOp )
+                    // 1436:31: -> ^( E_UNARY[\"E_UNARY\"] varOrFcnOrArray incDecOp )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1434:34: ^( E_UNARY[\"E_UNARY\"] varOrFcnOrArray incDecOp )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1436:34: ^( E_UNARY[\"E_UNARY\"] varOrFcnOrArray incDecOp )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -13715,7 +13717,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 11 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1435:4: exprNew
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1437:4: exprNew
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -13764,7 +13766,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnDefinition"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1437:1: fcnDefinition : fcnAttr fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) fcnBody ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1439:1: fcnDefinition : fcnAttr fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) fcnBody ) ;
     public final pollenParser.fcnDefinition_return fcnDefinition() throws RecognitionException {
         pollenParser.fcnDefinition_return retval = new pollenParser.fcnDefinition_return();
         retval.start = input.LT(1);
@@ -13789,8 +13791,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 78) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1438:2: ( fcnAttr fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) fcnBody ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1438:4: fcnAttr fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree]
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1440:2: ( fcnAttr fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) fcnBody ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1440:4: fcnAttr fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree]
             {
             pushFollow(FOLLOW_fcnAttr_in_fcnDefinition5915);
             fcnAttr233=fcnAttr();
@@ -13821,7 +13823,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_fcnBody.add(fcnBody236.getTree());
 
             // AST REWRITE
-            // elements: fcnType_fcnName, formalParameterList, fcnBody
+            // elements: formalParameterList, fcnBody, fcnType_fcnName
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -13833,9 +13835,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1440:3: -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) fcnBody )
+            // 1442:3: -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) fcnBody )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1440:6: ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) fcnBody )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1442:6: ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) fcnBody )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -13846,14 +13848,14 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_formalParameterList.nextTree());
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1443:4: ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1445:4: ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
                 new DeclNode.Formal(D_FORMAL, "D_FORMAL", featureFlags)
                 , root_2);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1444:5: ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1446:5: ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] )
                 {
                 BaseNode root_3 = (BaseNode)adaptor.nil();
                 root_3 = (BaseNode)adaptor.becomeRoot(
@@ -13920,7 +13922,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnDefinitionHost"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1448:1: fcnDefinitionHost : fcnAttr fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) fcnBody ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1450:1: fcnDefinitionHost : fcnAttr fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) fcnBody ) ;
     public final pollenParser.fcnDefinitionHost_return fcnDefinitionHost() throws RecognitionException {
         pollenParser.fcnDefinitionHost_return retval = new pollenParser.fcnDefinitionHost_return();
         retval.start = input.LT(1);
@@ -13945,8 +13947,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 79) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1450:2: ( fcnAttr fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) fcnBody ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1450:4: fcnAttr fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree]
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1452:2: ( fcnAttr fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) fcnBody ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1452:4: fcnAttr fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree]
             {
             pushFollow(FOLLOW_fcnAttr_in_fcnDefinitionHost6005);
             fcnAttr237=fcnAttr();
@@ -13982,7 +13984,7 @@ public TreeAdaptor getTreeAdaptor() {
             		}
 
             // AST REWRITE
-            // elements: fcnType_fcnName, formalParameterList, fcnBody
+            // elements: fcnType_fcnName, fcnBody, formalParameterList
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -13994,9 +13996,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1456:3: -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) fcnBody )
+            // 1458:3: -> ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) fcnBody )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1456:6: ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) fcnBody )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1458:6: ^( D_FCN_DEF[\"D_FCN_DEF\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) fcnBody )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -14007,14 +14009,14 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_formalParameterList.nextTree());
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1460:5: ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1462:5: ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
                 new DeclNode.Formal(D_FORMAL, "D_FORMAL", featureFlags)
                 , root_2);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1461:6: ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1463:6: ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] )
                 {
                 BaseNode root_3 = (BaseNode)adaptor.nil();
                 root_3 = (BaseNode)adaptor.becomeRoot(
@@ -14082,7 +14084,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnAttr"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1469:1: fcnAttr : ( 'public' | 'host' | 'preset' )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1471:1: fcnAttr : ( 'public' | 'host' | 'preset' )* ;
     public final pollenParser.fcnAttr_return fcnAttr() throws RecognitionException {
         pollenParser.fcnAttr_return retval = new pollenParser.fcnAttr_return();
         retval.start = input.LT(1);
@@ -14102,13 +14104,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 80) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1470:2: ( ( 'public' | 'host' | 'preset' )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1470:4: ( 'public' | 'host' | 'preset' )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1472:2: ( ( 'public' | 'host' | 'preset' )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1472:4: ( 'public' | 'host' | 'preset' )*
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1470:4: ( 'public' | 'host' | 'preset' )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1472:4: ( 'public' | 'host' | 'preset' )*
             loop70:
             do {
                 int alt70=4;
@@ -14133,7 +14135,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt70) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1470:6: 'public'
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1472:6: 'public'
             	    {
             	    string_literal241=(Atom)match(input,178,FOLLOW_178_in_fcnAttr6116); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
@@ -14148,7 +14150,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1471:5: 'host'
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1473:5: 'host'
             	    {
             	    string_literal242=(Atom)match(input,160,FOLLOW_160_in_fcnAttr6125); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
@@ -14163,7 +14165,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    break;
             	case 3 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1472:5: 'preset'
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1474:5: 'preset'
             	    {
             	    string_literal243=(Atom)match(input,174,FOLLOW_174_in_fcnAttr6134); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
@@ -14219,7 +14221,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnBody"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1475:1: fcnBody[CommonTree formals] : braceOpen ( stmts ) braceClose -> ^( FCNBODY[\"FCNBODY\"] stmts ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1477:1: fcnBody[CommonTree formals] : braceOpen ( stmts ) braceClose -> ^( FCNBODY[\"FCNBODY\"] stmts ) ;
     public final pollenParser.fcnBody_return fcnBody(CommonTree formals) throws RecognitionException {
         pollenParser.fcnBody_return retval = new pollenParser.fcnBody_return();
         retval.start = input.LT(1);
@@ -14241,8 +14243,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 81) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1476:3: ( braceOpen ( stmts ) braceClose -> ^( FCNBODY[\"FCNBODY\"] stmts ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1476:5: braceOpen ( stmts ) braceClose
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1478:3: ( braceOpen ( stmts ) braceClose -> ^( FCNBODY[\"FCNBODY\"] stmts ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1478:5: braceOpen ( stmts ) braceClose
             {
             pushFollow(FOLLOW_braceOpen_in_fcnBody6154);
             braceOpen244=braceOpen();
@@ -14251,8 +14253,8 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_braceOpen.add(braceOpen244.getTree());
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1476:15: ( stmts )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1476:16: stmts
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1478:15: ( stmts )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1478:16: stmts
             {
             pushFollow(FOLLOW_stmts_in_fcnBody6157);
             stmts245=stmts();
@@ -14284,9 +14286,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1476:36: -> ^( FCNBODY[\"FCNBODY\"] stmts )
+            // 1478:36: -> ^( FCNBODY[\"FCNBODY\"] stmts )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1476:39: ^( FCNBODY[\"FCNBODY\"] stmts )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1478:39: ^( FCNBODY[\"FCNBODY\"] stmts )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -14341,7 +14343,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnDeclaration"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1478:1: fcnDeclaration : fcnAttr fcnType_fcnName ( formalParameterList ) delim -> ^( D_FCN_DCL[\"D_FCN_DCL\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1480:1: fcnDeclaration : fcnAttr fcnType_fcnName ( formalParameterList ) delim -> ^( D_FCN_DCL[\"D_FCN_DCL\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ) ;
     public final pollenParser.fcnDeclaration_return fcnDeclaration() throws RecognitionException {
         pollenParser.fcnDeclaration_return retval = new pollenParser.fcnDeclaration_return();
         retval.start = input.LT(1);
@@ -14366,8 +14368,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 82) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1479:4: ( fcnAttr fcnType_fcnName ( formalParameterList ) delim -> ^( D_FCN_DCL[\"D_FCN_DCL\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1479:6: fcnAttr fcnType_fcnName ( formalParameterList ) delim
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1481:4: ( fcnAttr fcnType_fcnName ( formalParameterList ) delim -> ^( D_FCN_DCL[\"D_FCN_DCL\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1481:6: fcnAttr fcnType_fcnName ( formalParameterList ) delim
             {
             pushFollow(FOLLOW_fcnAttr_in_fcnDeclaration6190);
             fcnAttr247=fcnAttr();
@@ -14383,8 +14385,8 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_fcnType_fcnName.add(fcnType_fcnName248.getTree());
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1480:19: ( formalParameterList )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1480:20: formalParameterList
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1482:19: ( formalParameterList )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1482:20: formalParameterList
             {
             pushFollow(FOLLOW_formalParameterList_in_fcnDeclaration6197);
             formalParameterList249=formalParameterList();
@@ -14409,7 +14411,7 @@ public TreeAdaptor getTreeAdaptor() {
             		}
 
             // AST REWRITE
-            // elements: formalParameterList, fcnType_fcnName
+            // elements: fcnType_fcnName, formalParameterList
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -14421,9 +14423,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1485:4: -> ^( D_FCN_DCL[\"D_FCN_DCL\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) )
+            // 1487:4: -> ^( D_FCN_DCL[\"D_FCN_DCL\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1485:7: ^( D_FCN_DCL[\"D_FCN_DCL\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1487:7: ^( D_FCN_DCL[\"D_FCN_DCL\", featureFlags] fcnType_fcnName formalParameterList ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -14434,14 +14436,14 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_formalParameterList.nextTree());
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1488:4: ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1490:4: ^( D_FORMAL[\"D_FORMAL\", featureFlags] ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] ) IDENT[\"this\"] )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
                 new DeclNode.Formal(D_FORMAL, "D_FORMAL", featureFlags)
                 , root_2);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1489:4: ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1491:4: ^( T_USR[\"T_USR\", featureFlags] IDENT[currType.getTypeName()] )
                 {
                 BaseNode root_3 = (BaseNode)adaptor.nil();
                 root_3 = (BaseNode)adaptor.becomeRoot(
@@ -14506,7 +14508,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnType_fcnName"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1493:1: fcnType_fcnName : ( typeNameArray varArraySpec qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeNameArray ) ) qualName ) | typeName qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) qualName ) |{...}? typeName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[ParseUnit.PRESET_INIT] ) |{...}? typeName -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[modCtor] ) |{...}? typeName -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) IDENT[clsCtor] ) | qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) qualName ) | ( '(' typeName ( ',' typeName )* ')' qualName )=> fcnTypes_fcnName );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1495:1: fcnType_fcnName : ( typeNameArray varArraySpec qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeNameArray ) ) qualName ) | typeName qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) qualName ) |{...}? typeName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[ParseUnit.PRESET_INIT] ) |{...}? typeName -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[modCtor] ) |{...}? typeName -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) IDENT[clsCtor] ) | qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) qualName ) | ( '(' typeName ( ',' typeName )* ')' qualName )=> fcnTypes_fcnName );
     public final pollenParser.fcnType_fcnName_return fcnType_fcnName() throws RecognitionException {
         pollenParser.fcnType_fcnName_return retval = new pollenParser.fcnType_fcnName_return();
         retval.start = input.LT(1);
@@ -14547,7 +14549,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 83) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1501:2: ( typeNameArray varArraySpec qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeNameArray ) ) qualName ) | typeName qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) qualName ) |{...}? typeName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[ParseUnit.PRESET_INIT] ) |{...}? typeName -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[modCtor] ) |{...}? typeName -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) IDENT[clsCtor] ) | qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) qualName ) | ( '(' typeName ( ',' typeName )* ')' qualName )=> fcnTypes_fcnName )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1503:2: ( typeNameArray varArraySpec qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeNameArray ) ) qualName ) | typeName qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) qualName ) |{...}? typeName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[ParseUnit.PRESET_INIT] ) |{...}? typeName -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[modCtor] ) |{...}? typeName -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) IDENT[clsCtor] ) | qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) qualName ) | ( '(' typeName ( ',' typeName )* ')' qualName )=> fcnTypes_fcnName )
             int alt71=7;
             int LA71_0 = input.LA(1);
 
@@ -14864,7 +14866,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt71) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1501:4: typeNameArray varArraySpec qualName
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1503:4: typeNameArray varArraySpec qualName
                     {
                     pushFollow(FOLLOW_typeNameArray_in_fcnType_fcnName6294);
                     typeNameArray251=typeNameArray();
@@ -14900,23 +14902,23 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1502:3: -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeNameArray ) ) qualName )
+                    // 1504:3: -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeNameArray ) ) qualName )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1502:6: ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeNameArray ) ) qualName )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1504:6: ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeNameArray ) ) qualName )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.FcnTyp(D_FCN_TYP_NM, "D_FCN_TYP_NM")
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1503:4: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeNameArray ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1505:4: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeNameArray ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new TypeNode.Lst(T_LST, "T_LST", featureFlags)
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1504:5: ^( LIST[\"LIST\"] typeNameArray )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1506:5: ^( LIST[\"LIST\"] typeNameArray )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -14945,7 +14947,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1506:4: typeName qualName
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1508:4: typeName qualName
                     {
                     pushFollow(FOLLOW_typeName_in_fcnType_fcnName6357);
                     typeName254=typeName();
@@ -14974,23 +14976,23 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1507:3: -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) qualName )
+                    // 1509:3: -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) qualName )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1507:6: ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) qualName )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1509:6: ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) qualName )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.FcnTyp(D_FCN_TYP_NM, "D_FCN_TYP_NM")
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1508:4: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1510:4: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new TypeNode.Lst(T_LST, "T_LST", featureFlags)
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1509:5: ^( LIST[\"LIST\"] typeName )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1511:5: ^( LIST[\"LIST\"] typeName )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -15019,7 +15021,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1511:4: {...}? typeName
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1513:4: {...}? typeName
                     {
                     if ( !(((featureFlags.contains(Flags.PRESET)) && input.LT(1).getText().equals(currType.getTypeName()) )) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -15060,30 +15062,30 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1526:3: -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[ParseUnit.PRESET_INIT] )
+                    // 1528:3: -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[ParseUnit.PRESET_INIT] )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1526:6: ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[ParseUnit.PRESET_INIT] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1528:6: ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[ParseUnit.PRESET_INIT] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.FcnTyp(D_FCN_TYP_NM, "D_FCN_TYP_NM")
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1527:4: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1529:4: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new TypeNode.Lst(T_LST, "T_LST", featureFlags)
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1528:4: ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1530:4: ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
                         new ListNode(LIST, "LIST")
                         , root_3);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1528:29: ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1530:29: ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] )
                         {
                         BaseNode root_4 = (BaseNode)adaptor.nil();
                         root_4 = (BaseNode)adaptor.becomeRoot(
@@ -15119,7 +15121,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1530:4: {...}? typeName
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1532:4: {...}? typeName
                     {
                     if ( !((input.LT(1).getText().equals(currType.getTypeName()) && !(currType.getUnitFlags().contains(Flags.CLASS)) )) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -15153,30 +15155,30 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1538:3: -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[modCtor] )
+                    // 1540:3: -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[modCtor] )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1538:6: ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[modCtor] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1540:6: ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) IDENT[modCtor] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.FcnTyp(D_FCN_CTOR, "D_FCN_CTOR")
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1539:4: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1541:4: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new TypeNode.Lst(T_LST, "T_LST", featureFlags)
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1540:4: ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1542:4: ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
                         new ListNode(LIST, "LIST")
                         , root_3);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1540:29: ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1542:29: ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] )
                         {
                         BaseNode root_4 = (BaseNode)adaptor.nil();
                         root_4 = (BaseNode)adaptor.becomeRoot(
@@ -15212,7 +15214,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1542:4: {...}? typeName
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1544:4: {...}? typeName
                     {
                     if ( !((input.LT(1).getText().equals(currType.getTypeName()) )) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -15246,23 +15248,23 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1550:3: -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) IDENT[clsCtor] )
+                    // 1552:3: -> ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) IDENT[clsCtor] )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1550:6: ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) IDENT[clsCtor] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1552:6: ^( D_FCN_CTOR[\"D_FCN_CTOR\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) ) IDENT[clsCtor] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.FcnTyp(D_FCN_CTOR, "D_FCN_CTOR")
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1551:4: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1553:4: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] typeName ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new TypeNode.Lst(T_LST, "T_LST", featureFlags)
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1551:49: ^( LIST[\"LIST\"] typeName )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1553:49: ^( LIST[\"LIST\"] typeName )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -15293,7 +15295,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 6 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1552:4: qualName
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1554:4: qualName
                     {
                     pushFollow(FOLLOW_qualName_in_fcnType_fcnName6663);
                     qualName259=qualName();
@@ -15317,30 +15319,30 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1554:3: -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) qualName )
+                    // 1556:3: -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) qualName )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1554:6: ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) qualName )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1556:6: ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) ) qualName )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.FcnTyp(D_FCN_TYP_NM, "D_FCN_TYP_NM")
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1554:54: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1556:54: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new TypeNode.Lst(T_LST, "T_LST", featureFlags)
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1555:5: ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1557:5: ^( LIST[\"LIST\"] ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] ) )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
                         new ListNode(LIST, "LIST")
                         , root_3);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1555:30: ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1557:30: ^( T_STD[\"T_STD\", featureFlags] VOID[\"void\"] )
                         {
                         BaseNode root_4 = (BaseNode)adaptor.nil();
                         root_4 = (BaseNode)adaptor.becomeRoot(
@@ -15374,7 +15376,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 7 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1556:4: ( '(' typeName ( ',' typeName )* ')' qualName )=> fcnTypes_fcnName
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1558:4: ( '(' typeName ( ',' typeName )* ')' qualName )=> fcnTypes_fcnName
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -15423,7 +15425,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnTypes_fcnName"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1558:1: fcnTypes_fcnName : '(' fcnTypes ')' qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] fcnTypes qualName ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1560:1: fcnTypes_fcnName : '(' fcnTypes ')' qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] fcnTypes qualName ) ;
     public final pollenParser.fcnTypes_fcnName_return fcnTypes_fcnName() throws RecognitionException {
         pollenParser.fcnTypes_fcnName_return retval = new pollenParser.fcnTypes_fcnName_return();
         retval.start = input.LT(1);
@@ -15448,8 +15450,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 84) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1559:2: ( '(' fcnTypes ')' qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] fcnTypes qualName ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1559:4: '(' fcnTypes ')' qualName
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1561:2: ( '(' fcnTypes ')' qualName -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] fcnTypes qualName ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1561:4: '(' fcnTypes ')' qualName
             {
             char_literal261=(Atom)match(input,126,FOLLOW_126_in_fcnTypes_fcnName6762); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_126.add(char_literal261);
@@ -15474,7 +15476,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_qualName.add(qualName264.getTree());
 
             // AST REWRITE
-            // elements: fcnTypes, qualName
+            // elements: qualName, fcnTypes
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -15486,9 +15488,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1559:30: -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] fcnTypes qualName )
+            // 1561:30: -> ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] fcnTypes qualName )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1559:33: ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] fcnTypes qualName )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1561:33: ^( D_FCN_TYP_NM[\"D_FCN_TYP_NM\"] fcnTypes qualName )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -15543,7 +15545,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnTypes"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1561:1: fcnTypes : typeName ( ',' typeName )* -> ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ( typeName )+ ) ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1563:1: fcnTypes : typeName ( ',' typeName )* -> ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ( typeName )+ ) ) ;
     public final pollenParser.fcnTypes_return fcnTypes() throws RecognitionException {
         pollenParser.fcnTypes_return retval = new pollenParser.fcnTypes_return();
         retval.start = input.LT(1);
@@ -15564,8 +15566,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 85) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1562:2: ( typeName ( ',' typeName )* -> ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ( typeName )+ ) ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1562:4: typeName ( ',' typeName )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1564:2: ( typeName ( ',' typeName )* -> ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ( typeName )+ ) ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1564:4: typeName ( ',' typeName )*
             {
             pushFollow(FOLLOW_typeName_in_fcnTypes6795);
             typeName265=typeName();
@@ -15574,7 +15576,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_typeName.add(typeName265.getTree());
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1562:13: ( ',' typeName )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1564:13: ( ',' typeName )*
             loop72:
             do {
                 int alt72=2;
@@ -15587,7 +15589,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt72) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1562:14: ',' typeName
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1564:14: ',' typeName
             	    {
             	    char_literal266=(Atom)match(input,129,FOLLOW_129_in_fcnTypes6798); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_129.add(char_literal266);
@@ -15622,16 +15624,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1562:29: -> ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ( typeName )+ ) )
+            // 1564:29: -> ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ( typeName )+ ) )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1562:32: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ( typeName )+ ) )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1564:32: ^( T_LST[\"T_LST\", featureFlags] ^( LIST[\"LIST\"] ( typeName )+ ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new TypeNode.Lst(T_LST, "T_LST", featureFlags)
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1562:77: ^( LIST[\"LIST\"] ( typeName )+ )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1564:77: ^( LIST[\"LIST\"] ( typeName )+ )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
@@ -15694,7 +15696,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "formalParameterList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1564:1: formalParameterList : '(' formalParameters ')' -> formalParameters ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1566:1: formalParameterList : '(' formalParameters ')' -> formalParameters ;
     public final pollenParser.formalParameterList_return formalParameterList() throws RecognitionException {
         pollenParser.formalParameterList_return retval = new pollenParser.formalParameterList_return();
         retval.start = input.LT(1);
@@ -15716,8 +15718,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 86) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1565:2: ( '(' formalParameters ')' -> formalParameters )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1565:4: '(' formalParameters ')'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1567:2: ( '(' formalParameters ')' -> formalParameters )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1567:4: '(' formalParameters ')'
             {
             char_literal268=(Atom)match(input,126,FOLLOW_126_in_formalParameterList6835); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_126.add(char_literal268);
@@ -15747,7 +15749,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1565:29: -> formalParameters
+            // 1567:29: -> formalParameters
             {
                 adaptor.addChild(root_0, stream_formalParameters.nextTree());
 
@@ -15792,7 +15794,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "formalParameters"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1572:1: formalParameters : ( formalParameter ( ',' formalParameter )* -> ^( LIST[\"LIST\"] ( formalParameter )+ ) | -> ^( LIST[\"LIST\"] ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1574:1: formalParameters : ( formalParameter ( ',' formalParameter )* -> ^( LIST[\"LIST\"] ( formalParameter )+ ) | -> ^( LIST[\"LIST\"] ) );
     public final pollenParser.formalParameters_return formalParameters() throws RecognitionException {
         pollenParser.formalParameters_return retval = new pollenParser.formalParameters_return();
         retval.start = input.LT(1);
@@ -15815,7 +15817,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 87) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1575:2: ( formalParameter ( ',' formalParameter )* -> ^( LIST[\"LIST\"] ( formalParameter )+ ) | -> ^( LIST[\"LIST\"] ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1577:2: ( formalParameter ( ',' formalParameter )* -> ^( LIST[\"LIST\"] ( formalParameter )+ ) | -> ^( LIST[\"LIST\"] ) )
             int alt74=2;
             int LA74_0 = input.LA(1);
 
@@ -15835,7 +15837,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt74) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1575:4: formalParameter ( ',' formalParameter )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1577:4: formalParameter ( ',' formalParameter )*
                     {
                     pushFollow(FOLLOW_formalParameter_in_formalParameters6863);
                     formalParameter271=formalParameter();
@@ -15844,7 +15846,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_formalParameter.add(formalParameter271.getTree());
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1575:20: ( ',' formalParameter )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1577:20: ( ',' formalParameter )*
                     loop73:
                     do {
                         int alt73=2;
@@ -15857,7 +15859,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt73) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1575:21: ',' formalParameter
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1577:21: ',' formalParameter
                     	    {
                     	    char_literal272=(Atom)match(input,129,FOLLOW_129_in_formalParameters6866); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_129.add(char_literal272);
@@ -15892,9 +15894,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1576:3: -> ^( LIST[\"LIST\"] ( formalParameter )+ )
+                    // 1578:3: -> ^( LIST[\"LIST\"] ( formalParameter )+ )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1576:6: ^( LIST[\"LIST\"] ( formalParameter )+ )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1578:6: ^( LIST[\"LIST\"] ( formalParameter )+ )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -15922,7 +15924,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1578:3: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1580:3: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -15937,9 +15939,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1578:3: -> ^( LIST[\"LIST\"] )
+                    // 1580:3: -> ^( LIST[\"LIST\"] )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1578:6: ^( LIST[\"LIST\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1580:6: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -15992,7 +15994,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "formalParameter"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1581:1: formalParameter : ( 'type' IDENT ( '=' t= typeName )? -> ^( D_FORMAL[\"D_FORMAL\", pFlags] ^( T_USR[\"T_USR\", pFlags] IDENT ) IDENT ( ^( E_TYP[\"E_TYP\"] typeName ) )? ) | ( typeName '[' )=> formalParameterArr | typeName IDENT ( '=' expr )? -> ^( D_FORMAL[\"D_FORMAL\"] typeName IDENT ( expr )? ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1583:1: formalParameter : ( 'type' IDENT ( '=' t= typeName )? -> ^( D_FORMAL[\"D_FORMAL\", pFlags] ^( T_USR[\"T_USR\", pFlags] IDENT ) IDENT ( ^( E_TYP[\"E_TYP\"] typeName ) )? ) | ( typeName '[' )=> formalParameterArr | typeName IDENT ( '=' expr )? -> ^( D_FORMAL[\"D_FORMAL\"] typeName IDENT ( expr )? ) );
     public final pollenParser.formalParameter_return formalParameter() throws RecognitionException {
         pollenParser.formalParameter_return retval = new pollenParser.formalParameter_return();
         retval.start = input.LT(1);
@@ -16031,7 +16033,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 88) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1585:2: ( 'type' IDENT ( '=' t= typeName )? -> ^( D_FORMAL[\"D_FORMAL\", pFlags] ^( T_USR[\"T_USR\", pFlags] IDENT ) IDENT ( ^( E_TYP[\"E_TYP\"] typeName ) )? ) | ( typeName '[' )=> formalParameterArr | typeName IDENT ( '=' expr )? -> ^( D_FORMAL[\"D_FORMAL\"] typeName IDENT ( expr )? ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1587:2: ( 'type' IDENT ( '=' t= typeName )? -> ^( D_FORMAL[\"D_FORMAL\", pFlags] ^( T_USR[\"T_USR\", pFlags] IDENT ) IDENT ( ^( E_TYP[\"E_TYP\"] typeName ) )? ) | ( typeName '[' )=> formalParameterArr | typeName IDENT ( '=' expr )? -> ^( D_FORMAL[\"D_FORMAL\"] typeName IDENT ( expr )? ) )
             int alt77=3;
             switch ( input.LA(1) ) {
             case 184:
@@ -16270,7 +16272,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt77) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1585:6: 'type' IDENT ( '=' t= typeName )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1587:6: 'type' IDENT ( '=' t= typeName )?
                     {
                     string_literal274=(Atom)match(input,184,FOLLOW_184_in_formalParameter6921); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_184.add(string_literal274);
@@ -16280,7 +16282,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT275);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1585:19: ( '=' t= typeName )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1587:19: ( '=' t= typeName )?
                     int alt75=2;
                     int LA75_0 = input.LA(1);
 
@@ -16289,7 +16291,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt75) {
                         case 1 :
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1585:21: '=' t= typeName
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1587:21: '=' t= typeName
                             {
                             char_literal276=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_formalParameter6927); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_ASSIGN.add(char_literal276);
@@ -16311,7 +16313,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) { pFlags.add(Flags.TYPE_META_ARG); }
 
                     // AST REWRITE
-                    // elements: IDENT, typeName, IDENT
+                    // elements: IDENT, IDENT, typeName
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -16323,16 +16325,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1587:4: -> ^( D_FORMAL[\"D_FORMAL\", pFlags] ^( T_USR[\"T_USR\", pFlags] IDENT ) IDENT ( ^( E_TYP[\"E_TYP\"] typeName ) )? )
+                    // 1589:4: -> ^( D_FORMAL[\"D_FORMAL\", pFlags] ^( T_USR[\"T_USR\", pFlags] IDENT ) IDENT ( ^( E_TYP[\"E_TYP\"] typeName ) )? )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1587:7: ^( D_FORMAL[\"D_FORMAL\", pFlags] ^( T_USR[\"T_USR\", pFlags] IDENT ) IDENT ( ^( E_TYP[\"E_TYP\"] typeName ) )? )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1589:7: ^( D_FORMAL[\"D_FORMAL\", pFlags] ^( T_USR[\"T_USR\", pFlags] IDENT ) IDENT ( ^( E_TYP[\"E_TYP\"] typeName ) )? )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.Formal(D_FORMAL, "D_FORMAL", pFlags)
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1588:5: ^( T_USR[\"T_USR\", pFlags] IDENT )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1590:5: ^( T_USR[\"T_USR\", pFlags] IDENT )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -16350,9 +16352,9 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_IDENT.nextNode()
                         );
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1589:11: ( ^( E_TYP[\"E_TYP\"] typeName ) )?
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1591:11: ( ^( E_TYP[\"E_TYP\"] typeName ) )?
                         if ( stream_typeName.hasNext() ) {
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1589:11: ^( E_TYP[\"E_TYP\"] typeName )
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1591:11: ^( E_TYP[\"E_TYP\"] typeName )
                             {
                             BaseNode root_2 = (BaseNode)adaptor.nil();
                             root_2 = (BaseNode)adaptor.becomeRoot(
@@ -16379,7 +16381,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1590:6: ( typeName '[' )=> formalParameterArr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1592:6: ( typeName '[' )=> formalParameterArr
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16394,7 +16396,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1591:7: typeName IDENT ( '=' expr )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1593:7: typeName IDENT ( '=' expr )?
                     {
                     pushFollow(FOLLOW_typeName_in_formalParameter7015);
                     typeName278=typeName();
@@ -16407,7 +16409,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT279);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1591:22: ( '=' expr )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1593:22: ( '=' expr )?
                     int alt76=2;
                     int LA76_0 = input.LA(1);
 
@@ -16416,7 +16418,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt76) {
                         case 1 :
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1591:24: '=' expr
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1593:24: '=' expr
                             {
                             char_literal280=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_formalParameter7021); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_ASSIGN.add(char_literal280);
@@ -16436,7 +16438,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: IDENT, expr, typeName
+                    // elements: typeName, IDENT, expr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -16448,9 +16450,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1592:4: -> ^( D_FORMAL[\"D_FORMAL\"] typeName IDENT ( expr )? )
+                    // 1594:4: -> ^( D_FORMAL[\"D_FORMAL\"] typeName IDENT ( expr )? )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1592:7: ^( D_FORMAL[\"D_FORMAL\"] typeName IDENT ( expr )? )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1594:7: ^( D_FORMAL[\"D_FORMAL\"] typeName IDENT ( expr )? )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -16463,7 +16465,7 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_IDENT.nextNode()
                         );
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1592:62: ( expr )?
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1594:62: ( expr )?
                         if ( stream_expr.hasNext() ) {
                             adaptor.addChild(root_1, stream_expr.nextTree());
 
@@ -16516,7 +16518,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "formalParameterArr"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1595:1: formalParameterArr : typeNameArray '[' ']' IDENT ( '=' expr )? -> ^( D_FORMAL[\"D_FORMAL\"] typeNameArray IDENT ( expr )? ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1597:1: formalParameterArr : typeNameArray '[' ']' IDENT ( '=' expr )? -> ^( D_FORMAL[\"D_FORMAL\"] typeNameArray IDENT ( expr )? ) ;
     public final pollenParser.formalParameterArr_return formalParameterArr() throws RecognitionException {
         pollenParser.formalParameterArr_return retval = new pollenParser.formalParameterArr_return();
         retval.start = input.LT(1);
@@ -16547,8 +16549,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 89) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1596:2: ( typeNameArray '[' ']' IDENT ( '=' expr )? -> ^( D_FORMAL[\"D_FORMAL\"] typeNameArray IDENT ( expr )? ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1596:4: typeNameArray '[' ']' IDENT ( '=' expr )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1598:2: ( typeNameArray '[' ']' IDENT ( '=' expr )? -> ^( D_FORMAL[\"D_FORMAL\"] typeNameArray IDENT ( expr )? ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1598:4: typeNameArray '[' ']' IDENT ( '=' expr )?
             {
             pushFollow(FOLLOW_typeNameArray_in_formalParameterArr7060);
             typeNameArray282=typeNameArray();
@@ -16569,7 +16571,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_IDENT.add(IDENT285);
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1596:32: ( '=' expr )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1598:32: ( '=' expr )?
             int alt78=2;
             int LA78_0 = input.LA(1);
 
@@ -16578,7 +16580,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt78) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1596:34: '=' expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1598:34: '=' expr
                     {
                     char_literal286=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_formalParameterArr7070); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ASSIGN.add(char_literal286);
@@ -16598,7 +16600,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: expr, IDENT, typeNameArray
+            // elements: typeNameArray, expr, IDENT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -16610,9 +16612,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1597:4: -> ^( D_FORMAL[\"D_FORMAL\"] typeNameArray IDENT ( expr )? )
+            // 1599:4: -> ^( D_FORMAL[\"D_FORMAL\"] typeNameArray IDENT ( expr )? )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1597:7: ^( D_FORMAL[\"D_FORMAL\"] typeNameArray IDENT ( expr )? )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1599:7: ^( D_FORMAL[\"D_FORMAL\"] typeNameArray IDENT ( expr )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -16625,7 +16627,7 @@ public TreeAdaptor getTreeAdaptor() {
                 stream_IDENT.nextNode()
                 );
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1597:67: ( expr )?
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1599:67: ( expr )?
                 if ( stream_expr.hasNext() ) {
                     adaptor.addChild(root_1, stream_expr.nextTree());
 
@@ -16676,7 +16678,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnArgumentList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1599:1: fcnArgumentList : '(' fcnArguments ')' -> fcnArguments ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1601:1: fcnArgumentList : '(' fcnArguments ')' -> fcnArguments ;
     public final pollenParser.fcnArgumentList_return fcnArgumentList() throws RecognitionException {
         pollenParser.fcnArgumentList_return retval = new pollenParser.fcnArgumentList_return();
         retval.start = input.LT(1);
@@ -16698,8 +16700,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 90) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1600:2: ( '(' fcnArguments ')' -> fcnArguments )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1600:4: '(' fcnArguments ')'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1602:2: ( '(' fcnArguments ')' -> fcnArguments )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1602:4: '(' fcnArguments ')'
             {
             char_literal288=(Atom)match(input,126,FOLLOW_126_in_fcnArgumentList7108); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_126.add(char_literal288);
@@ -16729,7 +16731,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1600:25: -> fcnArguments
+            // 1602:25: -> fcnArguments
             {
                 adaptor.addChild(root_0, stream_fcnArguments.nextTree());
 
@@ -16774,7 +16776,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnArguments"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1602:1: fcnArguments : exprList ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1604:1: fcnArguments : exprList ;
     public final pollenParser.fcnArguments_return fcnArguments() throws RecognitionException {
         pollenParser.fcnArguments_return retval = new pollenParser.fcnArguments_return();
         retval.start = input.LT(1);
@@ -16790,8 +16792,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 91) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1603:2: ( exprList )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1603:4: exprList
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1605:2: ( exprList )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1605:4: exprList
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -16838,7 +16840,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varOrFcnOrArray"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1605:1: varOrFcnOrArray : ( exprNew | '@' IDENT fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_SELF[\"E_SELF\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? ) ) | '@' IDENT ( fieldOrArrayAccess )? -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? ) ) | '@' -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] ) ) | qualName fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] qualName ) fcnArgumentList ( fieldOrArrayAccess )? ) | qualName ( fieldOrArrayAccess )? -> ^( E_IDENT[\"E_IDENT\"] qualName ( fieldOrArrayAccess )? ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1607:1: varOrFcnOrArray : ( exprNew | '@' IDENT fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_SELF[\"E_SELF\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? ) ) | '@' IDENT ( fieldOrArrayAccess )? -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? ) ) | '@' -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] ) ) | qualName fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] qualName ) fcnArgumentList ( fieldOrArrayAccess )? ) | qualName ( fieldOrArrayAccess )? -> ^( E_IDENT[\"E_IDENT\"] qualName ( fieldOrArrayAccess )? ) );
     public final pollenParser.varOrFcnOrArray_return varOrFcnOrArray() throws RecognitionException {
         pollenParser.varOrFcnOrArray_return retval = new pollenParser.varOrFcnOrArray_return();
         retval.start = input.LT(1);
@@ -16884,7 +16886,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 92) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1606:2: ( exprNew | '@' IDENT fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_SELF[\"E_SELF\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? ) ) | '@' IDENT ( fieldOrArrayAccess )? -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? ) ) | '@' -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] ) ) | qualName fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] qualName ) fcnArgumentList ( fieldOrArrayAccess )? ) | qualName ( fieldOrArrayAccess )? -> ^( E_IDENT[\"E_IDENT\"] qualName ( fieldOrArrayAccess )? ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1608:2: ( exprNew | '@' IDENT fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_SELF[\"E_SELF\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? ) ) | '@' IDENT ( fieldOrArrayAccess )? -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? ) ) | '@' -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] ) ) | qualName fcnArgumentList ( fieldOrArrayAccess )? -> ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] qualName ) fcnArgumentList ( fieldOrArrayAccess )? ) | qualName ( fieldOrArrayAccess )? -> ^( E_IDENT[\"E_IDENT\"] qualName ( fieldOrArrayAccess )? ) )
             int alt83=6;
             switch ( input.LA(1) ) {
             case 170:
@@ -16946,7 +16948,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt83) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1606:4: exprNew
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1608:4: exprNew
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -16961,7 +16963,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1607:4: '@' IDENT fcnArgumentList ( fieldOrArrayAccess )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1609:4: '@' IDENT fcnArgumentList ( fieldOrArrayAccess )?
                     {
                     char_literal293=(Atom)match(input,136,FOLLOW_136_in_varOrFcnOrArray7143); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_136.add(char_literal293);
@@ -16978,7 +16980,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_fcnArgumentList.add(fcnArgumentList295.getTree());
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1607:30: ( fieldOrArrayAccess )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1609:30: ( fieldOrArrayAccess )?
                     int alt79=2;
                     int LA79_0 = input.LA(1);
 
@@ -16994,7 +16996,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt79) {
                         case 1 :
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1607:30: fieldOrArrayAccess
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1609:30: fieldOrArrayAccess
                             {
                             pushFollow(FOLLOW_fieldOrArrayAccess_in_varOrFcnOrArray7149);
                             fieldOrArrayAccess296=fieldOrArrayAccess();
@@ -17010,7 +17012,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: fieldOrArrayAccess, IDENT, fcnArgumentList
+                    // elements: IDENT, fieldOrArrayAccess, fcnArgumentList
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -17022,23 +17024,23 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1608:3: -> ^( E_SELF[\"E_SELF\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? ) )
+                    // 1610:3: -> ^( E_SELF[\"E_SELF\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1608:6: ^( E_SELF[\"E_SELF\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1610:6: ^( E_SELF[\"E_SELF\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Self(E_SELF, "E_SELF")
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1609:4: ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1611:4: ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ( fieldOrArrayAccess )? )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Call(E_CALL, "E_CALL")
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1609:38: ^( E_IDENT[\"E_IDENT\"] IDENT )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1611:38: ^( E_IDENT[\"E_IDENT\"] IDENT )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -17054,7 +17056,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         adaptor.addChild(root_2, stream_fcnArgumentList.nextTree());
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1609:98: ( fieldOrArrayAccess )?
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1611:98: ( fieldOrArrayAccess )?
                         if ( stream_fieldOrArrayAccess.hasNext() ) {
                             adaptor.addChild(root_2, stream_fieldOrArrayAccess.nextTree());
 
@@ -17076,7 +17078,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1610:4: '@' IDENT ( fieldOrArrayAccess )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1612:4: '@' IDENT ( fieldOrArrayAccess )?
                     {
                     char_literal297=(Atom)match(input,136,FOLLOW_136_in_varOrFcnOrArray7201); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_136.add(char_literal297);
@@ -17086,7 +17088,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT298);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1610:14: ( fieldOrArrayAccess )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1612:14: ( fieldOrArrayAccess )?
                     int alt80=2;
                     int LA80_0 = input.LA(1);
 
@@ -17102,7 +17104,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt80) {
                         case 1 :
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1610:14: fieldOrArrayAccess
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1612:14: fieldOrArrayAccess
                             {
                             pushFollow(FOLLOW_fieldOrArrayAccess_in_varOrFcnOrArray7205);
                             fieldOrArrayAccess299=fieldOrArrayAccess();
@@ -17118,7 +17120,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: IDENT, fieldOrArrayAccess
+                    // elements: fieldOrArrayAccess, IDENT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -17130,16 +17132,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1611:3: -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? ) )
+                    // 1613:3: -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1611:6: ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1613:6: ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Self(E_SELF, "E_SELF")
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1611:40: ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1613:40: ^( E_IDENT[\"E_IDENT\"] IDENT ( fieldOrArrayAccess )? )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -17150,7 +17152,7 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_IDENT.nextNode()
                         );
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1611:83: ( fieldOrArrayAccess )?
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1613:83: ( fieldOrArrayAccess )?
                         if ( stream_fieldOrArrayAccess.hasNext() ) {
                             adaptor.addChild(root_2, stream_fieldOrArrayAccess.nextTree());
 
@@ -17172,7 +17174,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1612:4: '@'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1614:4: '@'
                     {
                     char_literal300=(Atom)match(input,136,FOLLOW_136_in_varOrFcnOrArray7244); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_136.add(char_literal300);
@@ -17191,16 +17193,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1613:3: -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] ) )
+                    // 1615:3: -> ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1613:6: ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1615:6: ^( E_SELF[\"E_SELF\"] ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Self(E_SELF, "E_SELF")
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1613:41: ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1615:41: ^( E_IDENT[\"E_IDENT\"] IDENT[\"this\"] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -17226,7 +17228,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1614:4: qualName fcnArgumentList ( fieldOrArrayAccess )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1616:4: qualName fcnArgumentList ( fieldOrArrayAccess )?
                     {
                     pushFollow(FOLLOW_qualName_in_varOrFcnOrArray7279);
                     qualName301=qualName();
@@ -17242,7 +17244,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_fcnArgumentList.add(fcnArgumentList302.getTree());
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1614:29: ( fieldOrArrayAccess )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1616:29: ( fieldOrArrayAccess )?
                     int alt81=2;
                     int LA81_0 = input.LA(1);
 
@@ -17258,7 +17260,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt81) {
                         case 1 :
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1614:29: fieldOrArrayAccess
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1616:29: fieldOrArrayAccess
                             {
                             pushFollow(FOLLOW_fieldOrArrayAccess_in_varOrFcnOrArray7283);
                             fieldOrArrayAccess303=fieldOrArrayAccess();
@@ -17274,7 +17276,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: qualName, fcnArgumentList, fieldOrArrayAccess
+                    // elements: fcnArgumentList, fieldOrArrayAccess, qualName
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -17286,16 +17288,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1615:3: -> ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] qualName ) fcnArgumentList ( fieldOrArrayAccess )? )
+                    // 1617:3: -> ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] qualName ) fcnArgumentList ( fieldOrArrayAccess )? )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1615:6: ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] qualName ) fcnArgumentList ( fieldOrArrayAccess )? )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1617:6: ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] qualName ) fcnArgumentList ( fieldOrArrayAccess )? )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Call(E_CALL, "E_CALL")
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1615:40: ^( E_IDENT[\"E_IDENT\"] qualName )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1617:40: ^( E_IDENT[\"E_IDENT\"] qualName )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -17309,7 +17311,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         adaptor.addChild(root_1, stream_fcnArgumentList.nextTree());
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1615:103: ( fieldOrArrayAccess )?
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1617:103: ( fieldOrArrayAccess )?
                         if ( stream_fieldOrArrayAccess.hasNext() ) {
                             adaptor.addChild(root_1, stream_fieldOrArrayAccess.nextTree());
 
@@ -17328,7 +17330,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 6 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1616:4: qualName ( fieldOrArrayAccess )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1618:4: qualName ( fieldOrArrayAccess )?
                     {
                     pushFollow(FOLLOW_qualName_in_varOrFcnOrArray7321);
                     qualName304=qualName();
@@ -17337,7 +17339,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_qualName.add(qualName304.getTree());
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1616:13: ( fieldOrArrayAccess )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1618:13: ( fieldOrArrayAccess )?
                     int alt82=2;
                     int LA82_0 = input.LA(1);
 
@@ -17353,7 +17355,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt82) {
                         case 1 :
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1616:13: fieldOrArrayAccess
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1618:13: fieldOrArrayAccess
                             {
                             pushFollow(FOLLOW_fieldOrArrayAccess_in_varOrFcnOrArray7323);
                             fieldOrArrayAccess305=fieldOrArrayAccess();
@@ -17369,7 +17371,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: qualName, fieldOrArrayAccess
+                    // elements: fieldOrArrayAccess, qualName
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -17381,9 +17383,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1616:33: -> ^( E_IDENT[\"E_IDENT\"] qualName ( fieldOrArrayAccess )? )
+                    // 1618:33: -> ^( E_IDENT[\"E_IDENT\"] qualName ( fieldOrArrayAccess )? )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1616:36: ^( E_IDENT[\"E_IDENT\"] qualName ( fieldOrArrayAccess )? )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1618:36: ^( E_IDENT[\"E_IDENT\"] qualName ( fieldOrArrayAccess )? )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -17392,7 +17394,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         adaptor.addChild(root_1, stream_qualName.nextTree());
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1616:82: ( fieldOrArrayAccess )?
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1618:82: ( fieldOrArrayAccess )?
                         if ( stream_fieldOrArrayAccess.hasNext() ) {
                             adaptor.addChild(root_1, stream_fieldOrArrayAccess.nextTree());
 
@@ -17445,7 +17447,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fieldOrArrayAccess"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1618:1: fieldOrArrayAccess : ( fieldAccess | arrayAccess ( fcnArgumentList )? )+ ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1620:1: fieldOrArrayAccess : ( fieldAccess | arrayAccess ( fcnArgumentList )? )+ ;
     public final pollenParser.fieldOrArrayAccess_return fieldOrArrayAccess() throws RecognitionException {
         pollenParser.fieldOrArrayAccess_return retval = new pollenParser.fieldOrArrayAccess_return();
         retval.start = input.LT(1);
@@ -17465,13 +17467,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 93) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1620:2: ( ( fieldAccess | arrayAccess ( fcnArgumentList )? )+ )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1620:5: ( fieldAccess | arrayAccess ( fcnArgumentList )? )+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1622:2: ( ( fieldAccess | arrayAccess ( fcnArgumentList )? )+ )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1622:5: ( fieldAccess | arrayAccess ( fcnArgumentList )? )+
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1620:5: ( fieldAccess | arrayAccess ( fcnArgumentList )? )+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1622:5: ( fieldAccess | arrayAccess ( fcnArgumentList )? )+
             int cnt85=0;
             loop85:
             do {
@@ -17494,7 +17496,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt85) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1620:6: fieldAccess
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1622:6: fieldAccess
             	    {
             	    pushFollow(FOLLOW_fieldAccess_in_fieldOrArrayAccess7354);
             	    fieldAccess306=fieldAccess();
@@ -17506,7 +17508,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1620:20: arrayAccess ( fcnArgumentList )?
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1622:20: arrayAccess ( fcnArgumentList )?
             	    {
             	    pushFollow(FOLLOW_arrayAccess_in_fieldOrArrayAccess7358);
             	    arrayAccess307=arrayAccess();
@@ -17515,7 +17517,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if (state.failed) return retval;
             	    if ( state.backtracking==0 ) adaptor.addChild(root_0, arrayAccess307.getTree());
 
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1620:32: ( fcnArgumentList )?
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1622:32: ( fcnArgumentList )?
             	    int alt84=2;
             	    int LA84_0 = input.LA(1);
 
@@ -17528,7 +17530,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    switch (alt84) {
             	        case 1 :
-            	            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1620:32: fcnArgumentList
+            	            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1622:32: fcnArgumentList
             	            {
             	            pushFollow(FOLLOW_fcnArgumentList_in_fieldOrArrayAccess7360);
             	            fcnArgumentList308=fcnArgumentList();
@@ -17592,7 +17594,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fieldAccess"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1622:1: fieldAccess : ( '.' IDENT fcnArgumentList -> ^( E_CALL[\"E_CALL\", true] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ) | '.' IDENT -> ^( E_IDENT[\"E_IDENT\", true] IDENT ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1624:1: fieldAccess : ( '.' IDENT fcnArgumentList -> ^( E_CALL[\"E_CALL\", true] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ) | '.' IDENT -> ^( E_IDENT[\"E_IDENT\", true] IDENT ) );
     public final pollenParser.fieldAccess_return fieldAccess() throws RecognitionException {
         pollenParser.fieldAccess_return retval = new pollenParser.fieldAccess_return();
         retval.start = input.LT(1);
@@ -17618,7 +17620,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 94) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1623:2: ( '.' IDENT fcnArgumentList -> ^( E_CALL[\"E_CALL\", true] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ) | '.' IDENT -> ^( E_IDENT[\"E_IDENT\", true] IDENT ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1625:2: ( '.' IDENT fcnArgumentList -> ^( E_CALL[\"E_CALL\", true] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList ) | '.' IDENT -> ^( E_IDENT[\"E_IDENT\", true] IDENT ) )
             int alt86=2;
             int LA86_0 = input.LA(1);
 
@@ -17650,7 +17652,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt86) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1623:4: '.' IDENT fcnArgumentList
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1625:4: '.' IDENT fcnArgumentList
                     {
                     char_literal309=(Atom)match(input,130,FOLLOW_130_in_fieldAccess7373); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_130.add(char_literal309);
@@ -17680,16 +17682,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1624:4: -> ^( E_CALL[\"E_CALL\", true] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList )
+                    // 1626:4: -> ^( E_CALL[\"E_CALL\", true] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1624:7: ^( E_CALL[\"E_CALL\", true] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1626:7: ^( E_CALL[\"E_CALL\", true] ^( E_IDENT[\"E_IDENT\"] IDENT ) fcnArgumentList )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Call(E_CALL, "E_CALL", true)
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1625:5: ^( E_IDENT[\"E_IDENT\"] IDENT )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1627:5: ^( E_IDENT[\"E_IDENT\"] IDENT )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -17717,7 +17719,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1626:4: '.' IDENT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1628:4: '.' IDENT
                     {
                     char_literal312=(Atom)match(input,130,FOLLOW_130_in_fieldAccess7418); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_130.add(char_literal312);
@@ -17740,9 +17742,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1626:15: -> ^( E_IDENT[\"E_IDENT\", true] IDENT )
+                    // 1628:15: -> ^( E_IDENT[\"E_IDENT\", true] IDENT )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1626:18: ^( E_IDENT[\"E_IDENT\", true] IDENT )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1628:18: ^( E_IDENT[\"E_IDENT\", true] IDENT )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -17799,7 +17801,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "arrayAccess"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1628:1: arrayAccess : '[' ( exprList )? ']' -> ^( E_INDEX[\"E_INDEX\"] ( exprList )? ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1630:1: arrayAccess : '[' ( exprList )? ']' -> ^( E_INDEX[\"E_INDEX\"] ( exprList )? ) ;
     public final pollenParser.arrayAccess_return arrayAccess() throws RecognitionException {
         pollenParser.arrayAccess_return retval = new pollenParser.arrayAccess_return();
         retval.start = input.LT(1);
@@ -17821,14 +17823,14 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 95) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1629:2: ( '[' ( exprList )? ']' -> ^( E_INDEX[\"E_INDEX\"] ( exprList )? ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1629:4: '[' ( exprList )? ']'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1631:2: ( '[' ( exprList )? ']' -> ^( E_INDEX[\"E_INDEX\"] ( exprList )? ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1631:4: '[' ( exprList )? ']'
             {
             char_literal314=(Atom)match(input,137,FOLLOW_137_in_arrayAccess7445); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_137.add(char_literal314);
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1629:8: ( exprList )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1631:8: ( exprList )?
             int alt87=2;
             int LA87_0 = input.LA(1);
 
@@ -17844,7 +17846,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt87) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1629:9: exprList
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1631:9: exprList
                     {
                     pushFollow(FOLLOW_exprList_in_arrayAccess7448);
                     exprList315=exprList();
@@ -17876,16 +17878,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1629:25: -> ^( E_INDEX[\"E_INDEX\"] ( exprList )? )
+            // 1631:25: -> ^( E_INDEX[\"E_INDEX\"] ( exprList )? )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1629:28: ^( E_INDEX[\"E_INDEX\"] ( exprList )? )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1631:28: ^( E_INDEX[\"E_INDEX\"] ( exprList )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ExprNode.Index(E_INDEX, "E_INDEX")
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1629:65: ( exprList )?
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1631:65: ( exprList )?
                 if ( stream_exprList.hasNext() ) {
                     adaptor.addChild(root_1, stream_exprList.nextTree());
 
@@ -17936,7 +17938,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtBlock"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1633:1: stmtBlock : braceOpen stmts braceClose -> ^( S_BLOCK[\"S_BLOCK\"] stmts ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1635:1: stmtBlock : braceOpen stmts braceClose -> ^( S_BLOCK[\"S_BLOCK\"] stmts ) ;
     public final pollenParser.stmtBlock_return stmtBlock() throws RecognitionException {
         pollenParser.stmtBlock_return retval = new pollenParser.stmtBlock_return();
         retval.start = input.LT(1);
@@ -17958,8 +17960,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 96) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1634:2: ( braceOpen stmts braceClose -> ^( S_BLOCK[\"S_BLOCK\"] stmts ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1634:4: braceOpen stmts braceClose
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1636:2: ( braceOpen stmts braceClose -> ^( S_BLOCK[\"S_BLOCK\"] stmts ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1636:4: braceOpen stmts braceClose
             {
             pushFollow(FOLLOW_braceOpen_in_stmtBlock7484);
             braceOpen317=braceOpen();
@@ -17995,9 +17997,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1634:32: -> ^( S_BLOCK[\"S_BLOCK\"] stmts )
+            // 1636:32: -> ^( S_BLOCK[\"S_BLOCK\"] stmts )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1634:35: ^( S_BLOCK[\"S_BLOCK\"] stmts )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1636:35: ^( S_BLOCK[\"S_BLOCK\"] stmts )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -18050,7 +18052,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmts"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1636:1: stmts : ( ( stmt )+ -> ^( LIST[\"LIST\"] ( stmt )+ ) | ( ( NL )* ) -> LIST[\"LIST\"] );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1638:1: stmts : ( ( stmt )+ -> ^( LIST[\"LIST\"] ( stmt )+ ) | ( ( NL )* ) -> LIST[\"LIST\"] );
     public final pollenParser.stmts_return stmts() throws RecognitionException {
         pollenParser.stmts_return retval = new pollenParser.stmts_return();
         retval.start = input.LT(1);
@@ -18069,7 +18071,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 97) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1637:2: ( ( stmt )+ -> ^( LIST[\"LIST\"] ( stmt )+ ) | ( ( NL )* ) -> LIST[\"LIST\"] )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1639:2: ( ( stmt )+ -> ^( LIST[\"LIST\"] ( stmt )+ ) | ( ( NL )* ) -> LIST[\"LIST\"] )
             int alt90=2;
             switch ( input.LA(1) ) {
             case NL:
@@ -18158,9 +18160,9 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt90) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1637:4: ( stmt )+
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1639:4: ( stmt )+
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1637:4: ( stmt )+
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1639:4: ( stmt )+
                     int cnt88=0;
                     loop88:
                     do {
@@ -18183,7 +18185,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt88) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1637:5: stmt
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1639:5: stmt
                     	    {
                     	    pushFollow(FOLLOW_stmt_in_stmts7514);
                     	    stmt320=stmt();
@@ -18219,9 +18221,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1637:12: -> ^( LIST[\"LIST\"] ( stmt )+ )
+                    // 1639:12: -> ^( LIST[\"LIST\"] ( stmt )+ )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1637:15: ^( LIST[\"LIST\"] ( stmt )+ )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1639:15: ^( LIST[\"LIST\"] ( stmt )+ )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -18249,12 +18251,12 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1638:4: ( ( NL )* )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1640:4: ( ( NL )* )
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1638:4: ( ( NL )* )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1638:5: ( NL )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1640:4: ( ( NL )* )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1640:5: ( NL )*
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1638:5: ( NL )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1640:5: ( NL )*
                     loop89:
                     do {
                         int alt89=2;
@@ -18273,7 +18275,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt89) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1638:5: NL
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1640:5: NL
                     	    {
                     	    NL321=(Atom)match(input,NL,FOLLOW_NL_in_stmts7536); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_NL.add(NL321);
@@ -18304,7 +18306,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1638:10: -> LIST[\"LIST\"]
+                    // 1640:10: -> LIST[\"LIST\"]
                     {
                         adaptor.addChild(root_0, 
                         new ListNode(LIST, "LIST")
@@ -18353,7 +18355,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmt"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1640:1: stmt : ( stmtDecl | stmtAssign | stmtBind | stmtBlock | stmtPrint | stmtPeg | stmtReturn | stmtBreak | stmtContinue | stmtFor | stmtSwitch | stmtDoWhile | stmtIf | stmtProvided | stmtWhile | stmtInjection | expr delim -> ^( S_EXPR[\"S_EXPR\"] expr ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1642:1: stmt : ( stmtDecl | stmtAssign | stmtBind | stmtBlock | stmtPrint | stmtPeg | stmtReturn | stmtBreak | stmtContinue | stmtFor | stmtSwitch | stmtDoWhile | stmtIf | stmtProvided | stmtWhile | stmtInjection | expr delim -> ^( S_EXPR[\"S_EXPR\"] expr ) );
     public final pollenParser.stmt_return stmt() throws RecognitionException {
         pollenParser.stmt_return retval = new pollenParser.stmt_return();
         retval.start = input.LT(1);
@@ -18408,7 +18410,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 98) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1645:2: ( stmtDecl | stmtAssign | stmtBind | stmtBlock | stmtPrint | stmtPeg | stmtReturn | stmtBreak | stmtContinue | stmtFor | stmtSwitch | stmtDoWhile | stmtIf | stmtProvided | stmtWhile | stmtInjection | expr delim -> ^( S_EXPR[\"S_EXPR\"] expr ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1647:2: ( stmtDecl | stmtAssign | stmtBind | stmtBlock | stmtPrint | stmtPeg | stmtReturn | stmtBreak | stmtContinue | stmtFor | stmtSwitch | stmtDoWhile | stmtIf | stmtProvided | stmtWhile | stmtInjection | expr delim -> ^( S_EXPR[\"S_EXPR\"] expr ) )
             int alt91=17;
             switch ( input.LA(1) ) {
             case IDENT:
@@ -18635,7 +18637,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt91) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1645:6: stmtDecl
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1647:6: stmtDecl
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -18650,7 +18652,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1646:6: stmtAssign
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1648:6: stmtAssign
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -18665,7 +18667,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1647:4: stmtBind
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1649:4: stmtBind
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -18680,7 +18682,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1648:4: stmtBlock
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1650:4: stmtBlock
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -18695,7 +18697,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1649:4: stmtPrint
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1651:4: stmtPrint
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -18710,7 +18712,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 6 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1650:4: stmtPeg
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:4: stmtPeg
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -18725,7 +18727,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 7 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1651:4: stmtReturn
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1653:4: stmtReturn
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -18740,7 +18742,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 8 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:4: stmtBreak
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1654:4: stmtBreak
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -18755,7 +18757,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 9 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1653:6: stmtContinue
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1655:6: stmtContinue
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -18770,7 +18772,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 10 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1654:6: stmtFor
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1656:6: stmtFor
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -18785,7 +18787,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 11 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1655:4: stmtSwitch
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1657:4: stmtSwitch
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -18800,7 +18802,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 12 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1656:6: stmtDoWhile
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1658:6: stmtDoWhile
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -18815,7 +18817,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 13 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1657:4: stmtIf
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1659:4: stmtIf
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -18830,7 +18832,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 14 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1658:4: stmtProvided
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1660:4: stmtProvided
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -18845,7 +18847,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 15 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1659:4: stmtWhile
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1661:4: stmtWhile
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -18860,7 +18862,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 16 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1660:4: stmtInjection
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1662:4: stmtInjection
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -18875,7 +18877,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 17 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1661:4: expr delim
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1663:4: expr delim
                     {
                     pushFollow(FOLLOW_expr_in_stmt7652);
                     expr338=expr();
@@ -18904,9 +18906,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1661:15: -> ^( S_EXPR[\"S_EXPR\"] expr )
+                    // 1663:15: -> ^( S_EXPR[\"S_EXPR\"] expr )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1661:18: ^( S_EXPR[\"S_EXPR\"] expr )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1663:18: ^( S_EXPR[\"S_EXPR\"] expr )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -18961,7 +18963,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprAssign"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1664:1: exprAssign : ( ( exprUnary ASSIGN )=> exprChainedAssign | expr );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1666:1: exprAssign : ( ( exprUnary ASSIGN )=> exprChainedAssign | expr );
     public final pollenParser.exprAssign_return exprAssign() throws RecognitionException {
         pollenParser.exprAssign_return retval = new pollenParser.exprAssign_return();
         retval.start = input.LT(1);
@@ -18979,7 +18981,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 99) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1665:2: ( ( exprUnary ASSIGN )=> exprChainedAssign | expr )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1667:2: ( ( exprUnary ASSIGN )=> exprChainedAssign | expr )
             int alt92=2;
             switch ( input.LA(1) ) {
             case 157:
@@ -19355,7 +19357,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt92) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1666:2: ( exprUnary ASSIGN )=> exprChainedAssign
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1668:2: ( exprUnary ASSIGN )=> exprChainedAssign
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -19370,7 +19372,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1668:4: expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1670:4: expr
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -19419,7 +19421,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "exprChainedAssign"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1670:1: exprChainedAssign : ( exprUnary ASSIGN exprAssign -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign ) ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1672:1: exprChainedAssign : ( exprUnary ASSIGN exprAssign -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign ) ) ;
     public final pollenParser.exprChainedAssign_return exprChainedAssign() throws RecognitionException {
         pollenParser.exprChainedAssign_return retval = new pollenParser.exprChainedAssign_return();
         retval.start = input.LT(1);
@@ -19441,11 +19443,11 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 100) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1671:2: ( ( exprUnary ASSIGN exprAssign -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign ) ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1671:4: ( exprUnary ASSIGN exprAssign -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1673:2: ( ( exprUnary ASSIGN exprAssign -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign ) ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1673:4: ( exprUnary ASSIGN exprAssign -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign ) )
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1671:4: ( exprUnary ASSIGN exprAssign -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1671:6: exprUnary ASSIGN exprAssign
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1673:4: ( exprUnary ASSIGN exprAssign -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1673:6: exprUnary ASSIGN exprAssign
             {
             pushFollow(FOLLOW_exprUnary_in_exprChainedAssign7709);
             exprUnary342=exprUnary();
@@ -19466,7 +19468,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_exprAssign.add(exprAssign344.getTree());
 
             // AST REWRITE
-            // elements: exprAssign, ASSIGN, exprUnary
+            // elements: exprAssign, exprUnary, ASSIGN
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -19478,9 +19480,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1672:3: -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign )
+            // 1674:3: -> ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1672:6: ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1674:6: ^( E_BINARY[\"E_BINARY\"] ASSIGN exprUnary exprAssign )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -19542,7 +19544,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtAssign"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1676:1: stmtAssign : ( varOrFcnOrArray ASSIGN exprAssign delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign ) ) | injectionCode ASSIGN expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr ) ) | varOrFcnOrArray assignOp expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr ) ) | injectionCode assignOp expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr ) ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1678:1: stmtAssign : ( varOrFcnOrArray ASSIGN exprAssign delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign ) ) | injectionCode ASSIGN expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr ) ) | varOrFcnOrArray assignOp expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr ) ) | injectionCode assignOp expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr ) ) );
     public final pollenParser.stmtAssign_return stmtAssign() throws RecognitionException {
         pollenParser.stmtAssign_return retval = new pollenParser.stmtAssign_return();
         retval.start = input.LT(1);
@@ -19594,7 +19596,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 101) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1677:2: ( varOrFcnOrArray ASSIGN exprAssign delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign ) ) | injectionCode ASSIGN expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr ) ) | varOrFcnOrArray assignOp expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr ) ) | injectionCode assignOp expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr ) ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1679:2: ( varOrFcnOrArray ASSIGN exprAssign delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign ) ) | injectionCode ASSIGN expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr ) ) | varOrFcnOrArray assignOp expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr ) ) | injectionCode assignOp expr delim -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr ) ) )
             int alt93=4;
             int LA93_0 = input.LA(1);
 
@@ -19644,7 +19646,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt93) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1677:4: varOrFcnOrArray ASSIGN exprAssign delim
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1679:4: varOrFcnOrArray ASSIGN exprAssign delim
                     {
                     pushFollow(FOLLOW_varOrFcnOrArray_in_stmtAssign7751);
                     varOrFcnOrArray345=varOrFcnOrArray();
@@ -19672,7 +19674,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_delim.add(delim348.getTree());
 
                     // AST REWRITE
-                    // elements: varOrFcnOrArray, ASSIGN, exprAssign
+                    // elements: exprAssign, varOrFcnOrArray, ASSIGN
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -19684,16 +19686,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1678:3: -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign ) )
+                    // 1680:3: -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1678:6: ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1680:6: ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new StmtNode.Assign(S_ASSIGN, "S_ASSIGN")
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1678:46: ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1680:46: ^( E_BINARY[\"E_BINARY\", true] ASSIGN varOrFcnOrArray exprAssign )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -19723,7 +19725,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1679:4: injectionCode ASSIGN expr delim
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1681:4: injectionCode ASSIGN expr delim
                     {
                     pushFollow(FOLLOW_injectionCode_in_stmtAssign7792);
                     injectionCode349=injectionCode();
@@ -19763,16 +19765,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1680:3: -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr ) )
+                    // 1682:3: -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1680:6: ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1682:6: ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new StmtNode.Assign(S_ASSIGN, "S_ASSIGN")
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1680:46: ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1682:46: ^( E_BINARY[\"E_BINARY\", true] ASSIGN injectionCode expr )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -19802,7 +19804,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1681:4: varOrFcnOrArray assignOp expr delim
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1683:4: varOrFcnOrArray assignOp expr delim
                     {
                     pushFollow(FOLLOW_varOrFcnOrArray_in_stmtAssign7833);
                     varOrFcnOrArray353=varOrFcnOrArray();
@@ -19833,7 +19835,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_delim.add(delim356.getTree());
 
                     // AST REWRITE
-                    // elements: expr, varOrFcnOrArray, assignOp
+                    // elements: assignOp, expr, varOrFcnOrArray
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -19845,16 +19847,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1682:3: -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr ) )
+                    // 1684:3: -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1682:6: ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1684:6: ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new StmtNode.Assign(S_ASSIGN, "S_ASSIGN")
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1682:46: ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1684:46: ^( E_BINARY[\"E_BINARY\", true] assignOp varOrFcnOrArray expr )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -19882,7 +19884,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1683:4: injectionCode assignOp expr delim
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1685:4: injectionCode assignOp expr delim
                     {
                     pushFollow(FOLLOW_injectionCode_in_stmtAssign7875);
                     injectionCode357=injectionCode();
@@ -19913,7 +19915,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_delim.add(delim360.getTree());
 
                     // AST REWRITE
-                    // elements: assignOp, expr, injectionCode
+                    // elements: assignOp, injectionCode, expr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -19925,16 +19927,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1684:3: -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr ) )
+                    // 1686:3: -> ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1684:6: ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1686:6: ^( S_ASSIGN[\"S_ASSIGN\"] ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new StmtNode.Assign(S_ASSIGN, "S_ASSIGN")
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1684:46: ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1686:46: ^( E_BINARY[\"E_BINARY\", true] assignOp injectionCode expr )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -19996,7 +19998,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtBind"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1686:1: stmtBind : qualName BIND userTypeName delim -> ^( S_BIND[\"S_BIND\"] ^( E_IDENT[\"E_IDENT\"] IDENT[qn] ) userTypeName ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1688:1: stmtBind : qualName BIND userTypeName delim -> ^( S_BIND[\"S_BIND\"] ^( E_IDENT[\"E_IDENT\"] IDENT[qn] ) userTypeName ) ;
     public final pollenParser.stmtBind_return stmtBind() throws RecognitionException {
         pollenParser.stmtBind_return retval = new pollenParser.stmtBind_return();
         retval.start = input.LT(1);
@@ -20024,8 +20026,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 102) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1690:2: ( qualName BIND userTypeName delim -> ^( S_BIND[\"S_BIND\"] ^( E_IDENT[\"E_IDENT\"] IDENT[qn] ) userTypeName ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1690:4: qualName BIND userTypeName delim
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1692:2: ( qualName BIND userTypeName delim -> ^( S_BIND[\"S_BIND\"] ^( E_IDENT[\"E_IDENT\"] IDENT[qn] ) userTypeName ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1692:4: qualName BIND userTypeName delim
             {
             pushFollow(FOLLOW_qualName_in_stmtBind7925);
             qualName361=qualName();
@@ -20088,16 +20090,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1713:4: -> ^( S_BIND[\"S_BIND\"] ^( E_IDENT[\"E_IDENT\"] IDENT[qn] ) userTypeName )
+            // 1715:4: -> ^( S_BIND[\"S_BIND\"] ^( E_IDENT[\"E_IDENT\"] IDENT[qn] ) userTypeName )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1713:7: ^( S_BIND[\"S_BIND\"] ^( E_IDENT[\"E_IDENT\"] IDENT[qn] ) userTypeName )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1715:7: ^( S_BIND[\"S_BIND\"] ^( E_IDENT[\"E_IDENT\"] IDENT[qn] ) userTypeName )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new StmtNode.Bind(S_BIND, "S_BIND")
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1713:41: ^( E_IDENT[\"E_IDENT\"] IDENT[qn] )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1715:41: ^( E_IDENT[\"E_IDENT\"] IDENT[qn] )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
@@ -20157,7 +20159,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtPeg"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1715:1: stmtPeg : varOrFcnOrArray PEG exprAssign delim -> ^( S_PEG[\"S_PEG\"] varOrFcnOrArray PEG exprAssign ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1717:1: stmtPeg : varOrFcnOrArray PEG exprAssign delim -> ^( S_PEG[\"S_PEG\"] varOrFcnOrArray PEG exprAssign ) ;
     public final pollenParser.stmtPeg_return stmtPeg() throws RecognitionException {
         pollenParser.stmtPeg_return retval = new pollenParser.stmtPeg_return();
         retval.start = input.LT(1);
@@ -20182,8 +20184,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 103) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1716:2: ( varOrFcnOrArray PEG exprAssign delim -> ^( S_PEG[\"S_PEG\"] varOrFcnOrArray PEG exprAssign ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1716:4: varOrFcnOrArray PEG exprAssign delim
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1718:2: ( varOrFcnOrArray PEG exprAssign delim -> ^( S_PEG[\"S_PEG\"] varOrFcnOrArray PEG exprAssign ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1718:4: varOrFcnOrArray PEG exprAssign delim
             {
             pushFollow(FOLLOW_varOrFcnOrArray_in_stmtPeg7981);
             varOrFcnOrArray365=varOrFcnOrArray();
@@ -20211,7 +20213,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_delim.add(delim368.getTree());
 
             // AST REWRITE
-            // elements: varOrFcnOrArray, PEG, exprAssign
+            // elements: PEG, exprAssign, varOrFcnOrArray
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -20223,9 +20225,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1716:43: -> ^( S_PEG[\"S_PEG\"] varOrFcnOrArray PEG exprAssign )
+            // 1718:43: -> ^( S_PEG[\"S_PEG\"] varOrFcnOrArray PEG exprAssign )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1716:46: ^( S_PEG[\"S_PEG\"] varOrFcnOrArray PEG exprAssign )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1718:46: ^( S_PEG[\"S_PEG\"] varOrFcnOrArray PEG exprAssign )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -20284,7 +20286,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "printList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1718:1: printList : printItemList -> ^( LIST[\"LIST\"] printItemList ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1720:1: printList : printItemList -> ^( LIST[\"LIST\"] printItemList ) ;
     public final pollenParser.printList_return printList() throws RecognitionException {
         pollenParser.printList_return retval = new pollenParser.printList_return();
         retval.start = input.LT(1);
@@ -20300,8 +20302,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 104) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1719:2: ( printItemList -> ^( LIST[\"LIST\"] printItemList ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1719:5: printItemList
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1721:2: ( printItemList -> ^( LIST[\"LIST\"] printItemList ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1721:5: printItemList
             {
             pushFollow(FOLLOW_printItemList_in_printList8021);
             printItemList369=printItemList();
@@ -20323,9 +20325,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1719:19: -> ^( LIST[\"LIST\"] printItemList )
+            // 1721:19: -> ^( LIST[\"LIST\"] printItemList )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1719:22: ^( LIST[\"LIST\"] printItemList )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1721:22: ^( LIST[\"LIST\"] printItemList )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -20378,7 +20380,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "printItemList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1721:1: printItemList : ( printItem ( '+' printItem )* -> ( printItem )+ | -> NIL );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1723:1: printItemList : ( printItem ( '+' printItem )* -> ( printItem )+ | -> NIL );
     public final pollenParser.printItemList_return printItemList() throws RecognitionException {
         pollenParser.printItemList_return retval = new pollenParser.printItemList_return();
         retval.start = input.LT(1);
@@ -20399,7 +20401,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 105) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1722:2: ( printItem ( '+' printItem )* -> ( printItem )+ | -> NIL )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1724:2: ( printItem ( '+' printItem )* -> ( printItem )+ | -> NIL )
             int alt95=2;
             int LA95_0 = input.LA(1);
 
@@ -20434,7 +20436,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt95) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1722:4: printItem ( '+' printItem )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1724:4: printItem ( '+' printItem )*
                     {
                     pushFollow(FOLLOW_printItem_in_printItemList8043);
                     printItem370=printItem();
@@ -20443,7 +20445,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_printItem.add(printItem370.getTree());
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1722:14: ( '+' printItem )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1724:14: ( '+' printItem )*
                     loop94:
                     do {
                         int alt94=2;
@@ -20456,7 +20458,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt94) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1722:16: '+' printItem
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1724:16: '+' printItem
                     	    {
                     	    char_literal371=(Atom)match(input,PLUS,FOLLOW_PLUS_in_printItemList8047); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_PLUS.add(char_literal371);
@@ -20491,7 +20493,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1722:34: -> ( printItem )+
+                    // 1724:34: -> ( printItem )+
                     {
                         if ( !(stream_printItem.hasNext()) ) {
                             throw new RewriteEarlyExitException();
@@ -20511,7 +20513,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1723:4: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1725:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -20526,7 +20528,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1723:4: -> NIL
+                    // 1725:4: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -20575,7 +20577,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "printItem"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1725:1: printItem : ( primitiveLit | varOrFcnOrArray );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1727:1: printItem : ( primitiveLit | varOrFcnOrArray );
     public final pollenParser.printItem_return printItem() throws RecognitionException {
         pollenParser.printItem_return retval = new pollenParser.printItem_return();
         retval.start = input.LT(1);
@@ -20593,7 +20595,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 106) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1726:2: ( primitiveLit | varOrFcnOrArray )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1728:2: ( primitiveLit | varOrFcnOrArray )
             int alt96=2;
             int LA96_0 = input.LA(1);
 
@@ -20613,7 +20615,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt96) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1726:4: primitiveLit
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1728:4: primitiveLit
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -20628,7 +20630,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1728:4: varOrFcnOrArray
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1730:4: varOrFcnOrArray
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -20677,7 +20679,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtPrint"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1730:1: stmtPrint : ( 'print' printList delim -> ^( S_PRINT[\"S_PRINT\", flags] printList ) | 'print' ( stmtPrintTarget[flags] ) printList delim -> ^( S_PRINT[\"S_PRINT\", flags] printList ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1732:1: stmtPrint : ( 'print' printList delim -> ^( S_PRINT[\"S_PRINT\", flags] printList ) | 'print' ( stmtPrintTarget[flags] ) printList delim -> ^( S_PRINT[\"S_PRINT\", flags] printList ) );
     public final pollenParser.stmtPrint_return stmtPrint() throws RecognitionException {
         pollenParser.stmtPrint_return retval = new pollenParser.stmtPrint_return();
         retval.start = input.LT(1);
@@ -20711,7 +20713,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 107) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1734:2: ( 'print' printList delim -> ^( S_PRINT[\"S_PRINT\", flags] printList ) | 'print' ( stmtPrintTarget[flags] ) printList delim -> ^( S_PRINT[\"S_PRINT\", flags] printList ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1736:2: ( 'print' printList delim -> ^( S_PRINT[\"S_PRINT\", flags] printList ) | 'print' ( stmtPrintTarget[flags] ) printList delim -> ^( S_PRINT[\"S_PRINT\", flags] printList ) )
             int alt97=2;
             int LA97_0 = input.LA(1);
 
@@ -20743,7 +20745,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt97) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1734:4: 'print' printList delim
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1736:4: 'print' printList delim
                     {
                     string_literal375=(Atom)match(input,175,FOLLOW_175_in_stmtPrint8098); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_175.add(string_literal375);
@@ -20778,9 +20780,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1735:3: -> ^( S_PRINT[\"S_PRINT\", flags] printList )
+                    // 1737:3: -> ^( S_PRINT[\"S_PRINT\", flags] printList )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1735:6: ^( S_PRINT[\"S_PRINT\", flags] printList )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1737:6: ^( S_PRINT[\"S_PRINT\", flags] printList )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -20801,14 +20803,14 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1736:4: 'print' ( stmtPrintTarget[flags] ) printList delim
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1738:4: 'print' ( stmtPrintTarget[flags] ) printList delim
                     {
                     string_literal378=(Atom)match(input,175,FOLLOW_175_in_stmtPrint8126); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_175.add(string_literal378);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1736:12: ( stmtPrintTarget[flags] )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1736:13: stmtPrintTarget[flags]
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1738:12: ( stmtPrintTarget[flags] )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1738:13: stmtPrintTarget[flags]
                     {
                     pushFollow(FOLLOW_stmtPrintTarget_in_stmtPrint8129);
                     stmtPrintTarget379=stmtPrintTarget(flags);
@@ -20847,9 +20849,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1737:3: -> ^( S_PRINT[\"S_PRINT\", flags] printList )
+                    // 1739:3: -> ^( S_PRINT[\"S_PRINT\", flags] printList )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1737:6: ^( S_PRINT[\"S_PRINT\", flags] printList )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1739:6: ^( S_PRINT[\"S_PRINT\", flags] printList )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -20904,7 +20906,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtPrintTarget"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1739:1: stmtPrintTarget[EnumSet<Flags> f] : ( 'log' | 'err' | 'out' ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1741:1: stmtPrintTarget[EnumSet<Flags> f] : ( 'log' | 'err' | 'out' ) ;
     public final pollenParser.stmtPrintTarget_return stmtPrintTarget(EnumSet<Flags> f) throws RecognitionException {
         pollenParser.stmtPrintTarget_return retval = new pollenParser.stmtPrintTarget_return();
         retval.start = input.LT(1);
@@ -20924,13 +20926,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 108) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1740:2: ( ( 'log' | 'err' | 'out' ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1741:3: ( 'log' | 'err' | 'out' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1742:2: ( ( 'log' | 'err' | 'out' ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1743:3: ( 'log' | 'err' | 'out' )
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1741:3: ( 'log' | 'err' | 'out' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1743:3: ( 'log' | 'err' | 'out' )
             int alt98=3;
             switch ( input.LA(1) ) {
             case 167:
@@ -20959,7 +20961,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt98) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1741:7: 'log'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1743:7: 'log'
                     {
                     string_literal382=(Atom)match(input,167,FOLLOW_167_in_stmtPrintTarget8170); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
@@ -20974,7 +20976,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1742:6: 'err'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1744:6: 'err'
                     {
                     string_literal383=(Atom)match(input,154,FOLLOW_154_in_stmtPrintTarget8180); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
@@ -20989,7 +20991,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1743:6: 'out'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1745:6: 'out'
                     {
                     string_literal384=(Atom)match(input,172,FOLLOW_172_in_stmtPrintTarget8189); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
@@ -21042,7 +21044,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtReturn"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1746:1: stmtReturn : ( 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) ) ) | 'return' ( expr ) delim -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) ) ) | 'return' delim -> ^( S_RETURN[\"S_RETURN\"] ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1748:1: stmtReturn : ( 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) ) ) | 'return' ( expr ) delim -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) ) ) | 'return' delim -> ^( S_RETURN[\"S_RETURN\"] ) );
     public final pollenParser.stmtReturn_return stmtReturn() throws RecognitionException {
         pollenParser.stmtReturn_return retval = new pollenParser.stmtReturn_return();
         retval.start = input.LT(1);
@@ -21085,7 +21087,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 109) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:2: ( 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) ) ) | 'return' ( expr ) delim -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) ) ) | 'return' delim -> ^( S_RETURN[\"S_RETURN\"] ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:2: ( 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) ) ) | 'return' ( expr ) delim -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) ) ) | 'return' delim -> ^( S_RETURN[\"S_RETURN\"] ) )
             int alt100=3;
             int LA100_0 = input.LA(1);
 
@@ -21120,14 +21122,14 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt100) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:4: 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:4: 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim
                     {
                     string_literal385=(Atom)match(input,180,FOLLOW_180_in_stmtReturn8209); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_180.add(string_literal385);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:13: ( '(' )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:14: '('
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:13: ( '(' )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:14: '('
                     {
                     char_literal386=(Atom)match(input,126,FOLLOW_126_in_stmtReturn8212); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_126.add(char_literal386);
@@ -21136,8 +21138,8 @@ public TreeAdaptor getTreeAdaptor() {
                     }
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:19: ( expr ( ',' expr )+ )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:20: expr ( ',' expr )+
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:19: ( expr ( ',' expr )+ )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:20: expr ( ',' expr )+
                     {
                     pushFollow(FOLLOW_expr_in_stmtReturn8216);
                     expr387=expr();
@@ -21146,7 +21148,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_expr.add(expr387.getTree());
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:25: ( ',' expr )+
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:25: ( ',' expr )+
                     int cnt99=0;
                     loop99:
                     do {
@@ -21160,7 +21162,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt99) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:26: ',' expr
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:26: ',' expr
                     	    {
                     	    char_literal388=(Atom)match(input,129,FOLLOW_129_in_stmtReturn8219); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_129.add(char_literal388);
@@ -21190,8 +21192,8 @@ public TreeAdaptor getTreeAdaptor() {
                     }
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:38: ( ')' )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:39: ')'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:38: ( ')' )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:39: ')'
                     {
                     char_literal390=(Atom)match(input,127,FOLLOW_127_in_stmtReturn8227); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_127.add(char_literal390);
@@ -21220,23 +21222,23 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1751:3: -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) ) )
+                    // 1753:3: -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1751:6: ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1753:6: ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new StmtNode.Return(S_RETURN, "S_RETURN")
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1751:46: ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1753:46: ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( expr )+ ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Vec(E_VEC, "E_VEC")
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1751:77: ^( LIST[\"LIST\"] ( expr )+ )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1753:77: ^( LIST[\"LIST\"] ( expr )+ )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -21270,14 +21272,14 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:4: 'return' ( expr ) delim
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1754:4: 'return' ( expr ) delim
                     {
                     string_literal392=(Atom)match(input,180,FOLLOW_180_in_stmtReturn8271); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_180.add(string_literal392);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:14: ( expr )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:15: expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1754:14: ( expr )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1754:15: expr
                     {
                     pushFollow(FOLLOW_expr_in_stmtReturn8275);
                     expr393=expr();
@@ -21309,23 +21311,23 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1753:3: -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) ) )
+                    // 1755:3: -> ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1753:6: ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1755:6: ^( S_RETURN[\"S_RETURN\"] ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new StmtNode.Return(S_RETURN, "S_RETURN")
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1753:46: ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1755:46: ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] expr ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Vec(E_VEC, "E_VEC")
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1753:77: ^( LIST[\"LIST\"] expr )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1755:77: ^( LIST[\"LIST\"] expr )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
@@ -21352,7 +21354,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1754:4: 'return' delim
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1756:4: 'return' delim
                     {
                     string_literal395=(Atom)match(input,180,FOLLOW_180_in_stmtReturn8319); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_180.add(string_literal395);
@@ -21378,9 +21380,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1755:3: -> ^( S_RETURN[\"S_RETURN\"] )
+                    // 1757:3: -> ^( S_RETURN[\"S_RETURN\"] )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1755:6: ^( S_RETURN[\"S_RETURN\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1757:6: ^( S_RETURN[\"S_RETURN\"] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -21433,7 +21435,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtBreak"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1758:1: stmtBreak : 'break' delim -> ^( S_BREAK[\"S_BREAK\"] ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1760:1: stmtBreak : 'break' delim -> ^( S_BREAK[\"S_BREAK\"] ) ;
     public final pollenParser.stmtBreak_return stmtBreak() throws RecognitionException {
         pollenParser.stmtBreak_return retval = new pollenParser.stmtBreak_return();
         retval.start = input.LT(1);
@@ -21452,8 +21454,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 110) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1759:2: ( 'break' delim -> ^( S_BREAK[\"S_BREAK\"] ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1759:4: 'break' delim
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1761:2: ( 'break' delim -> ^( S_BREAK[\"S_BREAK\"] ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1761:4: 'break' delim
             {
             string_literal397=(Atom)match(input,142,FOLLOW_142_in_stmtBreak8348); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_142.add(string_literal397);
@@ -21479,9 +21481,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1759:18: -> ^( S_BREAK[\"S_BREAK\"] )
+            // 1761:18: -> ^( S_BREAK[\"S_BREAK\"] )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1759:21: ^( S_BREAK[\"S_BREAK\"] )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1761:21: ^( S_BREAK[\"S_BREAK\"] )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -21532,7 +21534,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtContinue"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1761:1: stmtContinue : 'continue' delim -> ^( S_CONTINUE[\"S_CONTINUE\"] ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1763:1: stmtContinue : 'continue' delim -> ^( S_CONTINUE[\"S_CONTINUE\"] ) ;
     public final pollenParser.stmtContinue_return stmtContinue() throws RecognitionException {
         pollenParser.stmtContinue_return retval = new pollenParser.stmtContinue_return();
         retval.start = input.LT(1);
@@ -21551,8 +21553,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 111) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1762:2: ( 'continue' delim -> ^( S_CONTINUE[\"S_CONTINUE\"] ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1762:4: 'continue' delim
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1764:2: ( 'continue' delim -> ^( S_CONTINUE[\"S_CONTINUE\"] ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1764:4: 'continue' delim
             {
             string_literal399=(Atom)match(input,148,FOLLOW_148_in_stmtContinue8372); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_148.add(string_literal399);
@@ -21578,9 +21580,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1762:21: -> ^( S_CONTINUE[\"S_CONTINUE\"] )
+            // 1764:21: -> ^( S_CONTINUE[\"S_CONTINUE\"] )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1762:24: ^( S_CONTINUE[\"S_CONTINUE\"] )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1764:24: ^( S_CONTINUE[\"S_CONTINUE\"] )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -21631,7 +21633,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtFor"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1764:1: stmtFor : 'for' defaultLoopVar stmtForInit stmtForCond stmtForNext ')' stmtBlock -> ^( S_FOR[\"S_FOR\"] stmtForInit stmtForCond stmtForNext stmtBlock defaultLoopVar ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1766:1: stmtFor : 'for' defaultLoopVar stmtForInit stmtForCond stmtForNext ')' stmtBlock -> ^( S_FOR[\"S_FOR\"] stmtForInit stmtForCond stmtForNext stmtBlock defaultLoopVar ) ;
     public final pollenParser.stmtFor_return stmtFor() throws RecognitionException {
         pollenParser.stmtFor_return retval = new pollenParser.stmtFor_return();
         retval.start = input.LT(1);
@@ -21665,8 +21667,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 112) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1765:5: ( 'for' defaultLoopVar stmtForInit stmtForCond stmtForNext ')' stmtBlock -> ^( S_FOR[\"S_FOR\"] stmtForInit stmtForCond stmtForNext stmtBlock defaultLoopVar ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1765:9: 'for' defaultLoopVar stmtForInit stmtForCond stmtForNext ')' stmtBlock
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1767:5: ( 'for' defaultLoopVar stmtForInit stmtForCond stmtForNext ')' stmtBlock -> ^( S_FOR[\"S_FOR\"] stmtForInit stmtForCond stmtForNext stmtBlock defaultLoopVar ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1767:9: 'for' defaultLoopVar stmtForInit stmtForCond stmtForNext ')' stmtBlock
             {
             string_literal401=(Atom)match(input,158,FOLLOW_158_in_stmtFor8401); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_158.add(string_literal401);
@@ -21712,7 +21714,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_stmtBlock.add(stmtBlock407.getTree());
 
             // AST REWRITE
-            // elements: stmtForCond, defaultLoopVar, stmtBlock, stmtForInit, stmtForNext
+            // elements: defaultLoopVar, stmtForNext, stmtBlock, stmtForInit, stmtForCond
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -21724,9 +21726,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1766:13: -> ^( S_FOR[\"S_FOR\"] stmtForInit stmtForCond stmtForNext stmtBlock defaultLoopVar )
+            // 1768:13: -> ^( S_FOR[\"S_FOR\"] stmtForInit stmtForCond stmtForNext stmtBlock defaultLoopVar )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1766:16: ^( S_FOR[\"S_FOR\"] stmtForInit stmtForCond stmtForNext stmtBlock defaultLoopVar )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1768:16: ^( S_FOR[\"S_FOR\"] stmtForInit stmtForCond stmtForNext stmtBlock defaultLoopVar )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -21787,7 +21789,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtForCond"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1768:1: stmtForCond : ( SEMI -> NIL | expr SEMI -> expr );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1770:1: stmtForCond : ( SEMI -> NIL | expr SEMI -> expr );
     public final pollenParser.stmtForCond_return stmtForCond() throws RecognitionException {
         pollenParser.stmtForCond_return retval = new pollenParser.stmtForCond_return();
         retval.start = input.LT(1);
@@ -21808,7 +21810,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 113) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1769:5: ( SEMI -> NIL | expr SEMI -> expr )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1771:5: ( SEMI -> NIL | expr SEMI -> expr )
             int alt101=2;
             int LA101_0 = input.LA(1);
 
@@ -21828,7 +21830,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt101) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1769:9: SEMI
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1771:9: SEMI
                     {
                     SEMI408=(Atom)match(input,SEMI,FOLLOW_SEMI_in_stmtForCond8466); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_SEMI.add(SEMI408);
@@ -21847,7 +21849,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1770:12: -> NIL
+                    // 1772:12: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -21862,7 +21864,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1771:9: expr SEMI
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1773:9: expr SEMI
                     {
                     pushFollow(FOLLOW_expr_in_stmtForCond8491);
                     expr409=expr();
@@ -21888,7 +21890,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1771:19: -> expr
+                    // 1773:19: -> expr
                     {
                         adaptor.addChild(root_0, stream_expr.nextTree());
 
@@ -21935,7 +21937,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "defaultLoopVar"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1773:1: defaultLoopVar : lv= '(' -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] IDENT[$lv,\"uint32\"] ) IDENT[ParseUnit.DEFAULT_LOOPVAR] ) ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1775:1: defaultLoopVar : lv= '(' -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] IDENT[$lv,\"uint32\"] ) IDENT[ParseUnit.DEFAULT_LOOPVAR] ) ) ;
     public final pollenParser.defaultLoopVar_return defaultLoopVar() throws RecognitionException {
         pollenParser.defaultLoopVar_return retval = new pollenParser.defaultLoopVar_return();
         retval.start = input.LT(1);
@@ -21952,8 +21954,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 114) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1774:2: (lv= '(' -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] IDENT[$lv,\"uint32\"] ) IDENT[ParseUnit.DEFAULT_LOOPVAR] ) ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1774:4: lv= '('
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1776:2: (lv= '(' -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] IDENT[$lv,\"uint32\"] ) IDENT[ParseUnit.DEFAULT_LOOPVAR] ) ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1776:4: lv= '('
             {
             lv=(Atom)match(input,126,FOLLOW_126_in_defaultLoopVar8515); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_126.add(lv);
@@ -21972,23 +21974,23 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1774:11: -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] IDENT[$lv,\"uint32\"] ) IDENT[ParseUnit.DEFAULT_LOOPVAR] ) )
+            // 1776:11: -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] IDENT[$lv,\"uint32\"] ) IDENT[ParseUnit.DEFAULT_LOOPVAR] ) )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1774:14: ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] IDENT[$lv,\"uint32\"] ) IDENT[ParseUnit.DEFAULT_LOOPVAR] ) )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1776:14: ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] IDENT[$lv,\"uint32\"] ) IDENT[ParseUnit.DEFAULT_LOOPVAR] ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new StmtNode.Decl(S_DECL, "S_DECL")
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1775:12: ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] IDENT[$lv,\"uint32\"] ) IDENT[ParseUnit.DEFAULT_LOOPVAR] )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1777:12: ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] IDENT[$lv,\"uint32\"] ) IDENT[ParseUnit.DEFAULT_LOOPVAR] )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
                 new DeclNode.Var(D_VAR, "D_VAR", EnumSet.noneOf(Flags.class))
                 , root_2);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1776:13: ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] IDENT[$lv,\"uint32\"] )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1778:13: ^( T_STD[\"T_STD\", EnumSet.noneOf(Flags.class)] IDENT[$lv,\"uint32\"] )
                 {
                 BaseNode root_3 = (BaseNode)adaptor.nil();
                 root_3 = (BaseNode)adaptor.becomeRoot(
@@ -22053,7 +22055,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtForInit"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1780:1: stmtForInit : ( SEMI -> NIL | typeName IDENT '=' expr SEMI -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr ) ) | stmtAssign );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1782:1: stmtForInit : ( SEMI -> NIL | typeName IDENT '=' expr SEMI -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr ) ) | stmtAssign );
     public final pollenParser.stmtForInit_return stmtForInit() throws RecognitionException {
         pollenParser.stmtForInit_return retval = new pollenParser.stmtForInit_return();
         retval.start = input.LT(1);
@@ -22085,7 +22087,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 115) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1781:5: ( SEMI -> NIL | typeName IDENT '=' expr SEMI -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr ) ) | stmtAssign )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1783:5: ( SEMI -> NIL | typeName IDENT '=' expr SEMI -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr ) ) | stmtAssign )
             int alt102=3;
             switch ( input.LA(1) ) {
             case SEMI:
@@ -22145,7 +22147,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt102) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1781:9: SEMI
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1783:9: SEMI
                     {
                     SEMI411=(Atom)match(input,SEMI,FOLLOW_SEMI_in_stmtForInit8609); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_SEMI.add(SEMI411);
@@ -22164,7 +22166,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1782:13: -> NIL
+                    // 1784:13: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -22179,7 +22181,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1783:9: typeName IDENT '=' expr SEMI
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1785:9: typeName IDENT '=' expr SEMI
                     {
                     pushFollow(FOLLOW_typeName_in_stmtForInit8635);
                     typeName412=typeName();
@@ -22208,7 +22210,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: expr, IDENT, typeName
+                    // elements: typeName, IDENT, expr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -22220,16 +22222,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1784:13: -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr ) )
+                    // 1786:13: -> ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1784:16: ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1786:16: ^( S_DECL[\"S_DECL\"] ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new StmtNode.Decl(S_DECL, "S_DECL")
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1785:12: ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1787:12: ^( D_VAR[\"D_VAR\", EnumSet.noneOf(Flags.class)] typeName IDENT expr )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -22259,7 +22261,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1786:9: stmtAssign
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1788:9: stmtAssign
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -22308,7 +22310,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtForNext"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1788:1: stmtForNext : ( -> NIL | expr );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1790:1: stmtForNext : ( -> NIL | expr );
     public final pollenParser.stmtForNext_return stmtForNext() throws RecognitionException {
         pollenParser.stmtForNext_return retval = new pollenParser.stmtForNext_return();
         retval.start = input.LT(1);
@@ -22324,7 +22326,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 116) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1789:5: ( -> NIL | expr )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1791:5: ( -> NIL | expr )
             int alt103=2;
             int LA103_0 = input.LA(1);
 
@@ -22344,7 +22346,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt103) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1790:13: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1792:13: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -22359,7 +22361,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1790:13: -> NIL
+                    // 1792:13: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -22374,7 +22376,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1791:9: expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1793:9: expr
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -22423,7 +22425,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtSwitch"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1799:1: stmtSwitch : 'switch' '(' expr ')' braceOpen stmtsCase ( stmtDefault )? braceClose -> ^( S_SWITCH[\"S_SWITCH\"] expr stmtsCase ( stmtDefault )? ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1801:1: stmtSwitch : 'switch' '(' expr ')' braceOpen stmtsCase ( stmtDefault )? braceClose -> ^( S_SWITCH[\"S_SWITCH\"] expr stmtsCase ( stmtDefault )? ) ;
     public final pollenParser.stmtSwitch_return stmtSwitch() throws RecognitionException {
         pollenParser.stmtSwitch_return retval = new pollenParser.stmtSwitch_return();
         retval.start = input.LT(1);
@@ -22460,8 +22462,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 117) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1800:2: ( 'switch' '(' expr ')' braceOpen stmtsCase ( stmtDefault )? braceClose -> ^( S_SWITCH[\"S_SWITCH\"] expr stmtsCase ( stmtDefault )? ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1800:4: 'switch' '(' expr ')' braceOpen stmtsCase ( stmtDefault )? braceClose
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1802:2: ( 'switch' '(' expr ')' braceOpen stmtsCase ( stmtDefault )? braceClose -> ^( S_SWITCH[\"S_SWITCH\"] expr stmtsCase ( stmtDefault )? ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1802:4: 'switch' '(' expr ')' braceOpen stmtsCase ( stmtDefault )? braceClose
             {
             string_literal419=(Atom)match(input,182,FOLLOW_182_in_stmtSwitch8767); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_182.add(string_literal419);
@@ -22496,7 +22498,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_stmtsCase.add(stmtsCase424.getTree());
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1800:46: ( stmtDefault )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1802:46: ( stmtDefault )?
             int alt104=2;
             int LA104_0 = input.LA(1);
 
@@ -22505,7 +22507,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt104) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1800:46: stmtDefault
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1802:46: stmtDefault
                     {
                     pushFollow(FOLLOW_stmtDefault_in_stmtSwitch8779);
                     stmtDefault425=stmtDefault();
@@ -22528,7 +22530,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceClose.add(braceClose426.getTree());
 
             // AST REWRITE
-            // elements: stmtsCase, stmtDefault, expr
+            // elements: expr, stmtDefault, stmtsCase
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -22540,9 +22542,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1800:70: -> ^( S_SWITCH[\"S_SWITCH\"] expr stmtsCase ( stmtDefault )? )
+            // 1802:70: -> ^( S_SWITCH[\"S_SWITCH\"] expr stmtsCase ( stmtDefault )? )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1800:73: ^( S_SWITCH[\"S_SWITCH\"] expr stmtsCase ( stmtDefault )? )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1802:73: ^( S_SWITCH[\"S_SWITCH\"] expr stmtsCase ( stmtDefault )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -22553,7 +22555,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_stmtsCase.nextTree());
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1800:129: ( stmtDefault )?
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1802:129: ( stmtDefault )?
                 if ( stream_stmtDefault.hasNext() ) {
                     adaptor.addChild(root_1, stream_stmtDefault.nextTree());
 
@@ -22604,7 +22606,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtsCase"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1802:1: stmtsCase : ( stmtCase )* -> ^( LIST[\"LIST\"] ( stmtCase )* ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1804:1: stmtsCase : ( stmtCase )* -> ^( LIST[\"LIST\"] ( stmtCase )* ) ;
     public final pollenParser.stmtsCase_return stmtsCase() throws RecognitionException {
         pollenParser.stmtsCase_return retval = new pollenParser.stmtsCase_return();
         retval.start = input.LT(1);
@@ -22620,10 +22622,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 118) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1803:2: ( ( stmtCase )* -> ^( LIST[\"LIST\"] ( stmtCase )* ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1803:4: ( stmtCase )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1805:2: ( ( stmtCase )* -> ^( LIST[\"LIST\"] ( stmtCase )* ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1805:4: ( stmtCase )*
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1803:4: ( stmtCase )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1805:4: ( stmtCase )*
             loop105:
             do {
                 int alt105=2;
@@ -22636,7 +22638,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt105) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1803:4: stmtCase
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1805:4: stmtCase
             	    {
             	    pushFollow(FOLLOW_stmtCase_in_stmtsCase8812);
             	    stmtCase427=stmtCase();
@@ -22667,16 +22669,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1803:14: -> ^( LIST[\"LIST\"] ( stmtCase )* )
+            // 1805:14: -> ^( LIST[\"LIST\"] ( stmtCase )* )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1803:17: ^( LIST[\"LIST\"] ( stmtCase )* )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1805:17: ^( LIST[\"LIST\"] ( stmtCase )* )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ListNode(LIST, "LIST")
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1803:42: ( stmtCase )*
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1805:42: ( stmtCase )*
                 while ( stream_stmtCase.hasNext() ) {
                     adaptor.addChild(root_1, stream_stmtCase.nextTree());
 
@@ -22727,7 +22729,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtDefault"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1805:1: stmtDefault : 'default' ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1807:1: stmtDefault : 'default' ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts ) ;
     public final pollenParser.stmtDefault_return stmtDefault() throws RecognitionException {
         pollenParser.stmtDefault_return retval = new pollenParser.stmtDefault_return();
         retval.start = input.LT(1);
@@ -22752,8 +22754,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 119) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1806:2: ( 'default' ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1806:4: 'default' ':' ( NL )* stmts
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1808:2: ( 'default' ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1808:4: 'default' ':' ( NL )* stmts
             {
             string_literal428=(Atom)match(input,149,FOLLOW_149_in_stmtDefault8836); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_149.add(string_literal428);
@@ -22763,7 +22765,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_132.add(char_literal429);
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1806:18: ( NL )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1808:18: ( NL )*
             loop106:
             do {
                 int alt106=2;
@@ -22782,7 +22784,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt106) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1806:18: NL
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1808:18: NL
             	    {
             	    NL430=(Atom)match(input,NL,FOLLOW_NL_in_stmtDefault8840); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_NL.add(NL430);
@@ -22817,9 +22819,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1806:28: -> ^( S_CASE[\"S_CASE\"] stmts )
+            // 1808:28: -> ^( S_CASE[\"S_CASE\"] stmts )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1806:31: ^( S_CASE[\"S_CASE\"] stmts )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1808:31: ^( S_CASE[\"S_CASE\"] stmts )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -22872,7 +22874,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtCase"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1808:1: stmtCase : ( 'case' ( INT_LIT ) ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts ^( E_CONST[\"E_CONST\", litFlags] INT_LIT ) ) | 'case' ( qualName ) ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text] ) ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1810:1: stmtCase : ( 'case' ( INT_LIT ) ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts ^( E_CONST[\"E_CONST\", litFlags] INT_LIT ) ) | 'case' ( qualName ) ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text] ) ) );
     public final pollenParser.stmtCase_return stmtCase() throws RecognitionException {
         pollenParser.stmtCase_return retval = new pollenParser.stmtCase_return();
         retval.start = input.LT(1);
@@ -22914,7 +22916,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 120) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1812:2: ( 'case' ( INT_LIT ) ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts ^( E_CONST[\"E_CONST\", litFlags] INT_LIT ) ) | 'case' ( qualName ) ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text] ) ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:2: ( 'case' ( INT_LIT ) ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts ^( E_CONST[\"E_CONST\", litFlags] INT_LIT ) ) | 'case' ( qualName ) ':' ( NL )* stmts -> ^( S_CASE[\"S_CASE\"] stmts ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text] ) ) )
             int alt109=2;
             int LA109_0 = input.LA(1);
 
@@ -22946,14 +22948,14 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt109) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1812:4: 'case' ( INT_LIT ) ':' ( NL )* stmts
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:4: 'case' ( INT_LIT ) ':' ( NL )* stmts
                     {
                     string_literal432=(Atom)match(input,144,FOLLOW_144_in_stmtCase8872); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_144.add(string_literal432);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1812:11: ( INT_LIT )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1812:12: INT_LIT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:11: ( INT_LIT )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:12: INT_LIT
                     {
                     INT_LIT433=(Atom)match(input,INT_LIT,FOLLOW_INT_LIT_in_stmtCase8875); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_INT_LIT.add(INT_LIT433);
@@ -22966,7 +22968,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_132.add(char_literal434);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1812:25: ( NL )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:25: ( NL )*
                     loop107:
                     do {
                         int alt107=2;
@@ -22985,7 +22987,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt107) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1812:25: NL
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:25: NL
                     	    {
                     	    NL435=(Atom)match(input,NL,FOLLOW_NL_in_stmtCase8880); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_NL.add(NL435);
@@ -23008,7 +23010,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_stmts.add(stmts436.getTree());
 
                     // AST REWRITE
-                    // elements: stmts, INT_LIT
+                    // elements: INT_LIT, stmts
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -23020,9 +23022,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1812:35: -> ^( S_CASE[\"S_CASE\"] stmts ^( E_CONST[\"E_CONST\", litFlags] INT_LIT ) )
+                    // 1814:35: -> ^( S_CASE[\"S_CASE\"] stmts ^( E_CONST[\"E_CONST\", litFlags] INT_LIT ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1812:38: ^( S_CASE[\"S_CASE\"] stmts ^( E_CONST[\"E_CONST\", litFlags] INT_LIT ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:38: ^( S_CASE[\"S_CASE\"] stmts ^( E_CONST[\"E_CONST\", litFlags] INT_LIT ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -23031,7 +23033,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         adaptor.addChild(root_1, stream_stmts.nextTree());
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1813:12: ^( E_CONST[\"E_CONST\", litFlags] INT_LIT )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1815:12: ^( E_CONST[\"E_CONST\", litFlags] INT_LIT )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -23057,14 +23059,14 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:4: 'case' ( qualName ) ':' ( NL )* stmts
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1816:4: 'case' ( qualName ) ':' ( NL )* stmts
                     {
                     string_literal437=(Atom)match(input,144,FOLLOW_144_in_stmtCase8926); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_144.add(string_literal437);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:11: ( qualName )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:12: qualName
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1816:11: ( qualName )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1816:12: qualName
                     {
                     pushFollow(FOLLOW_qualName_in_stmtCase8929);
                     qualName438=qualName();
@@ -23080,7 +23082,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_132.add(char_literal439);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:26: ( NL )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1816:26: ( NL )*
                     loop108:
                     do {
                         int alt108=2;
@@ -23099,7 +23101,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt108) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:26: NL
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1816:26: NL
                     	    {
                     	    NL440=(Atom)match(input,NL,FOLLOW_NL_in_stmtCase8934); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_NL.add(NL440);
@@ -23134,9 +23136,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1814:36: -> ^( S_CASE[\"S_CASE\"] stmts ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text] ) )
+                    // 1816:36: -> ^( S_CASE[\"S_CASE\"] stmts ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text] ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:39: ^( S_CASE[\"S_CASE\"] stmts ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text] ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1816:39: ^( S_CASE[\"S_CASE\"] stmts ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text] ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -23145,7 +23147,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         adaptor.addChild(root_1, stream_stmts.nextTree());
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1815:12: ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1817:12: ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text] )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -23205,7 +23207,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtDoWhile"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1818:1: stmtDoWhile : 'do' stmtBlock 'while' '(' expr ')' delim -> ^( S_WHILE[\"S_WHILE\", true] expr stmtBlock ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1820:1: stmtDoWhile : 'do' stmtBlock 'while' '(' expr ')' delim -> ^( S_WHILE[\"S_WHILE\", true] expr stmtBlock ) ;
     public final pollenParser.stmtDoWhile_return stmtDoWhile() throws RecognitionException {
         pollenParser.stmtDoWhile_return retval = new pollenParser.stmtDoWhile_return();
         retval.start = input.LT(1);
@@ -23239,8 +23241,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 121) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1819:2: ( 'do' stmtBlock 'while' '(' expr ')' delim -> ^( S_WHILE[\"S_WHILE\", true] expr stmtBlock ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1819:4: 'do' stmtBlock 'while' '(' expr ')' delim
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1821:2: ( 'do' stmtBlock 'while' '(' expr ')' delim -> ^( S_WHILE[\"S_WHILE\", true] expr stmtBlock ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1821:4: 'do' stmtBlock 'while' '(' expr ')' delim
             {
             string_literal442=(Atom)match(input,150,FOLLOW_150_in_stmtDoWhile8989); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_150.add(string_literal442);
@@ -23280,7 +23282,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_delim.add(delim448.getTree());
 
             // AST REWRITE
-            // elements: expr, stmtBlock
+            // elements: stmtBlock, expr
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -23292,9 +23294,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1819:47: -> ^( S_WHILE[\"S_WHILE\", true] expr stmtBlock )
+            // 1821:47: -> ^( S_WHILE[\"S_WHILE\", true] expr stmtBlock )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1819:50: ^( S_WHILE[\"S_WHILE\", true] expr stmtBlock )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1821:50: ^( S_WHILE[\"S_WHILE\", true] expr stmtBlock )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -23349,7 +23351,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtIf"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1821:1: stmtIf : 'if' stmtIfBlock stmtsElif ( stmtElse )? -> ^( S_IF[\"S_IF\"] stmtIfBlock stmtsElif ( stmtElse )? ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1823:1: stmtIf : 'if' stmtIfBlock stmtsElif ( stmtElse )? -> ^( S_IF[\"S_IF\"] stmtIfBlock stmtsElif ( stmtElse )? ) ;
     public final pollenParser.stmtIf_return stmtIf() throws RecognitionException {
         pollenParser.stmtIf_return retval = new pollenParser.stmtIf_return();
         retval.start = input.LT(1);
@@ -23374,8 +23376,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 122) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1822:2: ( 'if' stmtIfBlock stmtsElif ( stmtElse )? -> ^( S_IF[\"S_IF\"] stmtIfBlock stmtsElif ( stmtElse )? ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1822:4: 'if' stmtIfBlock stmtsElif ( stmtElse )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1824:2: ( 'if' stmtIfBlock stmtsElif ( stmtElse )? -> ^( S_IF[\"S_IF\"] stmtIfBlock stmtsElif ( stmtElse )? ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1824:4: 'if' stmtIfBlock stmtsElif ( stmtElse )?
             {
             string_literal449=(Atom)match(input,161,FOLLOW_161_in_stmtIf9028); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_161.add(string_literal449);
@@ -23395,7 +23397,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_stmtsElif.add(stmtsElif451.getTree());
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1822:31: ( stmtElse )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1824:31: ( stmtElse )?
             int alt110=2;
             int LA110_0 = input.LA(1);
 
@@ -23404,7 +23406,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt110) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1822:31: stmtElse
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1824:31: stmtElse
                     {
                     pushFollow(FOLLOW_stmtElse_in_stmtIf9034);
                     stmtElse452=stmtElse();
@@ -23420,7 +23422,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: stmtsElif, stmtElse, stmtIfBlock
+            // elements: stmtIfBlock, stmtsElif, stmtElse
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -23432,9 +23434,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1822:41: -> ^( S_IF[\"S_IF\"] stmtIfBlock stmtsElif ( stmtElse )? )
+            // 1824:41: -> ^( S_IF[\"S_IF\"] stmtIfBlock stmtsElif ( stmtElse )? )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1822:44: ^( S_IF[\"S_IF\"] stmtIfBlock stmtsElif ( stmtElse )? )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1824:44: ^( S_IF[\"S_IF\"] stmtIfBlock stmtsElif ( stmtElse )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -23445,7 +23447,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_stmtsElif.nextTree());
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1822:94: ( stmtElse )?
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1824:94: ( stmtElse )?
                 if ( stream_stmtElse.hasNext() ) {
                     adaptor.addChild(root_1, stream_stmtElse.nextTree());
 
@@ -23496,7 +23498,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtIfBlock"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1824:1: stmtIfBlock : '(' expr ')' stmtBlock -> expr stmtBlock ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1826:1: stmtIfBlock : '(' expr ')' stmtBlock -> expr stmtBlock ;
     public final pollenParser.stmtIfBlock_return stmtIfBlock() throws RecognitionException {
         pollenParser.stmtIfBlock_return retval = new pollenParser.stmtIfBlock_return();
         retval.start = input.LT(1);
@@ -23521,8 +23523,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 123) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1825:2: ( '(' expr ')' stmtBlock -> expr stmtBlock )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1825:4: '(' expr ')' stmtBlock
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1827:2: ( '(' expr ')' stmtBlock -> expr stmtBlock )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1827:4: '(' expr ')' stmtBlock
             {
             char_literal453=(Atom)match(input,126,FOLLOW_126_in_stmtIfBlock9064); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_126.add(char_literal453);
@@ -23559,7 +23561,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1825:27: -> expr stmtBlock
+            // 1827:27: -> expr stmtBlock
             {
                 adaptor.addChild(root_0, stream_expr.nextTree());
 
@@ -23606,7 +23608,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtsElif"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1827:1: stmtsElif : ( stmtElif )* -> ^( LIST[\"LIST\"] ( stmtElif )* ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1829:1: stmtsElif : ( stmtElif )* -> ^( LIST[\"LIST\"] ( stmtElif )* ) ;
     public final pollenParser.stmtsElif_return stmtsElif() throws RecognitionException {
         pollenParser.stmtsElif_return retval = new pollenParser.stmtsElif_return();
         retval.start = input.LT(1);
@@ -23622,10 +23624,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 124) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1828:2: ( ( stmtElif )* -> ^( LIST[\"LIST\"] ( stmtElif )* ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1828:4: ( stmtElif )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1830:2: ( ( stmtElif )* -> ^( LIST[\"LIST\"] ( stmtElif )* ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1830:4: ( stmtElif )*
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1828:4: ( stmtElif )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1830:4: ( stmtElif )*
             loop111:
             do {
                 int alt111=2;
@@ -23638,7 +23640,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt111) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1828:4: stmtElif
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1830:4: stmtElif
             	    {
             	    pushFollow(FOLLOW_stmtElif_in_stmtsElif9086);
             	    stmtElif457=stmtElif();
@@ -23669,16 +23671,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1828:14: -> ^( LIST[\"LIST\"] ( stmtElif )* )
+            // 1830:14: -> ^( LIST[\"LIST\"] ( stmtElif )* )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1828:17: ^( LIST[\"LIST\"] ( stmtElif )* )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1830:17: ^( LIST[\"LIST\"] ( stmtElif )* )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ListNode(LIST, "LIST")
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1828:42: ( stmtElif )*
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1830:42: ( stmtElif )*
                 while ( stream_stmtElif.hasNext() ) {
                     adaptor.addChild(root_1, stream_stmtElif.nextTree());
 
@@ -23729,7 +23731,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtElif"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1830:1: stmtElif : 'elif' stmtIfBlock -> ^( S_ELIF[\"S_ELIF\"] stmtIfBlock ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1832:1: stmtElif : 'elif' stmtIfBlock -> ^( S_ELIF[\"S_ELIF\"] stmtIfBlock ) ;
     public final pollenParser.stmtElif_return stmtElif() throws RecognitionException {
         pollenParser.stmtElif_return retval = new pollenParser.stmtElif_return();
         retval.start = input.LT(1);
@@ -23748,8 +23750,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 125) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1831:2: ( 'elif' stmtIfBlock -> ^( S_ELIF[\"S_ELIF\"] stmtIfBlock ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1831:4: 'elif' stmtIfBlock
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1833:2: ( 'elif' stmtIfBlock -> ^( S_ELIF[\"S_ELIF\"] stmtIfBlock ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1833:4: 'elif' stmtIfBlock
             {
             string_literal458=(Atom)match(input,151,FOLLOW_151_in_stmtElif9110); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_151.add(string_literal458);
@@ -23775,9 +23777,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1831:23: -> ^( S_ELIF[\"S_ELIF\"] stmtIfBlock )
+            // 1833:23: -> ^( S_ELIF[\"S_ELIF\"] stmtIfBlock )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1831:26: ^( S_ELIF[\"S_ELIF\"] stmtIfBlock )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1833:26: ^( S_ELIF[\"S_ELIF\"] stmtIfBlock )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -23830,7 +23832,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtElse"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1833:1: stmtElse : 'else' stmtBlock -> stmtBlock ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1835:1: stmtElse : 'else' stmtBlock -> stmtBlock ;
     public final pollenParser.stmtElse_return stmtElse() throws RecognitionException {
         pollenParser.stmtElse_return retval = new pollenParser.stmtElse_return();
         retval.start = input.LT(1);
@@ -23849,8 +23851,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 126) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1834:2: ( 'else' stmtBlock -> stmtBlock )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1834:4: 'else' stmtBlock
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1836:2: ( 'else' stmtBlock -> stmtBlock )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1836:4: 'else' stmtBlock
             {
             string_literal460=(Atom)match(input,152,FOLLOW_152_in_stmtElse9136); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_152.add(string_literal460);
@@ -23876,7 +23878,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1834:21: -> stmtBlock
+            // 1836:21: -> stmtBlock
             {
                 adaptor.addChild(root_0, stream_stmtBlock.nextTree());
 
@@ -23921,7 +23923,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtProvided"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1836:1: stmtProvided : 'provided' '(' expr ')' stmtBlock ( stmtElse )? -> ^( S_PROVIDED[\"S_PROVIDED\"] expr stmtBlock ( stmtElse )? ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1838:1: stmtProvided : 'provided' '(' expr ')' stmtBlock ( stmtElse )? -> ^( S_PROVIDED[\"S_PROVIDED\"] expr stmtBlock ( stmtElse )? ) ;
     public final pollenParser.stmtProvided_return stmtProvided() throws RecognitionException {
         pollenParser.stmtProvided_return retval = new pollenParser.stmtProvided_return();
         retval.start = input.LT(1);
@@ -23952,8 +23954,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 127) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1837:2: ( 'provided' '(' expr ')' stmtBlock ( stmtElse )? -> ^( S_PROVIDED[\"S_PROVIDED\"] expr stmtBlock ( stmtElse )? ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1837:4: 'provided' '(' expr ')' stmtBlock ( stmtElse )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1839:2: ( 'provided' '(' expr ')' stmtBlock ( stmtElse )? -> ^( S_PROVIDED[\"S_PROVIDED\"] expr stmtBlock ( stmtElse )? ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1839:4: 'provided' '(' expr ')' stmtBlock ( stmtElse )?
             {
             string_literal462=(Atom)match(input,177,FOLLOW_177_in_stmtProvided9152); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_177.add(string_literal462);
@@ -23981,7 +23983,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_stmtBlock.add(stmtBlock466.getTree());
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1837:38: ( stmtElse )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1839:38: ( stmtElse )?
             int alt112=2;
             int LA112_0 = input.LA(1);
 
@@ -23990,7 +23992,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt112) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1837:39: stmtElse
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1839:39: stmtElse
                     {
                     pushFollow(FOLLOW_stmtElse_in_stmtProvided9163);
                     stmtElse467=stmtElse();
@@ -24006,7 +24008,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: stmtElse, stmtBlock, expr
+            // elements: stmtBlock, expr, stmtElse
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -24018,9 +24020,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1838:3: -> ^( S_PROVIDED[\"S_PROVIDED\"] expr stmtBlock ( stmtElse )? )
+            // 1840:3: -> ^( S_PROVIDED[\"S_PROVIDED\"] expr stmtBlock ( stmtElse )? )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1838:6: ^( S_PROVIDED[\"S_PROVIDED\"] expr stmtBlock ( stmtElse )? )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1840:6: ^( S_PROVIDED[\"S_PROVIDED\"] expr stmtBlock ( stmtElse )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -24031,7 +24033,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_stmtBlock.nextTree());
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1838:67: ( stmtElse )?
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1840:67: ( stmtElse )?
                 if ( stream_stmtElse.hasNext() ) {
                     adaptor.addChild(root_1, stream_stmtElse.nextTree());
 
@@ -24082,7 +24084,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtWhile"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1840:1: stmtWhile : 'while' '(' expr ')' stmtBlock -> ^( S_WHILE[\"S_WHILE\"] expr stmtBlock ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1842:1: stmtWhile : 'while' '(' expr ')' stmtBlock -> ^( S_WHILE[\"S_WHILE\"] expr stmtBlock ) ;
     public final pollenParser.stmtWhile_return stmtWhile() throws RecognitionException {
         pollenParser.stmtWhile_return retval = new pollenParser.stmtWhile_return();
         retval.start = input.LT(1);
@@ -24110,8 +24112,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 128) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1841:2: ( 'while' '(' expr ')' stmtBlock -> ^( S_WHILE[\"S_WHILE\"] expr stmtBlock ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1841:4: 'while' '(' expr ')' stmtBlock
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1843:2: ( 'while' '(' expr ')' stmtBlock -> ^( S_WHILE[\"S_WHILE\"] expr stmtBlock ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1843:4: 'while' '(' expr ')' stmtBlock
             {
             string_literal468=(Atom)match(input,189,FOLLOW_189_in_stmtWhile9196); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_189.add(string_literal468);
@@ -24152,9 +24154,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1841:34: -> ^( S_WHILE[\"S_WHILE\"] expr stmtBlock )
+            // 1843:34: -> ^( S_WHILE[\"S_WHILE\"] expr stmtBlock )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1841:37: ^( S_WHILE[\"S_WHILE\"] expr stmtBlock )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1843:37: ^( S_WHILE[\"S_WHILE\"] expr stmtBlock )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -24209,7 +24211,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtDecl"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1843:1: stmtDecl : stmtDeclAttr varDecl delim -> ^( S_DECL[\"S_DECL\"] varDecl ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1845:1: stmtDecl : stmtDeclAttr varDecl delim -> ^( S_DECL[\"S_DECL\"] varDecl ) ;
     public final pollenParser.stmtDecl_return stmtDecl() throws RecognitionException {
         pollenParser.stmtDecl_return retval = new pollenParser.stmtDecl_return();
         retval.start = input.LT(1);
@@ -24231,8 +24233,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 129) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1844:4: ( stmtDeclAttr varDecl delim -> ^( S_DECL[\"S_DECL\"] varDecl ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1844:7: stmtDeclAttr varDecl delim
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1846:4: ( stmtDeclAttr varDecl delim -> ^( S_DECL[\"S_DECL\"] varDecl ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1846:7: stmtDeclAttr varDecl delim
             {
             pushFollow(FOLLOW_stmtDeclAttr_in_stmtDecl9232);
             stmtDeclAttr473=stmtDeclAttr();
@@ -24268,9 +24270,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1844:34: -> ^( S_DECL[\"S_DECL\"] varDecl )
+            // 1846:34: -> ^( S_DECL[\"S_DECL\"] varDecl )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1844:37: ^( S_DECL[\"S_DECL\"] varDecl )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1846:37: ^( S_DECL[\"S_DECL\"] varDecl )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -24323,7 +24325,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtDeclAttr"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1846:1: stmtDeclAttr : ( 'const' | 'volatile' |t= 'host' )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1848:1: stmtDeclAttr : ( 'const' | 'volatile' |t= 'host' )* ;
     public final pollenParser.stmtDeclAttr_return stmtDeclAttr() throws RecognitionException {
         pollenParser.stmtDeclAttr_return retval = new pollenParser.stmtDeclAttr_return();
         retval.start = input.LT(1);
@@ -24343,13 +24345,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 130) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1847:2: ( ( 'const' | 'volatile' |t= 'host' )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1847:4: ( 'const' | 'volatile' |t= 'host' )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1849:2: ( ( 'const' | 'volatile' |t= 'host' )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1849:4: ( 'const' | 'volatile' |t= 'host' )*
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1847:4: ( 'const' | 'volatile' |t= 'host' )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1849:4: ( 'const' | 'volatile' |t= 'host' )*
             loop113:
             do {
                 int alt113=4;
@@ -24374,7 +24376,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt113) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1847:7: 'const'
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1849:7: 'const'
             	    {
             	    string_literal476=(Atom)match(input,147,FOLLOW_147_in_stmtDeclAttr9265); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
@@ -24389,7 +24391,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1848:6: 'volatile'
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1850:6: 'volatile'
             	    {
             	    string_literal477=(Atom)match(input,188,FOLLOW_188_in_stmtDeclAttr9274); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
@@ -24404,7 +24406,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    break;
             	case 3 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1849:9: t= 'host'
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1851:9: t= 'host'
             	    {
             	    t=(Atom)match(input,160,FOLLOW_160_in_stmtDeclAttr9288); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
@@ -24460,7 +24462,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fieldDeclaration"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1852:1: fieldDeclaration : varAttr varDecl delim -> varDecl ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1854:1: fieldDeclaration : varAttr varDecl delim -> varDecl ;
     public final pollenParser.fieldDeclaration_return fieldDeclaration() throws RecognitionException {
         pollenParser.fieldDeclaration_return retval = new pollenParser.fieldDeclaration_return();
         retval.start = input.LT(1);
@@ -24487,8 +24489,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 131) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1858:4: ( varAttr varDecl delim -> varDecl )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1858:7: varAttr varDecl delim
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1860:4: ( varAttr varDecl delim -> varDecl )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1860:7: varAttr varDecl delim
             {
             pushFollow(FOLLOW_varAttr_in_fieldDeclaration9318);
             varAttr478=varAttr();
@@ -24524,7 +24526,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1858:29: -> varDecl
+            // 1860:29: -> varDecl
             {
                 adaptor.addChild(root_0, stream_varDecl.nextTree());
 
@@ -24569,7 +24571,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varDeclaration"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1860:1: varDeclaration : varAttr varDecl delim -> varDecl ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1862:1: varDeclaration : varAttr varDecl delim -> varDecl ;
     public final pollenParser.varDeclaration_return varDeclaration() throws RecognitionException {
         pollenParser.varDeclaration_return retval = new pollenParser.varDeclaration_return();
         retval.start = input.LT(1);
@@ -24595,8 +24597,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 132) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1868:4: ( varAttr varDecl delim -> varDecl )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1868:7: varAttr varDecl delim
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1870:4: ( varAttr varDecl delim -> varDecl )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1870:7: varAttr varDecl delim
             {
             pushFollow(FOLLOW_varAttr_in_varDeclaration9354);
             varAttr481=varAttr();
@@ -24632,7 +24634,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1868:29: -> varDecl
+            // 1870:29: -> varDecl
             {
                 adaptor.addChild(root_0, stream_varDecl.nextTree());
 
@@ -24680,7 +24682,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varAttr"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1870:1: varAttr : ( 'const' | 'volatile' | 'host' )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1872:1: varAttr : ( 'const' | 'volatile' | 'host' )* ;
     public final pollenParser.varAttr_return varAttr() throws RecognitionException {
         pollenParser.varAttr_return retval = new pollenParser.varAttr_return();
         retval.start = input.LT(1);
@@ -24700,13 +24702,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 133) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1871:2: ( ( 'const' | 'volatile' | 'host' )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1871:4: ( 'const' | 'volatile' | 'host' )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1873:2: ( ( 'const' | 'volatile' | 'host' )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1873:4: ( 'const' | 'volatile' | 'host' )*
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1871:4: ( 'const' | 'volatile' | 'host' )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1873:4: ( 'const' | 'volatile' | 'host' )*
             loop114:
             do {
                 int alt114=4;
@@ -24731,7 +24733,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt114) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1871:7: 'const'
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1873:7: 'const'
             	    {
             	    string_literal484=(Atom)match(input,147,FOLLOW_147_in_varAttr9377); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
@@ -24746,7 +24748,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1872:6: 'volatile'
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1874:6: 'volatile'
             	    {
             	    string_literal485=(Atom)match(input,188,FOLLOW_188_in_varAttr9386); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
@@ -24761,7 +24763,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    break;
             	case 3 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1873:8: 'host'
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1875:8: 'host'
             	    {
             	    string_literal486=(Atom)match(input,160,FOLLOW_160_in_varAttr9397); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
@@ -24823,7 +24825,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varDecl"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1876:1: varDecl : ( ( typeName IDENT ( ASSIGN expr )? ',' )=> varDeclList | ( typeName IDENT '[' )=> varArray | ( ( '(' )? typeName '(' )=> varFcnRef | ( ( '(' ) typeName typeName '(' )=> varFcnRef2 | ( typeName varInit )=> varDeclList | 'new' qualName IDENT fcnArgumentList -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1878:1: varDecl : ( ( typeName IDENT ( ASSIGN expr )? ',' )=> varDeclList | ( typeName IDENT '[' )=> varArray | ( ( '(' )? typeName '(' )=> varFcnRef | ( ( '(' ) typeName typeName '(' )=> varFcnRef2 | ( typeName varInit )=> varDeclList | 'new' qualName IDENT fcnArgumentList -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) ) );
     public final pollenParser.varDecl_return varDecl() throws RecognitionException {
         varDecl_stack.push(new varDecl_scope());
         pollenParser.varDecl_return retval = new pollenParser.varDecl_return();
@@ -24864,7 +24866,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 134) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1887:2: ( ( typeName IDENT ( ASSIGN expr )? ',' )=> varDeclList | ( typeName IDENT '[' )=> varArray | ( ( '(' )? typeName '(' )=> varFcnRef | ( ( '(' ) typeName typeName '(' )=> varFcnRef2 | ( typeName varInit )=> varDeclList | 'new' qualName IDENT fcnArgumentList -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1889:2: ( ( typeName IDENT ( ASSIGN expr )? ',' )=> varDeclList | ( typeName IDENT '[' )=> varArray | ( ( '(' )? typeName '(' )=> varFcnRef | ( ( '(' ) typeName typeName '(' )=> varFcnRef2 | ( typeName varInit )=> varDeclList | 'new' qualName IDENT fcnArgumentList -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) ) )
             int alt115=6;
             switch ( input.LA(1) ) {
             case 141:
@@ -25189,7 +25191,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt115) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1887:4: ( typeName IDENT ( ASSIGN expr )? ',' )=> varDeclList
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1889:4: ( typeName IDENT ( ASSIGN expr )? ',' )=> varDeclList
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -25204,7 +25206,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1888:6: ( typeName IDENT '[' )=> varArray
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1890:6: ( typeName IDENT '[' )=> varArray
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -25219,7 +25221,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1889:6: ( ( '(' )? typeName '(' )=> varFcnRef
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1891:6: ( ( '(' )? typeName '(' )=> varFcnRef
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -25234,7 +25236,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1890:6: ( ( '(' ) typeName typeName '(' )=> varFcnRef2
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1892:6: ( ( '(' ) typeName typeName '(' )=> varFcnRef2
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -25249,7 +25251,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1891:7: ( typeName varInit )=> varDeclList
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1893:7: ( typeName varInit )=> varDeclList
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -25264,7 +25266,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 6 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1892:5: 'new' qualName IDENT fcnArgumentList
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1894:5: 'new' qualName IDENT fcnArgumentList
                     {
                     string_literal492=(Atom)match(input,170,FOLLOW_170_in_varDecl9527); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_170.add(string_literal492);
@@ -25291,7 +25293,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) { stmtFlags.add(Flags.NEW); }
 
                     // AST REWRITE
-                    // elements: IDENT, fcnArgumentList, qualName, IDENT
+                    // elements: IDENT, fcnArgumentList, IDENT, qualName
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -25303,16 +25305,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1894:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) )
+                    // 1896:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1894:6: ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1896:6: ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.TypedMember(D_VAR, "D_VAR", stmtFlags)
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1894:56: ^( T_USR[\"T_USR\", typeMods] qualName )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1896:56: ^( T_USR[\"T_USR\", typeMods] qualName )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -25328,21 +25330,21 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_IDENT.nextNode()
                         );
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1895:14: ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1897:14: ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.New(E_NEW, "E_NEW")
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1896:11: ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1898:11: ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Call(E_CALL, "E_CALL")
                         , root_3);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1897:8: ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1899:8: ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] )
                         {
                         BaseNode root_4 = (BaseNode)adaptor.nil();
                         root_4 = (BaseNode)adaptor.becomeRoot(
@@ -25411,7 +25413,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varFcnRef"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1902:1: varFcnRef : ( ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )? | typeName fcnRefTypeList IDENT ( ASSIGN expr )? ) -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ( expr )? ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1904:1: varFcnRef : ( ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )? | typeName fcnRefTypeList IDENT ( ASSIGN expr )? ) -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ( expr )? ) ;
     public final pollenParser.varFcnRef_return varFcnRef() throws RecognitionException {
         pollenParser.varFcnRef_return retval = new pollenParser.varFcnRef_return();
         retval.start = input.LT(1);
@@ -25455,10 +25457,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 135) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1903:2: ( ( ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )? | typeName fcnRefTypeList IDENT ( ASSIGN expr )? ) -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ( expr )? ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1903:5: ( ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )? | typeName fcnRefTypeList IDENT ( ASSIGN expr )? )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1905:2: ( ( ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )? | typeName fcnRefTypeList IDENT ( ASSIGN expr )? ) -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ( expr )? ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1905:5: ( ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )? | typeName fcnRefTypeList IDENT ( ASSIGN expr )? )
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1903:5: ( ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )? | typeName fcnRefTypeList IDENT ( ASSIGN expr )? )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1905:5: ( ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )? | typeName fcnRefTypeList IDENT ( ASSIGN expr )? )
             int alt118=2;
             int LA118_0 = input.LA(1);
 
@@ -25478,10 +25480,10 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt118) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1903:7: ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1905:7: ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )?
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1903:7: ( '(' )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1903:8: '('
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1905:7: ( '(' )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1905:8: '('
                     {
                     char_literal496=(Atom)match(input,126,FOLLOW_126_in_varFcnRef9677); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_126.add(char_literal496);
@@ -25504,8 +25506,8 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_fcnRefTypeList.add(fcnRefTypeList498.getTree());
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1903:37: ( ')' )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1903:38: ')'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1905:37: ( ')' )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1905:38: ')'
                     {
                     char_literal499=(Atom)match(input,127,FOLLOW_127_in_varFcnRef9685); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_127.add(char_literal499);
@@ -25518,7 +25520,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT500);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1903:49: ( ASSIGN expr )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1905:49: ( ASSIGN expr )?
                     int alt116=2;
                     int LA116_0 = input.LA(1);
 
@@ -25527,7 +25529,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt116) {
                         case 1 :
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1903:50: ASSIGN expr
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1905:50: ASSIGN expr
                             {
                             ASSIGN501=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varFcnRef9691); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN501);
@@ -25549,7 +25551,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1904:7: typeName fcnRefTypeList IDENT ( ASSIGN expr )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1906:7: typeName fcnRefTypeList IDENT ( ASSIGN expr )?
                     {
                     pushFollow(FOLLOW_typeName_in_varFcnRef9703);
                     typeName503=typeName();
@@ -25569,7 +25571,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT505);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1904:38: ( ASSIGN expr )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1906:38: ( ASSIGN expr )?
                     int alt117=2;
                     int LA117_0 = input.LA(1);
 
@@ -25578,7 +25580,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt117) {
                         case 1 :
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1904:39: ASSIGN expr
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1906:39: ASSIGN expr
                             {
                             ASSIGN506=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varFcnRef9711); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN506);
@@ -25604,7 +25606,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: expr, fcnRefTypeList, IDENT, typeName
+            // elements: IDENT, typeName, fcnRefTypeList, expr
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -25616,9 +25618,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1905:3: -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ( expr )? )
+            // 1907:3: -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ( expr )? )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1905:6: ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ( expr )? )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1907:6: ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ( expr )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -25633,7 +25635,7 @@ public TreeAdaptor getTreeAdaptor() {
                 stream_IDENT.nextNode()
                 );
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1905:89: ( expr )?
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1907:89: ( expr )?
                 if ( stream_expr.hasNext() ) {
                     adaptor.addChild(root_1, stream_expr.nextTree());
 
@@ -25684,7 +25686,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varFcnRef2"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1907:1: varFcnRef2 : '(' rtnType typeName fcnRefTypeList ')' IDENT ( ASSIGN expr )? -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT rtnType ( expr )? ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1909:1: varFcnRef2 : '(' rtnType typeName fcnRefTypeList ')' IDENT ( ASSIGN expr )? -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT rtnType ( expr )? ) ;
     public final pollenParser.varFcnRef2_return varFcnRef2() throws RecognitionException {
         pollenParser.varFcnRef2_return retval = new pollenParser.varFcnRef2_return();
         retval.start = input.LT(1);
@@ -25721,8 +25723,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 136) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1908:2: ( '(' rtnType typeName fcnRefTypeList ')' IDENT ( ASSIGN expr )? -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT rtnType ( expr )? ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1908:5: '(' rtnType typeName fcnRefTypeList ')' IDENT ( ASSIGN expr )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1910:2: ( '(' rtnType typeName fcnRefTypeList ')' IDENT ( ASSIGN expr )? -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT rtnType ( expr )? ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1910:5: '(' rtnType typeName fcnRefTypeList ')' IDENT ( ASSIGN expr )?
             {
             char_literal508=(Atom)match(input,126,FOLLOW_126_in_varFcnRef29752); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_126.add(char_literal508);
@@ -25757,7 +25759,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_IDENT.add(IDENT513);
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1908:51: ( ASSIGN expr )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1910:51: ( ASSIGN expr )?
             int alt119=2;
             int LA119_0 = input.LA(1);
 
@@ -25766,7 +25768,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt119) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1908:52: ASSIGN expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1910:52: ASSIGN expr
                     {
                     ASSIGN514=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varFcnRef29765); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN514);
@@ -25788,7 +25790,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) { stmtFlags.add(Flags.FCN_REF_RTN); }
 
             // AST REWRITE
-            // elements: IDENT, typeName, rtnType, fcnRefTypeList, expr
+            // elements: rtnType, expr, IDENT, typeName, fcnRefTypeList
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -25800,9 +25802,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1910:3: -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT rtnType ( expr )? )
+            // 1912:3: -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT rtnType ( expr )? )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1910:6: ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT rtnType ( expr )? )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1912:6: ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT rtnType ( expr )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -25819,7 +25821,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_rtnType.nextTree());
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1910:97: ( expr )?
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1912:97: ( expr )?
                 if ( stream_expr.hasNext() ) {
                     adaptor.addChild(root_1, stream_expr.nextTree());
 
@@ -25870,7 +25872,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "rtnType"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1912:1: rtnType : typeName ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1914:1: rtnType : typeName ;
     public final pollenParser.rtnType_return rtnType() throws RecognitionException {
         pollenParser.rtnType_return retval = new pollenParser.rtnType_return();
         retval.start = input.LT(1);
@@ -25886,8 +25888,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 137) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1913:2: ( typeName )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1913:4: typeName
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1915:2: ( typeName )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1915:4: typeName
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -25934,7 +25936,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnRefTypeList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1916:1: fcnRefTypeList : '(' fcnRefTypes ')' -> fcnRefTypes ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1918:1: fcnRefTypeList : '(' fcnRefTypes ')' -> fcnRefTypes ;
     public final pollenParser.fcnRefTypeList_return fcnRefTypeList() throws RecognitionException {
         pollenParser.fcnRefTypeList_return retval = new pollenParser.fcnRefTypeList_return();
         retval.start = input.LT(1);
@@ -25956,8 +25958,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 138) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1917:2: ( '(' fcnRefTypes ')' -> fcnRefTypes )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1917:5: '(' fcnRefTypes ')'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1919:2: ( '(' fcnRefTypes ')' -> fcnRefTypes )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1919:5: '(' fcnRefTypes ')'
             {
             char_literal517=(Atom)match(input,126,FOLLOW_126_in_fcnRefTypeList9832); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_126.add(char_literal517);
@@ -25987,7 +25989,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1917:25: -> fcnRefTypes
+            // 1919:25: -> fcnRefTypes
             {
                 adaptor.addChild(root_0, stream_fcnRefTypes.nextTree());
 
@@ -26032,7 +26034,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnRefTypes"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1919:1: fcnRefTypes : ( typeName ( ',' typeName )* -> ^( LIST[\"LIST\"] ( typeName )+ ) | -> ^( LIST[\"LIST\"] ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1921:1: fcnRefTypes : ( typeName ( ',' typeName )* -> ^( LIST[\"LIST\"] ( typeName )+ ) | -> ^( LIST[\"LIST\"] ) );
     public final pollenParser.fcnRefTypes_return fcnRefTypes() throws RecognitionException {
         pollenParser.fcnRefTypes_return retval = new pollenParser.fcnRefTypes_return();
         retval.start = input.LT(1);
@@ -26053,7 +26055,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 139) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1920:2: ( typeName ( ',' typeName )* -> ^( LIST[\"LIST\"] ( typeName )+ ) | -> ^( LIST[\"LIST\"] ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1922:2: ( typeName ( ',' typeName )* -> ^( LIST[\"LIST\"] ( typeName )+ ) | -> ^( LIST[\"LIST\"] ) )
             int alt121=2;
             int LA121_0 = input.LA(1);
 
@@ -26073,7 +26075,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt121) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1920:4: typeName ( ',' typeName )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1922:4: typeName ( ',' typeName )*
                     {
                     pushFollow(FOLLOW_typeName_in_fcnRefTypes9850);
                     typeName520=typeName();
@@ -26082,7 +26084,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_typeName.add(typeName520.getTree());
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1920:13: ( ',' typeName )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1922:13: ( ',' typeName )*
                     loop120:
                     do {
                         int alt120=2;
@@ -26095,7 +26097,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt120) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1920:14: ',' typeName
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1922:14: ',' typeName
                     	    {
                     	    char_literal521=(Atom)match(input,129,FOLLOW_129_in_fcnRefTypes9853); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_129.add(char_literal521);
@@ -26130,9 +26132,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1921:3: -> ^( LIST[\"LIST\"] ( typeName )+ )
+                    // 1923:3: -> ^( LIST[\"LIST\"] ( typeName )+ )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1921:6: ^( LIST[\"LIST\"] ( typeName )+ )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1923:6: ^( LIST[\"LIST\"] ( typeName )+ )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -26160,7 +26162,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1922:4: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1924:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -26175,9 +26177,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1922:4: -> ^( LIST[\"LIST\"] )
+                    // 1924:4: -> ^( LIST[\"LIST\"] )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1922:7: ^( LIST[\"LIST\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1924:7: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -26237,7 +26239,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varArray"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1924:1: varArray : typeNameArray IDENT varArraySpec ( varArrayInit[stmtFlags] )? -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1926:1: varArray : typeNameArray IDENT varArraySpec ( varArrayInit[stmtFlags] )? -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? ) ;
     public final pollenParser.varArray_return varArray() throws RecognitionException {
         varArray_stack.push(new varArray_scope());
         pollenParser.varArray_return retval = new pollenParser.varArray_return();
@@ -26263,8 +26265,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 140) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1932:2: ( typeNameArray IDENT varArraySpec ( varArrayInit[stmtFlags] )? -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1932:4: typeNameArray IDENT varArraySpec ( varArrayInit[stmtFlags] )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1934:2: ( typeNameArray IDENT varArraySpec ( varArrayInit[stmtFlags] )? -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1934:4: typeNameArray IDENT varArraySpec ( varArrayInit[stmtFlags] )?
             {
             pushFollow(FOLLOW_typeNameArray_in_varArray9904);
             typeNameArray523=typeNameArray();
@@ -26288,7 +26290,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             if ( state.backtracking==0 ) { ((varArray_scope)varArray_stack.peek()).varArrSpec = (varArraySpec525!=null?((BaseNode)varArraySpec525.tree):null); }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1935:3: ( varArrayInit[stmtFlags] )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1937:3: ( varArrayInit[stmtFlags] )?
             int alt122=2;
             int LA122_0 = input.LA(1);
 
@@ -26297,7 +26299,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt122) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1935:3: varArrayInit[stmtFlags]
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1937:3: varArrayInit[stmtFlags]
                     {
                     pushFollow(FOLLOW_varArrayInit_in_varArray9922);
                     varArrayInit526=varArrayInit(stmtFlags);
@@ -26313,7 +26315,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: varArrayInit, typeNameArray, varArraySpec, IDENT
+            // elements: IDENT, typeNameArray, varArrayInit, varArraySpec
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -26325,9 +26327,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1936:4: -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? )
+            // 1938:4: -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1936:8: ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1938:8: ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -26342,7 +26344,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_varArraySpec.nextTree());
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1938:24: ( varArrayInit )?
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1940:24: ( varArrayInit )?
                 if ( stream_varArrayInit.hasNext() ) {
                     adaptor.addChild(root_1, stream_varArrayInit.nextTree());
 
@@ -26397,7 +26399,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varArraySpec"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1940:1: varArraySpec : ( '[' varDim ']' )+ -> ^( LIST[\"LIST\"] ( varDim )+ ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1942:1: varArraySpec : ( '[' varDim ']' )+ -> ^( LIST[\"LIST\"] ( varDim )+ ) ;
     public final pollenParser.varArraySpec_return varArraySpec() throws RecognitionException {
         pollenParser.varArraySpec_return retval = new pollenParser.varArraySpec_return();
         retval.start = input.LT(1);
@@ -26419,10 +26421,10 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 141) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1941:2: ( ( '[' varDim ']' )+ -> ^( LIST[\"LIST\"] ( varDim )+ ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1941:4: ( '[' varDim ']' )+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1943:2: ( ( '[' varDim ']' )+ -> ^( LIST[\"LIST\"] ( varDim )+ ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1943:4: ( '[' varDim ']' )+
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1941:4: ( '[' varDim ']' )+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1943:4: ( '[' varDim ']' )+
             int cnt123=0;
             loop123:
             do {
@@ -26442,7 +26444,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt123) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1941:5: '[' varDim ']'
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1943:5: '[' varDim ']'
             	    {
             	    char_literal527=(Atom)match(input,137,FOLLOW_137_in_varArraySpec9971); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_137.add(char_literal527);
@@ -26486,9 +26488,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1941:22: -> ^( LIST[\"LIST\"] ( varDim )+ )
+            // 1943:22: -> ^( LIST[\"LIST\"] ( varDim )+ )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1941:27: ^( LIST[\"LIST\"] ( varDim )+ )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1943:27: ^( LIST[\"LIST\"] ( varDim )+ )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -26548,7 +26550,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varArrayInit"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1943:1: varArrayInit[EnumSet<Flags> f] : ( ( '=' initializer ) -> initializer | ( PEG initializer ) -> initializer );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1945:1: varArrayInit[EnumSet<Flags> f] : ( ( '=' initializer ) -> initializer | ( PEG initializer ) -> initializer );
     public final pollenParser.varArrayInit_return varArrayInit(EnumSet<Flags> f) throws RecognitionException {
         pollenParser.varArrayInit_return retval = new pollenParser.varArrayInit_return();
         retval.start = input.LT(1);
@@ -26572,7 +26574,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 142) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1944:2: ( ( '=' initializer ) -> initializer | ( PEG initializer ) -> initializer )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1946:2: ( ( '=' initializer ) -> initializer | ( PEG initializer ) -> initializer )
             int alt124=2;
             int LA124_0 = input.LA(1);
 
@@ -26592,10 +26594,10 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt124) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1944:4: ( '=' initializer )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1946:4: ( '=' initializer )
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1944:4: ( '=' initializer )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1944:5: '=' initializer
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1946:4: ( '=' initializer )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1946:5: '=' initializer
                     {
                     char_literal530=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varArrayInit10004); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ASSIGN.add(char_literal530);
@@ -26624,7 +26626,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1944:26: -> initializer
+                    // 1946:26: -> initializer
                     {
                         adaptor.addChild(root_0, stream_initializer.nextTree());
 
@@ -26637,10 +26639,10 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1945:4: ( PEG initializer )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1947:4: ( PEG initializer )
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1945:4: ( PEG initializer )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1945:5: PEG initializer
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1947:4: ( PEG initializer )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1947:5: PEG initializer
                     {
                     PEG532=(Atom)match(input,PEG,FOLLOW_PEG_in_varArrayInit10021); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_PEG.add(PEG532);
@@ -26671,7 +26673,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1945:43: -> initializer
+                    // 1947:43: -> initializer
                     {
                         adaptor.addChild(root_0, stream_initializer.nextTree());
 
@@ -26718,7 +26720,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varDim"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1947:1: varDim : ( expr | -> ^( E_CONST[\"E_CONST\", fl] INT_LIT[ParseUnit.ARRAY_WITHOUT_DIMENSION] ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1949:1: varDim : ( expr | -> ^( E_CONST[\"E_CONST\", fl] INT_LIT[ParseUnit.ARRAY_WITHOUT_DIMENSION] ) );
     public final pollenParser.varDim_return varDim() throws RecognitionException {
         pollenParser.varDim_return retval = new pollenParser.varDim_return();
         retval.start = input.LT(1);
@@ -26738,7 +26740,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 143) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1952:2: ( expr | -> ^( E_CONST[\"E_CONST\", fl] INT_LIT[ParseUnit.ARRAY_WITHOUT_DIMENSION] ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1954:2: ( expr | -> ^( E_CONST[\"E_CONST\", fl] INT_LIT[ParseUnit.ARRAY_WITHOUT_DIMENSION] ) )
             int alt125=2;
             int LA125_0 = input.LA(1);
 
@@ -26758,7 +26760,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt125) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1952:6: expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1954:6: expr
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -26773,7 +26775,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1954:5: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1956:5: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -26788,9 +26790,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1954:5: -> ^( E_CONST[\"E_CONST\", fl] INT_LIT[ParseUnit.ARRAY_WITHOUT_DIMENSION] )
+                    // 1956:5: -> ^( E_CONST[\"E_CONST\", fl] INT_LIT[ParseUnit.ARRAY_WITHOUT_DIMENSION] )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1954:8: ^( E_CONST[\"E_CONST\", fl] INT_LIT[ParseUnit.ARRAY_WITHOUT_DIMENSION] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1956:8: ^( E_CONST[\"E_CONST\", fl] INT_LIT[ParseUnit.ARRAY_WITHOUT_DIMENSION] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -26847,7 +26849,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "initializer"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1956:1: initializer : ( expr | '{' ( NL )* initializer_list ( ',' )? ( NL )* '}' -> initializer_list );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1958:1: initializer : ( expr | '{' ( NL )* initializer_list ( ',' )? ( NL )* '}' -> initializer_list );
     public final pollenParser.initializer_return initializer() throws RecognitionException {
         pollenParser.initializer_return retval = new pollenParser.initializer_return();
         retval.start = input.LT(1);
@@ -26879,7 +26881,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 144) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1957:2: ( expr | '{' ( NL )* initializer_list ( ',' )? ( NL )* '}' -> initializer_list )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1959:2: ( expr | '{' ( NL )* initializer_list ( ',' )? ( NL )* '}' -> initializer_list )
             int alt129=2;
             int LA129_0 = input.LA(1);
 
@@ -26899,7 +26901,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt129) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1957:4: expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1959:4: expr
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -26914,13 +26916,13 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1958:4: '{' ( NL )* initializer_list ( ',' )? ( NL )* '}'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1960:4: '{' ( NL )* initializer_list ( ',' )? ( NL )* '}'
                     {
                     char_literal536=(Atom)match(input,190,FOLLOW_190_in_initializer10088); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_190.add(char_literal536);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1958:8: ( NL )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1960:8: ( NL )*
                     loop126:
                     do {
                         int alt126=2;
@@ -26933,7 +26935,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt126) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1958:8: NL
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1960:8: NL
                     	    {
                     	    NL537=(Atom)match(input,NL,FOLLOW_NL_in_initializer10090); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_NL.add(NL537);
@@ -26955,7 +26957,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_initializer_list.add(initializer_list538.getTree());
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1958:29: ( ',' )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1960:29: ( ',' )?
                     int alt127=2;
                     int LA127_0 = input.LA(1);
 
@@ -26964,7 +26966,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt127) {
                         case 1 :
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1958:29: ','
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1960:29: ','
                             {
                             char_literal539=(Atom)match(input,129,FOLLOW_129_in_initializer10095); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_129.add(char_literal539);
@@ -26976,7 +26978,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1958:34: ( NL )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1960:34: ( NL )*
                     loop128:
                     do {
                         int alt128=2;
@@ -26989,7 +26991,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt128) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1958:34: NL
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1960:34: NL
                     	    {
                     	    NL540=(Atom)match(input,NL,FOLLOW_NL_in_initializer10098); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_NL.add(NL540);
@@ -27021,7 +27023,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1958:42: -> initializer_list
+                    // 1960:42: -> initializer_list
                     {
                         adaptor.addChild(root_0, stream_initializer_list.nextTree());
 
@@ -27068,7 +27070,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "initializer_list"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1960:1: initializer_list : initializer ( ( NL )* ',' ( NL )* initializer )* -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1962:1: initializer_list : initializer ( ( NL )* ',' ( NL )* initializer )* -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) ) ;
     public final pollenParser.initializer_list_return initializer_list() throws RecognitionException {
         pollenParser.initializer_list_return retval = new pollenParser.initializer_list_return();
         retval.start = input.LT(1);
@@ -27094,8 +27096,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 145) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1961:2: ( initializer ( ( NL )* ',' ( NL )* initializer )* -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1961:4: initializer ( ( NL )* ',' ( NL )* initializer )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1963:2: ( initializer ( ( NL )* ',' ( NL )* initializer )* -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1963:4: initializer ( ( NL )* ',' ( NL )* initializer )*
             {
             pushFollow(FOLLOW_initializer_in_initializer_list10115);
             initializer542=initializer();
@@ -27104,7 +27106,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_initializer.add(initializer542.getTree());
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1961:16: ( ( NL )* ',' ( NL )* initializer )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1963:16: ( ( NL )* ',' ( NL )* initializer )*
             loop132:
             do {
                 int alt132=2;
@@ -27123,9 +27125,9 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt132) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1961:17: ( NL )* ',' ( NL )* initializer
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1963:17: ( NL )* ',' ( NL )* initializer
             	    {
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1961:17: ( NL )*
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1963:17: ( NL )*
             	    loop130:
             	    do {
             	        int alt130=2;
@@ -27138,7 +27140,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             	        switch (alt130) {
             	    	case 1 :
-            	    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1961:17: NL
+            	    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1963:17: NL
             	    	    {
             	    	    NL543=(Atom)match(input,NL,FOLLOW_NL_in_initializer_list10118); if (state.failed) return retval; 
             	    	    if ( state.backtracking==0 ) stream_NL.add(NL543);
@@ -27157,7 +27159,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_129.add(char_literal544);
 
 
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1961:25: ( NL )*
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1963:25: ( NL )*
             	    loop131:
             	    do {
             	        int alt131=2;
@@ -27170,7 +27172,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             	        switch (alt131) {
             	    	case 1 :
-            	    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1961:25: NL
+            	    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1963:25: NL
             	    	    {
             	    	    NL545=(Atom)match(input,NL,FOLLOW_NL_in_initializer_list10123); if (state.failed) return retval; 
             	    	    if ( state.backtracking==0 ) stream_NL.add(NL545);
@@ -27214,16 +27216,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1961:43: -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) )
+            // 1963:43: -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1961:47: ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1963:47: ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ExprNode.Vec(E_VEC, "E_VEC")
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1961:79: ^( LIST[\"LIST\"] ( initializer )+ )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1963:79: ^( LIST[\"LIST\"] ( initializer )+ )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
@@ -27286,7 +27288,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varDeclList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1963:1: varDeclList : ( varBuiltInType ! varListBuiltInType | userTypeName ! varListUserDefType );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1965:1: varDeclList : ( varBuiltInType ! varListBuiltInType | userTypeName ! varListUserDefType );
     public final pollenParser.varDeclList_return varDeclList() throws RecognitionException {
         pollenParser.varDeclList_return retval = new pollenParser.varDeclList_return();
         retval.start = input.LT(1);
@@ -27311,7 +27313,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 146) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1967:2: ( varBuiltInType ! varListBuiltInType | userTypeName ! varListUserDefType )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1969:2: ( varBuiltInType ! varListBuiltInType | userTypeName ! varListUserDefType )
             int alt133=2;
             int LA133_0 = input.LA(1);
 
@@ -27331,7 +27333,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt133) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1967:4: varBuiltInType ! varListBuiltInType
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1969:4: varBuiltInType ! varListBuiltInType
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -27354,7 +27356,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1968:4: userTypeName ! varListUserDefType
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1970:4: userTypeName ! varListUserDefType
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -27411,7 +27413,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varBuiltInType"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1970:1: varBuiltInType : builtinType -> ^( T_STD[\"T_STD\", stmtFlags] builtinType ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1972:1: varBuiltInType : builtinType -> ^( T_STD[\"T_STD\", stmtFlags] builtinType ) ;
     public final pollenParser.varBuiltInType_return varBuiltInType() throws RecognitionException {
         pollenParser.varBuiltInType_return retval = new pollenParser.varBuiltInType_return();
         retval.start = input.LT(1);
@@ -27427,8 +27429,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 147) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1971:2: ( builtinType -> ^( T_STD[\"T_STD\", stmtFlags] builtinType ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1971:4: builtinType
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1973:2: ( builtinType -> ^( T_STD[\"T_STD\", stmtFlags] builtinType ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1973:4: builtinType
             {
             pushFollow(FOLLOW_builtinType_in_varBuiltInType10198);
             builtinType551=builtinType();
@@ -27450,9 +27452,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1971:16: -> ^( T_STD[\"T_STD\", stmtFlags] builtinType )
+            // 1973:16: -> ^( T_STD[\"T_STD\", stmtFlags] builtinType )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1971:19: ^( T_STD[\"T_STD\", stmtFlags] builtinType )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1973:19: ^( T_STD[\"T_STD\", stmtFlags] builtinType )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -27505,7 +27507,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varListBuiltInType"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1973:1: varListBuiltInType : varInit2 ( ',' ! varInit2 )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1975:1: varListBuiltInType : varInit2 ( ',' ! varInit2 )* ;
     public final pollenParser.varListBuiltInType_return varListBuiltInType() throws RecognitionException {
         pollenParser.varListBuiltInType_return retval = new pollenParser.varListBuiltInType_return();
         retval.start = input.LT(1);
@@ -27525,8 +27527,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 148) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1974:2: ( varInit2 ( ',' ! varInit2 )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1974:4: varInit2 ( ',' ! varInit2 )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1976:2: ( varInit2 ( ',' ! varInit2 )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1976:4: varInit2 ( ',' ! varInit2 )*
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -27538,7 +27540,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, varInit2552.getTree());
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1974:13: ( ',' ! varInit2 )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1976:13: ( ',' ! varInit2 )*
             loop134:
             do {
                 int alt134=2;
@@ -27551,7 +27553,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt134) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1974:14: ',' ! varInit2
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1976:14: ',' ! varInit2
             	    {
             	    char_literal553=(Atom)match(input,129,FOLLOW_129_in_varListBuiltInType10225); if (state.failed) return retval;
 
@@ -27606,7 +27608,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varListUserDefType"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1976:1: varListUserDefType : varInit ( ',' ! varInit )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1978:1: varListUserDefType : varInit ( ',' ! varInit )* ;
     public final pollenParser.varListUserDefType_return varListUserDefType() throws RecognitionException {
         pollenParser.varListUserDefType_return retval = new pollenParser.varListUserDefType_return();
         retval.start = input.LT(1);
@@ -27626,8 +27628,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 149) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1977:2: ( varInit ( ',' ! varInit )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1977:4: varInit ( ',' ! varInit )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1979:2: ( varInit ( ',' ! varInit )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1979:4: varInit ( ',' ! varInit )*
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -27639,7 +27641,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, varInit555.getTree());
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1977:12: ( ',' ! varInit )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1979:12: ( ',' ! varInit )*
             loop135:
             do {
                 int alt135=2;
@@ -27652,7 +27654,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt135) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1977:13: ',' ! varInit
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1979:13: ',' ! varInit
             	    {
             	    char_literal556=(Atom)match(input,129,FOLLOW_129_in_varListUserDefType10245); if (state.failed) return retval;
 
@@ -27707,7 +27709,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varInit2"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1979:1: varInit2 : ( IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1981:1: varInit2 : ( IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) );
     public final pollenParser.varInit2_return varInit2() throws RecognitionException {
         pollenParser.varInit2_return retval = new pollenParser.varInit2_return();
         retval.start = input.LT(1);
@@ -27731,7 +27733,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 150) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1980:2: ( IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1982:2: ( IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) )
             int alt136=2;
             int LA136_0 = input.LA(1);
 
@@ -27763,7 +27765,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt136) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1980:4: IDENT ASSIGN expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1982:4: IDENT ASSIGN expr
                     {
                     IDENT558=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit210264); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT558);
@@ -27781,7 +27783,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_expr.add(expr560.getTree());
 
                     // AST REWRITE
-                    // elements: expr, IDENT
+                    // elements: IDENT, expr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -27793,9 +27795,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1981:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
+                    // 1983:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1981:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1983:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -27822,7 +27824,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1983:5: IDENT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1985:5: IDENT
                     {
                     IDENT561=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit210298); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT561);
@@ -27841,9 +27843,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1984:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
+                    // 1986:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1984:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1986:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -27902,7 +27904,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varInit"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1986:1: varInit : ( IDENT BIND userTypeName -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( ^( E_TYP[\"E_TYP\"] userTypeName ) )? ) | IDENT PEG expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? ) | IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1988:1: varInit : ( IDENT BIND userTypeName -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( ^( E_TYP[\"E_TYP\"] userTypeName ) )? ) | IDENT PEG expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? ) | IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) );
     public final pollenParser.varInit_return varInit() throws RecognitionException {
         pollenParser.varInit_return retval = new pollenParser.varInit_return();
         retval.start = input.LT(1);
@@ -27941,7 +27943,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 151) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1987:2: ( IDENT BIND userTypeName -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( ^( E_TYP[\"E_TYP\"] userTypeName ) )? ) | IDENT PEG expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? ) | IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1989:2: ( IDENT BIND userTypeName -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( ^( E_TYP[\"E_TYP\"] userTypeName ) )? ) | IDENT PEG expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? ) | IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) )
             int alt137=4;
             int LA137_0 = input.LA(1);
 
@@ -27979,7 +27981,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt137) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1987:5: IDENT BIND userTypeName
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1989:5: IDENT BIND userTypeName
                     {
                     IDENT562=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit10329); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT562);
@@ -28011,9 +28013,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1988:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( ^( E_TYP[\"E_TYP\"] userTypeName ) )? )
+                    // 1990:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( ^( E_TYP[\"E_TYP\"] userTypeName ) )? )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1988:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( ^( E_TYP[\"E_TYP\"] userTypeName ) )? )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1990:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( ^( E_TYP[\"E_TYP\"] userTypeName ) )? )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -28026,9 +28028,9 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_IDENT.nextNode()
                         );
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1988:78: ( ^( E_TYP[\"E_TYP\"] userTypeName ) )?
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1990:78: ( ^( E_TYP[\"E_TYP\"] userTypeName ) )?
                         if ( stream_userTypeName.hasNext() ) {
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1988:78: ^( E_TYP[\"E_TYP\"] userTypeName )
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1990:78: ^( E_TYP[\"E_TYP\"] userTypeName )
                             {
                             BaseNode root_2 = (BaseNode)adaptor.nil();
                             root_2 = (BaseNode)adaptor.becomeRoot(
@@ -28055,7 +28057,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1989:4: IDENT PEG expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1991:4: IDENT PEG expr
                     {
                     IDENT565=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit10374); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT565);
@@ -28087,9 +28089,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1990:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? )
+                    // 1992:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1990:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1992:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -28102,7 +28104,7 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_IDENT.nextNode()
                         );
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1990:78: ( expr )?
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1992:78: ( expr )?
                         if ( stream_expr.hasNext() ) {
                             adaptor.addChild(root_1, stream_expr.nextTree());
 
@@ -28121,7 +28123,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1991:4: IDENT ASSIGN expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1993:4: IDENT ASSIGN expr
                     {
                     IDENT568=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit10407); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT568);
@@ -28151,9 +28153,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1992:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
+                    // 1994:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1992:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1994:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -28180,7 +28182,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1994:4: IDENT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1996:4: IDENT
                     {
                     IDENT571=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit10440); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IDENT.add(IDENT571);
@@ -28199,9 +28201,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 1995:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
+                    // 1997:3: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1995:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1997:6: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -28261,7 +28263,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "builtinType"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1998:1: builtinType returns [EnumSet<LitFlags> f] : ( 'bool' | 'byte' | 'int8' | 'int16' | 'int32' | 'real' | 'string' | 'uint8' | 'uint16' | 'uint32' );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2000:1: builtinType returns [EnumSet<LitFlags> f] : ( 'bool' | 'byte' | 'int8' | 'int16' | 'int32' | 'real' | 'string' | 'uint8' | 'uint16' | 'uint32' );
     public final pollenParser.builtinType_return builtinType() throws RecognitionException {
         pollenParser.builtinType_return retval = new pollenParser.builtinType_return();
         retval.start = input.LT(1);
@@ -28295,7 +28297,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 152) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1999:5: ( 'bool' | 'byte' | 'int8' | 'int16' | 'int32' | 'real' | 'string' | 'uint8' | 'uint16' | 'uint32' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2001:5: ( 'bool' | 'byte' | 'int8' | 'int16' | 'int32' | 'real' | 'string' | 'uint8' | 'uint16' | 'uint32' )
             int alt138=10;
             switch ( input.LA(1) ) {
             case 141:
@@ -28359,7 +28361,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt138) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1999:9: 'bool'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2001:9: 'bool'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -28377,7 +28379,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2000:9: 'byte'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2002:9: 'byte'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -28395,7 +28397,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2001:9: 'int8'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2003:9: 'int8'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -28413,7 +28415,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2002:9: 'int16'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2004:9: 'int16'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -28431,7 +28433,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2003:9: 'int32'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2005:9: 'int32'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -28449,7 +28451,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 6 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2004:9: 'real'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2006:9: 'real'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -28467,7 +28469,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 7 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2005:9: 'string'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2007:9: 'string'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -28485,7 +28487,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 8 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2006:9: 'uint8'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2008:9: 'uint8'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -28503,7 +28505,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 9 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2007:9: 'uint16'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2009:9: 'uint16'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -28521,7 +28523,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 10 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2008:9: 'uint32'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2010:9: 'uint32'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -28580,7 +28582,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "qualName"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2011:1: qualName : qualNameConcat ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2013:1: qualName : qualNameConcat ;
     public final pollenParser.qualName_return qualName() throws RecognitionException {
         qualName_stack.push(new qualName_scope());
         pollenParser.qualName_return retval = new pollenParser.qualName_return();
@@ -28601,8 +28603,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 153) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2023:5: ( qualNameConcat )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2023:10: qualNameConcat
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2025:5: ( qualNameConcat )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2025:10: qualNameConcat
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -28655,7 +28657,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "qualNameConcat"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2026:1: qualNameConcat : IDENT ( ( qualNameList )? ) -> IDENT[$IDENT.text + $qualName::s] ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2028:1: qualNameConcat : IDENT ( ( qualNameList )? ) -> IDENT[$IDENT.text + $qualName::s] ;
     public final pollenParser.qualNameConcat_return qualNameConcat() throws RecognitionException {
         pollenParser.qualNameConcat_return retval = new pollenParser.qualNameConcat_return();
         retval.start = input.LT(1);
@@ -28674,17 +28676,17 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 154) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2027:2: ( IDENT ( ( qualNameList )? ) -> IDENT[$IDENT.text + $qualName::s] )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2027:4: IDENT ( ( qualNameList )? )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2029:2: ( IDENT ( ( qualNameList )? ) -> IDENT[$IDENT.text + $qualName::s] )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2029:4: IDENT ( ( qualNameList )? )
             {
             IDENT583=(Atom)match(input,IDENT,FOLLOW_IDENT_in_qualNameConcat10671); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_IDENT.add(IDENT583);
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2027:10: ( ( qualNameList )? )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2027:11: ( qualNameList )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2029:10: ( ( qualNameList )? )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2029:11: ( qualNameList )?
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2027:11: ( qualNameList )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2029:11: ( qualNameList )?
             int alt139=2;
             int LA139_0 = input.LA(1);
 
@@ -28697,7 +28699,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt139) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2027:11: qualNameList
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2029:11: qualNameList
                     {
                     pushFollow(FOLLOW_qualNameList_in_qualNameConcat10674);
                     qualNameList584=qualNameList();
@@ -28728,7 +28730,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2027:27: -> IDENT[$IDENT.text + $qualName::s]
+            // 2029:27: -> IDENT[$IDENT.text + $qualName::s]
             {
                 adaptor.addChild(root_0, 
                 (BaseNode)adaptor.create(IDENT, (IDENT583!=null?IDENT583.getText():null) + ((qualName_scope)qualName_stack.peek()).s)
@@ -28775,7 +28777,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "qualNameList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2030:1: qualNameList : ( '.' ! IDENT !)+ ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2032:1: qualNameList : ( '.' ! IDENT !)+ ;
     public final pollenParser.qualNameList_return qualNameList() throws RecognitionException {
         pollenParser.qualNameList_return retval = new pollenParser.qualNameList_return();
         retval.start = input.LT(1);
@@ -28793,13 +28795,13 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 155) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2031:2: ( ( '.' ! IDENT !)+ )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2032:2: ( '.' ! IDENT !)+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2033:2: ( ( '.' ! IDENT !)+ )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2034:2: ( '.' ! IDENT !)+
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2032:2: ( '.' ! IDENT !)+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2034:2: ( '.' ! IDENT !)+
             int cnt140=0;
             loop140:
             do {
@@ -28819,7 +28821,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt140) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2032:6: '.' ! IDENT !
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2034:6: '.' ! IDENT !
             	    {
             	    char_literal585=(Atom)match(input,130,FOLLOW_130_in_qualNameList10703); if (state.failed) return retval;
 
@@ -28876,7 +28878,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "arrayLit"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2037:1: arrayLit : '[' arrayLitList ']' -> ^( LIST[\"LIST\"] arrayLitList ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2039:1: arrayLit : '[' arrayLitList ']' -> ^( LIST[\"LIST\"] arrayLitList ) ;
     public final pollenParser.arrayLit_return arrayLit() throws RecognitionException {
         pollenParser.arrayLit_return retval = new pollenParser.arrayLit_return();
         retval.start = input.LT(1);
@@ -28898,8 +28900,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 156) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2038:2: ( '[' arrayLitList ']' -> ^( LIST[\"LIST\"] arrayLitList ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2038:4: '[' arrayLitList ']'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2040:2: ( '[' arrayLitList ']' -> ^( LIST[\"LIST\"] arrayLitList ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2040:4: '[' arrayLitList ']'
             {
             char_literal587=(Atom)match(input,137,FOLLOW_137_in_arrayLit10754); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_137.add(char_literal587);
@@ -28929,9 +28931,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2038:25: -> ^( LIST[\"LIST\"] arrayLitList )
+            // 2040:25: -> ^( LIST[\"LIST\"] arrayLitList )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2038:28: ^( LIST[\"LIST\"] arrayLitList )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2040:28: ^( LIST[\"LIST\"] arrayLitList )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -28984,7 +28986,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "arrayLitList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2040:1: arrayLitList : ( arrayLitElem ( ',' arrayLitElem )* -> ( arrayLitElem )+ | -> NIL );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2042:1: arrayLitList : ( arrayLitElem ( ',' arrayLitElem )* -> ( arrayLitElem )+ | -> NIL );
     public final pollenParser.arrayLitList_return arrayLitList() throws RecognitionException {
         pollenParser.arrayLitList_return retval = new pollenParser.arrayLitList_return();
         retval.start = input.LT(1);
@@ -29005,7 +29007,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 157) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2041:2: ( arrayLitElem ( ',' arrayLitElem )* -> ( arrayLitElem )+ | -> NIL )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2043:2: ( arrayLitElem ( ',' arrayLitElem )* -> ( arrayLitElem )+ | -> NIL )
             int alt142=2;
             int LA142_0 = input.LA(1);
 
@@ -29025,7 +29027,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt142) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2041:4: arrayLitElem ( ',' arrayLitElem )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2043:4: arrayLitElem ( ',' arrayLitElem )*
                     {
                     pushFollow(FOLLOW_arrayLitElem_in_arrayLitList10780);
                     arrayLitElem590=arrayLitElem();
@@ -29034,7 +29036,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_arrayLitElem.add(arrayLitElem590.getTree());
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2041:17: ( ',' arrayLitElem )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2043:17: ( ',' arrayLitElem )*
                     loop141:
                     do {
                         int alt141=2;
@@ -29047,7 +29049,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt141) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2041:18: ',' arrayLitElem
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2043:18: ',' arrayLitElem
                     	    {
                     	    char_literal591=(Atom)match(input,129,FOLLOW_129_in_arrayLitList10783); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_129.add(char_literal591);
@@ -29082,7 +29084,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2041:37: -> ( arrayLitElem )+
+                    // 2043:37: -> ( arrayLitElem )+
                     {
                         if ( !(stream_arrayLitElem.hasNext()) ) {
                             throw new RewriteEarlyExitException();
@@ -29102,7 +29104,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2042:4: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2044:4: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -29117,7 +29119,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2042:4: -> NIL
+                    // 2044:4: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -29166,7 +29168,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "arrayLitElem"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2044:1: arrayLitElem : ( primitiveLit | namedConstant );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2046:1: arrayLitElem : ( primitiveLit | namedConstant );
     public final pollenParser.arrayLitElem_return arrayLitElem() throws RecognitionException {
         pollenParser.arrayLitElem_return retval = new pollenParser.arrayLitElem_return();
         retval.start = input.LT(1);
@@ -29184,7 +29186,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 158) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2045:2: ( primitiveLit | namedConstant )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2047:2: ( primitiveLit | namedConstant )
             int alt143=2;
             int LA143_0 = input.LA(1);
 
@@ -29204,7 +29206,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt143) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2045:4: primitiveLit
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2047:4: primitiveLit
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -29219,7 +29221,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2045:19: namedConstant
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2047:19: namedConstant
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -29268,7 +29270,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "namedConstant"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2047:1: namedConstant : qualName ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2049:1: namedConstant : qualName ;
     public final pollenParser.namedConstant_return namedConstant() throws RecognitionException {
         pollenParser.namedConstant_return retval = new pollenParser.namedConstant_return();
         retval.start = input.LT(1);
@@ -29284,8 +29286,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 159) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2048:2: ( qualName )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2048:4: qualName
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2050:2: ( qualName )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2050:4: qualName
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -29332,7 +29334,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "boolLit"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2050:1: boolLit : ( 'true' | 'false' ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2052:1: boolLit : ( 'true' | 'false' ) ;
     public final pollenParser.boolLit_return boolLit() throws RecognitionException {
         pollenParser.boolLit_return retval = new pollenParser.boolLit_return();
         retval.start = input.LT(1);
@@ -29348,8 +29350,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 160) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2051:2: ( ( 'true' | 'false' ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2051:4: ( 'true' | 'false' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2053:2: ( ( 'true' | 'false' ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2053:4: ( 'true' | 'false' )
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -29408,7 +29410,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "nullLit"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2053:1: nullLit : 'null' ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2055:1: nullLit : 'null' ;
     public final pollenParser.nullLit_return nullLit() throws RecognitionException {
         pollenParser.nullLit_return retval = new pollenParser.nullLit_return();
         retval.start = input.LT(1);
@@ -29424,8 +29426,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 161) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2054:2: ( 'null' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2054:4: 'null'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2056:2: ( 'null' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2056:4: 'null'
             {
             root_0 = (BaseNode)adaptor.nil();
 
@@ -29475,7 +29477,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "numLit"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2056:1: numLit : ( INT_LIT | OCT_LIT | REAL_LIT | HEX_LIT );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2058:1: numLit : ( INT_LIT | OCT_LIT | REAL_LIT | HEX_LIT );
     public final pollenParser.numLit_return numLit() throws RecognitionException {
         pollenParser.numLit_return retval = new pollenParser.numLit_return();
         retval.start = input.LT(1);
@@ -29497,7 +29499,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 162) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2060:2: ( INT_LIT | OCT_LIT | REAL_LIT | HEX_LIT )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2062:2: ( INT_LIT | OCT_LIT | REAL_LIT | HEX_LIT )
             int alt144=4;
             switch ( input.LA(1) ) {
             case INT_LIT:
@@ -29531,7 +29533,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt144) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2060:4: INT_LIT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2062:4: INT_LIT
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -29549,7 +29551,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2061:5: OCT_LIT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2063:5: OCT_LIT
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -29567,7 +29569,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2062:5: REAL_LIT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2064:5: REAL_LIT
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -29585,7 +29587,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2063:5: HEX_LIT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2065:5: HEX_LIT
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
@@ -29646,7 +29648,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "primitiveLit"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2066:1: primitiveLit : ( boolLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit ) | numLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit ) | nullLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit ) | STRING -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING ) | CHAR -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2068:1: primitiveLit : ( boolLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit ) | numLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit ) | nullLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit ) | STRING -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING ) | CHAR -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR ) );
     public final pollenParser.primitiveLit_return primitiveLit() throws RecognitionException {
         primitiveLit_stack.push(new primitiveLit_scope());
         pollenParser.primitiveLit_return retval = new pollenParser.primitiveLit_return();
@@ -29678,7 +29680,7 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 163) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2073:2: ( boolLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit ) | numLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit ) | nullLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit ) | STRING -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING ) | CHAR -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2075:2: ( boolLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit ) | numLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit ) | nullLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit ) | STRING -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING ) | CHAR -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR ) )
             int alt145=5;
             switch ( input.LA(1) ) {
             case 157:
@@ -29721,7 +29723,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt145) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2073:4: boolLit
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2075:4: boolLit
                     {
                     pushFollow(FOLLOW_boolLit_in_primitiveLit10922);
                     boolLit602=boolLit();
@@ -29743,9 +29745,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2073:12: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit )
+                    // 2075:12: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2073:15: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2075:15: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -29766,7 +29768,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2074:4: numLit
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2076:4: numLit
                     {
                     pushFollow(FOLLOW_numLit_in_primitiveLit10941);
                     numLit603=numLit();
@@ -29788,9 +29790,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2074:12: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit )
+                    // 2076:12: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2074:15: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2076:15: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -29811,7 +29813,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2075:4: nullLit
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2077:4: nullLit
                     {
                     pushFollow(FOLLOW_nullLit_in_primitiveLit10961);
                     nullLit604=nullLit();
@@ -29833,9 +29835,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2075:12: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit )
+                    // 2077:12: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2075:15: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2077:15: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -29856,7 +29858,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2076:4: STRING
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2078:4: STRING
                     {
                     STRING605=(Atom)match(input,STRING,FOLLOW_STRING_in_primitiveLit10980); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_STRING.add(STRING605);
@@ -29877,9 +29879,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2077:5: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING )
+                    // 2079:5: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2077:8: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2079:8: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -29902,7 +29904,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2078:4: CHAR
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2080:4: CHAR
                     {
                     CHAR606=(Atom)match(input,CHAR,FOLLOW_CHAR_in_primitiveLit11008); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_CHAR.add(CHAR606);
@@ -29923,9 +29925,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2079:6: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR )
+                    // 2081:6: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2079:9: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2081:9: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -29983,7 +29985,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtInjection"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2081:1: stmtInjection : inject ( NL )+ -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2083:1: stmtInjection : inject ( NL )+ -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) ;
     public final pollenParser.stmtInjection_return stmtInjection() throws RecognitionException {
         pollenParser.stmtInjection_return retval = new pollenParser.stmtInjection_return();
         retval.start = input.LT(1);
@@ -30002,8 +30004,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 164) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2082:2: ( inject ( NL )+ -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2082:4: inject ( NL )+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2084:2: ( inject ( NL )+ -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2084:4: inject ( NL )+
             {
             pushFollow(FOLLOW_inject_in_stmtInjection11041);
             inject607=inject();
@@ -30012,7 +30014,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_inject.add(inject607.getTree());
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2083:2: ( NL )+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2085:2: ( NL )+
             int cnt146=0;
             loop146:
             do {
@@ -30032,7 +30034,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt146) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2083:2: NL
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2085:2: NL
             	    {
             	    NL608=(Atom)match(input,NL,FOLLOW_NL_in_stmtInjection11044); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_NL.add(NL608);
@@ -30065,16 +30067,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2084:2: -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
+            // 2086:2: -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2084:5: ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2086:5: ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new StmtNode.Inject(S_INJ, "S_INJ")
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2084:40: ^( E_INJ[\"E_INJ\"] inject )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2086:40: ^( E_INJ[\"E_INJ\"] inject )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
@@ -30130,7 +30132,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "inject"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2088:1: inject : c= INJECT -> ^( LIST[\"LIST\"] ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2090:1: inject : c= INJECT -> ^( LIST[\"LIST\"] ) ;
     public final pollenParser.inject_return inject() throws RecognitionException {
         pollenParser.inject_return retval = new pollenParser.inject_return();
         retval.start = input.LT(1);
@@ -30150,8 +30152,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 165) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2092:2: (c= INJECT -> ^( LIST[\"LIST\"] ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2092:4: c= INJECT
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2094:2: (c= INJECT -> ^( LIST[\"LIST\"] ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2094:4: c= INJECT
             {
             c=(Atom)match(input,INJECT,FOLLOW_INJECT_in_inject11091); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_INJECT.add(c);
@@ -30175,9 +30177,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2096:2: -> ^( LIST[\"LIST\"] )
+            // 2098:2: -> ^( LIST[\"LIST\"] )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2096:5: ^( LIST[\"LIST\"] )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2098:5: ^( LIST[\"LIST\"] )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -30230,7 +30232,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "injectionCode"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2098:1: injectionCode : inject -> ^( E_INJ[\"E_INJ\"] inject ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2100:1: injectionCode : inject -> ^( E_INJ[\"E_INJ\"] inject ) ;
     public final pollenParser.injectionCode_return injectionCode() throws RecognitionException {
         pollenParser.injectionCode_return retval = new pollenParser.injectionCode_return();
         retval.start = input.LT(1);
@@ -30246,8 +30248,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 166) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2099:2: ( inject -> ^( E_INJ[\"E_INJ\"] inject ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2099:4: inject
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2101:2: ( inject -> ^( E_INJ[\"E_INJ\"] inject ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2101:4: inject
             {
             pushFollow(FOLLOW_inject_in_injectionCode11117);
             inject609=inject();
@@ -30269,9 +30271,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2100:2: -> ^( E_INJ[\"E_INJ\"] inject )
+            // 2102:2: -> ^( E_INJ[\"E_INJ\"] inject )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2100:5: ^( E_INJ[\"E_INJ\"] inject )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2102:5: ^( E_INJ[\"E_INJ\"] inject )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -30324,7 +30326,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "injectionDecl"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2102:1: injectionDecl : inject ( NL )+ -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2104:1: injectionDecl : inject ( NL )+ -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) ;
     public final pollenParser.injectionDecl_return injectionDecl() throws RecognitionException {
         pollenParser.injectionDecl_return retval = new pollenParser.injectionDecl_return();
         retval.start = input.LT(1);
@@ -30343,8 +30345,8 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 167) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2103:2: ( inject ( NL )+ -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2103:4: inject ( NL )+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2105:2: ( inject ( NL )+ -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2105:4: inject ( NL )+
             {
             pushFollow(FOLLOW_inject_in_injectionDecl11144);
             inject610=inject();
@@ -30353,7 +30355,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_inject.add(inject610.getTree());
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2104:9: ( NL )+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2106:9: ( NL )+
             int cnt147=0;
             loop147:
             do {
@@ -30373,7 +30375,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt147) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2104:9: NL
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2106:9: NL
             	    {
             	    NL611=(Atom)match(input,NL,FOLLOW_NL_in_injectionDecl11154); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_NL.add(NL611);
@@ -30406,16 +30408,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2105:10: -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
+            // 2107:10: -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2105:13: ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2107:13: ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new DeclNode.Inject(D_INJ, "D_INJ")
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2105:47: ^( E_INJ[\"E_INJ\"] inject )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2107:47: ^( E_INJ[\"E_INJ\"] inject )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
@@ -30471,7 +30473,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "delim"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2108:1: delim : ( ( SEMI ) ( NL )* ->| ( NL )+ ->| ( ( NL )* '}' )=> ( NL )* ->);
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2110:1: delim : ( ( SEMI ) ( NL )* ->| ( NL )+ ->| ( ( NL )* '}' )=> ( NL )* ->);
     public final pollenParser.delim_return delim() throws RecognitionException {
         pollenParser.delim_return retval = new pollenParser.delim_return();
         retval.start = input.LT(1);
@@ -30495,15 +30497,15 @@ public TreeAdaptor getTreeAdaptor() {
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 168) ) { return retval; }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2109:2: ( ( SEMI ) ( NL )* ->| ( NL )+ ->| ( ( NL )* '}' )=> ( NL )* ->)
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2111:2: ( ( SEMI ) ( NL )* ->| ( NL )+ ->| ( ( NL )* '}' )=> ( NL )* ->)
             int alt151=3;
             alt151 = dfa151.predict(input);
             switch (alt151) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2109:4: ( SEMI ) ( NL )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2111:4: ( SEMI ) ( NL )*
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2109:4: ( SEMI )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2109:5: SEMI
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2111:4: ( SEMI )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2111:5: SEMI
                     {
                     SEMI612=(Atom)match(input,SEMI,FOLLOW_SEMI_in_delim11200); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_SEMI.add(SEMI612);
@@ -30512,7 +30514,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2109:11: ( NL )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2111:11: ( NL )*
                     loop148:
                     do {
                         int alt148=2;
@@ -30531,7 +30533,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt148) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2109:12: NL
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2111:12: NL
                     	    {
                     	    NL613=(Atom)match(input,NL,FOLLOW_NL_in_delim11204); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_NL.add(NL613);
@@ -30559,7 +30561,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2109:17: ->
+                    // 2111:17: ->
                     {
                         root_0 = null;
                     }
@@ -30571,9 +30573,9 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2110:4: ( NL )+
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:4: ( NL )+
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2110:4: ( NL )+
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:4: ( NL )+
                     int cnt149=0;
                     loop149:
                     do {
@@ -30593,7 +30595,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt149) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2110:5: NL
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:5: NL
                     	    {
                     	    NL614=(Atom)match(input,NL,FOLLOW_NL_in_delim11215); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_NL.add(NL614);
@@ -30626,7 +30628,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2110:10: ->
+                    // 2112:10: ->
                     {
                         root_0 = null;
                     }
@@ -30638,9 +30640,9 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:4: ( ( NL )* '}' )=> ( NL )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2114:4: ( ( NL )* '}' )=> ( NL )*
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:20: ( NL )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2114:20: ( NL )*
                     loop150:
                     do {
                         int alt150=2;
@@ -30659,7 +30661,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt150) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:20: NL
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2114:20: NL
                     	    {
                     	    NL615=(Atom)match(input,NL,FOLLOW_NL_in_delim11239); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_NL.add(NL615);
@@ -30687,7 +30689,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2112:24: ->
+                    // 2114:24: ->
                     {
                         root_0 = null;
                     }
@@ -30727,8 +30729,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred5_pollen
     public final void synpred5_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:537:9: ( fcnDefinition )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:537:9: fcnDefinition
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:539:9: ( fcnDefinition )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:539:9: fcnDefinition
         {
         pushFollow(FOLLOW_fcnDefinition_in_synpred5_pollen1153);
         fcnDefinition();
@@ -30743,8 +30745,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred6_pollen
     public final void synpred6_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:538:9: ( enumDefinition )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:538:9: enumDefinition
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:540:9: ( enumDefinition )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:540:9: enumDefinition
         {
         pushFollow(FOLLOW_enumDefinition_in_synpred6_pollen1164);
         enumDefinition();
@@ -30759,8 +30761,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred7_pollen
     public final void synpred7_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:539:9: ( fieldDeclaration )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:539:9: fieldDeclaration
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:541:9: ( fieldDeclaration )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:541:9: fieldDeclaration
         {
         pushFollow(FOLLOW_fieldDeclaration_in_synpred7_pollen1174);
         fieldDeclaration();
@@ -30775,8 +30777,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred9_pollen
     public final void synpred9_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:553:5: ({...}?)
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:553:5: {...}?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:555:5: ({...}?)
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:555:5: {...}?
         {
         if ( !((!hasHostConstructor )) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -30790,8 +30792,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred10_pollen
     public final void synpred10_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:575:4: ({...}?)
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:575:4: {...}?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:577:4: ({...}?)
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:577:4: {...}?
         {
         if ( !((!hasTargetConstructor)) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -30805,8 +30807,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred12_pollen
     public final void synpred12_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:652:4: ({...}?)
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:652:4: {...}?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:654:4: ({...}?)
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:654:4: {...}?
         {
         if ( !((ProcessUnits.doEmitPrintProxyViaDashP())) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -30820,8 +30822,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred13_pollen
     public final void synpred13_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:663:7: ({...}?)
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:663:7: {...}?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:665:7: ({...}?)
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:665:7: {...}?
         {
         if ( !((ProcessUnits.doEmitPrintProxyViaBind())) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -30835,8 +30837,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred14_pollen
     public final void synpred14_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:677:4: ({...}?)
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:677:4: {...}?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:679:4: ({...}?)
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:679:4: {...}?
         {
         if ( !((true)) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -30850,8 +30852,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred15_pollen
     public final void synpred15_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:692:8: ({...}?)
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:692:8: {...}?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:694:8: ({...}?)
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:694:8: {...}?
         {
         if ( !((!hasHostConstructor )) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -30865,8 +30867,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred16_pollen
     public final void synpred16_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:709:7: ({...}?)
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:709:7: {...}?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:711:7: ({...}?)
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:711:7: {...}?
         {
         if ( !((!hasTargetConstructor)) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -30880,8 +30882,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred17_pollen
     public final void synpred17_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:731:6: ( fcnDefinition )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:731:6: fcnDefinition
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:733:6: ( fcnDefinition )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:733:6: fcnDefinition
         {
         pushFollow(FOLLOW_fcnDefinition_in_synpred17_pollen2632);
         fcnDefinition();
@@ -30896,8 +30898,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred18_pollen
     public final void synpred18_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:732:9: ( varDeclaration )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:732:9: varDeclaration
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:734:9: ( varDeclaration )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:734:9: varDeclaration
         {
         pushFollow(FOLLOW_varDeclaration_in_synpred18_pollen2642);
         varDeclaration();
@@ -30912,8 +30914,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred19_pollen
     public final void synpred19_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:733:6: ( enumDefinition )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:733:6: enumDefinition
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:735:6: ( enumDefinition )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:735:6: enumDefinition
         {
         pushFollow(FOLLOW_enumDefinition_in_synpred19_pollen2649);
         enumDefinition();
@@ -30928,8 +30930,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred22_pollen
     public final void synpred22_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:786:22: ( delim )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:786:22: delim
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:788:22: ( delim )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:788:22: delim
         {
         pushFollow(FOLLOW_delim_in_synpred22_pollen2824);
         delim();
@@ -30944,8 +30946,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred24_pollen
     public final void synpred24_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:793:5: ( IDENT ASSIGN enumVal )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:793:5: IDENT ASSIGN enumVal
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:795:5: ( IDENT ASSIGN enumVal )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:795:5: IDENT ASSIGN enumVal
         {
         match(input,IDENT,FOLLOW_IDENT_in_synpred24_pollen2860); if (state.failed) return ;
 
@@ -30964,8 +30966,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred28_pollen
     public final void synpred28_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:838:9: ( enumDefinition )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:838:9: enumDefinition
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:840:9: ( enumDefinition )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:840:9: enumDefinition
         {
         pushFollow(FOLLOW_enumDefinition_in_synpred28_pollen3061);
         enumDefinition();
@@ -30980,8 +30982,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred29_pollen
     public final void synpred29_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:9: ( fcnDeclaration )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:839:9: fcnDeclaration
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:841:9: ( fcnDeclaration )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:841:9: fcnDeclaration
         {
         pushFollow(FOLLOW_fcnDeclaration_in_synpred29_pollen3071);
         fcnDeclaration();
@@ -30996,8 +30998,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred32_pollen
     public final void synpred32_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:875:8: ( fcnDefinitionHost )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:875:8: fcnDefinitionHost
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:877:8: ( fcnDefinitionHost )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:877:8: fcnDefinitionHost
         {
         pushFollow(FOLLOW_fcnDefinitionHost_in_synpred32_pollen3224);
         fcnDefinitionHost();
@@ -31012,8 +31014,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred33_pollen
     public final void synpred33_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:876:8: ( enumDefinition )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:876:8: enumDefinition
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:878:8: ( enumDefinition )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:878:8: enumDefinition
         {
         pushFollow(FOLLOW_enumDefinition_in_synpred33_pollen3233);
         enumDefinition();
@@ -31028,8 +31030,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred34_pollen
     public final void synpred34_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:877:8: ( varDeclaration )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:877:8: varDeclaration
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:879:8: ( varDeclaration )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:879:8: varDeclaration
         {
         pushFollow(FOLLOW_varDeclaration_in_synpred34_pollen3242);
         varDeclaration();
@@ -31044,8 +31046,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred36_pollen
     public final void synpred36_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:919:26: ( metaArguments )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:919:26: metaArguments
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:921:26: ( metaArguments )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:921:26: metaArguments
         {
         pushFollow(FOLLOW_metaArguments_in_synpred36_pollen3331);
         metaArguments();
@@ -31060,8 +31062,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred37_pollen
     public final void synpred37_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:960:25: ( metaArguments )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:960:25: metaArguments
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:962:25: ( metaArguments )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:962:25: metaArguments
         {
         pushFollow(FOLLOW_metaArguments_in_synpred37_pollen3554);
         metaArguments();
@@ -31076,8 +31078,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred41_pollen
     public final void synpred41_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1010:4: ({...}?)
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1010:4: {...}?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1012:4: ({...}?)
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1012:4: {...}?
         {
         if ( !((ProcessUnits.doImportPrintImpl())) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -31091,8 +31093,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred42_pollen
     public final void synpred42_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1020:4: ({...}?)
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1020:4: {...}?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1022:4: ({...}?)
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1022:4: {...}?
         {
         if ( !((ProcessUnits.doImportPrintProtocol())) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -31106,8 +31108,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred44_pollen
     public final void synpred44_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1060:55: ( NL )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1060:55: NL
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1062:55: ( NL )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1062:55: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred44_pollen4014); if (state.failed) return ;
 
@@ -31118,8 +31120,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred51_pollen
     public final void synpred51_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:42: ( NL )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:42: NL
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:42: ( NL )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:42: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred51_pollen4249); if (state.failed) return ;
 
@@ -31130,8 +31132,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred54_pollen
     public final void synpred54_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:13: ( '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:13: '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:13: ( '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:13: '{' metaArgument ( NL )* ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )* '}'
         {
         match(input,190,FOLLOW_190_in_synpred54_pollen4236); if (state.failed) return ;
 
@@ -31141,7 +31143,7 @@ public TreeAdaptor getTreeAdaptor() {
         state._fsp--;
         if (state.failed) return ;
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:30: ( NL )*
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:30: ( NL )*
         loop158:
         do {
             int alt158=2;
@@ -31154,7 +31156,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt158) {
         	case 1 :
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:31: NL
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:31: NL
         	    {
         	    match(input,NL,FOLLOW_NL_in_synpred54_pollen4241); if (state.failed) return ;
 
@@ -31167,7 +31169,7 @@ public TreeAdaptor getTreeAdaptor() {
         } while (true);
 
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:36: ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )*
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:36: ( ',' ( ( NL )* ) metaArgument ( ( NL )* ) )*
         loop161:
         do {
             int alt161=2;
@@ -31180,14 +31182,14 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt161) {
         	case 1 :
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:37: ',' ( ( NL )* ) metaArgument ( ( NL )* )
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:37: ',' ( ( NL )* ) metaArgument ( ( NL )* )
         	    {
         	    match(input,129,FOLLOW_129_in_synpred54_pollen4246); if (state.failed) return ;
 
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:41: ( ( NL )* )
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:42: ( NL )*
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:41: ( ( NL )* )
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:42: ( NL )*
         	    {
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:42: ( NL )*
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:42: ( NL )*
         	    loop159:
         	    do {
         	        int alt159=2;
@@ -31206,7 +31208,7 @@ public TreeAdaptor getTreeAdaptor() {
 
         	        switch (alt159) {
         	    	case 1 :
-        	    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:42: NL
+        	    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:42: NL
         	    	    {
         	    	    match(input,NL,FOLLOW_NL_in_synpred54_pollen4249); if (state.failed) return ;
 
@@ -31228,10 +31230,10 @@ public TreeAdaptor getTreeAdaptor() {
         	    state._fsp--;
         	    if (state.failed) return ;
 
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:60: ( ( NL )* )
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:61: ( NL )*
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:60: ( ( NL )* )
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:61: ( NL )*
         	    {
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:61: ( NL )*
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:61: ( NL )*
         	    loop160:
         	    do {
         	        int alt160=2;
@@ -31244,7 +31246,7 @@ public TreeAdaptor getTreeAdaptor() {
 
         	        switch (alt160) {
         	    	case 1 :
-        	    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1224:61: NL
+        	    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1226:61: NL
         	    	    {
         	    	    match(input,NL,FOLLOW_NL_in_synpred54_pollen4256); if (state.failed) return ;
 
@@ -31278,8 +31280,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred59_pollen
     public final void synpred59_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1267:17: ( 'module' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1267:18: 'module'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1269:17: ( 'module' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1269:18: 'module'
         {
         match(input,169,FOLLOW_169_in_synpred59_pollen4545); if (state.failed) return ;
 
@@ -31290,8 +31292,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred60_pollen
     public final void synpred60_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1268:8: ( 'class' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1268:9: 'class'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1270:8: ( 'class' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1270:9: 'class'
         {
         match(input,145,FOLLOW_145_in_synpred60_pollen4565); if (state.failed) return ;
 
@@ -31302,8 +31304,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred61_pollen
     public final void synpred61_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1269:11: ( 'protocol' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1269:12: 'protocol'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1271:11: ( 'protocol' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1271:12: 'protocol'
         {
         match(input,176,FOLLOW_176_in_synpred61_pollen4584); if (state.failed) return ;
 
@@ -31314,8 +31316,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred62_pollen
     public final void synpred62_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1270:11: ( 'composition' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1270:12: 'composition'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1272:11: ( 'composition' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1272:12: 'composition'
         {
         match(input,146,FOLLOW_146_in_synpred62_pollen4603); if (state.failed) return ;
 
@@ -31326,8 +31328,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred63_pollen
     public final void synpred63_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1271:11: ( 'enum' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1271:12: 'enum'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1273:11: ( 'enum' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1273:12: 'enum'
         {
         match(input,153,FOLLOW_153_in_synpred63_pollen4622); if (state.failed) return ;
 
@@ -31338,8 +31340,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred67_pollen
     public final void synpred67_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1295:23: ( NL )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1295:23: NL
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1297:23: ( NL )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1297:23: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred67_pollen4757); if (state.failed) return ;
 
@@ -31350,8 +31352,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred71_pollen
     public final void synpred71_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1304:23: ( NL )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1304:23: NL
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1306:23: ( NL )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1306:23: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred71_pollen4824); if (state.failed) return ;
 
@@ -31362,8 +31364,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred92_pollen
     public final void synpred92_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1339:4: ( exprLogicalOr '?' expr ':' expr )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1339:4: exprLogicalOr '?' expr ':' expr
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1341:4: ( exprLogicalOr '?' expr ':' expr )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1341:4: exprLogicalOr '?' expr ':' expr
         {
         pushFollow(FOLLOW_exprLogicalOr_in_synpred92_pollen5068);
         exprLogicalOr();
@@ -31394,8 +31396,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred93_pollen
     public final void synpred93_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1345:4: ( '||' exprLogicalAnd )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1345:4: '||' exprLogicalAnd
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1347:4: ( '||' exprLogicalAnd )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1347:4: '||' exprLogicalAnd
         {
         match(input,192,FOLLOW_192_in_synpred93_pollen5131); if (state.failed) return ;
 
@@ -31412,8 +31414,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred94_pollen
     public final void synpred94_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1352:3: ( '&&' exprBitwiseOr )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1352:3: '&&' exprBitwiseOr
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1354:3: ( '&&' exprBitwiseOr )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1354:3: '&&' exprBitwiseOr
         {
         match(input,124,FOLLOW_124_in_synpred94_pollen5184); if (state.failed) return ;
 
@@ -31430,8 +31432,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred95_pollen
     public final void synpred95_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1359:3: ( '|' exprBitwiseXor )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1359:3: '|' exprBitwiseXor
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1361:3: ( '|' exprBitwiseXor )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1361:3: '|' exprBitwiseXor
         {
         match(input,191,FOLLOW_191_in_synpred95_pollen5235); if (state.failed) return ;
 
@@ -31448,8 +31450,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred96_pollen
     public final void synpred96_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1366:3: ( '^' exprBitwiseAnd )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1366:3: '^' exprBitwiseAnd
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1368:3: ( '^' exprBitwiseAnd )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1368:3: '^' exprBitwiseAnd
         {
         match(input,139,FOLLOW_139_in_synpred96_pollen5285); if (state.failed) return ;
 
@@ -31466,8 +31468,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred97_pollen
     public final void synpred97_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1373:3: ( '&' exprEquality )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1373:3: '&' exprEquality
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1375:3: ( '&' exprEquality )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1375:3: '&' exprEquality
         {
         match(input,125,FOLLOW_125_in_synpred97_pollen5335); if (state.failed) return ;
 
@@ -31484,8 +31486,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred98_pollen
     public final void synpred98_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1380:3: ( equalityOp exprRelational )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1380:3: equalityOp exprRelational
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1382:3: ( equalityOp exprRelational )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1382:3: equalityOp exprRelational
         {
         pushFollow(FOLLOW_equalityOp_in_synpred98_pollen5386);
         equalityOp();
@@ -31506,8 +31508,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred99_pollen
     public final void synpred99_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1387:3: ( relationalOp exprShift )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1387:3: relationalOp exprShift
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1389:3: ( relationalOp exprShift )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1389:3: relationalOp exprShift
         {
         pushFollow(FOLLOW_relationalOp_in_synpred99_pollen5437);
         relationalOp();
@@ -31528,8 +31530,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred100_pollen
     public final void synpred100_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1394:3: ( shiftOp exprAddSub )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1394:3: shiftOp exprAddSub
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1396:3: ( shiftOp exprAddSub )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1396:3: shiftOp exprAddSub
         {
         pushFollow(FOLLOW_shiftOp_in_synpred100_pollen5489);
         shiftOp();
@@ -31550,8 +31552,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred101_pollen
     public final void synpred101_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1401:3: ( addSubOp exprMultDiv )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1401:3: addSubOp exprMultDiv
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1403:3: ( addSubOp exprMultDiv )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1403:3: addSubOp exprMultDiv
         {
         pushFollow(FOLLOW_addSubOp_in_synpred101_pollen5541);
         addSubOp();
@@ -31572,8 +31574,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred102_pollen
     public final void synpred102_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1408:3: ( multDivModOp exprUnary )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1408:3: multDivModOp exprUnary
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1410:3: ( multDivModOp exprUnary )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1410:3: multDivModOp exprUnary
         {
         pushFollow(FOLLOW_multDivModOp_in_synpred102_pollen5598);
         multDivModOp();
@@ -31594,8 +31596,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred103_pollen
     public final void synpred103_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1419:35: ( fieldOrArrayAccess )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1419:35: fieldOrArrayAccess
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1421:35: ( fieldOrArrayAccess )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1421:35: fieldOrArrayAccess
         {
         pushFollow(FOLLOW_fieldOrArrayAccess_in_synpred103_pollen5648);
         fieldOrArrayAccess();
@@ -31610,8 +31612,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred111_pollen
     public final void synpred111_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1432:4: ( varOrFcnOrArray incDecOp )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1432:4: varOrFcnOrArray incDecOp
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1434:4: ( varOrFcnOrArray incDecOp )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1434:4: varOrFcnOrArray incDecOp
         {
         pushFollow(FOLLOW_varOrFcnOrArray_in_synpred111_pollen5850);
         varOrFcnOrArray();
@@ -31632,8 +31634,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred112_pollen
     public final void synpred112_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1433:4: ( varOrFcnOrArray )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1433:4: varOrFcnOrArray
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1435:4: ( varOrFcnOrArray )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1435:4: varOrFcnOrArray
         {
         pushFollow(FOLLOW_varOrFcnOrArray_in_synpred112_pollen5875);
         varOrFcnOrArray();
@@ -31648,8 +31650,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred117_pollen
     public final void synpred117_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1501:4: ( typeNameArray varArraySpec qualName )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1501:4: typeNameArray varArraySpec qualName
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1503:4: ( typeNameArray varArraySpec qualName )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1503:4: typeNameArray varArraySpec qualName
         {
         pushFollow(FOLLOW_typeNameArray_in_synpred117_pollen6294);
         typeNameArray();
@@ -31676,8 +31678,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred118_pollen
     public final void synpred118_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1506:4: ( typeName qualName )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1506:4: typeName qualName
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1508:4: ( typeName qualName )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1508:4: typeName qualName
         {
         pushFollow(FOLLOW_typeName_in_synpred118_pollen6357);
         typeName();
@@ -31698,8 +31700,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred119_pollen
     public final void synpred119_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1511:4: ({...}? typeName )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1511:4: {...}? typeName
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1513:4: ({...}? typeName )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1513:4: {...}? typeName
         {
         if ( !(((featureFlags.contains(Flags.PRESET)) && input.LT(1).getText().equals(currType.getTypeName()) )) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -31719,8 +31721,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred120_pollen
     public final void synpred120_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1530:4: ({...}? typeName )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1530:4: {...}? typeName
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1532:4: ({...}? typeName )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1532:4: {...}? typeName
         {
         if ( !((input.LT(1).getText().equals(currType.getTypeName()) && !(currType.getUnitFlags().contains(Flags.CLASS)) )) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -31740,8 +31742,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred121_pollen
     public final void synpred121_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1542:4: ({...}? typeName )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1542:4: {...}? typeName
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1544:4: ({...}? typeName )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1544:4: {...}? typeName
         {
         if ( !((input.LT(1).getText().equals(currType.getTypeName()) )) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -31761,8 +31763,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred122_pollen
     public final void synpred122_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1552:4: ( qualName )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1552:4: qualName
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1554:4: ( qualName )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1554:4: qualName
         {
         pushFollow(FOLLOW_qualName_in_synpred122_pollen6663);
         qualName();
@@ -31777,8 +31779,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred124_pollen
     public final void synpred124_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1556:4: ( '(' typeName ( ',' typeName )* ')' qualName )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1556:5: '(' typeName ( ',' typeName )* ')' qualName
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1558:4: ( '(' typeName ( ',' typeName )* ')' qualName )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1558:5: '(' typeName ( ',' typeName )* ')' qualName
         {
         match(input,126,FOLLOW_126_in_synpred124_pollen6733); if (state.failed) return ;
 
@@ -31788,7 +31790,7 @@ public TreeAdaptor getTreeAdaptor() {
         state._fsp--;
         if (state.failed) return ;
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1556:18: ( ',' typeName )*
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1558:18: ( ',' typeName )*
         loop163:
         do {
             int alt163=2;
@@ -31801,7 +31803,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt163) {
         	case 1 :
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1556:19: ',' typeName
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1558:19: ',' typeName
         	    {
         	    match(input,129,FOLLOW_129_in_synpred124_pollen6738); if (state.failed) return ;
 
@@ -31835,8 +31837,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred130_pollen
     public final void synpred130_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1590:6: ( typeName '[' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1590:7: typeName '['
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1592:6: ( typeName '[' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1592:7: typeName '['
         {
         pushFollow(FOLLOW_typeName_in_synpred130_pollen6999);
         typeName();
@@ -31853,8 +31855,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred134_pollen
     public final void synpred134_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1607:30: ( fieldOrArrayAccess )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1607:30: fieldOrArrayAccess
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1609:30: ( fieldOrArrayAccess )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1609:30: fieldOrArrayAccess
         {
         pushFollow(FOLLOW_fieldOrArrayAccess_in_synpred134_pollen7149);
         fieldOrArrayAccess();
@@ -31869,8 +31871,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred135_pollen
     public final void synpred135_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1607:4: ( '@' IDENT fcnArgumentList ( fieldOrArrayAccess )? )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1607:4: '@' IDENT fcnArgumentList ( fieldOrArrayAccess )?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1609:4: ( '@' IDENT fcnArgumentList ( fieldOrArrayAccess )? )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1609:4: '@' IDENT fcnArgumentList ( fieldOrArrayAccess )?
         {
         match(input,136,FOLLOW_136_in_synpred135_pollen7143); if (state.failed) return ;
 
@@ -31882,7 +31884,7 @@ public TreeAdaptor getTreeAdaptor() {
         state._fsp--;
         if (state.failed) return ;
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1607:30: ( fieldOrArrayAccess )?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1609:30: ( fieldOrArrayAccess )?
         int alt166=2;
         int LA166_0 = input.LA(1);
 
@@ -31891,7 +31893,7 @@ public TreeAdaptor getTreeAdaptor() {
         }
         switch (alt166) {
             case 1 :
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1607:30: fieldOrArrayAccess
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1609:30: fieldOrArrayAccess
                 {
                 pushFollow(FOLLOW_fieldOrArrayAccess_in_synpred135_pollen7149);
                 fieldOrArrayAccess();
@@ -31912,8 +31914,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred136_pollen
     public final void synpred136_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1610:14: ( fieldOrArrayAccess )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1610:14: fieldOrArrayAccess
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1612:14: ( fieldOrArrayAccess )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1612:14: fieldOrArrayAccess
         {
         pushFollow(FOLLOW_fieldOrArrayAccess_in_synpred136_pollen7205);
         fieldOrArrayAccess();
@@ -31928,14 +31930,14 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred137_pollen
     public final void synpred137_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1610:4: ( '@' IDENT ( fieldOrArrayAccess )? )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1610:4: '@' IDENT ( fieldOrArrayAccess )?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1612:4: ( '@' IDENT ( fieldOrArrayAccess )? )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1612:4: '@' IDENT ( fieldOrArrayAccess )?
         {
         match(input,136,FOLLOW_136_in_synpred137_pollen7201); if (state.failed) return ;
 
         match(input,IDENT,FOLLOW_IDENT_in_synpred137_pollen7203); if (state.failed) return ;
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1610:14: ( fieldOrArrayAccess )?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1612:14: ( fieldOrArrayAccess )?
         int alt167=2;
         int LA167_0 = input.LA(1);
 
@@ -31944,7 +31946,7 @@ public TreeAdaptor getTreeAdaptor() {
         }
         switch (alt167) {
             case 1 :
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1610:14: fieldOrArrayAccess
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1612:14: fieldOrArrayAccess
                 {
                 pushFollow(FOLLOW_fieldOrArrayAccess_in_synpred137_pollen7205);
                 fieldOrArrayAccess();
@@ -31965,8 +31967,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred138_pollen
     public final void synpred138_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1612:4: ( '@' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1612:4: '@'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1614:4: ( '@' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1614:4: '@'
         {
         match(input,136,FOLLOW_136_in_synpred138_pollen7244); if (state.failed) return ;
 
@@ -31977,8 +31979,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred139_pollen
     public final void synpred139_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1614:29: ( fieldOrArrayAccess )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1614:29: fieldOrArrayAccess
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1616:29: ( fieldOrArrayAccess )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1616:29: fieldOrArrayAccess
         {
         pushFollow(FOLLOW_fieldOrArrayAccess_in_synpred139_pollen7283);
         fieldOrArrayAccess();
@@ -31993,8 +31995,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred140_pollen
     public final void synpred140_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1614:4: ( qualName fcnArgumentList ( fieldOrArrayAccess )? )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1614:4: qualName fcnArgumentList ( fieldOrArrayAccess )?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1616:4: ( qualName fcnArgumentList ( fieldOrArrayAccess )? )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1616:4: qualName fcnArgumentList ( fieldOrArrayAccess )?
         {
         pushFollow(FOLLOW_qualName_in_synpred140_pollen7279);
         qualName();
@@ -32008,7 +32010,7 @@ public TreeAdaptor getTreeAdaptor() {
         state._fsp--;
         if (state.failed) return ;
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1614:29: ( fieldOrArrayAccess )?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1616:29: ( fieldOrArrayAccess )?
         int alt168=2;
         int LA168_0 = input.LA(1);
 
@@ -32017,7 +32019,7 @@ public TreeAdaptor getTreeAdaptor() {
         }
         switch (alt168) {
             case 1 :
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1614:29: fieldOrArrayAccess
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1616:29: fieldOrArrayAccess
                 {
                 pushFollow(FOLLOW_fieldOrArrayAccess_in_synpred140_pollen7283);
                 fieldOrArrayAccess();
@@ -32038,8 +32040,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred141_pollen
     public final void synpred141_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1616:13: ( fieldOrArrayAccess )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1616:13: fieldOrArrayAccess
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1618:13: ( fieldOrArrayAccess )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1618:13: fieldOrArrayAccess
         {
         pushFollow(FOLLOW_fieldOrArrayAccess_in_synpred141_pollen7323);
         fieldOrArrayAccess();
@@ -32054,8 +32056,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred143_pollen
     public final void synpred143_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1620:32: ( fcnArgumentList )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1620:32: fcnArgumentList
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1622:32: ( fcnArgumentList )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1622:32: fcnArgumentList
         {
         pushFollow(FOLLOW_fcnArgumentList_in_synpred143_pollen7360);
         fcnArgumentList();
@@ -32070,8 +32072,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred144_pollen
     public final void synpred144_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1620:20: ( arrayAccess ( fcnArgumentList )? )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1620:20: arrayAccess ( fcnArgumentList )?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1622:20: ( arrayAccess ( fcnArgumentList )? )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1622:20: arrayAccess ( fcnArgumentList )?
         {
         pushFollow(FOLLOW_arrayAccess_in_synpred144_pollen7358);
         arrayAccess();
@@ -32079,7 +32081,7 @@ public TreeAdaptor getTreeAdaptor() {
         state._fsp--;
         if (state.failed) return ;
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1620:32: ( fcnArgumentList )?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1622:32: ( fcnArgumentList )?
         int alt169=2;
         int LA169_0 = input.LA(1);
 
@@ -32088,7 +32090,7 @@ public TreeAdaptor getTreeAdaptor() {
         }
         switch (alt169) {
             case 1 :
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1620:32: fcnArgumentList
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1622:32: fcnArgumentList
                 {
                 pushFollow(FOLLOW_fcnArgumentList_in_synpred144_pollen7360);
                 fcnArgumentList();
@@ -32109,8 +32111,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred145_pollen
     public final void synpred145_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1623:4: ( '.' IDENT fcnArgumentList )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1623:4: '.' IDENT fcnArgumentList
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1625:4: ( '.' IDENT fcnArgumentList )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1625:4: '.' IDENT fcnArgumentList
         {
         match(input,130,FOLLOW_130_in_synpred145_pollen7373); if (state.failed) return ;
 
@@ -32129,8 +32131,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred146_pollen
     public final void synpred146_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1629:9: ( exprList )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1629:9: exprList
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1631:9: ( exprList )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1631:9: exprList
         {
         pushFollow(FOLLOW_exprList_in_synpred146_pollen7448);
         exprList();
@@ -32145,8 +32147,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred147_pollen
     public final void synpred147_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1637:5: ( stmt )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1637:5: stmt
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1639:5: ( stmt )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1639:5: stmt
         {
         pushFollow(FOLLOW_stmt_in_synpred147_pollen7514);
         stmt();
@@ -32161,10 +32163,10 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred148_pollen
     public final void synpred148_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1637:4: ( ( stmt )+ )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1637:4: ( stmt )+
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1639:4: ( ( stmt )+ )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1639:4: ( stmt )+
         {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1637:4: ( stmt )+
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1639:4: ( stmt )+
         int cnt170=0;
         loop170:
         do {
@@ -32178,7 +32180,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt170) {
         	case 1 :
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1637:5: stmt
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1639:5: stmt
         	    {
         	    pushFollow(FOLLOW_stmt_in_synpred148_pollen7514);
         	    stmt();
@@ -32207,8 +32209,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred149_pollen
     public final void synpred149_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1638:5: ( NL )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1638:5: NL
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1640:5: ( NL )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1640:5: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred149_pollen7536); if (state.failed) return ;
 
@@ -32219,8 +32221,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred150_pollen
     public final void synpred150_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1645:6: ( stmtDecl )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1645:6: stmtDecl
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1647:6: ( stmtDecl )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1647:6: stmtDecl
         {
         pushFollow(FOLLOW_stmtDecl_in_synpred150_pollen7563);
         stmtDecl();
@@ -32235,8 +32237,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred151_pollen
     public final void synpred151_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1646:6: ( stmtAssign )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1646:6: stmtAssign
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1648:6: ( stmtAssign )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1648:6: stmtAssign
         {
         pushFollow(FOLLOW_stmtAssign_in_synpred151_pollen7570);
         stmtAssign();
@@ -32251,8 +32253,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred152_pollen
     public final void synpred152_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1647:4: ( stmtBind )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1647:4: stmtBind
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1649:4: ( stmtBind )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1649:4: stmtBind
         {
         pushFollow(FOLLOW_stmtBind_in_synpred152_pollen7575);
         stmtBind();
@@ -32267,8 +32269,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred155_pollen
     public final void synpred155_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1650:4: ( stmtPeg )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1650:4: stmtPeg
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:4: ( stmtPeg )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1652:4: stmtPeg
         {
         pushFollow(FOLLOW_stmtPeg_in_synpred155_pollen7590);
         stmtPeg();
@@ -32283,8 +32285,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred165_pollen
     public final void synpred165_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1660:4: ( stmtInjection )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1660:4: stmtInjection
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1662:4: ( stmtInjection )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1662:4: stmtInjection
         {
         pushFollow(FOLLOW_stmtInjection_in_synpred165_pollen7647);
         stmtInjection();
@@ -32299,8 +32301,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred166_pollen
     public final void synpred166_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1666:2: ( exprUnary ASSIGN )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1666:3: exprUnary ASSIGN
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1668:2: ( exprUnary ASSIGN )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1668:3: exprUnary ASSIGN
         {
         pushFollow(FOLLOW_exprUnary_in_synpred166_pollen7683);
         exprUnary();
@@ -32317,8 +32319,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred167_pollen
     public final void synpred167_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1677:4: ( varOrFcnOrArray ASSIGN exprAssign delim )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1677:4: varOrFcnOrArray ASSIGN exprAssign delim
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1679:4: ( varOrFcnOrArray ASSIGN exprAssign delim )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1679:4: varOrFcnOrArray ASSIGN exprAssign delim
         {
         pushFollow(FOLLOW_varOrFcnOrArray_in_synpred167_pollen7751);
         varOrFcnOrArray();
@@ -32347,8 +32349,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred168_pollen
     public final void synpred168_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1679:4: ( injectionCode ASSIGN expr delim )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1679:4: injectionCode ASSIGN expr delim
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1681:4: ( injectionCode ASSIGN expr delim )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1681:4: injectionCode ASSIGN expr delim
         {
         pushFollow(FOLLOW_injectionCode_in_synpred168_pollen7792);
         injectionCode();
@@ -32377,8 +32379,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred169_pollen
     public final void synpred169_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1681:4: ( varOrFcnOrArray assignOp expr delim )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1681:4: varOrFcnOrArray assignOp expr delim
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1683:4: ( varOrFcnOrArray assignOp expr delim )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1683:4: varOrFcnOrArray assignOp expr delim
         {
         pushFollow(FOLLOW_varOrFcnOrArray_in_synpred169_pollen7833);
         varOrFcnOrArray();
@@ -32411,8 +32413,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred171_pollen
     public final void synpred171_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1722:4: ( printItem ( '+' printItem )* )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1722:4: printItem ( '+' printItem )*
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1724:4: ( printItem ( '+' printItem )* )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1724:4: printItem ( '+' printItem )*
         {
         pushFollow(FOLLOW_printItem_in_synpred171_pollen8043);
         printItem();
@@ -32420,7 +32422,7 @@ public TreeAdaptor getTreeAdaptor() {
         state._fsp--;
         if (state.failed) return ;
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1722:14: ( '+' printItem )*
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1724:14: ( '+' printItem )*
         loop171:
         do {
             int alt171=2;
@@ -32433,7 +32435,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt171) {
         	case 1 :
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1722:16: '+' printItem
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1724:16: '+' printItem
         	    {
         	    match(input,PLUS,FOLLOW_PLUS_in_synpred171_pollen8047); if (state.failed) return ;
 
@@ -32459,8 +32461,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred173_pollen
     public final void synpred173_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1734:4: ( 'print' printList delim )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1734:4: 'print' printList delim
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1736:4: ( 'print' printList delim )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1736:4: 'print' printList delim
         {
         match(input,175,FOLLOW_175_in_synpred173_pollen8098); if (state.failed) return ;
 
@@ -32483,21 +32485,21 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred177_pollen
     public final void synpred177_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:4: ( 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:4: 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:4: ( 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:4: 'return' ( '(' ) ( expr ( ',' expr )+ ) ( ')' ) delim
         {
         match(input,180,FOLLOW_180_in_synpred177_pollen8209); if (state.failed) return ;
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:13: ( '(' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:14: '('
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:13: ( '(' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:14: '('
         {
         match(input,126,FOLLOW_126_in_synpred177_pollen8212); if (state.failed) return ;
 
         }
 
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:19: ( expr ( ',' expr )+ )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:20: expr ( ',' expr )+
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:19: ( expr ( ',' expr )+ )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:20: expr ( ',' expr )+
         {
         pushFollow(FOLLOW_expr_in_synpred177_pollen8216);
         expr();
@@ -32505,7 +32507,7 @@ public TreeAdaptor getTreeAdaptor() {
         state._fsp--;
         if (state.failed) return ;
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:25: ( ',' expr )+
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:25: ( ',' expr )+
         int cnt172=0;
         loop172:
         do {
@@ -32519,7 +32521,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt172) {
         	case 1 :
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:26: ',' expr
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:26: ',' expr
         	    {
         	    match(input,129,FOLLOW_129_in_synpred177_pollen8219); if (state.failed) return ;
 
@@ -32546,8 +32548,8 @@ public TreeAdaptor getTreeAdaptor() {
         }
 
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:38: ( ')' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1750:39: ')'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:38: ( ')' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:39: ')'
         {
         match(input,127,FOLLOW_127_in_synpred177_pollen8227); if (state.failed) return ;
 
@@ -32567,13 +32569,13 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred178_pollen
     public final void synpred178_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:4: ( 'return' ( expr ) delim )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:4: 'return' ( expr ) delim
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1754:4: ( 'return' ( expr ) delim )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1754:4: 'return' ( expr ) delim
         {
         match(input,180,FOLLOW_180_in_synpred178_pollen8271); if (state.failed) return ;
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:14: ( expr )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1752:15: expr
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1754:14: ( expr )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1754:15: expr
         {
         pushFollow(FOLLOW_expr_in_synpred178_pollen8275);
         expr();
@@ -32597,8 +32599,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred181_pollen
     public final void synpred181_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1783:9: ( typeName IDENT '=' expr SEMI )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1783:9: typeName IDENT '=' expr SEMI
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1785:9: ( typeName IDENT '=' expr SEMI )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1785:9: typeName IDENT '=' expr SEMI
         {
         pushFollow(FOLLOW_typeName_in_synpred181_pollen8635);
         typeName();
@@ -32625,8 +32627,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred185_pollen
     public final void synpred185_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1806:18: ( NL )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1806:18: NL
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1808:18: ( NL )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1808:18: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred185_pollen8840); if (state.failed) return ;
 
@@ -32637,8 +32639,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred186_pollen
     public final void synpred186_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1812:25: ( NL )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1812:25: NL
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:25: ( NL )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:25: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred186_pollen8880); if (state.failed) return ;
 
@@ -32649,13 +32651,13 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred187_pollen
     public final void synpred187_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1812:4: ( 'case' ( INT_LIT ) ':' ( NL )* stmts )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1812:4: 'case' ( INT_LIT ) ':' ( NL )* stmts
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:4: ( 'case' ( INT_LIT ) ':' ( NL )* stmts )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:4: 'case' ( INT_LIT ) ':' ( NL )* stmts
         {
         match(input,144,FOLLOW_144_in_synpred187_pollen8872); if (state.failed) return ;
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1812:11: ( INT_LIT )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1812:12: INT_LIT
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:11: ( INT_LIT )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:12: INT_LIT
         {
         match(input,INT_LIT,FOLLOW_INT_LIT_in_synpred187_pollen8875); if (state.failed) return ;
 
@@ -32664,7 +32666,7 @@ public TreeAdaptor getTreeAdaptor() {
 
         match(input,132,FOLLOW_132_in_synpred187_pollen8878); if (state.failed) return ;
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1812:25: ( NL )*
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:25: ( NL )*
         loop173:
         do {
             int alt173=2;
@@ -32683,7 +32685,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt173) {
         	case 1 :
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1812:25: NL
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:25: NL
         	    {
         	    match(input,NL,FOLLOW_NL_in_synpred187_pollen8880); if (state.failed) return ;
 
@@ -32709,8 +32711,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred188_pollen
     public final void synpred188_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:26: ( NL )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:26: NL
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1816:26: ( NL )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1816:26: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred188_pollen8934); if (state.failed) return ;
 
@@ -32721,8 +32723,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred199_pollen
     public final void synpred199_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1887:4: ( typeName IDENT ( ASSIGN expr )? ',' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1887:5: typeName IDENT ( ASSIGN expr )? ','
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1889:4: ( typeName IDENT ( ASSIGN expr )? ',' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1889:5: typeName IDENT ( ASSIGN expr )? ','
         {
         pushFollow(FOLLOW_typeName_in_synpred199_pollen9425);
         typeName();
@@ -32732,7 +32734,7 @@ public TreeAdaptor getTreeAdaptor() {
 
         match(input,IDENT,FOLLOW_IDENT_in_synpred199_pollen9427); if (state.failed) return ;
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1887:20: ( ASSIGN expr )?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1889:20: ( ASSIGN expr )?
         int alt174=2;
         int LA174_0 = input.LA(1);
 
@@ -32741,7 +32743,7 @@ public TreeAdaptor getTreeAdaptor() {
         }
         switch (alt174) {
             case 1 :
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1887:21: ASSIGN expr
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1889:21: ASSIGN expr
                 {
                 match(input,ASSIGN,FOLLOW_ASSIGN_in_synpred199_pollen9430); if (state.failed) return ;
 
@@ -32766,8 +32768,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred200_pollen
     public final void synpred200_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1888:6: ( typeName IDENT '[' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1888:7: typeName IDENT '['
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1890:6: ( typeName IDENT '[' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1890:7: typeName IDENT '['
         {
         pushFollow(FOLLOW_typeName_in_synpred200_pollen9450);
         typeName();
@@ -32786,10 +32788,10 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred202_pollen
     public final void synpred202_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1889:6: ( ( '(' )? typeName '(' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1889:7: ( '(' )? typeName '('
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1891:6: ( ( '(' )? typeName '(' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1891:7: ( '(' )? typeName '('
         {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1889:7: ( '(' )?
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1891:7: ( '(' )?
         int alt175=2;
         int LA175_0 = input.LA(1);
 
@@ -32798,7 +32800,7 @@ public TreeAdaptor getTreeAdaptor() {
         }
         switch (alt175) {
             case 1 :
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1889:8: '('
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1891:8: '('
                 {
                 match(input,126,FOLLOW_126_in_synpred202_pollen9469); if (state.failed) return ;
 
@@ -32823,11 +32825,11 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred203_pollen
     public final void synpred203_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1890:6: ( ( '(' ) typeName typeName '(' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1890:8: ( '(' ) typeName typeName '('
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1892:6: ( ( '(' ) typeName typeName '(' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1892:8: ( '(' ) typeName typeName '('
         {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1890:8: ( '(' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1890:9: '('
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1892:8: ( '(' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1892:9: '('
         {
         match(input,126,FOLLOW_126_in_synpred203_pollen9492); if (state.failed) return ;
 
@@ -32855,8 +32857,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred204_pollen
     public final void synpred204_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1891:7: ( typeName varInit )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1891:8: typeName varInit
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1893:7: ( typeName varInit )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1893:8: typeName varInit
         {
         pushFollow(FOLLOW_typeName_in_synpred204_pollen9514);
         typeName();
@@ -32877,8 +32879,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred212_pollen
     public final void synpred212_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1941:5: ( '[' varDim ']' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1941:5: '[' varDim ']'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1943:5: ( '[' varDim ']' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1943:5: '[' varDim ']'
         {
         match(input,137,FOLLOW_137_in_synpred212_pollen9971); if (state.failed) return ;
 
@@ -32897,10 +32899,10 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred221_pollen
     public final void synpred221_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1961:17: ( ( NL )* ',' ( NL )* initializer )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1961:17: ( NL )* ',' ( NL )* initializer
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1963:17: ( ( NL )* ',' ( NL )* initializer )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1963:17: ( NL )* ',' ( NL )* initializer
         {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1961:17: ( NL )*
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1963:17: ( NL )*
         loop178:
         do {
             int alt178=2;
@@ -32913,7 +32915,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt178) {
         	case 1 :
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1961:17: NL
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1963:17: NL
         	    {
         	    match(input,NL,FOLLOW_NL_in_synpred221_pollen10118); if (state.failed) return ;
 
@@ -32928,7 +32930,7 @@ public TreeAdaptor getTreeAdaptor() {
 
         match(input,129,FOLLOW_129_in_synpred221_pollen10121); if (state.failed) return ;
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1961:25: ( NL )*
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1963:25: ( NL )*
         loop179:
         do {
             int alt179=2;
@@ -32941,7 +32943,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt179) {
         	case 1 :
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1961:25: NL
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1963:25: NL
         	    {
         	    match(input,NL,FOLLOW_NL_in_synpred221_pollen10123); if (state.failed) return ;
 
@@ -32967,8 +32969,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred225_pollen
     public final void synpred225_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1980:4: ( IDENT ASSIGN expr )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1980:4: IDENT ASSIGN expr
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1982:4: ( IDENT ASSIGN expr )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1982:4: IDENT ASSIGN expr
         {
         match(input,IDENT,FOLLOW_IDENT_in_synpred225_pollen10264); if (state.failed) return ;
 
@@ -32987,8 +32989,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred226_pollen
     public final void synpred226_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1987:5: ( IDENT BIND userTypeName )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1987:5: IDENT BIND userTypeName
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1989:5: ( IDENT BIND userTypeName )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1989:5: IDENT BIND userTypeName
         {
         match(input,IDENT,FOLLOW_IDENT_in_synpred226_pollen10329); if (state.failed) return ;
 
@@ -33007,8 +33009,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred227_pollen
     public final void synpred227_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1989:4: ( IDENT PEG expr )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1989:4: IDENT PEG expr
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1991:4: ( IDENT PEG expr )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1991:4: IDENT PEG expr
         {
         match(input,IDENT,FOLLOW_IDENT_in_synpred227_pollen10374); if (state.failed) return ;
 
@@ -33027,8 +33029,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred228_pollen
     public final void synpred228_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1991:4: ( IDENT ASSIGN expr )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1991:4: IDENT ASSIGN expr
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1993:4: ( IDENT ASSIGN expr )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1993:4: IDENT ASSIGN expr
         {
         match(input,IDENT,FOLLOW_IDENT_in_synpred228_pollen10407); if (state.failed) return ;
 
@@ -33047,8 +33049,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred238_pollen
     public final void synpred238_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2027:11: ( qualNameList )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2027:11: qualNameList
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2029:11: ( qualNameList )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2029:11: qualNameList
         {
         pushFollow(FOLLOW_qualNameList_in_synpred238_pollen10674);
         qualNameList();
@@ -33063,8 +33065,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred239_pollen
     public final void synpred239_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2032:6: ( '.' IDENT )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2032:6: '.' IDENT
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2034:6: ( '.' IDENT )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2034:6: '.' IDENT
         {
         match(input,130,FOLLOW_130_in_synpred239_pollen10703); if (state.failed) return ;
 
@@ -33077,8 +33079,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred251_pollen
     public final void synpred251_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2083:2: ( NL )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2083:2: NL
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2085:2: ( NL )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2085:2: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred251_pollen11044); if (state.failed) return ;
 
@@ -33089,8 +33091,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred252_pollen
     public final void synpred252_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2104:9: ( NL )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2104:9: NL
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2106:9: ( NL )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2106:9: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred252_pollen11154); if (state.failed) return ;
 
@@ -33101,8 +33103,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred253_pollen
     public final void synpred253_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2109:12: ( NL )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2109:12: NL
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2111:12: ( NL )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2111:12: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred253_pollen11204); if (state.failed) return ;
 
@@ -33113,18 +33115,18 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred254_pollen
     public final void synpred254_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2109:4: ( ( SEMI ) ( NL )* )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2109:4: ( SEMI ) ( NL )*
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2111:4: ( ( SEMI ) ( NL )* )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2111:4: ( SEMI ) ( NL )*
         {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2109:4: ( SEMI )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2109:5: SEMI
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2111:4: ( SEMI )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2111:5: SEMI
         {
         match(input,SEMI,FOLLOW_SEMI_in_synpred254_pollen11200); if (state.failed) return ;
 
         }
 
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2109:11: ( NL )*
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2111:11: ( NL )*
         loop181:
         do {
             int alt181=2;
@@ -33137,7 +33139,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt181) {
         	case 1 :
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2109:12: NL
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2111:12: NL
         	    {
         	    match(input,NL,FOLLOW_NL_in_synpred254_pollen11204); if (state.failed) return ;
 
@@ -33157,8 +33159,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred255_pollen
     public final void synpred255_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2110:5: ( NL )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2110:5: NL
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:5: ( NL )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:5: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred255_pollen11215); if (state.failed) return ;
 
@@ -33169,10 +33171,10 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred256_pollen
     public final void synpred256_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2110:4: ( ( NL )+ )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2110:4: ( NL )+
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:4: ( ( NL )+ )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:4: ( NL )+
         {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2110:4: ( NL )+
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:4: ( NL )+
         int cnt182=0;
         loop182:
         do {
@@ -33186,7 +33188,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt182) {
         	case 1 :
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2110:5: NL
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:5: NL
         	    {
         	    match(input,NL,FOLLOW_NL_in_synpred256_pollen11215); if (state.failed) return ;
 
@@ -33211,10 +33213,10 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred258_pollen
     public final void synpred258_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:4: ( ( NL )* '}' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:5: ( NL )* '}'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2114:4: ( ( NL )* '}' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2114:5: ( NL )* '}'
         {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:5: ( NL )*
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2114:5: ( NL )*
         loop183:
         do {
             int alt183=2;
@@ -33227,7 +33229,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt183) {
         	case 1 :
-        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:6: NL
+        	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2114:6: NL
         	    {
         	    match(input,NL,FOLLOW_NL_in_synpred258_pollen11229); if (state.failed) return ;
 
@@ -33249,8 +33251,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred259_pollen
     public final void synpred259_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:20: ( NL )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2112:20: NL
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2114:20: ( NL )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2114:20: NL
         {
         match(input,NL,FOLLOW_NL_in_synpred259_pollen11239); if (state.failed) return ;
 
@@ -34918,7 +34920,7 @@ public TreeAdaptor getTreeAdaptor() {
             this.transition = DFA151_transition;
         }
         public String getDescription() {
-            return "2108:1: delim : ( ( SEMI ) ( NL )* ->| ( NL )+ ->| ( ( NL )* '}' )=> ( NL )* ->);";
+            return "2110:1: delim : ( ( SEMI ) ( NL )* ->| ( NL )+ ->| ( ( NL )* '}' )=> ( NL )* ->);";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
