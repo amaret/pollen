@@ -1365,17 +1365,6 @@ public class ExprNode extends BaseNode {
 			// this used to be pass1Begin() but that creates a requirement
 			// that a variable be declared before it is referenced.
 
-			if (!currUnit.getCurrUnitNode().getUnitType().isClass()) {
-				// If the class is nested, the unit type may be the containing
-				// module. So check further.
-				Tree t = this.getParent();
-				while (!(t == null || t instanceof DeclNode.Usr))
-					t = t.getParent();
-				if (!(t instanceof DeclNode.Class))
-					currUnit.reportError(this,
-							"\'@\' can only be used in \'class\' methods");
-			}
-
 			enterSymbol(false);
 
 			return super.pass2Begin();
