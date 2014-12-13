@@ -343,7 +343,10 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 	}
 
 	public Atom getPkgName() {
-		return ((BaseNode) getChild(PKGNAME)).getAtom();
+		Atom rtn = ((BaseNode) getChild(PKGNAME)).getAtom();
+		if (rtn != null)
+			return rtn;
+		else return new Atom(this.getToken());
 	}
 
 	public String getQualName() {

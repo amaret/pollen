@@ -459,7 +459,7 @@ tokens {
 
 }
 unit
-    :   (NL)* unitPackage   -> ^(UNIT<UnitNode>["UNIT"] unitPackage)  
+    :   (NLL)? unitPackage   -> ^(UNIT<UnitNode>["UNIT"] unitPackage)  
     ;
 unitPackage
 scope {
@@ -471,6 +471,7 @@ scope {
            		stmtInjectionList //  the injects that go into the header file
            		unitTypeDefinition
            		stmtInjectionList
+           		NLL?
            		pollenEOF
            			-> stmtPackage importList stmtInjectionList unitTypeDefinition stmtInjectionList 
 	;
@@ -487,7 +488,7 @@ stmtPackage
 @init {
    String pkg = ParseUnit.mkPackageName(ParseUnit.current().getCurrPath());
 }
-	: 'package' qualName delim	-> ^(S_PACKAGE[pkg] qualName)
+	: 'package' qualName NLL	-> ^(S_PACKAGE[pkg] qualName)
 	|	-> ^(S_PACKAGE[pkg]) 
 	;
 stmtExport
@@ -513,7 +514,7 @@ classDefinition
 	      }
 	   	extendsClause
 		implementsClause
-		braceOpen classFeatureList[name] braceClose
+		(NLL)? braceOpen classFeatureList[name] braceClose
 		-> ^(D_CLASS<DeclNode.Class>["D_CLASS", getParseUnitFlags(), qual] 
 			IDENT classFeatureList extendsClause implementsClause {$unitTypeDefinition::meta})
 		;
@@ -532,7 +533,7 @@ classFeatureList[String n]
 								intrinsicUnitName
 								intrinsicPrintProxy)
 	;
-classFeature
+classFeature 
 @init {
 	featureFlags = EnumSet.noneOf(Flags.class);
 }
@@ -620,7 +621,7 @@ scope {
 	      }
 	      extendsClause
 	      implementsClause
-			braceOpen moduleFeatureList[name] braceClose
+			(NLL)? braceOpen moduleFeatureList[name] (NLL)? braceClose
 			-> ^(D_MODULE<DeclNode.Usr>["D_MODULE", getParseUnitFlags(), qual] 
 				IDENT 
 				moduleFeatureList //{$moduleDefinition::moduleFeatureList = $moduleFeatureList.tree;}
@@ -730,11 +731,11 @@ scope{
 	featureFlags = EnumSet.noneOf(Flags.class);	
 	$moduleFeature::publicEnum = false;
 }
-	:   fcnDefinition
-   	|   varDeclaration
-	|   enumDefinition
-	|   classDefinition
-	|   injectionDecl
+	:   fcnDefinition 
+   	|   varDeclaration 
+	|   enumDefinition 
+	|   classDefinition 
+	|   injectionDecl 
     ;
  
  enumUnitDefinition			// this one does not allow a 'public' attribute (outermost, default is public).
@@ -780,19 +781,22 @@ scope {
 	      	                 qual = clientImport.getAs().getText();
 	                         }
 		}
-		braceOpen enumList braceClose)
+		(NLL)? braceOpen enumList braceClose)
 		-> ^(D_ENUM<DeclNode.Usr>["D_ENUM", getParseUnitFlags(), qual] 
 			IDENT enumList {$unitTypeDefinition::meta}) 
 	;
 enumList
-	:	enumElement (',' (delim)? enumElement)* -> ^(LIST<ListNode>["LIST"] enumElement+)
+	:	enumElement 
+			(',' (NLL)? enumElement)* -> ^(LIST<ListNode>["LIST"] enumElement+)
+
 	;
+
 // assign defaults for missing values
 enumElement
 @init {
 	String ctext = "";
 }
-	: 	IDENT ASSIGN enumVal
+	: 	(IDENT ASSIGN)=> IDENT ASSIGN enumVal
 		-> ^(D_ENUMVAL<DeclNode.EnumVal>["D_ENUMVAL", getParseUnitFlags()] IDENT enumVal)
 	|	IDENT	
 			{ 
@@ -826,7 +830,7 @@ protocolDefinition
 		}
 		extendsClause
 		implementsClause
-		braceOpen protocolFeatureList braceClose 
+		(NLL)? braceOpen protocolFeatureList braceClose 
 		-> ^(D_PROTOCOL<DeclNode.Usr>["D_PROTOCOL", getParseUnitFlags(), qual] 
 			IDENT protocolFeatureList extendsClause implementsClause {$unitTypeDefinition::meta}) //{$unitTypeDefinition::metaImports})
 	;
@@ -860,7 +864,7 @@ compositionDefinition
 		}
 		extendsClause  
 		implementsClause
-		braceOpen compositionFeatureList braceClose 
+		(NLL)? braceOpen compositionFeatureList braceClose 
 			-> ^(D_COMPOSITION<DeclNode.Usr>["D_COMPOSITION", getParseUnitFlags(), qual] 
 			     IDENT compositionFeatureList extendsClause implementsClause {$unitTypeDefinition::meta}) 
 	;
@@ -1034,7 +1038,7 @@ meta
 //    This will be a void instance: no output.
 	:	{isMetaInstance}? 'meta'!	
 	      	{ metaFlags.add(Flags.META);}
-			(braceOpen 
+			((NLL)? braceOpen 
 				metaParmsGen
 			 braceClose) 
 			 
@@ -1059,8 +1063,8 @@ scope {
  		}
  	}
 }
-	:	m1=metaParmGen { $metaParmsGen::l.add($m1.tree); } NL*
-		( ',' NL*
+	:	m1=metaParmGen { $metaParmsGen::l.add($m1.tree); } (NLL)?
+		( ',' (NLL)?
 			m2=metaParmGen { $metaParmsGen::l.add($m2.tree); }
 		)*
 		-> ^(LIST<ListNode>["LIST"] metaParmGen+)
@@ -1223,14 +1227,14 @@ catch [PollenFatalException e] {
     ParseUnit.current().reportFailure(e);
 }	
 metaArguments
-   :        '{' metaArgument (NL)* (',' (NL*) metaArgument (NL*) )* '}' 
+   :        '{' metaArgument (',' (NLL)? metaArgument )* '}' 
    		-> ^(LIST<ListNode>["LIST"] metaArgument+)
-   |	'{' '}'      -> LIST<ListNode>["LIST"]	// defer metaArgument binding  
+ //  |	'{' '}'      -> LIST<ListNode>["LIST"]	// defer metaArgument binding  
    ;
  	
 metaArgument
-	:	primitiveLit 
-	|	typeNameScalar
+	:	primitiveLit (NLL!)?
+	|	typeNameScalar (NLL!)?
 	| 	-> NIL
 	;
 typeName
@@ -1294,16 +1298,15 @@ implementsClause
     | 	-> NIL
     ;
 braceClose
-    :    (NL!)* '}'! (NL!)*
+    :   (NLL!)? '}'! (NLL!)?
     ;
-braceCloseAtEOF
+//braceCloseAtEOF
 // the final close brace does not require a delimiter if followed by EOF
 // unused.
-    :   (NL!*) '}'! (NL!)* //(delim)?
-    ;
-
+//   :   (NL!*) '}'! (NL!)* //(delim)?
+//   ;
 braceOpen
-    :    (NL!)* '{'! (NL!)*
+    :    (NLL!)? '{'! (NLL!)?
     ;
 equalityOp
 	:	EQ | NOT_EQ
@@ -1475,7 +1478,7 @@ fcnAttr
 		)*
 	;
 fcnBody[CommonTree formals]
-  :	braceOpen (stmts)  braceClose  -> ^(FCNBODY<BodyNode>["FCNBODY"] {$formals} stmts) 
+  :	(NLL)? braceOpen (stmts)  braceClose  -> ^(FCNBODY<BodyNode>["FCNBODY"] {$formals} stmts) 
   ;
 fcnDeclaration
    :	fcnAttr
@@ -1633,11 +1636,11 @@ arrayAccess
 	
 	
 stmtBlock
-	:	braceOpen stmts braceClose	 -> ^(S_BLOCK<StmtNode.Block>["S_BLOCK"] stmts)
+	:	(NLL)? braceOpen stmts braceClose	 -> ^(S_BLOCK<StmtNode.Block>["S_BLOCK"] stmts)
 	;
 stmts
 	:	(stmt)+ -> ^(LIST<ListNode>["LIST"] stmt+) 
-	|	(NL*) -> LIST<ListNode>["LIST"]
+	|	(NLL)?  -> LIST<ListNode>["LIST"]
 	;
 stmt
 @init {
@@ -1799,21 +1802,21 @@ stmtForEach
 	;
 	*/
 stmtSwitch
-	:	'switch' '(' expr ')' braceOpen stmtsCase stmtDefault? braceClose	-> ^(S_SWITCH<StmtNode.Switch>["S_SWITCH"]  expr stmtsCase stmtDefault?)
+	:	'switch' '(' expr ')' (NLL)? braceOpen stmtsCase stmtDefault? braceClose	-> ^(S_SWITCH<StmtNode.Switch>["S_SWITCH"]  expr stmtsCase stmtDefault?)
 	;
 stmtsCase
 	:	stmtCase* -> ^(LIST<ListNode>["LIST"] stmtCase*)
 	;
 stmtDefault
-	:	'default'	':' NL* stmts	-> ^(S_CASE<StmtNode.Case>["S_CASE"] stmts)
+	:	'default'	':' (NLL)? stmts	-> ^(S_CASE<StmtNode.Case>["S_CASE"] stmts)
 	;
 stmtCase
 @init {
 	EnumSet<LitFlags> litFlags = EnumSet.of(LitFlags.INT);
 }
-	:	'case' (INT_LIT)	':' NL* stmts	-> ^(S_CASE<StmtNode.Case>["S_CASE"] stmts 
+	:	'case' (INT_LIT)	':' (NLL)? stmts	-> ^(S_CASE<StmtNode.Case>["S_CASE"] stmts 
 							    ^(E_CONST<ExprNode.Const>["E_CONST", litFlags] INT_LIT))
-	|	'case' (qualName)	':' NL* stmts	-> ^(S_CASE<StmtNode.Case>["S_CASE"] stmts 
+	|	'case' (qualName)	':' (NLL)? stmts	-> ^(S_CASE<StmtNode.Case>["S_CASE"] stmts 
 							    ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT[$qualName.text])) // enum val
 	
 	;
@@ -1957,10 +1960,10 @@ varDim
 	;
 initializer
 	: expr // restrict
-	| '{' NL* initializer_list ','? NL* '}' -> initializer_list
+	| '{' (NLL)? initializer_list ','? (NLL)? '}' -> initializer_list
 	;
 initializer_list
-	: initializer (NL* ',' NL* initializer)* ->  ^(E_VEC<ExprNode.Vec>["E_VEC"]  ^(LIST<ListNode>["LIST"] initializer+))
+	: initializer ((NLL)? ',' (NLL)?  initializer)* ->  ^(E_VEC<ExprNode.Vec>["E_VEC"]  ^(LIST<ListNode>["LIST"] initializer+))
 	;
 varDeclList  // int x, y=3, z=3, a
 @init {
@@ -2082,8 +2085,8 @@ scope {
 	;
 stmtInjection
 	:	inject
-	NL+	
-	-> ^(S_INJ<StmtNode.Inject> ["S_INJ"] ^(E_INJ<ExprNode.Inject>["E_INJ"] inject))
+		NLL	
+		-> ^(S_INJ<StmtNode.Inject> ["S_INJ"] ^(E_INJ<ExprNode.Inject>["E_INJ"] inject))
 	;
 // Here we synthesize nodes that split the injected code into pollen names and straight output code.
 // The pollen names will be formatted for output.
@@ -2095,23 +2098,23 @@ inject
             		$c.setText(getInject($c.getText()));
            			createInjectNodes(r, $c.getText());           
         		}
-	-> ^(LIST<ListNode>["LIST"] {r})
+		-> ^(LIST<ListNode>["LIST"] {r})
 	;
 injectionCode
 	:	inject
-	-> ^(E_INJ<ExprNode.Inject>["E_INJ"]  inject) // don't consume delimiter
+		-> ^(E_INJ<ExprNode.Inject>["E_INJ"]  inject) // don't consume delimiter
 	;
 injectionDecl
 	:	inject
-        NL+
-         -> ^(D_INJ<DeclNode.Inject>["D_INJ"] ^(E_INJ<ExprNode.Inject>["E_INJ"] inject))
+        		(NLL)
+        		 -> ^(D_INJ<DeclNode.Inject>["D_INJ"] ^(E_INJ<ExprNode.Inject>["E_INJ"] inject))
 	;
 
 delim
-	:	(SEMI) (NL)*	-> 
-	|	(NL)+	-> 
+	:	(SEMI) (NLL)?   -> 
+	|	(NLL)   -> 
 	// needed when the last stmt in a block ends with '}' (no NL or SEMI)
-	|	((NL)* '}') =>  NL* -> 
+	|	((NLL)? '}') =>  (NLL)? -> 
 	;
 // lexer
 // convention: lexer rules are upper case.
@@ -2145,69 +2148,105 @@ CHAR
     ;
 STRING
     :   '"' (('\\' ~'\n') | ~('\\' | '"' | '\n'))* '"'
-    |	  '\'' (('\\' ~'\n') | ~('\\' | '\'' | '\n'))+ '\''
-    ;     
-WS
-    :   (' ' | '\t')*  { $channel=HIDDEN; }
+    |     '\'' (('\\' ~'\n') | ~('\\' | '\'' | '\n'))+ '\''
     ;
+WS
+    :   (' ' | '\t')+  { $channel=HIDDEN; }
+    ;
+
 SL_COMMENT
     : '#' ~('\n'|'\r')*   { $channel=HIDDEN; }
-    | '/''/' ~('\n'|'\r')*  { $channel=HIDDEN; }
-    | '---' ~('\n'|'\r')* { $channel=HIDDEN; }
-    //| '---' ~('\n'|'\r')* '---' { $channel=HIDDEN; }
+    | '/''/' ~('\n'|'\r')*   { $channel=HIDDEN; }
+    | ('---' ~('-')) => SLCOM3 ~('\n'|'\r')+  { $channel=HIDDEN; }
     ;
+
 INJECT
-	: IJ_BEG ( options {greedy=false;} : .)* IJ_END
-	;
+    : IJ_BEG ( options {greedy=false;} : .)* IJ_END
+    ;
 
 ML_COMMENT	
-	 // Note the first has to have a min of 4 dashes to disambig w/ sl_comment
-    :  	'----' ('-')* (' ' | '\t')* ('\n'|'\r') ( options {greedy=false;} : . )* '---' ('-')*('\n'|'\r')* { $channel=HIDDEN; }    
-    |	'!--' ( options {greedy=false;} : . )*  '--!' ('\n'|'\r')* { $channel=HIDDEN; }
+     // Note the first has to have a min of 4 dashes to disambig w/ sl_comment
+     // Note
+     // --- comment    <= Otherwise THIS is a single line comment
+     // ---            <= AFTER token emitted, this makes it a multiline  comment.
+     // Note
+     // '!-- comment --!' can be on one line but the '----' form cannot be because the NEWLINE disambiguates
+    :   MULCOM ( options {greedy=false;} : . )*  '--!' (NEWLINE)* { $channel=HIDDEN; }
+    |   '----' ('-')* WS? NEWLINE ( options {greedy=false;} : . )* '---' ('-')* (NEWLINE)* { $channel=HIDDEN; }
+    //|   MULCOM1 ( options {greedy=false;} : . )* '----' (NEWLINE)*  { $channel=HIDDEN; }
     ;
 
 SEMI
     :   ';'
     ;
-NL
-    :   ('\r')? ('\n') // cannot be hidden because a statement delimiter
-    ;
+
+//NL :   ('\r')? ('\n'); 
+
+// this sucks up comments into delimiters.
+NLL   // cannot be hidden because a statement delimiter ;
+ :   ( (NEWLINE) ( (WS)? NEWLINE)* ) WS? 
+     COM*
+ ;
+fragment COM:
+         { ((char)input.LA(1) == '#') 
+           || (((char)input.LA(1) == '/' || (char)input.LA(1) == '-' || (char)input.LA(1) == '!')
+              && (((char)input.LA(1) == '/' && (char)input.LA(2) == '/')
+                 || ((char)input.LA(1) == '-' && (char)input.LA(2) == '-' && (char)input.LA(3) == '-')
+                 || ((char)input.LA(1) == '!' && (char)input.LA(2) == '-' && (char)input.LA(3) == '-')))
+         }?=>
+         (
+              (   ('#')     =>    SL_COMMENT
+                | ('/''/')  =>    SL_COMMENT
+                | ('----')   =>   '----' ('-')* WS? NEWLINE ( options {greedy=false;} : . )* '---' ('-')*
+                | ('---')   =>    SLCOM3  ( options {greedy=false;} : ~('\n'|'\r')+)
+                | ('!--')   =>    (MULCOM ( options {greedy=false;} : . )*  '--!')
+              )
+              (WS)? NEWLINE ( (WS)? NEWLINE)* WS?
+         )
+ ;
 ILLEGAL_CHARACTER
     :   '\u0080'..'\uFFFF'
     ;
 // fragments: never returned to the parser as a token
+// NOTE lexer does not appear to like complement (~) of token fragments.
 fragment I:       ('a'..'z'|'A'..'Z'|'_'|'$') ;
 fragment D:        '0'..'9' ;
 fragment O:			 '0'..'7';
 fragment H:        'a'..'f' | 'A'..'F' | '0'..'9' ;
 fragment E:        ('E' | 'e') (PLUS | MINUS)? (D)+ ;
 fragment LU:       'LU' | 'Lu' | 'lU' | 'lu' | 'UL' | 'uL' | 'Ul' | 'ul' | 'l' | 'u' | 'L' | 'U' ;
+fragment NEWLINE:   '\r' '\n' | '\n' |'\r';
+fragment MULCOM:     '!--';
+fragment MULCOM1:    '----';
+fragment SLCOM1:     '/''/';
+fragment SLCOM2:     '#';
+fragment SLCOM3:     '---';
 
-INC		: 	'++';
+INC		    : 	'++';
 PLUS		: 	'+';
-DEC		: 	'--';
-MINUS		: 	('-');
-ASSIGN	:	'=';  // note ASSIGN must be first of eq ops or grammar error (won't be matched)
+DEC		    :   ('--');
+MINUS		:   ('-');
+ASSIGN	    :	'=';  // note ASSIGN must be first of eq ops or grammar error (won't be matched)
 BIND 		:	':=';
-ADD_EQ	:	'+=';
-SUB_EQ	:	'-=';
-MUL_EQ	:	'*=';
-DIV_EQ	:	'\\=';
+ADD_EQ	    :	'+=';
+SUB_EQ	    :	'-=';
+MUL_EQ	    :	'*=';
+DIV_EQ	    :	'\\=';
 BITOR_EQ	:	'|=';
 BITXOR_EQ	:	'^=';
 BITAND_EQ	:	'&=';
 RSHFT_EQ	:	'>>=';
 LSHFT_EQ	:	'<<=';
-MOD_EQ	:	'%=';
-PEG		:	'@=';
-EQ		:	'==';
-NOT_EQ	:	'!=';
+MOD_EQ	    :	'%=';
+PEG		    :	'@=';
+EQ		    :	'==';
+NOT_EQ	    :	'!=';
 LT_EQ		:	'<=';
-GT_EQ	:	'>=';
-LOG_NOT	:	'!';
-BIT_NOT	:	'~';
-GT		:  	'>';
-LT		:	'<';
+GT_EQ	    :	'>=';
+LOG_NOT	    :	'!';
+BIT_NOT	    :	'~';
+GT	    	:  	'>';
+LT		    :	'<';
 // injection blocks
 
 IJ_BEG:	 '+{';
