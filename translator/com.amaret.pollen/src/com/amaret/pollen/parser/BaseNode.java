@@ -116,7 +116,7 @@ public class BaseNode extends CommonTree {
 	 * @return a node in the current subtree containing a non synthesized token or null if none exists.
 	 */
 	private BaseNode getNonSynthesizedNode(BaseNode b) {
-		if (b == null)
+		if (b == null || b instanceof ErrorNode)
 			return null;
 		if (!b.getAtom().isSynthesizedToken())
 			return b;

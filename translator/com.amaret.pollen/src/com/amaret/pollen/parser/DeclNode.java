@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.antlr.runtime.tree.Tree;
+
 import com.amaret.pollen.parser.Cat.Agg;
 import com.amaret.pollen.parser.ExprNode.Vec;
 import com.amaret.pollen.parser.TypeNode.Usr;
@@ -655,8 +657,14 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 		@Override
 		public ExprNode getInit() {
+			if (getChildCount() <= INIT) 
+				return null;
+			Tree b = getChild(INIT);
+			if (b instanceof ExprNode)
+				return (ExprNode) b;
+			ParseUnit.current().reportError(this, "\'" + this.getName().getText() + "\'" + " has invalid initializer");
+			return null;
 
-			return (ExprNode) (getChildCount() > INIT ? getChild(INIT) : null);
 		}
 
 		/**

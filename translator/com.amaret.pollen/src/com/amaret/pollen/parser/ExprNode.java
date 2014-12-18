@@ -689,7 +689,7 @@ public class ExprNode extends BaseNode {
 			boolean fcnOrFcnRef = cat instanceof Cat.Fcn
 					|| cat instanceof Cat.Agg;
 			if (!fcnOrFcnRef) {
-				currUnit.reportError(getName(), "value is not a function");
+				currUnit.reportError(getName(), "Invalid value. Either value is not a function or function does not return a value");
 				return null;
 			}
 			// TODO

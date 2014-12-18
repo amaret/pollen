@@ -229,8 +229,9 @@ public class UnitHeader {
 		for (BaseNode e : ((DeclNode.Arr)fld).getDim().getElems()) {
 			gen.getFmt().print("[");
 			boolean isPreset = false;
+			SymbolEntry dimVar = null;
 			if (e instanceof ExprNode.Ident) {
-
+				dimVar = ((ExprNode.Ident)e).getSymbol() != null ? ((ExprNode.Ident)e).getSymbol() : null;
 				if (ParseUnit.current().isPreset(((ExprNode.Ident)e).getSymbol())) {
 					isPreset = true;
 					e = ParseUnit.current().getPresetExpr(((ExprNode.Ident)e).getSymbol());
@@ -257,7 +258,12 @@ public class UnitHeader {
 				// If the array dimension size variable is host, these errors will not occur. 
 				String msg = isClass ? "for arrays defined in class scope, " : "for non-host arrays defined in module scope, ";
 				// note these errors not raised for host arrays in modules because the issue doesn't exist on the host/module side.
-				ParseUnit.current().reportError(fld.getName(), msg + "array dimensions must resolve to compile time constant values");
+				String msg2 = "";
+				ISymbolNode n = dimVar != null ? dimVar.node() : null;
+				if (n != null && n instanceof DeclNode.Var && ((DeclNode.Var)n).isConst()) {
+					msg2 = "(Note that the attribute \'const\' does not itself create a compile time constant because in C constness can be cast away. However host variables whose value is set during the host phase will be compile time constants.)";				
+				}
+				ParseUnit.current().reportError(fld.getName(), msg + "array dimensions must resolve to compile time constant values." + msg2);
 				if (isPreset) 
 					ParseUnit.current().reportError(fld.getName(), msg + "when array dimensions are set by variables initialized in \'preset\' initializers, those variables must be preset to constant values");
 			}

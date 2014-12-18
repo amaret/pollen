@@ -354,9 +354,6 @@ public class ParseUnit {
 
 	public static void setDebugMode(boolean debugMode) {
 		ParseUnit.debugMode = debugMode;
-		boolean dbg = false;
-		if (debugMode)
-			dbg = true;
 	}
 
 	public static boolean isDebugMode() {
