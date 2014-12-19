@@ -284,8 +284,8 @@ tokens {
             BaseNode id =  (BaseNode)adaptor.becomeRoot(
                     new ExprNode.Ident(E_IDENT, "E_IDENT")
                     , (BaseNode) adaptor.nil());
-            adaptor.addChild(root, id);
-            adaptor.addChild(id, 
+                    adaptor.addChild(root, id);
+                    adaptor.addChild(id, 
                     (BaseNode)adaptor.create(pollenParser.IDENT, (inject.getText())));
         }
         else {
@@ -1248,7 +1248,7 @@ metaArguments
     metaArgumentList options { backtrack = true; }
    :        metaArgument (NLL)? (',' (NLL?) metaArgument (NLL?) )* 
    		-> ^(LIST<ListNode>["LIST"] metaArgument+)
-   |	      -> LIST<ListNode>["LIST"]	// defer metaArgument binding  
+   |	   -> LIST<ListNode>["LIST"]	// defer metaArgument binding  
    ;
    metaArgument
     :   primitiveLit
@@ -1355,7 +1355,7 @@ braceClose
     |     BRACE_CL!
     ;
 catch [NoViableAltException ne] {  
-        ParseUnit.current().reportFailure("Invalid token between '{'...'}'. Note newlines are only valid after comma in a list.");
+        ParseUnit.current().reportFailure("Invalid token between '{'...'}'. Check that all statements are terminated by a newline or semicolon.");
     }
 //braceCloseAtEOF
 // the final close brace does not require a delimiter if followed by EOF
@@ -1399,11 +1399,19 @@ exprList
     :    expr (',' expr)*    
         -> ^(LIST<ListNode>["LIST"] expr+)
     |    -> LIST<ListNode>["LIST"]
-    ;
+    ;    
 expr
-    :    exprLogicalOr '?' expr ':' expr -> ^(E_QUEST<ExprNode.Quest>["E_QUEST"] exprLogicalOr expr expr)
-    |    exprLogicalOr 
-   ;         
+   :    exprLogicalOr exprQuestOp[$exprLogicalOr.tree]!
+   ;
+exprQuestOp[CommonTree expr]
+@after {
+      if ($exprQuestOp.tree  != null) {
+           expr.addChild($exprQuestOp.tree);
+      }
+}
+   :   '?' expr ':' expr ->  ^(E_QUEST<ExprNode.Quest>["E_QUEST"] expr expr)
+   |
+   ;
 exprLogicalOr 
     : (exprLogicalAnd -> exprLogicalAnd)
         (
@@ -1707,29 +1715,23 @@ stmt
     typeMods = EnumSet.noneOf(Flags.class);
     stmtFlags = EnumSet.noneOf(Flags.class);
 }
-    :      stmtDecl
-    |      stmtAssign
+    :    stmtDecl
+    |    stmtAssign
     |    stmtBind
     |    stmtBlock
     |    stmtPrint
     |    stmtPeg
     |    stmtReturn
     |    stmtBreak
-    |      stmtContinue
-    |      stmtFor
+    |    stmtContinue
+    |    stmtFor
     |    stmtSwitch
-    |      stmtDoWhile
+    |    stmtDoWhile
     |    stmtIf
     |    stmtProvided
     |    stmtWhile 
     |    stmtInjection
     |    expr delim  -> ^(S_EXPR<StmtNode.Expr>["S_EXPR"] expr)
- //   |    expr (delim | braceClose)  -> ^(S_EXPR<StmtNode.Expr>["S_EXPR"] expr)
-    ;
-exprTerminate
-    :    (NLL) => delim
-    |    (SEMI)  => delim
-    |    (BRACE_CL) => braceClose
     ;
     
 exprAssign

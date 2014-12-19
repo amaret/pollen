@@ -364,6 +364,9 @@ public class Auxiliary {
 			genExpr$Vec((ExprNode.Vec) expr, true);
 			break;
 		}
+		if (expr.hasQuestOpSubExpr()) {				
+			genExpr$Quest(expr.getQuestOpSubExpr());
+		}
 	}
 	/**
 	 * @param expr
@@ -709,7 +712,6 @@ public class Auxiliary {
 	}
 
 	private void genExpr$Quest(Quest expr) {
-		genExpr(expr.getTest());
 		gen.getFmt().print(" ? ");
 		genExpr(expr.getTrue());
 		gen.getFmt().print(" : ");

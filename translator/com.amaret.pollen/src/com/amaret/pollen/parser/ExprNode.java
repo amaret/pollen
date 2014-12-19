@@ -46,7 +46,6 @@ public class ExprNode extends BaseNode {
 		public boolean hasLeftIndexExpr() {
 			return hasLeftIndexExpr;
 		}
-
 		public ExprNode.Index getLeftIndexExpr() {
 			return leftIndexExpr;
 		}
@@ -235,6 +234,7 @@ public class ExprNode extends BaseNode {
 							((Cat.Error) exprCat).getMsg());
 				}
 			}
+			setCatFromQuestOp();
 		}
 	}
 
@@ -725,8 +725,8 @@ public class ExprNode extends BaseNode {
 	static public class Quest extends ExprNode {
 
 		static final private int TEST = 0;
-		static final private int TRUE = 1;
-		static final private int FALSE = 2;
+		static final private int TRUE = 0;
+		static final private int FALSE = 1;
 
 		Quest(int ttype, String ttext) {
 			super(ttype, ttext);
@@ -747,27 +747,24 @@ public class ExprNode extends BaseNode {
 		@Override
 		protected void pass2End() {
 
-			isConst = getTrue().isConst && getTrue().isConst
-					&& getFalse().isConst;
+			isConst = getTrue().isConst && getFalse().isConst;
 
 			Cat leftCat = getTrue().getCat();
 			Cat rightCat = getFalse().getCat();
-			Cat testCat = getTest().getCat();
-
 			if ((exprCat = TypeRules.preCheck(leftCat, rightCat)) != null) {
 				return;
 			}
-			if ((exprCat = TypeRules.preCheck(testCat)) != null) {
-				return;
-			}
-
-			exprCat = TypeRules
-					.checkUnary("!", testCat, "condition type error");
-			if (exprCat instanceof Cat.Error) {
-				ParseUnit.current().reportError(getTest(),
-						((Cat.Error) exprCat).getMsg());
-				return;
-			}
+//			if ((exprCat = TypeRules.preCheck(testCat)) != null) {
+//				return;
+//			}
+//
+//			exprCat = TypeRules
+//					.checkUnary("!", testCat, "condition type error");
+//			if (exprCat instanceof Cat.Error) {
+//				ParseUnit.current().reportError((BaseNode) getParent(),
+//						((Cat.Error) exprCat).getMsg());
+//				return;
+//			}
 
 			exprCat = TypeRules.checkBinary("==", leftCat, rightCat,
 					"condition result types must match");
@@ -1657,6 +1654,7 @@ public class ExprNode extends BaseNode {
 		protected void pass2End() {
 			isConst = getBase().isConst;
 			exprCat = getBase().getCat();
+			setCatFromQuestOp();
 		}
 	}
 
@@ -2047,5 +2045,45 @@ public class ExprNode extends BaseNode {
 	}
 
 	void setCat(Cat cat) {
+	}
+	public boolean hasQuestOpSubExpr() {
+		if (this.getChildCount() > 1 && this.getChild(this.getChildCount()-1) instanceof ExprNode.Quest) {
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * A binary expr node may be a ternary expr in this case. 
+	 * @return the question mark sub expr if one exists.
+	 */
+	public ExprNode.Quest getQuestOpSubExpr() {
+		ExprNode.Quest q = null;
+		if (this.getChildCount() > 1 && this.getChild(this.getChildCount()-1) instanceof ExprNode.Quest) {
+			q = (Quest) this.getChild(this.getChildCount()-1);
+		}
+		return q;
+	}
+	/**
+	 * If this expr has a '?' expr, it is the '?' expressions
+	 * which should set the exprCat.
+	 */
+	protected void setCatFromQuestOp() {
+		if (this.hasQuestOpSubExpr()
+				&& !(exprCat instanceof Cat.Error)) {
+			Cat questCat = null;
+			if ((questCat = TypeRules.preCheck(exprCat)) != null) {
+				return;
+			}
+	
+			questCat = TypeRules
+					.checkUnary("!", exprCat, "condition type error");
+			if (questCat instanceof Cat.Error) {
+				ParseUnit.current().reportError((BaseNode) getParent(),
+						((Cat.Error) questCat).getMsg());
+				return;
+			}
+			exprCat = this.getQuestOpSubExpr().getCat();
+	
+		}
 	}
 }
