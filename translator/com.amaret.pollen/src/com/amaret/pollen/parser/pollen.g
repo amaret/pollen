@@ -1,10 +1,10 @@
 
 grammar pollen;
 options {
-    backtrack = true;
+    //backtrack = true;
     language = Java;
     k = 1;
-    memoize = true;
+    //memoize = true;
     output = AST;
     ASTLabelType=BaseNode; 
     TokenLabelType=Atom;
@@ -251,6 +251,8 @@ tokens {
     }
     
     void handleIntrinsics(CommonTree t) {
+       if (t == null)
+           return;
         if (t.getText().indexOf('.') == -1) 
             return;
         char c = t.getText().charAt(0);
@@ -284,8 +286,8 @@ tokens {
             BaseNode id =  (BaseNode)adaptor.becomeRoot(
                     new ExprNode.Ident(E_IDENT, "E_IDENT")
                     , (BaseNode) adaptor.nil());
-                    adaptor.addChild(root, id);
-                    adaptor.addChild(id, 
+            adaptor.addChild(root, id);
+            adaptor.addChild(id, 
                     (BaseNode)adaptor.create(pollenParser.IDENT, (inject.getText())));
         }
         else {
@@ -426,7 +428,7 @@ tokens {
         this(input);
         this.fileName = fileName;
     }
-    Stack<Integer> braceOpenLineNum = new Stack<Integer>();       
+    Stack<Integer> braceOpenNLLLineNum = new Stack<Integer>();       
      List tokens = new ArrayList();
         
      public void emit(Token token) {
@@ -525,9 +527,9 @@ classDefinition
               name = qual.isEmpty() ? currType.getTypeName() : qual;
           }
            extendsClause
-        implementsClause
-        braceOpen classFeatureList[name] NLL? braceClose
-        -> ^(D_CLASS<DeclNode.Class>["D_CLASS", getParseUnitFlags(), qual] 
+           implementsClause
+           braceOpenNLL classFeatureList[name] NLL? braceCloseNLL
+           -> ^(D_CLASS<DeclNode.Class>["D_CLASS", getParseUnitFlags(), qual] 
             IDENT classFeatureList extendsClause implementsClause {$unitTypeDefinition::meta})
         ;
 classFeatureList[String n]
@@ -549,8 +551,9 @@ classFeature
 @init {
     featureFlags = EnumSet.noneOf(Flags.class);
 }
-    :   fcnDefinition 
-    |   enumDefinition
+    :   (fcnAttr fcnType formalParameterList NLL? BRACE_OP) => fcnDefinitionVoidOrCtor
+    |   (fcnAttr typeName ('[' ']')? qualName  formalParameterList  NLL? BRACE_OP) => fcnDefinition    
+    |   (('public')? 'enum') => enumDefinition
     |   fieldDeclaration
     |   classDefinition
     |   injectionDecl
@@ -579,6 +582,14 @@ classHostCtor[EnumSet<Flags> fh]
             )    
     | -> NIL
     ;
+catch [NoViableAltException ne] {
+              
+        	        if (ne.token.getText().equals("preset")) {
+        	        	ParseUnit.current().reportFailure("Preset initializers are only valid in compositions.");
+        	        }
+        	        else
+        	        	throw ne;
+        }
 classTargCtor[EnumSet<Flags> ft]
 @init {
     featureFlags = ft.clone();
@@ -601,13 +612,7 @@ classTargCtor[EnumSet<Flags> ft]
                 )
     |    -> NIL
     ;
-    /*
-    scope {
-    Object unitImports;
-}
-    :           stmtPackage
-                importList {$unitPackage::unitImports = $importList.tree;}     
-    */
+
 moduleDefinition 
 scope {
   Object moduleFeatureList;
@@ -633,13 +638,14 @@ scope {
           }
           extendsClause
           implementsClause
-            (NLL)? braceOpen moduleFeatureList[name] (NLL)? braceClose
+            (NLL)? braceOpenNLL moduleFeatureList[name] (NLL)? braceCloseNLL
             -> ^(D_MODULE<DeclNode.Usr>["D_MODULE", getParseUnitFlags(), qual] 
                 IDENT 
                 moduleFeatureList //{$moduleDefinition::moduleFeatureList = $moduleFeatureList.tree;}
                 extendsClause 
                 implementsClause {$unitTypeDefinition::meta}) 
     ;
+   
 moduleFeatureList[String n]
 @init {
       EnumSet<Flags> fh = EnumSet.noneOf(Flags.class);
@@ -717,6 +723,14 @@ moduleHostCtor[EnumSet<Flags> fh]
                         )    
     | -> NIL
     ;
+catch [NoViableAltException ne] {
+              
+        	        if (ne.token.getText().equals("preset")) {
+        	        	ParseUnit.current().reportFailure("Preset initializers are only valid in compositions.");
+        	        }
+        	        else
+        	        	throw ne;
+        }
 moduleTargCtor[EnumSet<Flags> ft]
 @init {
     featureFlags = ft.clone();
@@ -743,12 +757,15 @@ scope{
     featureFlags = EnumSet.noneOf(Flags.class);    
     $moduleFeature::publicEnum = false;
 }
-    :   fcnDefinition 
+       :   (fcnAttr fcnType formalParameterList NLL? BRACE_OP) => fcnDefinitionVoidOrCtor
+       |   (fcnAttr typeName ('[' ']')? qualName  formalParameterList  NLL? BRACE_OP) => fcnDefinition
+       |   ('new' | 'host' 'new') => varDeclarationNew
        |   varDeclaration 
-    |   enumDefinition 
-    |   classDefinition 
-    |   injectionDecl 
+       |   (('public')? 'enum') => enumDefinition
+       |   classDefinition 
+       |   injectionDecl 
     ;
+ 
  
  enumUnitDefinition            // this one does not allow a 'public' attribute (outermost, default is public).
                      // note that when outermost enum did  take optional 'public' it caused some bad parses though no antlr errors.
@@ -771,7 +788,7 @@ scope {
           int val;
 }
 @init{
-               $enumBodyDefinition::val = -1;
+        $enumBodyDefinition::val = -1;
         pushType();
         String qual = "";
 }
@@ -793,7 +810,7 @@ scope {
                                qual = clientImport.getAs().getText();
                              }
         }
-        braceOpen enumList braceClose)
+        braceOpenNLL enumList braceCloseNLL)
         -> ^(D_ENUM<DeclNode.Usr>["D_ENUM", getParseUnitFlags(), qual] 
             IDENT enumList {$unitTypeDefinition::meta}) 
     ;
@@ -821,8 +838,8 @@ enumVal
 @after {
     $enumBodyDefinition::val++; 
 }
-    :    INT_LIT   {   $enumBodyDefinition::val = decode($INT_LIT);  }
-    |    OCT_LIT {   $enumBodyDefinition::val = decode($OCT_LIT);  }
+    :    INT_LIT  {   $enumBodyDefinition::val = decode($INT_LIT);  }
+    |    OCT_LIT  {   $enumBodyDefinition::val = decode($OCT_LIT);  }
     |    HEX_LIT  {   $enumBodyDefinition::val = decode($HEX_LIT);  }
     ;
 protocolDefinition
@@ -842,7 +859,7 @@ protocolDefinition
         }
         extendsClause
         implementsClause
-        (NLL)? braceOpen protocolFeatureList (NLL)? braceClose 
+        (NLL)? braceOpenNLL protocolFeatureList (NLL)? braceCloseNLL 
         -> ^(D_PROTOCOL<DeclNode.Usr>["D_PROTOCOL", getParseUnitFlags(), qual] 
             IDENT protocolFeatureList extendsClause implementsClause {$unitTypeDefinition::meta}) //{$unitTypeDefinition::metaImports})
     ;
@@ -853,7 +870,8 @@ protocolFeature
 @init {
     featureFlags = EnumSet.noneOf(Flags.class);
 }
-    :   enumDefinition
+    :   (('public')? 'enum') => enumDefinition
+    |   (fcnAttr fcnType formalParameterList delim) => fcnDeclarationVoidOrCtor
     |   fcnDeclaration 
     |   injectionDecl
     ;
@@ -876,7 +894,7 @@ compositionDefinition
         }
         extendsClause  
         implementsClause
-        (NLL)? braceOpen compositionFeatureList (NLL)? braceClose 
+        (NLL)? braceOpenNLL compositionFeatureList (NLL)? braceCloseNLL 
             -> ^(D_COMPOSITION<DeclNode.Usr>["D_COMPOSITION", getParseUnitFlags(), qual] 
                  IDENT compositionFeatureList extendsClause implementsClause {$unitTypeDefinition::meta}) 
     ;
@@ -888,13 +906,42 @@ compositionFeatureList
 compositionFeature
 @init {
     featureFlags = EnumSet.noneOf(Flags.class);
+    String tn = "";
 }
-     :  stmtExport     
-       |  fcnDefinitionHost
-       |  enumDefinition
+       :  stmtExport     
+       |  ('preset') => 'preset' typeName {tn = input.LT(-1).getText();}  formalParameterList fcnBody[$formalParameterList.tree] 
+               { 
+                  featureFlags.remove(Flags.PUBLIC);
+                  featureFlags.add(Flags.HOST);
+                  featureFlags.add(Flags.PRESET); 
+                  if (!(tn.equals(currType.getTypeName()))) {
+                      ParseUnit.current().reportError(currType.getTypeName(), "\'preset\' keyword must be followed by current type name "); 
+                  }
+               }                    
+        -> ^(
+                 D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", featureFlags]                    
+                    ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"] 
+                        ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
+                              ^(LIST<ListNode>["LIST"] 
+                                  ^(T_STD<TypeNode.Std>["T_STD", featureFlags] VOID["void"])
+                                 )
+                           ) 
+                       IDENT[ParseUnit.PRESET_INIT]
+                      )                                     
+                   formalParameterList 
+                   ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", featureFlags] 
+                        ^(T_USR<TypeNode.Usr>["T_USR", featureFlags] IDENT[currType.getTypeName()]) 
+                         IDENT["this"]
+                      )
+                  fcnBody
+               )
+       |  (fcnAttr fcnType formalParameterList NLL? BRACE_OP) => fcnDefinitionVoidOrCtor
+       |  (fcnAttr typeName qualName ('[' ']')? formalParameterList  NLL? BRACE_OP) => fcnDefinition     
+       |  (('public')? 'enum') => enumDefinition
        |  varDeclaration
        |  injectionDecl
-     ;
+     ; 
+
 stmtImport
 scope{
     String qpkg;
@@ -1052,9 +1099,9 @@ meta
             (
             'meta'!    
               { metaFlags.add(Flags.META);}
-            ((NLL!)? braceOpen 
+            ((NLL!)? braceOpenNLL 
                 metaParmsGen
-              (NLL!)? braceClose) 
+              (NLL!)? braceCloseNLL) 
               )    
     |      { isMetaInstance = false;} -> LIST<ListNode>["LIST"]                                        
     ;    
@@ -1126,7 +1173,7 @@ scope{
             ((CommonTree) $metaParmGen.tree).addChild(((CommonTree) $metaParmGen::metaArgs));                
               }
 }
-    :    'type' IDENT ( '=' typeName {name = $typeName.text;})? 
+    :    'type' IDENT ( ASSIGN typeName {name = $typeName.text;})? 
             { 
                flags.add(Flags.TYPE_META_ARG); 
                // get 'as' name
@@ -1193,7 +1240,7 @@ scope{
       -> ^(IMPORT<ImportNode>["IMPORT", flags] IDENT[from] IDENT[name] IDENT[as])
 
       
-     |   builtinType id=IDENT ('=' primitiveLit { ctext = $primitiveLit.text; } )?
+     |   builtinType id=IDENT (ASSIGN primitiveLit { ctext = $primitiveLit.text; } )?
              {
              flags.add(Flags.META_ARG);
              if (instantiateToDefaults || isVoidInstance) {
@@ -1243,51 +1290,31 @@ catch [PollenFatalException e] {
     ParseUnit.current().reportFailure(e);
 }    
 metaArguments 
-    : brace_list_beg metaArgumentList brace_list_end  
+    : (BRACE_OP NLL? BRACE_CL) => BRACE_OP NLL? BRACE_CL    -> ^(LIST<ListNode>["LIST"] NIL) // defer metaArgument binding  
+    |  BRACE_OP!  metaArgumentList  BRACE_CL!
     ; 
-    metaArgumentList options { backtrack = true; }
-   :        metaArgument (NLL)? (',' (NLL?) metaArgument (NLL?) )* 
-   		-> ^(LIST<ListNode>["LIST"] metaArgument+)
-   |	   -> LIST<ListNode>["LIST"]	// defer metaArgument binding  
+    // NOTE this rule is peculiar because allowing NLL anywhere in the list as well as optional parameters 
+    // is tricky
+metaArgumentList //options { backtrack = true; }
+   :        metaFirstArg (metaArgument)* 
+   		-> ^(LIST<ListNode>["LIST"] metaFirstArg metaArgument*)
    ;
-   metaArgument
-    :   primitiveLit
-    |   typeNameScalar 
-    |     -> NIL
+ metaFirstArg
+    :	metaArg NLL!?
+    |        -> NIL                //  this is a first argument not present (default value used). 
+    ;
+metaArgument   // arguments after the first are recognized in units of ', NLL? <arg>' 
+    :     (metaDelim metaArg) => metaDelim metaArg (NLL!)?
+    |     (',' NLL?) => ',' NLL? -> NIL
     ; 
-    /*
-    This is the version I attempted to go to no backtrack. 
-    It had problems with test40 and '{}' instantiation to defaults.
-    This one for test40 '{}' creates:
-    IMPORT test40 MetaM M LIST
-    The correct tree is:
-    IMPORT test40 MetaM M (LIST NIL)
-    
-metaArgumentList options { backtrack = true; }
-// NOTE I had to allow an NLL after the comma despite ambiguity so backtrack true
-    : metaArgument (','  (NLL)? metaArgument? )*  -> ^(LIST<ListNode>["LIST"] metaArgument+)
-    | (','  (NLL)? metaArgument ?)+  -> ^(LIST<ListNode>["LIST"] metaArgument+)
-    | -> LIST<ListNode>["LIST"]    // defer metaArgument binding
+metaDelim
+    :	','! NLL!?
     ;
-metaArgument
-    :   primitiveLit
-    |   typeNameScalar 
+metaArg
+    :	primitiveLit
+    |       typeNameScalar
     ;
-    */
-
-/*
-metaArguments options {backtrack=true;}
-   :        BRACE_OP metaArgument (',' (NLL)? metaArgument )* (NLL) BRACE_CL 
-           -> ^(LIST<ListNode>["LIST"] metaArgument+)
- //  |    BRACE_OP BRACE_CL      -> LIST<ListNode>["LIST"]    // defer metaArgument binding  
-   ;
-     
-metaArgument
-    :    primitiveLit (NLL!)?
-    |    typeNameScalar (NLL!)?
-    |     -> NIL
-    ;
-*/
+  
 typeName
     :    typeNameScalar
     ;
@@ -1317,17 +1344,16 @@ scope {
     System.out.println("       " + currType.getTypeName() + ", " + currType.getUnitFlags().toString());
 }
    :   (meta! { $unitTypeDefinition::meta = $meta.tree; })  
-   
-       //importList
        
      (
-                   ('module') => moduleDefinition           
-    |     ('class') =>  classDefinition
+             ('module') => moduleDefinition           
+       |     ('class') =>  classDefinition
        |     ('protocol') => protocolDefinition 
        |     ('composition') => compositionDefinition 
        |     ('enum') => enumUnitDefinition // outermost, not contained
      )
    ;
+
 extendsClause
     :   'extends' qualName
     {
@@ -1348,23 +1374,19 @@ implementsClause
         -> qualName
     |     -> NIL
     ;
-braceClose
- //   :   (NLL BRACE_CL NLL) => (NLL!) BRACE_CL! (NLL!)
-//    |   (NLL BRACE_CL ) => (NLL!) BRACE_CL! 
+braceCloseNLL
     :    (BRACE_CL NLL) => BRACE_CL! (NLL!)
     |     BRACE_CL!
     ;
 catch [NoViableAltException ne] {  
         ParseUnit.current().reportFailure("Invalid token between '{'...'}'. Check that all statements are terminated by a newline or semicolon.");
     }
-//braceCloseAtEOF
+//braceCloseNLLAtEOF
 // the final close brace does not require a delimiter if followed by EOF
 // unused.
 //   :   (NL!*) BRACE_CL! (NL!)* //(delim)?
 //   ;
-braceOpen
-//    :   (NLL BRACE_OP NLL) => (NLL!) BRACE_OP! (NLL!)
-//    |   (NLL BRACE_OP ) => (NLL!) BRACE_OP! 
+braceOpenNLL
     :  (BRACE_OP NLL) => BRACE_OP! (NLL!)
     |    BRACE_OP!
     ;
@@ -1399,7 +1421,8 @@ exprList
     :    expr (',' expr)*    
         -> ^(LIST<ListNode>["LIST"] expr+)
     |    -> LIST<ListNode>["LIST"]
-    ;    
+    ;
+
 expr
    :    exprLogicalOr exprQuestOp[$exprLogicalOr.tree]!
    ;
@@ -1494,60 +1517,133 @@ exprNew
             ^(E_CALL<ExprNode.Call>["E_CALL"] 
             ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT[$qualName.text + "." + ctor]) fcnArgumentList fieldOrArrayAccess?))
     ;
+
 exprUnary
-    :    primitiveLit
-    |    injectionCode
-    |    arrayLit                -> ^(E_VEC<ExprNode.Vec>["E_VEC"] arrayLit)
-    |    logicalNotOp expr             -> ^(E_UNARY<ExprNode.Unary>["E_UNARY"]  expr logicalNotOp)
-    |    bitwiseNotOp expr              -> ^(E_UNARY<ExprNode.Unary>["E_UNARY"]  expr bitwiseNotOp)
-    |    MINUS expr                -> ^(E_UNARY<ExprNode.Unary>["E_UNARY"]  expr MINUS)
-    |    '(' expr ')'                -> ^(E_PAREN<ExprNode.Paren>["E_PAREN"]  expr)
-    |    varOrFcnOrArray incDecOp         -> ^(E_UNARY<ExprNode.Unary>["E_UNARY", true] varOrFcnOrArray incDecOp)
-    |    varOrFcnOrArray
-    |    incDecOp varOrFcnOrArray         -> ^(E_UNARY<ExprNode.Unary>["E_UNARY"] varOrFcnOrArray incDecOp)
-    |    exprNew
+    :    injectionCode
+ //   |    arrayLit                -> ^(E_VEC<ExprNode.Vec>["E_VEC"] arrayLit) deleted because unused
+    |    logicalNotOp exprPrimary             -> ^(E_UNARY<ExprNode.Unary>["E_UNARY"]  exprPrimary logicalNotOp)
+    |    bitwiseNotOp exprPrimary              -> ^(E_UNARY<ExprNode.Unary>["E_UNARY"]  exprPrimary bitwiseNotOp)
+    |    MINUS exprPrimary               -> ^(E_UNARY<ExprNode.Unary>["E_UNARY"]  exprPrimary MINUS)
+    |    incDecOp exprPrimary         -> ^(E_UNARY<ExprNode.Unary>["E_UNARY"] exprPrimary incDecOp)
+ //   |    exprNew can get this via varOrFcnorArray
+    |    (varOrFcnOrArray incDecOp) => exprPrimary incDecOp 
+         -> ^(E_UNARY<ExprNode.Unary>["E_UNARY", true] exprPrimary incDecOp)
+    |    exprPrimary
     ;
+exprPrimary
+    :    primitiveLit
+    |    '(' expr ')'                -> ^(E_PAREN<ExprNode.Paren>["E_PAREN"]  expr)
+    |    varOrFcnOrArray
+    ;
+ 
 fcnDefinition
-    : fcnAttr
-        fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] 
+
+    : fcnAttr fcnType_fcnName formalParameterList fcnBody[$formalParameterList.tree] 
+            {     
+                if (currType.getUnitFlags().contains(Flags.COMPOSITION)) {
+                    featureFlags.add(Flags.PUBLIC); /* enforce */     
+                    if (!featureFlags.contains(Flags.HOST))
+                       throw new PollenException("Composition features must be one of host or preset functions, export statements, or enum definitions.", input);
+                }
+            }        
         -> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", featureFlags] 
             fcnType_fcnName 
-            formalParameterList 
+            formalParameterList         
+
             ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", featureFlags] 
                 ^(T_USR<TypeNode.Usr>["T_USR", featureFlags] IDENT[currType.getTypeName()]) IDENT["this"])
             fcnBody
         )
-    ;
-fcnDefinitionHost
-// composition
-    :    fcnAttr
-           fcnType_fcnName  formalParameterList fcnBody[$formalParameterList.tree]
-        {     featureFlags.add(Flags.PUBLIC); /* enforce */     
-            if (!featureFlags.contains(Flags.HOST))
-                       throw new PollenException("Composition features must be one of host functions, export statements, or enum definitions.", input);
-        }
-        -> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", featureFlags] 
-        
-                fcnType_fcnName 
-                formalParameterList 
-                ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", featureFlags] 
-                    ^(T_USR<TypeNode.Usr>["T_USR", featureFlags] IDENT[currType.getTypeName()]) IDENT["this"])
-                fcnBody)        
     ;
 catch [PollenException re] {
     String hdr = getErrorHeader(re);
     String msg = re.toString();
     emitErrorMessage(hdr+" "+msg);
 }
+
+fcnDefinitionVoidOrCtor
+
+    : fcnAttr fcnType formalParameterList fcnBody[$formalParameterList.tree] 
+    
+           {     
+                if (currType.getUnitFlags().contains(Flags.COMPOSITION)) {
+                    featureFlags.add(Flags.PUBLIC); /* enforce */     
+                    if (!featureFlags.contains(Flags.HOST))
+                       throw new PollenException("Composition features must be one of host functions, a preset initializer, export statements, or enum definitions.", input);
+                }
+            }
+        
+        -> ^(D_FCN_DEF<DeclNode.Fcn>["D_FCN_DEF", featureFlags] 
+            fcnType
+            formalParameterList         
+            ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", featureFlags] 
+                ^(T_USR<TypeNode.Usr>["T_USR", featureFlags] IDENT[currType.getTypeName()]) IDENT["this"])
+            fcnBody
+        )
+    ;
+catch [PollenException re] {
+    String hdr = getErrorHeader(re);
+    String msg = re.toString();
+    emitErrorMessage(hdr+" "+msg);
+}
+    
 fcnAttr
-    :    (    'public' { featureFlags.add(Flags.PUBLIC); } 
+    :   (    'public' { featureFlags.add(Flags.PUBLIC); } 
         |    'host' { featureFlags.add(Flags.HOST); } 
-        |    'preset' { featureFlags.add(Flags.PRESET); } 
         )*
     ;
 fcnBody[CommonTree formals]
-  :    (NLL)? braceOpen (stmts)  braceClose  -> ^(FCNBODY<BodyNode>["FCNBODY"] {$formals} stmts) 
+  :    (NLL)? braceOpenNLL (stmts)  braceCloseNLL  -> ^(FCNBODY<BodyNode>["FCNBODY"] {$formals} stmts) 
   ;
+
+fcnDeclarationVoidOrCtor
+
+   :    fcnAttr fcnType (formalParameterList) delim
+        {
+            if (currType.getUnitFlags().contains(Flags.PROTOCOL))
+                featureFlags.add(Flags.PUBLIC);
+        }
+   -> ^(D_FCN_DCL<DeclNode.Fcn>["D_FCN_DCL", featureFlags] 
+           fcnType
+           formalParameterList 
+         ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", featureFlags] 
+            ^(T_USR<TypeNode.Usr>["T_USR", featureFlags] IDENT[currType.getTypeName()]) IDENT["this"])
+       )
+   ;
+
+fcnType
+@init{
+    String modCtor = "";
+    String clsCtor = "";
+}
+    :    {input.LT(1).getText().equals(currType.getTypeName()) && !(currType.getUnitFlags().contains(Flags.CLASS)) }?=>
+        typeName             
+        { 
+          featureFlags.add(Flags.CONSTRUCTOR); 
+          if (featureFlags.contains(Flags.HOST)) hasHostConstructor = true;
+          if (!featureFlags.contains(Flags.HOST)) hasTargetConstructor = true;
+          modCtor = (featureFlags.contains(Flags.HOST)) ? ParseUnit.CTOR_MODULE_HOST : ParseUnit.CTOR_MODULE_TARGET;
+        }
+        -> ^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
+            ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
+            ^(LIST<ListNode>["LIST"] ^(T_STD<TypeNode.Std>["T_STD", featureFlags] VOID["void"]))) 
+            IDENT[modCtor])           
+    |    {input.LT(1).getText().equals(currType.getTypeName()) }?=> // Class constructor
+        typeName     
+        { 
+          featureFlags.add(Flags.CONSTRUCTOR); 
+          if (featureFlags.contains(Flags.HOST)) hasHostConstructor = true;
+          if (!featureFlags.contains(Flags.HOST)) hasTargetConstructor = true;
+          clsCtor = (featureFlags.contains(Flags.HOST)) ? ParseUnit.CTOR_CLASS_HOST : ParseUnit.CTOR_CLASS_TARGET;
+        }
+        -> ^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
+            ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
+            ^(LIST<ListNode>["LIST"] typeName)) IDENT[clsCtor])           // constructor
+    |    qualName     
+        { featureFlags.add(Flags.VOID_FCN); }
+        -> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"] ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
+                ^(LIST<ListNode>["LIST"] ^(T_STD<TypeNode.Std>["T_STD", featureFlags] VOID["void"]))) qualName)      //  returns void
+    ;
 fcnDeclaration
    :    fcnAttr
         fcnType_fcnName (formalParameterList) delim
@@ -1564,14 +1660,10 @@ fcnDeclaration
    ;
 
 fcnType_fcnName
-@init{
-    String modCtor = "";
-    String clsCtor = "";
-}
 // function names in a dcln can be qualified, e.g. pollen.reset()
 // function return is always a list, empty for void fcn.
 // module constructors have the name "targetInit" or "$$hostInit", class constructors have the name "new"
-    :    typeNameArray varArraySpec qualName
+    :   (typeNameArray '[') =>  typeNameArray varArraySpec qualName
         -> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"]  
             ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
                 ^(LIST<ListNode>["LIST"] typeNameArray)) 
@@ -1581,59 +1673,21 @@ fcnType_fcnName
             ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
                 ^(LIST<ListNode>["LIST"] typeName)) 
                 qualName)      // int myfcn()
-    |    {(featureFlags.contains(Flags.PRESET)) && input.LT(1).getText().equals(currType.getTypeName()) }? 
-        typeName             
-        { 
-          String n;
-          featureFlags.remove(Flags.PUBLIC);
-          featureFlags.add(Flags.HOST);
-          if (!currType.getUnitFlags().contains(Flags.COMPOSITION)) {
-              ParseUnit.current().reportError(currType.getTypeName(), "\'preset\' initializer only allowed in compositions: initializer ignored"); 
-              featureFlags.remove(Flags.PRESET);
-              n = "preset";
-          }
-          else {
-              n = ParseUnit.PRESET_INIT;
-          }
-        }
-        -> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"] 
-            ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
-            ^(LIST<ListNode>["LIST"] ^(T_STD<TypeNode.Std>["T_STD", featureFlags] VOID["void"]))) 
-            IDENT[ParseUnit.PRESET_INIT])           
-    |    {input.LT(1).getText().equals(currType.getTypeName()) && !(currType.getUnitFlags().contains(Flags.CLASS)) }? 
-        typeName             
-        { 
-          featureFlags.add(Flags.CONSTRUCTOR); 
-          if (featureFlags.contains(Flags.HOST)) hasHostConstructor = true;
-          if (!featureFlags.contains(Flags.HOST)) hasTargetConstructor = true;
-          modCtor = (featureFlags.contains(Flags.HOST)) ? ParseUnit.CTOR_MODULE_HOST : ParseUnit.CTOR_MODULE_TARGET;
-        }
-        -> ^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
-            ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
-            ^(LIST<ListNode>["LIST"] ^(T_STD<TypeNode.Std>["T_STD", featureFlags] VOID["void"]))) 
-            IDENT[modCtor])           
-    |    {input.LT(1).getText().equals(currType.getTypeName()) }? // Class constructor
-        typeName     
-        { 
-          featureFlags.add(Flags.CONSTRUCTOR); 
-          if (featureFlags.contains(Flags.HOST)) hasHostConstructor = true;
-          if (!featureFlags.contains(Flags.HOST)) hasTargetConstructor = true;
-          clsCtor = (featureFlags.contains(Flags.HOST)) ? ParseUnit.CTOR_CLASS_HOST : ParseUnit.CTOR_CLASS_TARGET;
-        }
-        -> ^(D_FCN_CTOR<DeclNode.FcnTyp>["D_FCN_CTOR"] 
-            ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] ^(LIST<ListNode>["LIST"] typeName)) IDENT[clsCtor])           // constructor
-    |    qualName     
-        { featureFlags.add(Flags.VOID_FCN); }
-        -> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"] ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] 
-                ^(LIST<ListNode>["LIST"] ^(T_STD<TypeNode.Std>["T_STD", featureFlags] VOID["void"]))) qualName)      //  returns void
-    |    ('(' typeName (',' typeName)* ')' qualName) => fcnTypes_fcnName    // multiple returns
+
     ;
+    
+ /*
+    This rule alternative from fcnType_fcnName is now commented out because it conflicts with dcln of function references. 
+    Since we don't implement multiple function returns, I've commented it and related rules out. 
+    |    ('(' typeName (',' typeName)* ')' qualName) => fcnTypes_fcnName    // multiple returns
 fcnTypes_fcnName
     :    '(' fcnTypes ')' qualName -> ^(D_FCN_TYP_NM<DeclNode.FcnTyp>["D_FCN_TYP_NM"]  fcnTypes qualName)
     ;
 fcnTypes
     :    typeName (',' typeName)* -> ^(T_LST<TypeNode.Lst>["T_LST", featureFlags] ^(LIST<ListNode>["LIST"] typeName+))
     ;
+*/
+    
 formalParameterList
     :    '(' formalParameters ')' -> formalParameters
     ;
@@ -1655,18 +1709,18 @@ formalParameter
 @init {
     EnumSet<Flags> pFlags = EnumSet.noneOf(Flags.class);        
 }
-    :      'type' IDENT ( '=' t=typeName)?
+    :      'type' IDENT ( ASSIGN t=typeName)?
             { pFlags.add(Flags.TYPE_META_ARG); } // meta formal arguments only
             -> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL", pFlags] 
                 ^(T_USR<TypeNode.Usr>["T_USR", pFlags] IDENT) 
                 IDENT ^(E_TYP<ExprNode.Typ>["E_TYP"] typeName)?)
     |      (typeName  '[') => formalParameterArr
-    |       typeName IDENT ( '=' expr)?
+    |       typeName IDENT ( ASSIGN expr)?
             -> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL"] typeName IDENT (expr)?)
 
     ;
 formalParameterArr
-    :    typeNameArray '[' ']' IDENT ( '=' expr)?
+    :    typeNameArray '[' ']' IDENT ( ASSIGN expr)?
             -> ^(D_FORMAL<DeclNode.Formal>["D_FORMAL"] typeNameArray IDENT (expr)?)
     ;
 fcnArgumentList
@@ -1676,68 +1730,82 @@ fcnArguments
     :    exprList
     ;
 varOrFcnOrArray
-    :    exprNew 
-    |    '@' IDENT fcnArgumentList fieldOrArrayAccess? 
+ //   :    exprNew 
+    :   ('@' IDENT '(') =>  '@' IDENT fcnArgumentList fieldOrArrayAccess? 
         -> ^(E_SELF<ExprNode.Self>["E_SELF"] 
             ^(E_CALL<ExprNode.Call>["E_CALL"] ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT) fcnArgumentList fieldOrArrayAccess?))
-    |    '@'    IDENT fieldOrArrayAccess?       
+           
+    |     ('@' IDENT) =>'@'    IDENT fieldOrArrayAccess?       
         -> ^(E_SELF<ExprNode.Self>["E_SELF"] ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT fieldOrArrayAccess?))
+        
     |    '@'    
         -> ^(E_SELF<ExprNode.Self>["E_SELF"]  ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT["this"])) 
-    |    qualName fcnArgumentList fieldOrArrayAccess? 
-        -> ^(E_CALL<ExprNode.Call>["E_CALL"] ^(E_IDENT<ExprNode.Ident>["E_IDENT"] qualName) fcnArgumentList fieldOrArrayAccess?)
-    |    qualName fieldOrArrayAccess? -> ^(E_IDENT<ExprNode.Ident>["E_IDENT"] qualName fieldOrArrayAccess?)
+     // NOTE the order and structure of these rules reflects the tree we want which is a flat branch for all post expressions.
+     |    (qualName '(') => qualName fcnArgumentList  fieldOrArrayAccess?
+            -> ^(E_CALL<ExprNode.Call>["E_CALL"] ^(E_IDENT<ExprNode.Ident>["E_IDENT"] qualName) fcnArgumentList fieldOrArrayAccess?)
+     |    (qualName '[') => qualName arrayAccess fcnArgumentList? fieldOrArrayAccess?
+            -> ^(E_IDENT<ExprNode.Ident>["E_IDENT"] qualName arrayAccess fcnArgumentList? fieldOrArrayAccess?) 
+     |     qualName 
+            -> ^(E_IDENT<ExprNode.Ident>["E_IDENT"] qualName)
     ;
+
 fieldOrArrayAccess
 // the function arg list is for arrays of function references
     :     (fieldAccess | arrayAccess fcnArgumentList?)+
     ;
 fieldAccess
-    :    '.'    IDENT fcnArgumentList    
+    :    ('.'    IDENT '(') => '.'    IDENT fcnArgumentList    
             -> ^(E_CALL<ExprNode.Call>["E_CALL", true] 
              ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT)  fcnArgumentList)
     |    '.'    IDENT     -> ^(E_IDENT<ExprNode.Ident>["E_IDENT", true] IDENT)
     ;
 arrayAccess
-    :    '['    (exprList)    ']'  -> ^(E_INDEX<ExprNode.Index>["E_INDEX"] exprList ) 
+    :    '['    (exprList)    ']'  
+           -> ^(E_INDEX<ExprNode.Index>["E_INDEX"] exprList ) 
     ;
     
     
 stmtBlock
-    :    /*(NLL)?*/ braceOpen stmts braceClose     -> ^(S_BLOCK<StmtNode.Block>["S_BLOCK"] stmts)
+    :     braceOpenNLL stmts braceCloseNLL     -> ^(S_BLOCK<StmtNode.Block>["S_BLOCK"] stmts)
     ;
 stmts
     :    (stmt)+ -> ^(LIST<ListNode>["LIST"] stmt+) 
-    |    /*(NLL)?*/  -> LIST<ListNode>["LIST"]
+    |     -> LIST<ListNode>["LIST"]
     ;
 stmt
 @init {
     typeMods = EnumSet.noneOf(Flags.class);
     stmtFlags = EnumSet.noneOf(Flags.class);
 }
-    :    stmtDecl
-    |    stmtAssign
-    |    stmtBind
+    :    ( INJECT assign) => stmtAssignInject
+    |    ( INJECT) => stmtInjection
     |    stmtBlock
     |    stmtPrint
-    |    stmtPeg
     |    stmtReturn
     |    stmtBreak
     |    stmtContinue
     |    stmtFor
-    |    stmtSwitch
+    |    stmtSwitch 
     |    stmtDoWhile
     |    stmtIf
     |    stmtProvided
     |    stmtWhile 
-    |    stmtInjection
-    |    expr delim  -> ^(S_EXPR<StmtNode.Expr>["S_EXPR"] expr)
+    |    ('const' | 'volatile' | 'host') => stmtDecl 
+    |    ( varDecl delim) => stmtDecl 
+    |    ( varOrFcnOrArray assign) => stmtAssignVar
+    |    ( qualName BIND) => stmtBind
+    |    (varOrFcnOrArray  PEG) => stmtPeg 
+    |     ('new' | 'host' 'new') => varDeclarationNew
+    |    exprUnary delim  -> ^(S_EXPR<StmtNode.Expr>["S_EXPR"] exprUnary)
     ;
     
+    // Note I had to take 'exprNew' out of exprUnary because it was both an expr in expr grammar and a stmt. 
+    // stmt alloiws expr as well as 'new' as a standalone statement and this was ambiguous in the stmt rule. 
+    // Here it is not accessible from expr. 
 exprAssign
     :    
     (exprUnary ASSIGN ) => exprChainedAssign
-
+    | ('new') => exprNew
     | expr
     ;
 exprChainedAssign
@@ -1746,21 +1814,22 @@ exprChainedAssign
         )
     ;
     
-stmtAssign
-    :    varOrFcnOrArray ASSIGN exprAssign delim
-        -> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] ASSIGN varOrFcnOrArray exprAssign))
-    |    injectionCode ASSIGN expr delim
-        -> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] ASSIGN injectionCode expr))
-    |    varOrFcnOrArray assignOp expr  delim
-        -> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] assignOp varOrFcnOrArray expr))
-    |    injectionCode assignOp expr    delim
-        -> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] assignOp injectionCode expr))
+stmtAssignVar
+    :    varOrFcnOrArray assign exprAssign delim
+        -> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] assign varOrFcnOrArray exprAssign))
+    ;
+stmtAssignInject
+    :	injectionCode assign expr delim
+        -> ^(S_ASSIGN<StmtNode.Assign>["S_ASSIGN"] ^(E_BINARY<ExprNode.Binary>["E_BINARY", true] assign injectionCode expr))
+    ;
+assign
+    :		ASSIGN | assignOp
     ;
 stmtBind
 @init{
     String qn = "";
 }
-    :    qualName BIND  userTypeName     delim 
+    :    ( qualName BIND)  => qualName BIND  userTypeName     delim 
         {
 
             if ($qualName.text.equals(ParseUnit.POLLEN_PRINT_PROXY)) {
@@ -1786,48 +1855,47 @@ stmtBind
             -> ^(S_BIND<StmtNode.Bind>["S_BIND"] ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT[qn])  userTypeName)    
     ;
 stmtPeg
-    :    varOrFcnOrArray PEG  exprAssign     delim -> ^(S_PEG<StmtNode.Peg>["S_PEG"] varOrFcnOrArray  PEG exprAssign)    
+    :    varOrFcnOrArray  PEG  exprAssign     delim -> ^(S_PEG<StmtNode.Peg>["S_PEG"] varOrFcnOrArray  PEG exprAssign)    
     ;
 printList    
     :        printItemList    -> ^(LIST<ListNode>["LIST"] printItemList)
     ;
 printItemList
-    :    printItem    ( '+'  printItem) *    -> printItem+
+    :    printItem    ( PLUS printItem) *    -> printItem+
     |    -> NIL
     ;
 printItem
     :    primitiveLit    
-    //|    qualName    -> ^(E_IDENT<ExprNode.Ident>["E_IDENT"] qualName)
     |    varOrFcnOrArray
     ;
 stmtPrint
 @init {
     EnumSet<Flags> flags = EnumSet.noneOf(Flags.class);
 }
-    :    'print' printList    {flags.add(Flags.OUT); } delim
-        -> ^(S_PRINT<StmtNode.Print>["S_PRINT", flags] printList) 
-    |    'print' (stmtPrintTarget[flags]) printList delim
-        -> ^(S_PRINT<StmtNode.Print>["S_PRINT", flags] printList) 
+    :	    'print' (stmtPrintTarget[flags]) printList delim
+                  -> ^(S_PRINT<StmtNode.Print>["S_PRINT", flags] printList) 
     ;
 stmtPrintTarget[EnumSet<Flags> f]
     :    
-        (      'log'  {f.add(Flags.LOG); }
-            | 'err'    {f.add(Flags.ERR); }
-            | 'out'  {f.add(Flags.OUT); }
+        (         'log'  {f.add(Flags.LOG); }
+                | 'err'    {f.add(Flags.ERR); }
+                | 'out'  {f.add(Flags.OUT); }
+                |   {f.add(Flags.OUT); }
         )
     ;
 stmtReturn
-// Note rules below require that returns of multiple values be surrounded by parens.
-// This is required to disambiguate with question mark expression.
-// ^(E_VEC<ExprNode.Vec>["E_VEC"]
-    :    'return' ('(') (expr (',' expr)+) (')') delim    
-        -> ^(S_RETURN<StmtNode.Return>["S_RETURN"] ^(E_VEC<ExprNode.Vec>["E_VEC"] ^(LIST<ListNode>["LIST"] expr+)))
-    |    'return'  (expr)  delim    
-        -> ^(S_RETURN<StmtNode.Return>["S_RETURN"] ^(E_VEC<ExprNode.Vec>["E_VEC"] ^(LIST<ListNode>["LIST"] expr)))
-    |    'return'  delim    
-        -> ^(S_RETURN<StmtNode.Return>["S_RETURN"])
-
-    ;
+// Note multiple return values not implemented but the single value
+// is returned in a vector.
+    :	'return'  
+                 (
+                   ((expr)  delim   
+                       -> ^(S_RETURN<StmtNode.Return>["S_RETURN"] ^(E_VEC<ExprNode.Vec>["E_VEC"] ^(LIST<ListNode>["LIST"] expr)))
+                   )
+                 | (delim
+                       -> ^(S_RETURN<StmtNode.Return>["S_RETURN"])
+                   )
+                 )
+	;
 stmtBreak
     :    'break' delim -> ^(S_BREAK<StmtNode.Break>["S_BREAK"])
     ;
@@ -1853,10 +1921,11 @@ defaultLoopVar   // subtree to use if no loop var is declared
 stmtForInit
     :   SEMI
             -> NIL
-    |   typeName IDENT '=' expr SEMI
+    |   (typeName IDENT ASSIGN) => typeName IDENT ASSIGN expr SEMI
             -> ^(S_DECL<StmtNode.Decl>["S_DECL"] 
                  ^(D_VAR<DeclNode.Var>["D_VAR", EnumSet.noneOf(Flags.class)] typeName IDENT expr))
-    |   stmtAssign
+    |   (INJECT) => stmtAssignInject
+    |    stmtAssignVar
     ;
 stmtForNext
     :   //empty
@@ -1870,7 +1939,7 @@ stmtForEach
     ;
     */
 stmtSwitch
-    :    'switch' '(' expr ')' (NLL)? braceOpen stmtsCase stmtDefault? braceClose    -> ^(S_SWITCH<StmtNode.Switch>["S_SWITCH"]  expr stmtsCase stmtDefault?)
+    :    'switch' '(' expr ')' (NLL)? braceOpenNLL stmtsCase stmtDefault? braceCloseNLL    -> ^(S_SWITCH<StmtNode.Switch>["S_SWITCH"]  expr stmtsCase stmtDefault?)
     ;
 stmtsCase
     :    stmtCase* -> ^(LIST<ListNode>["LIST"] stmtCase*)
@@ -1927,7 +1996,8 @@ fieldDeclaration
     typeMods = EnumSet.noneOf(Flags.class);
     stmtFlags.add(Flags.FIELD);
 }
-   :     varAttr varDecl delim    -> varDecl
+   :     ('new' | 'host' 'new')=> varDeclarationNew
+   |     varAttr varDecl delim    -> varDecl 
    ;
 varDeclaration   
 @init {
@@ -1954,21 +2024,45 @@ scope {
 @init {
     $varDecl::typ = null;
     stmtFlags.addAll(typeMods);
-    String ctor = (typeMods.contains(Flags.HOST)) ? ParseUnit.CTOR_CLASS_HOST : ParseUnit.CTOR_CLASS_TARGET;
 }
-    :    (typeName IDENT (ASSIGN expr)? ',') => varDeclList    
-    |      (typeName IDENT '[') => varArray 
-    |      (('(')? typeName '(' ) => varFcnRef 
-    |      ( ('(') typeName typeName '(' ) => varFcnRef2
-    |       (typeName varInit) => varDeclList
-    |     'new' qualName IDENT fcnArgumentList  // declaration of an instance ('new')
-         { stmtFlags.add(Flags.NEW); } 
-        -> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] ^(T_USR<TypeNode.Usr>["T_USR", typeMods] qualName)
-             IDENT ^(E_NEW<ExprNode.New>["E_NEW"] 
-                         ^(E_CALL<ExprNode.Call>["E_CALL"] 
-                            ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT[$qualName.text + "." + ctor]) 
-                            fcnArgumentList))                                  
-             )
+    :    (typeName IDENT '[') => varArray 
+    |    (typeName IDENT (ASSIGN)) => varDeclList
+    |     (('(')? typeName '(' ) => varFcnRef 
+    |     ( ('(') typeName typeName '(' ) => varFcnRef2
+    |     (typeName varInit) => varDeclList  // unnecessary?
+    ;
+varDeclarationNew        //  these can't be in a varDeclList
+@init {
+    typeMods = EnumSet.noneOf(Flags.class);
+    stmtFlags = EnumSet.noneOf(Flags.class);
+    String ctor = ""; 
+} 
+@after{
+    typeMods = EnumSet.noneOf(Flags.class);
+}
+    :    'new' qualName IDENT fcnArgumentList  delim // declaration of an instance ('new')
+             { 
+                  stmtFlags.add(Flags.NEW); 
+                  ctor = ParseUnit.CTOR_CLASS_TARGET; 
+             } 
+             -> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] ^(T_USR<TypeNode.Usr>["T_USR", typeMods] qualName)
+                 IDENT ^(E_NEW<ExprNode.New>["E_NEW"] 
+                              ^(E_CALL<ExprNode.Call>["E_CALL"] 
+                               ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT[$qualName.text + "." + ctor]) 
+                                fcnArgumentList))                                  
+                  )
+   | ('host' 'new') => 'host' 'new' qualName IDENT fcnArgumentList  delim 
+             {   stmtFlags.add(Flags.NEW); 
+                  stmtFlags.add(Flags.HOST);
+                  ctor = ParseUnit.CTOR_CLASS_HOST;
+                  typeMods.add(Flags.HOST);
+             } 
+             -> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] ^(T_USR<TypeNode.Usr>["T_USR", typeMods] qualName)
+                 IDENT ^(E_NEW<ExprNode.New>["E_NEW"] 
+                              ^(E_CALL<ExprNode.Call>["E_CALL"] 
+                               ^(E_IDENT<ExprNode.Ident>["E_IDENT"] IDENT[$qualName.text + "." + ctor]) 
+                                fcnArgumentList))                                  
+                  )
 
     ;
 varFcnRef
@@ -2013,7 +2107,7 @@ varArraySpec
     :    ('[' varDim ']')+    ->   ^(LIST<ListNode>["LIST"] varDim+)
     ;
 varArrayInit[EnumSet<Flags> f]
-    :    ('=' initializer)                 -> initializer
+    :    (ASSIGN initializer)                 -> initializer
     |    (PEG initializer) {f.add(Flags.PEG);}     -> initializer
     ;
 varDim
@@ -2027,32 +2121,21 @@ varDim
     ;
 // NOTE this had an optional trailing ',' before the final curly that I deleted for ambiguities
 initializer   
-    : expr 
-    | brace_list_beg initializer_list brace_list_end  
+    :  expr 
+    |  ('new') => exprNew
+    |  braceOpenNLL initializer_list braceNLLClose  
     ;
 catch [NoViableAltException ne] {  
-        ParseUnit.current().reportFailure("Invalid token between '{'...'}'. Note newlines are only valid after comma in a list.");
+        ParseUnit.current().reportFailure("Invalid token between '{'...'}'.  Check initializer list for improper newline location. In lists, newlines are only valid after comma.");
     }
 initializer_list
     :    initializer (',' NLL? initializer )*  -> ^(E_VEC<ExprNode.Vec>["E_VEC"]  ^(LIST<ListNode>["LIST"] initializer+))
     ;
 
-brace_list_beg
-    :  (BRACE_OP (NLL)) => BRACE_OP! NLL! 
-    |  BRACE_OP!
-    ;
-brace_list_end
+braceNLLClose
     :   (NLL BRACE_CL) => NLL! BRACE_CL!
     |   BRACE_CL!
     ;
-    //: initializer 
-    //((NLL',' NLL) => (NLL) ',' (NLL)  initializer)* ->  ^(E_VEC<ExprNode.Vec>["E_VEC"]  ^(LIST<ListNode>["LIST"] initializer+))
-    //| initializer 
-    //((',' NLL) => ',' (NLL)  initializer)*  ->  ^(E_VEC<ExprNode.Vec>["E_VEC"]  ^(LIST<ListNode>["LIST"] initializer+))
-    //| initializer 
-    //((NLL ',') => NLL ','  initializer)*  ->  ^(E_VEC<ExprNode.Vec>["E_VEC"]  ^(LIST<ListNode>["LIST"] initializer+))
-    //| initializer (','   initializer)*         ->  ^(E_VEC<ExprNode.Vec>["E_VEC"]  ^(LIST<ListNode>["LIST"] initializer+))
-    //;
 
 varDeclList  // int x, y=3, z=3, a
 @init {
@@ -2071,18 +2154,22 @@ varListUserDefType
     :    varInit (','! varInit)*     // -> ^(LIST<ListNode>["LIST"] varInit+)
     ;
 varInit2        // built in type
-    :    IDENT ASSIGN expr
+    :    (IDENT ASSIGN)=> IDENT ASSIGN expr
         -> ^(D_VAR<DeclNode.Var>["D_VAR", stmtFlags] {$varDecl::typ} 
             IDENT expr)
     |     IDENT
         -> ^(D_VAR<DeclNode.Var>["D_VAR", stmtFlags] {$varDecl::typ} IDENT)
     ;
-varInit        // user defined type
-    :     IDENT BIND userTypeName { stmtFlags.add(Flags.PROTOCOL_MEMBER);  stmtFlags.add(Flags.BIND); }    
+  
+varInit     // user defined type
+    :    (IDENT BIND)=> IDENT BIND userTypeName { stmtFlags.add(Flags.PROTOCOL_MEMBER);  stmtFlags.add(Flags.BIND); }    
         -> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] {$varDecl::typ} IDENT ^( E_TYP<ExprNode.Typ>["E_TYP"] userTypeName )?)
-    |    IDENT PEG expr { stmtFlags.add(Flags.PEG); }    
+    |     (IDENT PEG)=> IDENT PEG expr { stmtFlags.add(Flags.PEG); }    
         -> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] {$varDecl::typ} IDENT expr?)
-    |    IDENT ASSIGN expr
+    |     (IDENT ASSIGN 'new')=>IDENT ASSIGN exprNew 
+        -> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] {$varDecl::typ} 
+            IDENT exprNew)
+    |     (IDENT ASSIGN)=>IDENT ASSIGN (expr)
         -> ^(D_VAR<DeclNode.TypedMember>["D_VAR", stmtFlags] {$varDecl::typ} 
             IDENT expr)
     |    IDENT 
@@ -2090,16 +2177,16 @@ varInit        // user defined type
     ;
 
 builtinType  returns [EnumSet<LitFlags> f]
-    :   'bool'        {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.BOOL);}
-    |   'byte'        {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.CHR);}
-    |   'int8'        {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
-    |   'int16'        {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
-    |   'int32'           {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
-    |   'real'          {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
-    |   'string'          {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.STR);}
-    |   'uint8'        {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
-    |   'uint16'        {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
-    |   'uint32'        {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    :   'bool'          {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.BOOL);}
+    |   'byte'          {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.CHR);}
+    |   'int8'           {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'int16'         {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'int32'         {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'real'           {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'string'        {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.STR);}
+    |   'uint8'         {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'uint16'       {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
+    |   'uint32'       {$f = EnumSet.noneOf(LitFlags.class); $f.add(LitFlags.NUM);}
     ;
     
 qualName 
@@ -2111,15 +2198,26 @@ scope {
     $qualName::qtree = null;
     $qualName::s = "";
 }
-@after {
-    handleIntrinsics((CommonTree) $qualName::qtree);
+@after {  // moved handleIntrinsics() code inline for performance
+        if ($qualName.tree != null && $qualName.tree.getText().length() > 0 &&
+            $qualName.tree.getText().indexOf('.') != -1) {
+
+           switch ( $qualName.tree.getText().charAt(0)) {
+           case 'p':
+           //  handleIntrinsics((CommonTree) $qualName.tree);
+             String s = $qualName.tree.getText();             
+             if (s.substring(0, s.indexOf('.')).equals("pollen")) {
+                s = s.replaceFirst("\\.", "__");
+                $qualName.tree.getToken().setText(s);
+             }       
+             break;
+           default:
+             break;
+           }
+        }      
 }      
-    :       qualNameConcat  { $qualName::qtree = $qualNameConcat.tree; }
+    :	 IDENT (qualNameList?)  -> IDENT[$IDENT.text + $qualName::s] 
     ;
- 
-qualNameConcat 
-    :    IDENT (qualNameList?)  -> IDENT[$IDENT.text + $qualName::s] 
-    ;   
 
 qualNameList 
     :
@@ -2202,19 +2300,10 @@ delim
     :    (SEMI NLL) => SEMI NLL  -> 
     |    (SEMI) ->
     |    (NLL)   -> 
-    // needed when the last stmt in a block ends with BRACE_CL (no NL or SEMI)
+    // Needed when the last stmt in a block ends with BRACE_CL (no NL or SEMI)
     // NOTE this cannot be used unless backtrack==true
-    //|    ((NLL)? BRACE_CL) =>  (NLL)? -> 
+    // |    ((NLL)? BRACE_CL) =>  (NLL)? -> 
     ;
-   
-/*delim
-    :   (SEMI NLL) => (SEMI NLL) ->
-    |   (SEMI) ->
-    |   (NLL BRACE_CL) => NLL BRACE_CL (NLL)? ->
-    |   (BRACE_CL NLL) ->
-    |   (BRACE_CL) ->
-    |   (NLL) ->
-    ;*/
     
 // lexer
 // convention: lexer rules are upper case.
@@ -2227,15 +2316,6 @@ HEX_LIT
 OCT_LIT
     :    '0' O+
     ;
-    /*
-REAL_LIT
-    :    (MINUS)? D+ E ('l' | 'L')?
-    |    (MINUS)? D+ '.' D* (E)? ('l' | 'L')?
-    ;
-INT_LIT
-    :    (MINUS)? D+ (LU)? 
-    ;
-    */
 REAL_LIT
     :    D+ E ('l' | 'L')?
     |    D+ '.' D* (E)? ('l' | 'L')?
@@ -2279,13 +2359,13 @@ SEMI
     ;
 BRACE_OP
     : '{'
-        {  braceOpenLineNum.push(new Integer(state.tokenStartLine)); }
+        {  braceOpenNLLLineNum.push(new Integer(state.tokenStartLine)); }
     ;
 BRACE_CL
     : '}'   
             {
-                if (!braceOpenLineNum.empty()) {
-                    if (state.tokenStartLine == braceOpenLineNum.peek()) {
+                if (!braceOpenNLLLineNum.empty()) {
+                    if (state.tokenStartLine == braceOpenNLLLineNum.peek()) {
                         pollenLexer.fileName = fileName;
                         pollenLexer.lineNum = state.tokenStartLine;
                         Atom a = new Atom(NLL, "\n");
@@ -2293,7 +2373,7 @@ BRACE_CL
                         a = new Atom(BRACE_CL, "}");
                         emit(a);    // the close brace
                     }
-                    braceOpenLineNum.pop();
+                    braceOpenNLLLineNum.pop();
                 }
             }   
     ;

@@ -461,7 +461,7 @@ public class ExprNode extends BaseNode {
 							&& fcn.node() instanceof DeclNode.Fcn
 							&& ((DeclNode.Fcn) fcn.node()).isHost() ? true
 							: false;
-					if (fcn == null)
+					if (fcn == null) {
 						currUnit.reportSeriousError(
 								currUnit.getCurrUnitNode(),
 								"'"
@@ -469,6 +469,7 @@ public class ExprNode extends BaseNode {
 												.getNameForMessage(call)
 										+ "': function is not declared in (or not visible to) the current scope "
 										+ symtab.curScope().getScopeName());
+					}
 
 					else if (qualifier != null) {
 
