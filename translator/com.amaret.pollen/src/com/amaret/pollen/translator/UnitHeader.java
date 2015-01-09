@@ -583,13 +583,13 @@ public class UnitHeader {
         	gen.getFmt().print("void %1();\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_READY));
         }
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "shutdown") == null) {
-        	gen.getFmt().print("void %1();\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_SHUTDOWN));
+        	gen.getFmt().print("void %1(uint8 id);\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_SHUTDOWN));
         }
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "wake") == null) {
-        	gen.getFmt().print("void %1(byte id);\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_WAKE));
+        	gen.getFmt().print("void %1(uint8 id);\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_WAKE));
         }
         if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "hibernate") == null) {
-        	gen.getFmt().print("void %1(byte id);\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_HIBERNATE));
+        	gen.getFmt().print("void %1(uint8 id);\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_HIBERNATE));
         }
     }
     

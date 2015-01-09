@@ -160,33 +160,33 @@ public class ProgCCode {
         // Generate defaults for pollen.reset, pollen.ready, pollen.shutdown, pollen.wake, pollen.hibernate.
         // if they do not exist.
         if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.INTRINSIC_PREFIX + "reset")) {
-        	gen.aux.genTitle("pollen.reset()");
+        	gen.aux.genTitle(ParseUnit.POLLEN_RESET + "()");
             gen.getFmt().print("%tvoid %1pollen__reset__E() {\n%+", gen.uname_target());
             gen.getFmt().print("%t/* empty default */\n");
             gen.getFmt().print("%-}\n");
         }
         if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.INTRINSIC_PREFIX + "ready")) {
-        	gen.aux.genTitle("pollen.ready()");
+        	gen.aux.genTitle(ParseUnit.POLLEN_READY + "()");
             gen.getFmt().print("%tvoid %1pollen__ready__E() {\n%+", gen.uname_target());
             gen.getFmt().print("%t/* empty default */\n");
             gen.getFmt().print("%-}\n");
         }
         if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.INTRINSIC_PREFIX + "shutdown")) {
-        	gen.aux.genTitle("pollen.shutdown()");
-            gen.getFmt().print("%tvoid %1pollen__shutdown__E() {\n%+", gen.uname_target());
+        	gen.aux.genTitle(ParseUnit.POLLEN_SHUTDOWN + "(uint8 id)");
+            gen.getFmt().print("%tvoid %1pollen__shutdown__E(uint8 id) {\n%+", gen.uname_target());
             gen.getFmt().print("%tvolatile int dummy = 0xCAFE;\n");
             gen.getFmt().print("%twhile (dummy) ;\n");
             gen.getFmt().print("%-}\n");
         }
         if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.INTRINSIC_PREFIX + "wake")) {
-        	gen.aux.genTitle("pollen.wake(uint8 id)");
-            gen.getFmt().print("%tvoid %1pollen__wake__E(byte id) {\n%+", gen.uname_target());
+        	gen.aux.genTitle(ParseUnit.POLLEN_WAKE + "(uint8 id)");
+            gen.getFmt().print("%tvoid %1pollen__wake__E(uint8 id) {\n%+", gen.uname_target());
             gen.getFmt().print("%t/* empty default */\n");
             gen.getFmt().print("%-}\n");
         }
         if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.INTRINSIC_PREFIX + "hibernate")) {
-        	gen.aux.genTitle("pollen.hibernate(uint8 id)");
-            gen.getFmt().print("%tvoid %1pollen__hibernate__E(byte id) {\n%+", gen.uname_target());
+        	gen.aux.genTitle(ParseUnit.POLLEN_HIBERNATE + "(uint8 id)");
+            gen.getFmt().print("%tvoid %1pollen__hibernate__E(uint8 id) {\n%+", gen.uname_target());
             gen.getFmt().print("%t/* empty default */\n");
             gen.getFmt().print("%-}\n");
         }
@@ -201,7 +201,7 @@ public class ProgCCode {
         }
         gen.getFmt().print("%t%1();\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_READY));
         gen.getFmt().print("%t%1();\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_RUN));
-        gen.getFmt().print("%t%1();\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_SHUTDOWN));
+        gen.getFmt().print("%t%1(0);\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_SHUTDOWN));
         gen.getFmt().print("%-}\n");       
     }
 

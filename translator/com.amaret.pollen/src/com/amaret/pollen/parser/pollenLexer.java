@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g 2015-01-08 01:22:46
+// $ANTLR 3.4 /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g 2015-01-08 21:43:28
 
     package com.amaret.pollen.parser;
     import java.util.EnumSet;
@@ -1875,13 +1875,13 @@ public class pollenLexer extends Lexer {
         try {
             int _type = IDENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2458:5: ( I ( I | D )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2458:9: I ( I | D )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2311:5: ( I ( I | D )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2311:9: I ( I | D )*
             {
             mI(); if (state.failed) return ;
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2458:11: ( I | D )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2311:11: ( I | D )*
             loop1:
             do {
                 int alt1=2;
@@ -1933,10 +1933,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = HEX_LIT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2461:5: ( ( '0x' | '0X' ) ( H )+ ( LU )? )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2461:10: ( '0x' | '0X' ) ( H )+ ( LU )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2314:5: ( ( '0x' | '0X' ) ( H )+ ( LU )? )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2314:10: ( '0x' | '0X' ) ( H )+ ( LU )?
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2461:10: ( '0x' | '0X' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2314:10: ( '0x' | '0X' )
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -1968,7 +1968,7 @@ public class pollenLexer extends Lexer {
             }
             switch (alt2) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2461:11: '0x'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2314:11: '0x'
                     {
                     match("0x"); if (state.failed) return ;
 
@@ -1977,7 +1977,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2461:18: '0X'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2314:18: '0X'
                     {
                     match("0X"); if (state.failed) return ;
 
@@ -1989,7 +1989,7 @@ public class pollenLexer extends Lexer {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2461:24: ( H )+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2314:24: ( H )+
             int cnt3=0;
             loop3:
             do {
@@ -2031,7 +2031,7 @@ public class pollenLexer extends Lexer {
             } while (true);
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2461:29: ( LU )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2314:29: ( LU )?
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -2040,7 +2040,7 @@ public class pollenLexer extends Lexer {
             }
             switch (alt4) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2461:30: LU
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2314:30: LU
                     {
                     mLU(); if (state.failed) return ;
 
@@ -2067,12 +2067,12 @@ public class pollenLexer extends Lexer {
         try {
             int _type = OCT_LIT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2464:5: ( '0' ( O )+ )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2464:10: '0' ( O )+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2317:5: ( '0' ( O )+ )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2317:10: '0' ( O )+
             {
             match('0'); if (state.failed) return ;
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2464:14: ( O )+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2317:14: ( O )+
             int cnt5=0;
             loop5:
             do {
@@ -2130,14 +2130,14 @@ public class pollenLexer extends Lexer {
         try {
             int _type = REAL_LIT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2476:5: ( ( D )+ E ( 'l' | 'L' )? | ( D )+ '.' ( D )* ( E )? ( 'l' | 'L' )? )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2320:5: ( ( D )+ E ( 'l' | 'L' )? | ( D )+ '.' ( D )* ( E )? ( 'l' | 'L' )? )
             int alt12=2;
             alt12 = dfa12.predict(input);
             switch (alt12) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2476:10: ( D )+ E ( 'l' | 'L' )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2320:10: ( D )+ E ( 'l' | 'L' )?
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2476:10: ( D )+
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2320:10: ( D )+
                     int cnt6=0;
                     loop6:
                     do {
@@ -2182,7 +2182,7 @@ public class pollenLexer extends Lexer {
                     mE(); if (state.failed) return ;
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2476:15: ( 'l' | 'L' )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2320:15: ( 'l' | 'L' )?
                     int alt7=2;
                     int LA7_0 = input.LA(1);
 
@@ -2214,9 +2214,9 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2477:10: ( D )+ '.' ( D )* ( E )? ( 'l' | 'L' )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2321:10: ( D )+ '.' ( D )* ( E )? ( 'l' | 'L' )?
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2477:10: ( D )+
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2321:10: ( D )+
                     int cnt8=0;
                     loop8:
                     do {
@@ -2260,7 +2260,7 @@ public class pollenLexer extends Lexer {
 
                     match('.'); if (state.failed) return ;
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2477:17: ( D )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2321:17: ( D )*
                     loop9:
                     do {
                         int alt9=2;
@@ -2296,7 +2296,7 @@ public class pollenLexer extends Lexer {
                     } while (true);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2477:20: ( E )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2321:20: ( E )?
                     int alt10=2;
                     int LA10_0 = input.LA(1);
 
@@ -2305,7 +2305,7 @@ public class pollenLexer extends Lexer {
                     }
                     switch (alt10) {
                         case 1 :
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2477:21: E
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2321:21: E
                             {
                             mE(); if (state.failed) return ;
 
@@ -2316,7 +2316,7 @@ public class pollenLexer extends Lexer {
                     }
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2477:25: ( 'l' | 'L' )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2321:25: ( 'l' | 'L' )?
                     int alt11=2;
                     int LA11_0 = input.LA(1);
 
@@ -2363,10 +2363,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = INT_LIT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2480:5: ( ( D )+ ( LU )? )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2480:10: ( D )+ ( LU )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2324:5: ( ( D )+ ( LU )? )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2324:10: ( D )+ ( LU )?
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2480:10: ( D )+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2324:10: ( D )+
             int cnt13=0;
             loop13:
             do {
@@ -2408,7 +2408,7 @@ public class pollenLexer extends Lexer {
             } while (true);
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2480:13: ( LU )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2324:13: ( LU )?
             int alt14=2;
             int LA14_0 = input.LA(1);
 
@@ -2417,7 +2417,7 @@ public class pollenLexer extends Lexer {
             }
             switch (alt14) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2480:14: LU
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2324:14: LU
                     {
                     mLU(); if (state.failed) return ;
 
@@ -2444,12 +2444,12 @@ public class pollenLexer extends Lexer {
         try {
             int _type = CHAR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2483:5: ( '\\'' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) ) '\\'' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2483:9: '\\'' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) ) '\\''
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2327:5: ( '\\'' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) ) '\\'' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2327:9: '\\'' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) ) '\\''
             {
             match('\''); if (state.failed) return ;
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2483:14: ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2327:14: ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) )
             int alt15=2;
             int LA15_0 = input.LA(1);
 
@@ -2469,10 +2469,10 @@ public class pollenLexer extends Lexer {
             }
             switch (alt15) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2483:15: ( '\\\\' ~ '\\n' )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2327:15: ( '\\\\' ~ '\\n' )
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2483:15: ( '\\\\' ~ '\\n' )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2483:16: '\\\\' ~ '\\n'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2327:15: ( '\\\\' ~ '\\n' )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2327:16: '\\\\' ~ '\\n'
                     {
                     match('\\'); if (state.failed) return ;
 
@@ -2494,7 +2494,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2483:30: ~ ( '\\\\' | '\\'' | '\\n' )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2327:30: ~ ( '\\\\' | '\\'' | '\\n' )
                     {
                     if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '\t')||(input.LA(1) >= '\u000B' && input.LA(1) <= '&')||(input.LA(1) >= '(' && input.LA(1) <= '[')||(input.LA(1) >= ']' && input.LA(1) <= '\uFFFF') ) {
                         input.consume();
@@ -2532,7 +2532,7 @@ public class pollenLexer extends Lexer {
         try {
             int _type = STRING;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2486:5: ( '\"' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\"' | '\\n' ) )* '\"' | '\\'' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) )+ '\\'' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2330:5: ( '\"' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\"' | '\\n' ) )* '\"' | '\\'' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) )+ '\\'' )
             int alt18=2;
             int LA18_0 = input.LA(1);
 
@@ -2552,11 +2552,11 @@ public class pollenLexer extends Lexer {
             }
             switch (alt18) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2486:9: '\"' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\"' | '\\n' ) )* '\"'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2330:9: '\"' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\"' | '\\n' ) )* '\"'
                     {
                     match('\"'); if (state.failed) return ;
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2486:13: ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\"' | '\\n' ) )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2330:13: ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\"' | '\\n' ) )*
                     loop16:
                     do {
                         int alt16=3;
@@ -2572,10 +2572,10 @@ public class pollenLexer extends Lexer {
 
                         switch (alt16) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2486:14: ( '\\\\' ~ '\\n' )
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2330:14: ( '\\\\' ~ '\\n' )
                     	    {
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2486:14: ( '\\\\' ~ '\\n' )
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2486:15: '\\\\' ~ '\\n'
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2330:14: ( '\\\\' ~ '\\n' )
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2330:15: '\\\\' ~ '\\n'
                     	    {
                     	    match('\\'); if (state.failed) return ;
 
@@ -2597,7 +2597,7 @@ public class pollenLexer extends Lexer {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2486:29: ~ ( '\\\\' | '\"' | '\\n' )
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2330:29: ~ ( '\\\\' | '\"' | '\\n' )
                     	    {
                     	    if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '\t')||(input.LA(1) >= '\u000B' && input.LA(1) <= '!')||(input.LA(1) >= '#' && input.LA(1) <= '[')||(input.LA(1) >= ']' && input.LA(1) <= '\uFFFF') ) {
                     	        input.consume();
@@ -2625,11 +2625,11 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2487:11: '\\'' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) )+ '\\''
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2331:11: '\\'' ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) )+ '\\''
                     {
                     match('\''); if (state.failed) return ;
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2487:16: ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) )+
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2331:16: ( ( '\\\\' ~ '\\n' ) |~ ( '\\\\' | '\\'' | '\\n' ) )+
                     int cnt17=0;
                     loop17:
                     do {
@@ -2646,10 +2646,10 @@ public class pollenLexer extends Lexer {
 
                         switch (alt17) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2487:17: ( '\\\\' ~ '\\n' )
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2331:17: ( '\\\\' ~ '\\n' )
                     	    {
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2487:17: ( '\\\\' ~ '\\n' )
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2487:18: '\\\\' ~ '\\n'
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2331:17: ( '\\\\' ~ '\\n' )
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2331:18: '\\\\' ~ '\\n'
                     	    {
                     	    match('\\'); if (state.failed) return ;
 
@@ -2671,7 +2671,7 @@ public class pollenLexer extends Lexer {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2487:32: ~ ( '\\\\' | '\\'' | '\\n' )
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2331:32: ~ ( '\\\\' | '\\'' | '\\n' )
                     	    {
                     	    if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '\t')||(input.LA(1) >= '\u000B' && input.LA(1) <= '&')||(input.LA(1) >= '(' && input.LA(1) <= '[')||(input.LA(1) >= ']' && input.LA(1) <= '\uFFFF') ) {
                     	        input.consume();
@@ -2719,10 +2719,10 @@ public class pollenLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2490:5: ( ( ' ' | '\\t' )+ )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2490:9: ( ' ' | '\\t' )+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2334:5: ( ( ' ' | '\\t' )+ )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2334:9: ( ' ' | '\\t' )+
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2490:9: ( ' ' | '\\t' )+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2334:9: ( ' ' | '\\t' )+
             int cnt19=0;
             loop19:
             do {
@@ -2782,7 +2782,7 @@ public class pollenLexer extends Lexer {
         try {
             int _type = SL_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2494:5: ( '#' (~ ( '\\n' | '\\r' ) )* | '/' '/' (~ ( '\\n' | '\\r' ) )* | ( '---' ~ ( '-' ) )=> SLCOM3 (~ ( '\\n' | '\\r' ) )+ )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2338:5: ( '#' (~ ( '\\n' | '\\r' ) )* | '/' '/' (~ ( '\\n' | '\\r' ) )* | ( '---' ~ ( '-' ) )=> SLCOM3 (~ ( '\\n' | '\\r' ) )+ )
             int alt23=3;
             int LA23_0 = input.LA(1);
 
@@ -2805,11 +2805,11 @@ public class pollenLexer extends Lexer {
             }
             switch (alt23) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2494:7: '#' (~ ( '\\n' | '\\r' ) )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2338:7: '#' (~ ( '\\n' | '\\r' ) )*
                     {
                     match('#'); if (state.failed) return ;
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2494:11: (~ ( '\\n' | '\\r' ) )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2338:11: (~ ( '\\n' | '\\r' ) )*
                     loop20:
                     do {
                         int alt20=2;
@@ -2850,13 +2850,13 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2495:7: '/' '/' (~ ( '\\n' | '\\r' ) )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2339:7: '/' '/' (~ ( '\\n' | '\\r' ) )*
                     {
                     match('/'); if (state.failed) return ;
 
                     match('/'); if (state.failed) return ;
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2495:14: (~ ( '\\n' | '\\r' ) )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2339:14: (~ ( '\\n' | '\\r' ) )*
                     loop21:
                     do {
                         int alt21=2;
@@ -2897,12 +2897,12 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2496:7: ( '---' ~ ( '-' ) )=> SLCOM3 (~ ( '\\n' | '\\r' ) )+
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2340:7: ( '---' ~ ( '-' ) )=> SLCOM3 (~ ( '\\n' | '\\r' ) )+
                     {
                     mSLCOM3(); if (state.failed) return ;
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2496:32: (~ ( '\\n' | '\\r' ) )+
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2340:32: (~ ( '\\n' | '\\r' ) )+
                     int cnt22=0;
                     loop22:
                     do {
@@ -2964,13 +2964,13 @@ public class pollenLexer extends Lexer {
         try {
             int _type = INJECT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2500:5: ( IJ_BEG ( options {greedy=false; } : . )* IJ_END )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2500:7: IJ_BEG ( options {greedy=false; } : . )* IJ_END
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2344:5: ( IJ_BEG ( options {greedy=false; } : . )* IJ_END )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2344:7: IJ_BEG ( options {greedy=false; } : . )* IJ_END
             {
             mIJ_BEG(); if (state.failed) return ;
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2500:14: ( options {greedy=false; } : . )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2344:14: ( options {greedy=false; } : . )*
             loop24:
             do {
                 int alt24=2;
@@ -2995,7 +2995,7 @@ public class pollenLexer extends Lexer {
 
                 switch (alt24) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2500:42: .
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2344:42: .
             	    {
             	    matchAny(); if (state.failed) return ;
 
@@ -3027,7 +3027,7 @@ public class pollenLexer extends Lexer {
         try {
             int _type = ML_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2509:5: ( MULCOM ( options {greedy=false; } : . )* '--!' ( NEWLINE )* | '----' ( '-' )* ( WS )? NEWLINE ( options {greedy=false; } : . )* '---' ( '-' )* ( NEWLINE )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2353:5: ( MULCOM ( options {greedy=false; } : . )* '--!' ( NEWLINE )* | '----' ( '-' )* ( WS )? NEWLINE ( options {greedy=false; } : . )* '---' ( '-' )* ( NEWLINE )* )
             int alt32=2;
             int LA32_0 = input.LA(1);
 
@@ -3047,12 +3047,12 @@ public class pollenLexer extends Lexer {
             }
             switch (alt32) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2509:9: MULCOM ( options {greedy=false; } : . )* '--!' ( NEWLINE )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2353:9: MULCOM ( options {greedy=false; } : . )* '--!' ( NEWLINE )*
                     {
                     mMULCOM(); if (state.failed) return ;
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2509:16: ( options {greedy=false; } : . )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2353:16: ( options {greedy=false; } : . )*
                     loop25:
                     do {
                         int alt25=2;
@@ -3086,7 +3086,7 @@ public class pollenLexer extends Lexer {
 
                         switch (alt25) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2509:44: .
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2353:44: .
                     	    {
                     	    matchAny(); if (state.failed) return ;
 
@@ -3103,7 +3103,7 @@ public class pollenLexer extends Lexer {
 
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2509:56: ( NEWLINE )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2353:56: ( NEWLINE )*
                     loop26:
                     do {
                         int alt26=2;
@@ -3116,7 +3116,7 @@ public class pollenLexer extends Lexer {
 
                         switch (alt26) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2509:57: NEWLINE
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2353:57: NEWLINE
                     	    {
                     	    mNEWLINE(); if (state.failed) return ;
 
@@ -3135,13 +3135,13 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2510:9: '----' ( '-' )* ( WS )? NEWLINE ( options {greedy=false; } : . )* '---' ( '-' )* ( NEWLINE )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2354:9: '----' ( '-' )* ( WS )? NEWLINE ( options {greedy=false; } : . )* '---' ( '-' )* ( NEWLINE )*
                     {
                     match("----"); if (state.failed) return ;
 
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2510:16: ( '-' )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2354:16: ( '-' )*
                     loop27:
                     do {
                         int alt27=2;
@@ -3154,7 +3154,7 @@ public class pollenLexer extends Lexer {
 
                         switch (alt27) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2510:17: '-'
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2354:17: '-'
                     	    {
                     	    match('-'); if (state.failed) return ;
 
@@ -3167,7 +3167,7 @@ public class pollenLexer extends Lexer {
                     } while (true);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2510:23: ( WS )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2354:23: ( WS )?
                     int alt28=2;
                     int LA28_0 = input.LA(1);
 
@@ -3176,7 +3176,7 @@ public class pollenLexer extends Lexer {
                     }
                     switch (alt28) {
                         case 1 :
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2510:23: WS
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2354:23: WS
                             {
                             mWS(); if (state.failed) return ;
 
@@ -3190,7 +3190,7 @@ public class pollenLexer extends Lexer {
                     mNEWLINE(); if (state.failed) return ;
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2510:35: ( options {greedy=false; } : . )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2354:35: ( options {greedy=false; } : . )*
                     loop29:
                     do {
                         int alt29=2;
@@ -3224,7 +3224,7 @@ public class pollenLexer extends Lexer {
 
                         switch (alt29) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2510:63: .
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2354:63: .
                     	    {
                     	    matchAny(); if (state.failed) return ;
 
@@ -3241,7 +3241,7 @@ public class pollenLexer extends Lexer {
 
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2510:74: ( '-' )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2354:74: ( '-' )*
                     loop30:
                     do {
                         int alt30=2;
@@ -3254,7 +3254,7 @@ public class pollenLexer extends Lexer {
 
                         switch (alt30) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2510:75: '-'
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2354:75: '-'
                     	    {
                     	    match('-'); if (state.failed) return ;
 
@@ -3267,7 +3267,7 @@ public class pollenLexer extends Lexer {
                     } while (true);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2510:81: ( NEWLINE )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2354:81: ( NEWLINE )*
                     loop31:
                     do {
                         int alt31=2;
@@ -3280,7 +3280,7 @@ public class pollenLexer extends Lexer {
 
                         switch (alt31) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2510:82: NEWLINE
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2354:82: NEWLINE
                     	    {
                     	    mNEWLINE(); if (state.failed) return ;
 
@@ -3314,8 +3314,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = SEMI;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2514:5: ( ';' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2514:9: ';'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2358:5: ( ';' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2358:9: ';'
             {
             match(';'); if (state.failed) return ;
 
@@ -3335,8 +3335,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = BRACE_OP;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2517:5: ( '{' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2517:7: '{'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2361:5: ( '{' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2361:7: '{'
             {
             match('{'); if (state.failed) return ;
 
@@ -3358,8 +3358,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = BRACE_CL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2521:5: ( '}' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2521:7: '}'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2365:5: ( '}' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2365:7: '}'
             {
             match('}'); if (state.failed) return ;
 
@@ -3393,14 +3393,14 @@ public class pollenLexer extends Lexer {
         try {
             int _type = NLL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2541:2: ( ( ( NEWLINE ) ( ( WS )? NEWLINE )* ) ( WS )? ( COM )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2541:6: ( ( NEWLINE ) ( ( WS )? NEWLINE )* ) ( WS )? ( COM )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2385:2: ( ( ( NEWLINE ) ( ( WS )? NEWLINE )* ) ( WS )? ( COM )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2385:6: ( ( NEWLINE ) ( ( WS )? NEWLINE )* ) ( WS )? ( COM )*
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2541:6: ( ( NEWLINE ) ( ( WS )? NEWLINE )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2541:8: ( NEWLINE ) ( ( WS )? NEWLINE )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2385:6: ( ( NEWLINE ) ( ( WS )? NEWLINE )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2385:8: ( NEWLINE ) ( ( WS )? NEWLINE )*
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2541:8: ( NEWLINE )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2541:9: NEWLINE
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2385:8: ( NEWLINE )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2385:9: NEWLINE
             {
             mNEWLINE(); if (state.failed) return ;
 
@@ -3408,16 +3408,16 @@ public class pollenLexer extends Lexer {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2541:18: ( ( WS )? NEWLINE )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2385:18: ( ( WS )? NEWLINE )*
             loop34:
             do {
                 int alt34=2;
                 alt34 = dfa34.predict(input);
                 switch (alt34) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2541:20: ( WS )? NEWLINE
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2385:20: ( WS )? NEWLINE
             	    {
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2541:20: ( WS )?
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2385:20: ( WS )?
             	    int alt33=2;
             	    int LA33_0 = input.LA(1);
 
@@ -3426,7 +3426,7 @@ public class pollenLexer extends Lexer {
             	    }
             	    switch (alt33) {
             	        case 1 :
-            	            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2541:21: WS
+            	            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2385:21: WS
             	            {
             	            mWS(); if (state.failed) return ;
 
@@ -3452,7 +3452,7 @@ public class pollenLexer extends Lexer {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2541:38: ( WS )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2385:38: ( WS )?
             int alt35=2;
             int LA35_0 = input.LA(1);
 
@@ -3461,7 +3461,7 @@ public class pollenLexer extends Lexer {
             }
             switch (alt35) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2541:38: WS
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2385:38: WS
                     {
                     mWS(); if (state.failed) return ;
 
@@ -3472,7 +3472,7 @@ public class pollenLexer extends Lexer {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2542:6: ( COM )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2386:6: ( COM )*
             loop36:
             do {
                 int alt36=2;
@@ -3491,7 +3491,7 @@ public class pollenLexer extends Lexer {
 
                 switch (alt36) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2542:7: COM
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2386:7: COM
             	    {
             	    mCOM(); if (state.failed) return ;
 
@@ -3519,8 +3519,8 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "COM"
     public final void mCOM() throws RecognitionException {
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2544:13: ({...}? => ( ( ( '#' )=> SL_COMMENT | ( '/' '/' )=> SL_COMMENT | ( '----' )=> '----' ( '-' )* ( WS )? NEWLINE ( options {greedy=false; } : . )* '---' ( '-' )* | ( '---' )=> SL_COMMENT | ( '!--' )=> ( MULCOM ( options {greedy=false; } : . )* '--!' ) ) ( WS )? NEWLINE ( ( WS )? NEWLINE )* ( WS )? ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2545:10: {...}? => ( ( ( '#' )=> SL_COMMENT | ( '/' '/' )=> SL_COMMENT | ( '----' )=> '----' ( '-' )* ( WS )? NEWLINE ( options {greedy=false; } : . )* '---' ( '-' )* | ( '---' )=> SL_COMMENT | ( '!--' )=> ( MULCOM ( options {greedy=false; } : . )* '--!' ) ) ( WS )? NEWLINE ( ( WS )? NEWLINE )* ( WS )? )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2388:13: ({...}? => ( ( ( '#' )=> SL_COMMENT | ( '/' '/' )=> SL_COMMENT | ( '----' )=> '----' ( '-' )* ( WS )? NEWLINE ( options {greedy=false; } : . )* '---' ( '-' )* | ( '---' )=> SL_COMMENT | ( '!--' )=> ( MULCOM ( options {greedy=false; } : . )* '--!' ) ) ( WS )? NEWLINE ( ( WS )? NEWLINE )* ( WS )? ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2389:10: {...}? => ( ( ( '#' )=> SL_COMMENT | ( '/' '/' )=> SL_COMMENT | ( '----' )=> '----' ( '-' )* ( WS )? NEWLINE ( options {greedy=false; } : . )* '---' ( '-' )* | ( '---' )=> SL_COMMENT | ( '!--' )=> ( MULCOM ( options {greedy=false; } : . )* '--!' ) ) ( WS )? NEWLINE ( ( WS )? NEWLINE )* ( WS )? )
             {
             if ( !(( input.LA(1) < 48                          // 
                        && ((char)input.LA(1) == '#') 
@@ -3533,10 +3533,10 @@ public class pollenLexer extends Lexer {
                 throw new FailedPredicateException(input, "COM", " input.LA(1) < 48                          // \n           && ((char)input.LA(1) == '#') \n           || (((char)input.LA(1) == '/' || (char)input.LA(1) == '-' || (char)input.LA(1) == '!')\n              && (((char)input.LA(1) == '/' && (char)input.LA(2) == '/')\n                 || ((char)input.LA(1) == '-' && (char)input.LA(2) == '-' && (char)input.LA(3) == '-')\n                 || ((char)input.LA(1) == '!' && (char)input.LA(2) == '-' && (char)input.LA(3) == '-')))\n         ");
             }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2552:10: ( ( ( '#' )=> SL_COMMENT | ( '/' '/' )=> SL_COMMENT | ( '----' )=> '----' ( '-' )* ( WS )? NEWLINE ( options {greedy=false; } : . )* '---' ( '-' )* | ( '---' )=> SL_COMMENT | ( '!--' )=> ( MULCOM ( options {greedy=false; } : . )* '--!' ) ) ( WS )? NEWLINE ( ( WS )? NEWLINE )* ( WS )? )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2553:15: ( ( '#' )=> SL_COMMENT | ( '/' '/' )=> SL_COMMENT | ( '----' )=> '----' ( '-' )* ( WS )? NEWLINE ( options {greedy=false; } : . )* '---' ( '-' )* | ( '---' )=> SL_COMMENT | ( '!--' )=> ( MULCOM ( options {greedy=false; } : . )* '--!' ) ) ( WS )? NEWLINE ( ( WS )? NEWLINE )* ( WS )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2396:10: ( ( ( '#' )=> SL_COMMENT | ( '/' '/' )=> SL_COMMENT | ( '----' )=> '----' ( '-' )* ( WS )? NEWLINE ( options {greedy=false; } : . )* '---' ( '-' )* | ( '---' )=> SL_COMMENT | ( '!--' )=> ( MULCOM ( options {greedy=false; } : . )* '--!' ) ) ( WS )? NEWLINE ( ( WS )? NEWLINE )* ( WS )? )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2397:15: ( ( '#' )=> SL_COMMENT | ( '/' '/' )=> SL_COMMENT | ( '----' )=> '----' ( '-' )* ( WS )? NEWLINE ( options {greedy=false; } : . )* '---' ( '-' )* | ( '---' )=> SL_COMMENT | ( '!--' )=> ( MULCOM ( options {greedy=false; } : . )* '--!' ) ) ( WS )? NEWLINE ( ( WS )? NEWLINE )* ( WS )?
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2553:15: ( ( '#' )=> SL_COMMENT | ( '/' '/' )=> SL_COMMENT | ( '----' )=> '----' ( '-' )* ( WS )? NEWLINE ( options {greedy=false; } : . )* '---' ( '-' )* | ( '---' )=> SL_COMMENT | ( '!--' )=> ( MULCOM ( options {greedy=false; } : . )* '--!' ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2397:15: ( ( '#' )=> SL_COMMENT | ( '/' '/' )=> SL_COMMENT | ( '----' )=> '----' ( '-' )* ( WS )? NEWLINE ( options {greedy=false; } : . )* '---' ( '-' )* | ( '---' )=> SL_COMMENT | ( '!--' )=> ( MULCOM ( options {greedy=false; } : . )* '--!' ) )
             int alt42=5;
             int LA42_0 = input.LA(1);
 
@@ -3697,7 +3697,7 @@ public class pollenLexer extends Lexer {
             }
             switch (alt42) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2553:19: ( '#' )=> SL_COMMENT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2397:19: ( '#' )=> SL_COMMENT
                     {
                     mSL_COMMENT(); if (state.failed) return ;
 
@@ -3705,7 +3705,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2554:19: ( '/' '/' )=> SL_COMMENT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2398:19: ( '/' '/' )=> SL_COMMENT
                     {
                     mSL_COMMENT(); if (state.failed) return ;
 
@@ -3713,13 +3713,13 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2555:19: ( '----' )=> '----' ( '-' )* ( WS )? NEWLINE ( options {greedy=false; } : . )* '---' ( '-' )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2399:19: ( '----' )=> '----' ( '-' )* ( WS )? NEWLINE ( options {greedy=false; } : . )* '---' ( '-' )*
                     {
                     match("----"); if (state.failed) return ;
 
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2555:42: ( '-' )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2399:42: ( '-' )*
                     loop37:
                     do {
                         int alt37=2;
@@ -3732,7 +3732,7 @@ public class pollenLexer extends Lexer {
 
                         switch (alt37) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2555:43: '-'
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2399:43: '-'
                     	    {
                     	    match('-'); if (state.failed) return ;
 
@@ -3745,7 +3745,7 @@ public class pollenLexer extends Lexer {
                     } while (true);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2555:49: ( WS )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2399:49: ( WS )?
                     int alt38=2;
                     int LA38_0 = input.LA(1);
 
@@ -3754,7 +3754,7 @@ public class pollenLexer extends Lexer {
                     }
                     switch (alt38) {
                         case 1 :
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2555:49: WS
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2399:49: WS
                             {
                             mWS(); if (state.failed) return ;
 
@@ -3768,7 +3768,7 @@ public class pollenLexer extends Lexer {
                     mNEWLINE(); if (state.failed) return ;
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2555:61: ( options {greedy=false; } : . )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2399:61: ( options {greedy=false; } : . )*
                     loop39:
                     do {
                         int alt39=2;
@@ -3820,7 +3820,7 @@ public class pollenLexer extends Lexer {
 
                         switch (alt39) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2555:89: .
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2399:89: .
                     	    {
                     	    matchAny(); if (state.failed) return ;
 
@@ -3837,7 +3837,7 @@ public class pollenLexer extends Lexer {
 
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2555:100: ( '-' )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2399:100: ( '-' )*
                     loop40:
                     do {
                         int alt40=2;
@@ -3850,7 +3850,7 @@ public class pollenLexer extends Lexer {
 
                         switch (alt40) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2555:101: '-'
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2399:101: '-'
                     	    {
                     	    match('-'); if (state.failed) return ;
 
@@ -3866,7 +3866,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2556:19: ( '---' )=> SL_COMMENT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2400:19: ( '---' )=> SL_COMMENT
                     {
                     mSL_COMMENT(); if (state.failed) return ;
 
@@ -3874,15 +3874,15 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 5 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2557:19: ( '!--' )=> ( MULCOM ( options {greedy=false; } : . )* '--!' )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2401:19: ( '!--' )=> ( MULCOM ( options {greedy=false; } : . )* '--!' )
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2557:35: ( MULCOM ( options {greedy=false; } : . )* '--!' )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2557:36: MULCOM ( options {greedy=false; } : . )* '--!'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2401:35: ( MULCOM ( options {greedy=false; } : . )* '--!' )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2401:36: MULCOM ( options {greedy=false; } : . )* '--!'
                     {
                     mMULCOM(); if (state.failed) return ;
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2557:43: ( options {greedy=false; } : . )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2401:43: ( options {greedy=false; } : . )*
                     loop41:
                     do {
                         int alt41=2;
@@ -3931,7 +3931,7 @@ public class pollenLexer extends Lexer {
 
                         switch (alt41) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2557:71: .
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2401:71: .
                     	    {
                     	    matchAny(); if (state.failed) return ;
 
@@ -3957,7 +3957,7 @@ public class pollenLexer extends Lexer {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2559:15: ( WS )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2403:15: ( WS )?
             int alt43=2;
             int LA43_0 = input.LA(1);
 
@@ -3966,7 +3966,7 @@ public class pollenLexer extends Lexer {
             }
             switch (alt43) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2559:16: WS
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2403:16: WS
                     {
                     mWS(); if (state.failed) return ;
 
@@ -3980,16 +3980,16 @@ public class pollenLexer extends Lexer {
             mNEWLINE(); if (state.failed) return ;
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2559:29: ( ( WS )? NEWLINE )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2403:29: ( ( WS )? NEWLINE )*
             loop45:
             do {
                 int alt45=2;
                 alt45 = dfa45.predict(input);
                 switch (alt45) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2559:31: ( WS )? NEWLINE
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2403:31: ( WS )? NEWLINE
             	    {
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2559:31: ( WS )?
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2403:31: ( WS )?
             	    int alt44=2;
             	    int LA44_0 = input.LA(1);
 
@@ -3998,7 +3998,7 @@ public class pollenLexer extends Lexer {
             	    }
             	    switch (alt44) {
             	        case 1 :
-            	            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2559:32: WS
+            	            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2403:32: WS
             	            {
             	            mWS(); if (state.failed) return ;
 
@@ -4021,7 +4021,7 @@ public class pollenLexer extends Lexer {
             } while (true);
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2559:47: ( WS )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2403:47: ( WS )?
             int alt46=2;
             int LA46_0 = input.LA(1);
 
@@ -4030,7 +4030,7 @@ public class pollenLexer extends Lexer {
             }
             switch (alt46) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2559:47: WS
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2403:47: WS
                     {
                     mWS(); if (state.failed) return ;
 
@@ -4059,7 +4059,7 @@ public class pollenLexer extends Lexer {
         try {
             int _type = ILLEGAL_CHARACTER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2563:5: ( '\\u0080' .. '\\uFFFF' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2407:5: ( '\\u0080' .. '\\uFFFF' )
             // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             if ( (input.LA(1) >= '\u0080' && input.LA(1) <= '\uFFFF') ) {
@@ -4088,7 +4088,7 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "I"
     public final void mI() throws RecognitionException {
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2567:11: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '$' ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2411:11: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '$' ) )
             // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             if ( input.LA(1)=='$'||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
@@ -4116,7 +4116,7 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "D"
     public final void mD() throws RecognitionException {
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2568:11: ( '0' .. '9' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2412:11: ( '0' .. '9' )
             // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
@@ -4144,7 +4144,7 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "O"
     public final void mO() throws RecognitionException {
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2569:11: ( '0' .. '7' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2413:11: ( '0' .. '7' )
             // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             if ( (input.LA(1) >= '0' && input.LA(1) <= '7') ) {
@@ -4172,7 +4172,7 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "H"
     public final void mH() throws RecognitionException {
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2570:11: ( 'a' .. 'f' | 'A' .. 'F' | '0' .. '9' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2414:11: ( 'a' .. 'f' | 'A' .. 'F' | '0' .. '9' )
             // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:
             {
             if ( (input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'F')||(input.LA(1) >= 'a' && input.LA(1) <= 'f') ) {
@@ -4200,8 +4200,8 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "E"
     public final void mE() throws RecognitionException {
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2571:11: ( ( 'E' | 'e' ) ( PLUS | MINUS )? ( D )+ )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2571:20: ( 'E' | 'e' ) ( PLUS | MINUS )? ( D )+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2415:11: ( ( 'E' | 'e' ) ( PLUS | MINUS )? ( D )+ )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2415:20: ( 'E' | 'e' ) ( PLUS | MINUS )? ( D )+
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
@@ -4215,7 +4215,7 @@ public class pollenLexer extends Lexer {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2571:32: ( PLUS | MINUS )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2415:32: ( PLUS | MINUS )?
             int alt47=2;
             int LA47_0 = input.LA(1);
 
@@ -4244,7 +4244,7 @@ public class pollenLexer extends Lexer {
             }
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2571:48: ( D )+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2415:48: ( D )+
             int cnt48=0;
             loop48:
             do {
@@ -4299,7 +4299,7 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "LU"
     public final void mLU() throws RecognitionException {
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2572:12: ( 'LU' | 'Lu' | 'lU' | 'lu' | 'UL' | 'uL' | 'Ul' | 'ul' | 'l' | 'u' | 'L' | 'U' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2416:12: ( 'LU' | 'Lu' | 'lU' | 'lu' | 'UL' | 'uL' | 'Ul' | 'ul' | 'l' | 'u' | 'L' | 'U' )
             int alt49=12;
             switch ( input.LA(1) ) {
             case 'L':
@@ -4389,7 +4389,7 @@ public class pollenLexer extends Lexer {
 
             switch (alt49) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2572:20: 'LU'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2416:20: 'LU'
                     {
                     match("LU"); if (state.failed) return ;
 
@@ -4398,7 +4398,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2572:27: 'Lu'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2416:27: 'Lu'
                     {
                     match("Lu"); if (state.failed) return ;
 
@@ -4407,7 +4407,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2572:34: 'lU'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2416:34: 'lU'
                     {
                     match("lU"); if (state.failed) return ;
 
@@ -4416,7 +4416,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2572:41: 'lu'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2416:41: 'lu'
                     {
                     match("lu"); if (state.failed) return ;
 
@@ -4425,7 +4425,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 5 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2572:48: 'UL'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2416:48: 'UL'
                     {
                     match("UL"); if (state.failed) return ;
 
@@ -4434,7 +4434,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 6 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2572:55: 'uL'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2416:55: 'uL'
                     {
                     match("uL"); if (state.failed) return ;
 
@@ -4443,7 +4443,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 7 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2572:62: 'Ul'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2416:62: 'Ul'
                     {
                     match("Ul"); if (state.failed) return ;
 
@@ -4452,7 +4452,7 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 8 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2572:69: 'ul'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2416:69: 'ul'
                     {
                     match("ul"); if (state.failed) return ;
 
@@ -4461,28 +4461,28 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 9 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2572:76: 'l'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2416:76: 'l'
                     {
                     match('l'); if (state.failed) return ;
 
                     }
                     break;
                 case 10 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2572:82: 'u'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2416:82: 'u'
                     {
                     match('u'); if (state.failed) return ;
 
                     }
                     break;
                 case 11 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2572:88: 'L'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2416:88: 'L'
                     {
                     match('L'); if (state.failed) return ;
 
                     }
                     break;
                 case 12 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2572:94: 'U'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2416:94: 'U'
                     {
                     match('U'); if (state.failed) return ;
 
@@ -4501,7 +4501,7 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "NEWLINE"
     public final void mNEWLINE() throws RecognitionException {
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2573:17: ( '\\r' '\\n' | '\\n' | '\\r' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2417:17: ( '\\r' '\\n' | '\\n' | '\\r' )
             int alt50=3;
             int LA50_0 = input.LA(1);
 
@@ -4528,7 +4528,7 @@ public class pollenLexer extends Lexer {
             }
             switch (alt50) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2573:21: '\\r' '\\n'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2417:21: '\\r' '\\n'
                     {
                     match('\r'); if (state.failed) return ;
 
@@ -4537,14 +4537,14 @@ public class pollenLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2573:33: '\\n'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2417:33: '\\n'
                     {
                     match('\n'); if (state.failed) return ;
 
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2573:39: '\\r'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2417:39: '\\r'
                     {
                     match('\r'); if (state.failed) return ;
 
@@ -4563,8 +4563,8 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "MULCOM"
     public final void mMULCOM() throws RecognitionException {
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2574:16: ( '!--' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2574:22: '!--'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2418:16: ( '!--' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2418:22: '!--'
             {
             match("!--"); if (state.failed) return ;
 
@@ -4583,8 +4583,8 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "MULCOM1"
     public final void mMULCOM1() throws RecognitionException {
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2575:17: ( '----' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2575:22: '----'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2419:17: ( '----' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2419:22: '----'
             {
             match("----"); if (state.failed) return ;
 
@@ -4603,8 +4603,8 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "SLCOM1"
     public final void mSLCOM1() throws RecognitionException {
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2576:16: ( '/' '/' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2576:22: '/' '/'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2420:16: ( '/' '/' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2420:22: '/' '/'
             {
             match('/'); if (state.failed) return ;
 
@@ -4623,8 +4623,8 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "SLCOM2"
     public final void mSLCOM2() throws RecognitionException {
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2577:16: ( '#' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2577:22: '#'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2421:16: ( '#' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2421:22: '#'
             {
             match('#'); if (state.failed) return ;
 
@@ -4641,8 +4641,8 @@ public class pollenLexer extends Lexer {
     // $ANTLR start "SLCOM3"
     public final void mSLCOM3() throws RecognitionException {
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2578:16: ( '---' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2578:22: '---'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2422:16: ( '---' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2422:22: '---'
             {
             match("---"); if (state.failed) return ;
 
@@ -4663,8 +4663,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = INC;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2580:13: ( '++' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2580:18: '++'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2424:13: ( '++' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2424:18: '++'
             {
             match("++"); if (state.failed) return ;
 
@@ -4686,8 +4686,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = PLUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2581:13: ( '+' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2581:18: '+'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2425:13: ( '+' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2425:18: '+'
             {
             match('+'); if (state.failed) return ;
 
@@ -4707,11 +4707,11 @@ public class pollenLexer extends Lexer {
         try {
             int _type = DEC;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2582:13: ( ( '--' ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2582:18: ( '--' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2426:13: ( ( '--' ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2426:18: ( '--' )
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2582:18: ( '--' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2582:19: '--'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2426:18: ( '--' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2426:19: '--'
             {
             match("--"); if (state.failed) return ;
 
@@ -4736,8 +4736,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = MINUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2583:13: ( ( '-' ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2583:18: ( '-' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2427:13: ( ( '-' ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2427:18: ( '-' )
             {
             if ( input.LA(1)=='-' ) {
                 input.consume();
@@ -4767,8 +4767,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = ASSIGN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2584:13: ( '=' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2584:18: '='
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2428:13: ( '=' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2428:18: '='
             {
             match('='); if (state.failed) return ;
 
@@ -4788,8 +4788,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = BIND;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2585:13: ( ':=' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2585:18: ':='
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2429:13: ( ':=' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2429:18: ':='
             {
             match(":="); if (state.failed) return ;
 
@@ -4811,8 +4811,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = ADD_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2586:13: ( '+=' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2586:18: '+='
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2430:13: ( '+=' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2430:18: '+='
             {
             match("+="); if (state.failed) return ;
 
@@ -4834,8 +4834,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = SUB_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2587:13: ( '-=' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2587:18: '-='
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2431:13: ( '-=' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2431:18: '-='
             {
             match("-="); if (state.failed) return ;
 
@@ -4857,8 +4857,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = MUL_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2588:13: ( '*=' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2588:18: '*='
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2432:13: ( '*=' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2432:18: '*='
             {
             match("*="); if (state.failed) return ;
 
@@ -4880,8 +4880,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = DIV_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2589:13: ( '\\\\=' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2589:18: '\\\\='
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2433:13: ( '\\\\=' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2433:18: '\\\\='
             {
             match("\\="); if (state.failed) return ;
 
@@ -4903,8 +4903,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = BITOR_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2590:13: ( '|=' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2590:18: '|='
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2434:13: ( '|=' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2434:18: '|='
             {
             match("|="); if (state.failed) return ;
 
@@ -4926,8 +4926,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = BITXOR_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2591:13: ( '^=' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2591:18: '^='
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2435:13: ( '^=' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2435:18: '^='
             {
             match("^="); if (state.failed) return ;
 
@@ -4949,8 +4949,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = BITAND_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2592:13: ( '&=' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2592:18: '&='
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2436:13: ( '&=' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2436:18: '&='
             {
             match("&="); if (state.failed) return ;
 
@@ -4972,8 +4972,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = RSHFT_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2593:13: ( '>>=' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2593:18: '>>='
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2437:13: ( '>>=' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2437:18: '>>='
             {
             match(">>="); if (state.failed) return ;
 
@@ -4995,8 +4995,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = LSHFT_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2594:13: ( '<<=' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2594:18: '<<='
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2438:13: ( '<<=' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2438:18: '<<='
             {
             match("<<="); if (state.failed) return ;
 
@@ -5018,8 +5018,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = MOD_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2595:13: ( '%=' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2595:18: '%='
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2439:13: ( '%=' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2439:18: '%='
             {
             match("%="); if (state.failed) return ;
 
@@ -5041,8 +5041,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = PEG;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2596:13: ( '@=' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2596:18: '@='
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2440:13: ( '@=' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2440:18: '@='
             {
             match("@="); if (state.failed) return ;
 
@@ -5064,8 +5064,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2597:13: ( '==' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2597:18: '=='
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2441:13: ( '==' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2441:18: '=='
             {
             match("=="); if (state.failed) return ;
 
@@ -5087,8 +5087,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = NOT_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2598:13: ( '!=' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2598:18: '!='
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2442:13: ( '!=' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2442:18: '!='
             {
             match("!="); if (state.failed) return ;
 
@@ -5110,8 +5110,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = LT_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2599:13: ( '<=' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2599:18: '<='
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2443:13: ( '<=' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2443:18: '<='
             {
             match("<="); if (state.failed) return ;
 
@@ -5133,8 +5133,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = GT_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2600:13: ( '>=' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2600:18: '>='
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2444:13: ( '>=' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2444:18: '>='
             {
             match(">="); if (state.failed) return ;
 
@@ -5156,8 +5156,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = LOG_NOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2601:13: ( '!' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2601:18: '!'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2445:13: ( '!' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2445:18: '!'
             {
             match('!'); if (state.failed) return ;
 
@@ -5177,8 +5177,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = BIT_NOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2602:13: ( '~' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2602:18: '~'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2446:13: ( '~' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2446:18: '~'
             {
             match('~'); if (state.failed) return ;
 
@@ -5198,8 +5198,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = GT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2603:13: ( '>' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2603:18: '>'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2447:13: ( '>' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2447:18: '>'
             {
             match('>'); if (state.failed) return ;
 
@@ -5219,8 +5219,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = LT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2604:13: ( '<' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2604:18: '<'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2448:13: ( '<' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2448:18: '<'
             {
             match('<'); if (state.failed) return ;
 
@@ -5240,8 +5240,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = IJ_BEG;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2607:7: ( '+{' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2607:13: '+{'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2451:7: ( '+{' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2451:13: '+{'
             {
             match("+{"); if (state.failed) return ;
 
@@ -5263,8 +5263,8 @@ public class pollenLexer extends Lexer {
         try {
             int _type = IJ_END;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2608:7: ( '}+' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2608:13: '}+'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2452:7: ( '}+' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2452:13: '}+'
             {
             match("}+"); if (state.failed) return ;
 
@@ -6197,8 +6197,8 @@ public class pollenLexer extends Lexer {
 
     // $ANTLR start synpred1_pollen
     public final void synpred1_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2496:7: ( '---' ~ ( '-' ) )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2496:8: '---' ~ ( '-' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2340:7: ( '---' ~ ( '-' ) )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2340:8: '---' ~ ( '-' )
         {
         match("---"); if (state.failed) return ;
 
@@ -6223,8 +6223,8 @@ public class pollenLexer extends Lexer {
 
     // $ANTLR start synpred2_pollen
     public final void synpred2_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2553:19: ( '#' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2553:20: '#'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2397:19: ( '#' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2397:20: '#'
         {
         match('#'); if (state.failed) return ;
 
@@ -6235,8 +6235,8 @@ public class pollenLexer extends Lexer {
 
     // $ANTLR start synpred3_pollen
     public final void synpred3_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2554:19: ( '/' '/' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2554:20: '/' '/'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2398:19: ( '/' '/' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2398:20: '/' '/'
         {
         match('/'); if (state.failed) return ;
 
@@ -6249,8 +6249,8 @@ public class pollenLexer extends Lexer {
 
     // $ANTLR start synpred4_pollen
     public final void synpred4_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2555:19: ( '----' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2555:20: '----'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2399:19: ( '----' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2399:20: '----'
         {
         match("----"); if (state.failed) return ;
 
@@ -6263,8 +6263,8 @@ public class pollenLexer extends Lexer {
 
     // $ANTLR start synpred5_pollen
     public final void synpred5_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2556:19: ( '---' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2556:20: '---'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2400:19: ( '---' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2400:20: '---'
         {
         match("---"); if (state.failed) return ;
 
@@ -6277,8 +6277,8 @@ public class pollenLexer extends Lexer {
 
     // $ANTLR start synpred6_pollen
     public final void synpred6_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2557:19: ( '!--' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2557:20: '!--'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2401:19: ( '!--' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2401:20: '!--'
         {
         match("!--"); if (state.failed) return ;
 
@@ -6428,7 +6428,7 @@ public class pollenLexer extends Lexer {
             this.transition = DFA12_transition;
         }
         public String getDescription() {
-            return "2475:1: REAL_LIT : ( ( D )+ E ( 'l' | 'L' )? | ( D )+ '.' ( D )* ( E )? ( 'l' | 'L' )? );";
+            return "2319:1: REAL_LIT : ( ( D )+ E ( 'l' | 'L' )? | ( D )+ '.' ( D )* ( E )? ( 'l' | 'L' )? );";
         }
     }
     static final String DFA34_eotS =
@@ -6482,7 +6482,7 @@ public class pollenLexer extends Lexer {
             this.transition = DFA34_transition;
         }
         public String getDescription() {
-            return "()* loopback of 2541:18: ( ( WS )? NEWLINE )*";
+            return "()* loopback of 2385:18: ( ( WS )? NEWLINE )*";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             IntStream input = _input;
@@ -6574,7 +6574,7 @@ public class pollenLexer extends Lexer {
             this.transition = DFA45_transition;
         }
         public String getDescription() {
-            return "()* loopback of 2559:29: ( ( WS )? NEWLINE )*";
+            return "()* loopback of 2403:29: ( ( WS )? NEWLINE )*";
         }
     }
     static final String DFA51_eotS =
