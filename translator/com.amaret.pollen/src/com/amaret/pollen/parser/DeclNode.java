@@ -479,6 +479,8 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 					// If this is an array of references, set flag in the
 					// TypeNode of the base type.
 					arrt.setReferenceElems(true);
+				else 
+					arrt.setInstanceElems(true);
 				this.clearHost(); // C const arrays get a warning if you assign
 									// an element of a const array to a non
 									// const variable

@@ -270,8 +270,11 @@ public class Cat implements Cloneable {
         	return getBase().code() + "$arr";
         }
         public boolean isClassRef() {   
-        	// TODO this should return true for both host and target case but changing that could break things.
+        	// TODO should this return true for both host and target case?  changing that could break things.
         	return getType().isReferenceElems();  
+        }
+        public boolean isInstanceElems() {
+        	return getType().isInstanceElems();
         }
         public boolean isTargetClassRef() {      
         	return getType().isReferenceElems();  
@@ -759,6 +762,13 @@ public class Cat implements Cloneable {
     			return true;    		
     	}
         return  false;
+    }
+    /**
+     * For Cat.Arr, true when elements are object instances. Else false.
+     * @return
+     */
+    public boolean isInstanceElems() {
+    	return false;
     }
     
     public boolean isVector() {

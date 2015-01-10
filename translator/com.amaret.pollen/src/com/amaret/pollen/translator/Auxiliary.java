@@ -668,13 +668,14 @@ public class Auxiliary {
 		for (ExprNode arg : expr.getArgs()) {
 			gen.getFmt().print(sep);
 			sep = ", ";
+			String rparen="", lparen="";
 			
 			// a cast may be necessary.
-			if (formals != null && arg.getCat().isClassRef()) {
-				
+			if (formals != null && arg.getCat() != null 
+					&& (arg.getCat().isClassRef() || arg.getCat().isInstanceElems())) {
+				Formal f = formals.get(argc);
 				if (arg.getCat() instanceof Cat.Agg) {
 					String argTypeName = ((Cat.Agg)arg.getCat()).aggName();
-					Formal f = formals.get(argc);
 					if (f.getTypeCat().isClassRef()) {
 						String formalTypeName = ((Cat.Agg)f.getTypeCat()).aggName();
 						if (!(argTypeName.equals(formalTypeName))) { // CAST
@@ -687,14 +688,24 @@ public class Auxiliary {
 					}
 				}
 				else if (arg.getCat() instanceof Cat.Arr) {
-					// we don't have syntax right now on the signature to differentiate between host and target formal parameter arrays
+					if (arg.getCat().isInstanceElems()) {
+						String addrOf = this.mkAddrOfOrDerefOpOrCast(f.getTypeCat(), arg.getCat(), arg, false);
+						if (!(addrOf.isEmpty())) {
+							rparen = addrOf + "(";
+							lparen = ")";
+						}
+					}
+					// We don't have syntax right now on the signature to 
+					// differentiate between host and target formal parameter arrays
 					// so we choose host memory layout as default.
-					if (((Cat.Arr)arg.getCat()).isTargetClassRef()) {
+					else if (((Cat.Arr)arg.getCat()).isTargetClassRef()) {
 						ParseUnit.current().reportSeriousError(expr, "Passing a non-host array of class element type as a parameter is not supported.");						
 					}
 				}
 			}
+			gen.getFmt().print(rparen);
 			genExpr(arg);
+			gen.getFmt().print(lparen);
 			++argc;
 		}
 		// TODO more robust sig matching
@@ -1609,6 +1620,10 @@ public class Auxiliary {
 				}
 				else if ((isHost() || !arrayInit)) {					
 					gen.getFmt().print("%1 = ", decl.getName());
+					if (!isHost()) {
+						String addrOf = this.mkAddrOfOrDerefOpOrCast(decl.getTypeCat(), decl.getInit().getCat(), decl.getInit(), true);
+						gen.getFmt().print(addrOf);
+					}
 					genExpr(decl.getInit());
 					gen.getFmt().print(";");
 				}
@@ -1950,8 +1965,6 @@ public class Auxiliary {
 	 * @return the prepend string for an assignment
 	 */
 	private String mkAddrOfOrDerefOpOrCast(Cat targCat, Cat srcCat, ExprNode srcExpr, boolean assign) {	
-		
-		//System.out.println("mkAddrOf:" + ex.toStringTree());
 		
 		boolean hasLeftIndexExpr = false;
 		boolean hasRightIndexExpr = false;

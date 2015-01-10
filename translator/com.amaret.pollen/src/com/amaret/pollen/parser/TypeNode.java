@@ -21,8 +21,24 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 
         static final private int BASE = 0;
         static final private int DIM = 1;
-        boolean referenceElems = false;  // element type is references to object (not instances)
-        SymbolEntry baseSymbol = null;   
+        private boolean referenceElems = false;  // element type is references to object (not instances)
+        private boolean instanceElems = false;   // element type is object instance
+        
+        /**
+         * @return true if this is an array of object instance elements else false.
+         */
+        public boolean isInstanceElems() {
+			return instanceElems;
+		}
+
+        /**
+         * @param instanceElems true if this is an array of object instance elements else false.
+         */
+		public void setInstanceElems(boolean instanceElems) {
+			this.instanceElems = instanceElems;
+		}
+
+		private SymbolEntry baseSymbol = null;   
         
         
         public SymbolEntry getBaseSymbol() {

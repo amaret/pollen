@@ -97,6 +97,8 @@ public class ExprNode extends BaseNode {
 				e = (ExprNode) e.getChild(i);
 				if (e instanceof ExprNode.Ident)
 					return e.getCat();
+				if (e instanceof ExprNode.Call)
+					return e.getCat();
 				if (e instanceof ExprNode.Index) {
 					if (!isRight) {
 						hasLeftIndexExpr = true;
