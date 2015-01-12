@@ -500,10 +500,26 @@ stmtInjectionList
     ;
 stmtPackage
 @init {
-   String pkg = ParseUnit.mkPackageName(ParseUnit.current().getCurrPath());
+   String path = ParseUnit.current().getCurrPath();
+   String pkg = ParseUnit.mkPackageName(path);
 }
-    : 'package' qualName NLL    -> ^(S_PACKAGE[pkg] qualName)
-    |    -> ^(S_PACKAGE[pkg]) 
+    : 'package' qualName NLL  
+    {
+    		int k = path.lastIndexOf(File.separator);
+		int j = path.lastIndexOf(File.separator, k - 1);
+		j = j == -1 ? 0 : j + 1;
+		String qn = ($qualName.tree != null) ? $qualName.tree.getText() : "";
+		boolean isIntrinsic = qn.indexOf('_') != -1 ? qn.substring(0, qn.indexOf('_')).equals("pollen") : false;
+		if (!isIntrinsic && !qn.equals(path.substring(j, k))) {
+	                    CommonToken t = (CommonToken) ((BaseNode)$qualName.tree).getToken();
+                    	        t.setLine(1);
+                                ParseUnit.current().reportError(t, 
+		         "The name in the package statement ('" + qn + "') must match the current directory name exactly ('"
+		         + path.substring(j, k) + "')"); 
+		}
+		
+    }     -> ^(S_PACKAGE[pkg] qualName)
+    |     -> ^(S_PACKAGE[pkg]) 
     ;
 stmtExport
     :   'export' qualName delim -> ^(EXPORT<ExportNode>["EXPORT"] qualName)

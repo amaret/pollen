@@ -112,6 +112,10 @@ public class BaseNode extends CommonTree {
 	 * For correct line numbers in error messages. 
 	 * Non-synthesized tokens have correct line num
 	 * whereas synthesized tokens all have the line num of EOF.
+	 * This is because antlr tokenizes the input file before parsing.
+	 * Note this could be done in the parser when tokens are synthesized
+	 * (but the parser is already has performance issues so this approach
+	 * may be better).
 	 * @param b a node
 	 * @return a node in the current subtree containing a non synthesized token or null if none exists.
 	 */
