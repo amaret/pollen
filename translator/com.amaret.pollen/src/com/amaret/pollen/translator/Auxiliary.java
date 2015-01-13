@@ -2023,10 +2023,30 @@ public class Auxiliary {
 							TypeNode.Usr t = (Usr) ((DeclNode.Arr)n).getTypeSpec() ;
 							if (((TypeNode.Usr)t).isFunctionRef())
 								return ""; // why!! a host array of fcn refs does not have elems returned with '&'. Regrettable. Is this a C convention?
-						}
-						
+							if (((TypeNode.Usr)t).isClassRef()) {
+								if (((Cat.Fcn)targCat).retCat() instanceof Cat.Arr && !hasRightIndexExpr) {
+									// an INSTANCE array
+									return ""; // this function returns an array of class instances, no '&'
+								}
+							}
+						}						
 						rtn =  hasRightIndexExpr || !((DeclNode)n).getDefiningType().isClass() ? "&" : "";
-					}					
+					}
+					else {
+						if (n instanceof DeclNode.Arr && ((DeclNode.Arr)n).getTypeSpec() instanceof TypeNode.Usr) {
+							TypeNode.Usr t = (Usr) ((DeclNode.Arr)n).getTypeSpec() ;
+							if (((TypeNode.Usr)t).isClassRef()) {
+								if (((Cat.Fcn)targCat).retCat() instanceof Cat.Arr && !hasRightIndexExpr) {
+									// a REFERENCE array
+									// NOTE this works but I need to check on the caller side that the receiver is a non-host array.
+									// Also if I let this be legal one function can return both kinds of arrays and that's no good.
+									ParseUnit.current().reportError(srcExpr, "function '" + ((Cat.Fcn)targCat).fcnD().getName().getText() 
+											+ "()' returns a non-host array which is an error. Only returning host arrays is supported.");
+									return "*";
+								}
+							}						
+						}					
+					}
 				}
 				return rtn;				
 			}

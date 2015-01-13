@@ -31,7 +31,7 @@ public class BodyNode extends BaseNode implements IScope {
     }
     @Override
     public String getScopeName() {
-    	return (getFcn() != null ? getFcn().getDefiningScope().getScopeName() + "." + getFcn().getName().getText() : "");
+    	return (getFcn() != null && getFcn().getDefiningScope() != null ? getFcn().getDefiningScope().getScopeName() + "." + getFcn().getName().getText() : "");
     }
     void addLocalVar(DeclNode.Var var) {
     	String  name = var.getName().getText();
