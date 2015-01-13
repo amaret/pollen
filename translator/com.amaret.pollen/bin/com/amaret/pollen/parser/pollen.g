@@ -1206,9 +1206,9 @@ scope{
                     // instantiate to defaults
                     if (name.isEmpty()) {
                         if (isVoidInstance)
-                            throw new PollenException("Using \'{}\' to instantiate a meta type requires default values for all meta parameters", input);
+                            throw new PollenException("Missing default value. Using \'{}\' to instantiate a meta type requires that the meta type define default values for all meta parameters", input);
                         if (clientImport.getMeta() == null)
-                            throw new PollenException("Instantiating a meta type without parameters requires default values for all meta parameters", input);
+                            throw new PollenException("Missing default value. Instantiating a meta type without parameters requires that the meta type define default values for all meta parameters", input);
                     }
                 }
                 else {

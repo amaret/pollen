@@ -546,15 +546,17 @@ public class TypeRules {
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "i0", "i0|n", "$1"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "i1", "i0|i1|n", "$1"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "i2", "i0|i1|i2|n", "$1"),
-				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "i4", "i0|i1|i2|i4|n", "$1"),
+				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "i4", "i0|i1|i2|i4|n|u1|u2|u4", "$1"),
 				
 				mkBinary(OP_ADD|OP_MULT, "i0|i1|n", "i1", "$2"),
 				mkBinary(OP_ADD|OP_MULT, "i0|i1|i2|n", "i2", "$2"),
 				mkBinary(OP_ADD|OP_MULT, "i0|i1|i2|i4|n", "i4", "$2"),
+				mkBinary(OP_ADD|OP_MULT, "i0|i1|i2|i4|n|u1|u2|u4", "i4", "$2"),
+
 
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, Cat.UINT8, "n|u1|u2|u4", "$1"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, "u2", "n|u1|u2|u4", "$1"),
-				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, "u4", "n|u1|u2|u4", "$1"),
+				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, "u4", "n|u1|u2|u4|i1|i2|i4", "$1"),
 
 				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n|u1", Cat.UINT8, "$2"),
 				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n|u1|u2", "u2", "$2"),

@@ -10,7 +10,7 @@ public class BodyNode extends BaseNode implements IScope {
 	static final private int FORMALS = 0;  
 	static final private int STMTS = 1;   
     static private BodyNode current = null;
-    DeclNode.Fcn fcn = null;
+    private DeclNode.Fcn fcn = null;
     private List<String> localVarNames = new ArrayList<String>();
     private List<DeclNode> localVars = new ArrayList<DeclNode>();
     private NestedScope scopeDeleg = new NestedScope(this);
@@ -37,6 +37,11 @@ public class BodyNode extends BaseNode implements IScope {
     	String  name = var.getName().getText();
     	if (name.matches(ParseUnit.INTRINSIC_PREFIX + ".*"))
     		return;
+		if (getFcn() != null && getFcn().isHost()) {
+			if (ParseUnit.isJavaScriptRsvdWord(var.getName().getText())) {
+				ParseUnit.current().reportSeriousError(this, "'" + var.getName().getText() + "' is an invalid name in the host phase (reserved in javascript)");
+			}
+		}
     	if (localVarNames.contains(name)) {
     		ParseUnit.current().reportError(var, "'" + name + "': duplicate local variable name in function scope not allowed");
     		return;

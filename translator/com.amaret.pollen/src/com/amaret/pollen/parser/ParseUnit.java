@@ -55,6 +55,28 @@ public class ParseUnit {
 	private List<String> metaModules = new ArrayList<String>();
 	static private boolean debugMode = false;
 	
+	// javascript reserved words
+	// Note these don't all cause aborts in all contexts if used as pollen names
+	// (tho some eg. 'var' are very toxic). But to be safe we don't distinguish.
+	// Note also these get errors only if used in host contexts.
+	// TODO the same for C / target
+    private static ArrayList<String> js_rsvdwords = new ArrayList<String>(Arrays.asList(
+            "abstract", "arguments", "char", "debugger", "delete",
+            "double", "eval", "final", "finally", "float", "function",
+            "goto", "instanceof", "int", "interface", "let", "long",
+            "native", "private", "protected", "short", "static",
+            "super", "synchronized", "throw", "throws", "transient",
+            "try", "typeof", "var", "void", "with", "yield", "Date",
+            "eval", "function", "hasOwnProperty", "Infinity", "isFinite",
+            "isNaN", "isPrototypeOf", "length", "NaN", 
+            "Number", "Object", "prototype", "toString",
+            "undefined", "valueOf"
+            // took out: String, Math, 
+     ));
+    public static boolean isJavaScriptRsvdWord(String id) {
+    	return js_rsvdwords.contains(id);
+    }
+	
 	// pollen names, source
 	public static final String POLLEN_PRINT = "pollen.print";
 	public static final String POLLEN_PRINT_PROXY = "pollen.printProtocol";	
@@ -68,8 +90,6 @@ public class ParseUnit {
 	public static final String POLLEN_HIBERNATE = "pollen.hibernate";
 	public static final String POLLEN_WAKE = "pollen.wake";
 
-
-	
 	// pollen names, generated
 	public static final String EXPORT_PREFIX = "$$export";
 	// A name prefixed with intrinsic prefix will not be entered into the symtab (lookups will fail). 
@@ -396,7 +416,7 @@ public class ParseUnit {
 		return errorCount;
 	}
 	/**
-	 * Used for serious errors only... so avoid javascript aborts, for example
+	 * Used for serious errors only... so as to avoid javascript aborts, for example
 	 * @return
 	 */
 	public static int getSeriousErrorCount() {

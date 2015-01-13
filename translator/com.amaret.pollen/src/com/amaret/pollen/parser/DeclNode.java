@@ -206,6 +206,14 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		protected boolean pass1Begin() {
 			super.pass1Begin();
 			
+			if (this.getParent() != null && this.getParent().getParent() instanceof DeclNode.Fcn) {
+				if (((DeclNode.Fcn)this.getParent().getParent()).isHost()) {
+					if (ParseUnit.isJavaScriptRsvdWord(this.getName().getText())) {
+						ParseUnit.current().reportSeriousError(this, "'" + this.getName().getText() + "' is an invalid name in the host phase (reserved in javascript)");
+					}					
+				}
+			}
+			
 
 			if (getTypeSpec() != null)
 				getTypeSpec().pass1Begin();
@@ -1122,12 +1130,18 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			ParseUnit currUnit = ParseUnit.current();
 			Atom name = getName();
 			unit = currUnit.getCurrUnitNode();
+			
+			if (this.isHost()) {
+				if (ParseUnit.isJavaScriptRsvdWord(name.getText())) {
+					ParseUnit.current().reportSeriousError(this, "'" + name.getText() + "' is an invalid name in the host phase (reserved in javascript)");
+				}
+			}
 
 			if (name.getText().matches(ParseUnit.INTRINSIC_PREFIX + ".*")) {
 				flags.add(Flags.PUBLIC); // always
 				if (isMethod()) {
 					String n = getName().getText();
-					n = "'" +n.substring(0,n.indexOf("_")) + "." + n.substring(n.lastIndexOf("_")+1) + "'";
+					n = "'" + n.substring(0,n.indexOf("_")) + "." + n.substring(n.lastIndexOf("_")+1) + "'";
 					currUnit.reportError(this,
 				        	n + ": pollen lifecycle functions must be defined in modules");
 				}
@@ -3190,6 +3204,11 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		if (currUnit.getSymbolTable().defineSymbol(name, this) == false) {
 			currUnit.reportError(name,
 					"identifier already defined in the current scope");
+		}
+		if (this.isHost()) {
+			if (ParseUnit.isJavaScriptRsvdWord(name.getText())) {
+				ParseUnit.current().reportSeriousError(this, "'" + name.getText() + "' is an invalid name in the host phase (reserved in javascript)");
+			}
 		}
 		return true;
 	}
