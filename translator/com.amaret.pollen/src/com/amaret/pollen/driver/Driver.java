@@ -1,5 +1,7 @@
 package com.amaret.pollen.driver;
 
+import com.amaret.pollen.parser.ParseUnit;
+
 public class Driver {
 	
 	
@@ -12,7 +14,7 @@ public class Driver {
 		int rtn = 0;
 		
 		try {
-			
+			ParseUnit.Times.startTime(ParseUnit.Time.POLLEN);
 			rtn = pu.processUnits(args, System.out, System.err, System.out);
 			
 		} catch (Exception e) {

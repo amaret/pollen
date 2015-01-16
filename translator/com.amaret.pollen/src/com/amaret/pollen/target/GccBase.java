@@ -77,7 +77,6 @@ public abstract class GccBase extends BaseTarget {
 	 */
 	protected void execCompile(File srcFile) throws Exception {
 		String cmd;
-	    
 	    cmd = getGcc();        
 	    cmd = addCcOptsPrefix(cmd);
 	    cmd = addCcFlags(cmd);
@@ -89,7 +88,11 @@ public abstract class GccBase extends BaseTarget {
 	    cmd = addSrcOutFiles(cmd, srcFile);
 	    cmd = addCcOptsSuffix(cmd);
 	    
-	    if (execCmd(cmd) != 0) {
+		ParseUnit.Times.startTime(ParseUnit.Time.GCC);		
+		int rtn = execCmd(cmd);		
+		ParseUnit.Times.endTime(ParseUnit.Time.GCC);
+
+	    if (rtn != 0) {
 	        return;
 	    }
 	    
@@ -97,7 +100,11 @@ public abstract class GccBase extends BaseTarget {
 	    cmd = addObjCopyOpts(cmd);
 	    cmd = addObjCopyFiles(cmd, srcFile);
 	    	    
-	    if (execCmd(cmd) != 0) {
+		ParseUnit.Times.startTime(ParseUnit.Time.OBJCOPY);		
+		rtn = execCmd(cmd);		
+		ParseUnit.Times.endTime(ParseUnit.Time.OBJCOPY);
+
+	    if (rtn != 0) {
 	        return;
 	    }
 	    

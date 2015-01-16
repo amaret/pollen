@@ -1,6 +1,8 @@
 package com.amaret.pollen.parser;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +32,7 @@ public class ParseUnit {
 	private PrintStream out;
 	private PrintStream err;
 	private PrintStream info;
+	private PrintStream times;
 	private static ParseUnit currParse;
 	private static File currFile;
 	private static String pollenFile; // the .p file supplied to pollen translator
@@ -44,6 +47,75 @@ public class ParseUnit {
 	private HashMap<String, String> errors;
 	private boolean parseTopLevel = false;
 	private UnitNode topLevelUnit = null;
+	static public enum Time {
+		POLLEN, GCC, OBJCOPY
+	}
+
+	public static class Times {
+		private static long pollenTime = 0; //
+		private static long gccTime = 0;
+		private static long objcopyTime = 0;
+		/**
+		 * Start the timing period for the Time type.
+		 * @param t
+		 */
+		static public void startTime(Time t) {
+			long tmp = System.currentTimeMillis();
+			switch (t) {
+			case POLLEN: pollenTime = tmp; 
+			    break;
+			case GCC: gccTime = tmp;
+			    break;
+			case OBJCOPY: objcopyTime = tmp;
+			   break;
+			default:			
+			}
+		}
+		/**
+		 * End the timing period for the Time type.
+		 * @param t
+		 */
+		static public void endTime(Time t) {
+			long tmp = System.currentTimeMillis();
+			switch (t) {
+			case POLLEN: 
+				if (pollenTime <= 0) {
+					System.out.println("Timing data: invalid start time");				
+				}
+				pollenTime = tmp - pollenTime;
+				break;
+			case GCC: 				
+				if (gccTime <= 0) {
+					System.out.println("Timing data: invalid start time");				
+				}
+				gccTime = tmp - gccTime;
+				break;
+			case OBJCOPY:
+				if (objcopyTime <= 0) {
+					System.out.println("Timing data: invalid start time");				
+				}
+				objcopyTime = tmp - objcopyTime;
+				break;
+			default:			
+			}
+		}
+		/**
+		 * 
+		 * @return the times in milliseconds take by pollen, gcc, objcopy in a 
+		 * String formatted as a json object with field names:
+		 * worker_run_pollen, worker_run_gcc, worker_run_objcopy
+		 */
+		public static String returnTimes() {
+			StringBuilder sb = new StringBuilder();
+			sb.append("{");
+			sb.append("\"worker_run_pollen\":\"" + new Long(pollenTime).toString() + "\",");
+			sb.append("\"worker_run_gcc\":\"" + new Long(gccTime).toString() + "\",");
+			sb.append("\"worker_run_objcopy\":\"" + new Long(objcopyTime).toString() + "\"}");
+			return sb.toString();
+			
+		}
+
+	}
 	
 	public UnitNode getTopLevelUnit() {
 		return topLevelUnit;
@@ -394,6 +466,11 @@ public class ParseUnit {
 	}
 	public PrintStream getInfoStream() {
 		return info;
+	}
+	public PrintStream getTimesStream() throws FileNotFoundException {
+		PrintStream ti = null;
+		ti = new PrintStream(new FileOutputStream (ProcessUnits.getWorkingDir() + File.separator + ".pollen_times", false));
+		return ti;
 	}
 
 	public PrintStream getOutputStream() {

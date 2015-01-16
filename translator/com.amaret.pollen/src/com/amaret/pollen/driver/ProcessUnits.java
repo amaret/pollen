@@ -1,7 +1,10 @@
 package com.amaret.pollen.driver;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -409,7 +412,7 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.120";  // user release . internal rev . fix number
+	private static String  v = "0.2.121";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -782,9 +785,18 @@ public class ProcessUnits {
             g.genProgFiles(curUnit); // prog.js, prog.c
             
             g.genUnitHeaders(curUnit, unitMap); // last to initialize some host variables (e.g. array dimensions)
-            
+    		ParseUnit.Times.endTime(ParseUnit.Time.POLLEN);
             g.compile();
             
+            PrintStream timesStream;
+			try {
+				timesStream = ParseUnit.current().getTimesStream();
+	            timesStream.println(ParseUnit.Times.returnTimes());
+	            timesStream.close();
+
+			} catch (FileNotFoundException e) {
+			}
+           
             if (ParseUnit.getSeriousErrorCount() > 0) {
                 return 1;
             }
