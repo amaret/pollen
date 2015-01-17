@@ -2041,8 +2041,9 @@ scope {
     $varDecl::typ = null;
     stmtFlags.addAll(typeMods);
 }
-    :    (typeName IDENT '[') => varArray 
-    |    (typeName IDENT (ASSIGN)) => varDeclList
+    :    (typeName IDENT (ASSIGN)) => varDeclList
+    |    (typeName IDENT '[') => varArray 
+    |    (typeName '[' ) => varArray2
     |     (('(')? typeName '(' ) => varFcnRef 
     |     ( ('(') typeName typeName '(' ) => varFcnRef2
     |     (typeName varInit) => varDeclList  // unnecessary?
@@ -2114,6 +2115,22 @@ scope{
     :    typeNameArray { $varArray::typArrSpec = $typeNameArray.tree; }
         IDENT 
         varArraySpec { $varArray::varArrSpec = $varArraySpec.tree; } 
+        varArrayInit[stmtFlags]?
+            ->  ^(D_ARR<DeclNode.Arr>["D_ARR", stmtFlags] 
+                typeNameArray 
+                IDENT varArraySpec varArrayInit?)
+    ;    
+varArray2
+scope{
+    Object varArrSpec;
+    Object typArrSpec;
+}
+@after {
+         ((CommonTree) $varArray2::typArrSpec).addChild(((CommonTree) $varArray2::varArrSpec));                
+}
+    :   typeNameArray { $varArray2::typArrSpec = $typeNameArray.tree; }
+        varArraySpec  { $varArray2::varArrSpec = $varArraySpec.tree; } 
+        IDENT 
         varArrayInit[stmtFlags]?
             ->  ^(D_ARR<DeclNode.Arr>["D_ARR", stmtFlags] 
                 typeNameArray 
