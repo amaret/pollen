@@ -209,7 +209,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			if (this.getParent() != null && this.getParent().getParent() instanceof DeclNode.Fcn) {
 				if (((DeclNode.Fcn)this.getParent().getParent()).isHost()) {
 					if (ParseUnit.isJavaScriptRsvdWord(this.getName().getText())) {
-						ParseUnit.current().reportSeriousError(this, "'" + this.getName().getText() + "' is an invalid name in the host phase (reserved in javascript)");
+						ParseUnit.current().reportError(this, "'" + this.getName().getText() + "' is an invalid name in the host phase (reserved in javascript)");
 					}					
 				}
 			}
@@ -1133,7 +1133,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			
 			if (this.isHost()) {
 				if (ParseUnit.isJavaScriptRsvdWord(name.getText())) {
-					ParseUnit.current().reportSeriousError(this, "'" + name.getText() + "' is an invalid name in the host phase (reserved in javascript)");
+					ParseUnit.current().reportError(this, "'" + name.getText() + "' is an invalid name in the host phase (reserved in javascript)");
 				}
 			}
 
@@ -3207,7 +3207,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		}
 		if (this.isHost()) {
 			if (ParseUnit.isJavaScriptRsvdWord(name.getText())) {
-				ParseUnit.current().reportSeriousError(this, "'" + name.getText() + "' is an invalid name in the host phase (reserved in javascript)");
+				ParseUnit.current().reportError(this, "'" + name.getText() + "' is an invalid name in the host phase (reserved in javascript)");
 			}
 		}
 		return true;

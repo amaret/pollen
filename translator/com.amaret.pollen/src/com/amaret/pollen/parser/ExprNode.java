@@ -1382,6 +1382,8 @@ public class ExprNode extends BaseNode {
 			// do the lookup of the deref'd member here, where the self context
 			// is known, in case there is a name collision between a local var
 			// name and a member name.
+
+			
 			ParseUnit currUnit = ParseUnit.current();
 			ExprNode e = (Ident) (getMember() instanceof ExprNode.Ident ? getMember()
 					: ((getMember() instanceof ExprNode.Call) ? ((ExprNode.Call) getMember())
@@ -1405,8 +1407,20 @@ public class ExprNode extends BaseNode {
 					if (!(scopeToUse instanceof DeclNode.Usr)) {
 						symbol = currUnit.getSymbolTable().resolveSymbol(
 								ei.getName(), true);
-					} else {
-						symbol = scopeToUse.resolveSymbol(ei.getName());
+					} else {			
+						boolean isHostScope = isHostScopeExpr();
+						symbol = scopeToUse.lookupName(ei.getName().getText(), isHostScope);
+						if (symbol == null)
+							symbol = scopeToUse.lookupName(ei.getName().getText());
+						if (isHostScope && symbol != null) {
+							// if this is host scope and we're calling a target function, null the symbol
+							ISymbolNode sn = symbol.node();
+							if (sn instanceof DeclNode.Fcn && !((DeclNode.Fcn)sn).isHost()) {
+								symbol = null;	
+								currUnit.reportSeriousError(ei.getName(),
+										"non-host functions cannot be called from host functions");
+							}
+						}
 					}
 				}
 
@@ -1429,6 +1443,7 @@ public class ExprNode extends BaseNode {
 				}
 			}
 		}
+
 
 		@Override
 		protected void pass2End() {
@@ -1886,6 +1901,18 @@ public class ExprNode extends BaseNode {
 	public boolean isPostExpr() {
 		return postExpr;
 	}
+	/**
+	 * @return true if this expr is within a host function
+	 */
+	protected boolean isHostScopeExpr() {
+		IScope body = ParseUnit.current().getSymbolTable().curScope();
+		while (!(body instanceof BodyNode) && body != null)
+			body = body.getEnclosingScope();
+		DeclNode.Fcn curFcn = (body != null) ? ((BodyNode)body).getFcn() : null;
+		boolean isHostScope = curFcn != null ? curFcn.isHost() : false;
+		return isHostScope;
+	}
+
 	/**
 	 * True when this expr or ident is to the right of a '.' else false
 	 * @param pe

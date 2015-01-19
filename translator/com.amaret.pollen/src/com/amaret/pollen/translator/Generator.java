@@ -304,10 +304,12 @@ public class Generator {
         writeFile(jsFile, getFmt().toBytes(), true);
         if (ParseUnit.getSeriousErrorCount() == 0) {
         	Value.Arr unitsArr = (Value.Arr) Script.execute(getFmt().toString(), "$units", jsFile.getAbsolutePath());
-        	getFmt().reset();
-        	targProg = new ProgCCode(this);
-        	targProg.generateProgC(unitsArr);
-        	writeFile(progFile, getFmt().toBytes(), true);
+        	if (unitsArr != null) {
+            	getFmt().reset();
+            	targProg = new ProgCCode(this);
+            	targProg.generateProgC(unitsArr);
+            	writeFile(progFile, getFmt().toBytes(), true);
+        	}
         }
 
         if (ParseUnit.getSeriousErrorCount() > 0) {

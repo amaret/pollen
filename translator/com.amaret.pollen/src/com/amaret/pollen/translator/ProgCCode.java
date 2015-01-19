@@ -798,7 +798,7 @@ public class ProgCCode {
 				ParseUnit.current().reportError((BaseNode) cat.aggScope(), "\'" + n + "\': non-host class reference cannot be initialized in a host context");
 			}
 			else {
-				System.out.println("genValAgg(): unexpected type");
+				ParseUnit.current().reportError((BaseNode) cat.aggScope(), "'" + n + "' encountered where a type name is expected");
 			}
 			return;
 		}

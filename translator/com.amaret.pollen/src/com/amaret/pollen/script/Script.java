@@ -4,6 +4,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.Scriptable;
 
+import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.ParseUnit;
 
 public class Script {
@@ -20,8 +21,11 @@ public class Script {
         try {
             cx.evaluateString(scope, prog, fileName, 1, null);
         }
-        catch (JavaScriptException jse) {
-            ParseUnit.current().reportFailure("JavaScript termination: " + jse.getMessage());
+        catch (Exception jse) {
+        	if (ProcessUnits.isVerbose()) {
+        		ParseUnit.current().reportFailure("JavaScript termination: " + jse.getMessage());       		
+        	}
+        	ParseUnit.current().reportFailure(jse, "Termination due to errors encountered.");
             return null;
         }
         if (ParseUnit.isDebugMode())

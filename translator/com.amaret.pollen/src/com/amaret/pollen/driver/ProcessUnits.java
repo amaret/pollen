@@ -42,8 +42,18 @@ public class ProcessUnits {
 	private static boolean asserts = false;
 	private static boolean warnings = false;
 	private static boolean dashPoption = false;
+	private static boolean verbose = false;
 	private static boolean isCompatibilityMode = false;
-	
+	/**
+	 * More information should be generated. E.g. stack traces.
+	 * @return
+	 */
+	public static boolean isVerbose() {
+		return verbose;
+	}
+	public static void setVerbose(boolean verbose) {
+		ProcessUnits.verbose = verbose;
+	}
 	public static String getPropsOption() {
 		return propsOption;
 	}
@@ -408,11 +418,13 @@ public class ProcessUnits {
         //pollenHelp += "\n" + "\t    msp430-gcc         gcc for msp430"; in but undoc
         pollenHelp += "\n" + "\tIf no '-t' option is specified only C files are produced.";  
  		pollenHelp += "\n" + "  -v\tOutput translator version and exit.";
+ 		pollenHelp += "\n" + "  -verbose";
+ 		pollenHelp += "\n" + "  \tVerbose output.";
  		pollenHelp += "\n" + "  -w\tOutput warning messages. (Otherwise suppressed.)";
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.122";  // user release . internal rev . fix number
+	private static String  v = "0.2.123";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -479,6 +491,7 @@ public class ProcessUnits {
 				pollenEnv = value.substring(value.lastIndexOf(File.separator)+1);
 				continue;
 			}
+			
 			if (p.equals("-props")) {
 				value = (args.length > (++i) ? args[i] : "");
 				if (value.isEmpty())	
@@ -517,6 +530,13 @@ public class ProcessUnits {
 				if (value.isEmpty())	
 					continue;
 				ProcessUnits.setMcu(value);
+				continue;
+			}
+			if (p.equals("-verbose")) {
+				value = (args.length > (++i) ? args[i] : "");
+				if (value.isEmpty())	
+					continue;
+				ProcessUnits.setVerbose(true);
 				continue;
 			}
 			if (p.equals("-t"))	{
@@ -772,18 +792,17 @@ public class ProcessUnits {
 	}
 	protected int translateUnit(HashMap<String, UnitNode> unitMap) throws Exception {
 		
-		int rtn = ParseUnit.current().getCurrUnitNode().getErrorCount();
+		int rtn = ParseUnit.current().getCurrUnitNode().getSeriousErrorCount();
 		if (rtn == 0) {
 			UnitNode curUnit = ParseUnit.current().getCurrUnitNode();
 			Generator g = new Generator();
 			g.genUnits(curUnit, unitMap); // js and c body
 			
-            if (ParseUnit.current().getCurrUnitNode().getErrorCount() > 0) {
+            if (ParseUnit.current().getCurrUnitNode().getSeriousErrorCount() > 0) {
                 return 1;
             }
             
-            g.genProgFiles(curUnit); // prog.js, prog.c
-            
+            g.genProgFiles(curUnit); // prog.js, prog.c         
             g.genUnitHeaders(curUnit, unitMap); // last to initialize some host variables (e.g. array dimensions)
     		ParseUnit.Times.endTime(ParseUnit.Time.POLLEN);
             g.compile();

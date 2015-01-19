@@ -27,7 +27,7 @@ public class ParseUnit {
 	private String path;
 	private ArrayList<String> paths = new ArrayList<String>();
 	private static int errorCount;
-	private static int seriousErrorCount;
+	private static int seriousErrorCount; // > 0 will void call to gcc
 	private ANTLRFileStream in;
 	private PrintStream out;
 	private PrintStream err;
@@ -498,6 +498,9 @@ public class ParseUnit {
 	 */
 	public static int getSeriousErrorCount() {
 		return seriousErrorCount;
+	}
+	public static void incSeriousErrorCount() {
+		seriousErrorCount+=1;
 	}
 
 	public String getCurrPath() {
@@ -1284,8 +1287,8 @@ public class ParseUnit {
 	 * @param msg
 	 */
 	public void reportSeriousError(BaseNode node, String msg) {
-		ParseUnit.current().getCurrUnitNode().incErrorCount();
-		seriousErrorCount+=1;
+		ParseUnit.current().getCurrUnitNode().incSeriousErrorCount();
+		ParseUnit.incSeriousErrorCount();
 		reportError(node, msg);
 	}
 	/**
@@ -1295,8 +1298,8 @@ public class ParseUnit {
 	 * @param msg
 	 */
 	public void reportSeriousError(String f, String msg) {
-		ParseUnit.current().getCurrUnitNode().incErrorCount();
-		seriousErrorCount+=1;
+		ParseUnit.current().getCurrUnitNode().incSeriousErrorCount();
+		ParseUnit.incSeriousErrorCount();
 		reportError(f, msg);
 	}
 
@@ -1370,8 +1373,8 @@ public class ParseUnit {
 	 * @param msg
 	 */
 	public void reportSeriousError(CommonToken token, String msg) {
-		ParseUnit.current().getCurrUnitNode().incErrorCount();
-		seriousErrorCount+=1;
+		ParseUnit.current().getCurrUnitNode().incSeriousErrorCount();
+		ParseUnit.incSeriousErrorCount();
 		reportError(token, msg);
 	}
 
@@ -1417,8 +1420,15 @@ public class ParseUnit {
 	}
 
 	public void reportFailure(Exception e) {
-		e.printStackTrace(err);
+		if (ProcessUnits.isVerbose())
+			e.printStackTrace(err);
 		throw new Termination(e.getMessage());
+	}
+	
+	public void reportFailure(Exception e, String msg) {
+		if (ProcessUnits.isVerbose())
+			e.printStackTrace(err);
+		throw new Termination(msg);
 	}
 
 	public void reportFailure(String msg) {

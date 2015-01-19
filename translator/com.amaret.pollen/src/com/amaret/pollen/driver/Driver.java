@@ -18,7 +18,9 @@ public class Driver {
 			rtn = pu.processUnits(args, System.out, System.err, System.out);
 			
 		} catch (Exception e) {
-            e.printStackTrace(System.err);
+			System.out.println(e.getMessage());
+			if (ProcessUnits.isVerbose())
+				e.printStackTrace(System.err);				
             System.exit(1);
 		}
 		System.exit(rtn);

@@ -31,7 +31,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 	private DeclNode.Usr unitType;
 	private IScope definingScope;
 	private IScope enclosingScope;
-	private int errorCount;
+	private int seriousErrorCount;
 	private String filePath;
 	private boolean featuresCheck = false;
 	private boolean codegen = false;
@@ -324,8 +324,8 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 	 * 
 	 * @return
 	 */
-	public int getErrorCount() {
-		return errorCount;
+	public int getSeriousErrorCount() {
+		return seriousErrorCount;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -374,8 +374,8 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 		return typeCat;
 	}
 
-	public void incErrorCount() {
-		this.errorCount += 1;
+	public void incSeriousErrorCount() {
+		this.seriousErrorCount += 1;
 	}
 
 	void init() {
@@ -838,10 +838,6 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 	@Override
 	public void setEnclosingScope(IScope scope) {
 		enclosingScope = scope;
-	}
-
-	void setErrorCount(int errorCount) {
-		this.errorCount = errorCount;
 	}
 
 	void setFilePath(String filePath) {
