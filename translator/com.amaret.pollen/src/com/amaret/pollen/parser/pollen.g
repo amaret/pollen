@@ -1715,7 +1715,7 @@ formalParameterList
 formalParameters
 @init {
 }
-    :    formalParameter (',' formalParameter)*  
+    :    formalParameter (NLL? ',' NLL? formalParameter)*  
         -> ^(LIST<ListNode>["LIST"] formalParameter+)
     |    
         -> ^(LIST<ListNode>["LIST"])
