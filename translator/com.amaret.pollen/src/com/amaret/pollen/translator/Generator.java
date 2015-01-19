@@ -292,7 +292,7 @@ public class Generator {
         boolean noProg = unit.isHost() || missingRun;
         if (noProg) {
         	if (missingRun)
-        		cur.reportError(unit, "Missing \'pollen.run\' definition in main module");
+        		cur.reportSeriousError(unit, "Missing \'pollen.run\' definition in main module.");
         	if (unit.isHost())	
         		cur.reportError(unit, "Main module is host only");
         }
@@ -313,6 +313,7 @@ public class Generator {
         }
 
         if (ParseUnit.getSeriousErrorCount() > 0) {
+        	cur.reportError(unit, "Serious errors encountered. C files will be generated but not compiled and no binary will be produced.");
             return;
         }        
     }

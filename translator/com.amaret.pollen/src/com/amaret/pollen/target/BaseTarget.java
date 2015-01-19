@@ -59,12 +59,19 @@ public abstract class BaseTarget implements ITarget {
         }
         return cmd;
     }
+    /**
+     * If serious error count > 0 compile with -S which does not assemble or link.
+     * @param cmd
+     * @param srcFile
+     * @return
+     */
     protected String addSrcOutFiles(String cmd, File srcFile) {
         
         String srcFilePath = srcFile.getAbsolutePath();       
         String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
+        cmd += " " + srcFile;
         String outFile = baseFile + ".out";
-        cmd += " " + srcFile + " -o " + outFile;
+        cmd += " -o " + outFile;
         return cmd;
     }
     protected String addMapFile(String cmd, File srcFile) {        

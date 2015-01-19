@@ -424,7 +424,7 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.123";  // user release . internal rev . fix number
+	private static String  v = "0.2.124";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -792,15 +792,9 @@ public class ProcessUnits {
 	}
 	protected int translateUnit(HashMap<String, UnitNode> unitMap) throws Exception {
 		
-		int rtn = ParseUnit.current().getCurrUnitNode().getSeriousErrorCount();
-		if (rtn == 0) {
 			UnitNode curUnit = ParseUnit.current().getCurrUnitNode();
 			Generator g = new Generator();
 			g.genUnits(curUnit, unitMap); // js and c body
-			
-            if (ParseUnit.current().getCurrUnitNode().getSeriousErrorCount() > 0) {
-                return 1;
-            }
             
             g.genProgFiles(curUnit); // prog.js, prog.c         
             g.genUnitHeaders(curUnit, unitMap); // last to initialize some host variables (e.g. array dimensions)
@@ -819,9 +813,7 @@ public class ProcessUnits {
             if (ParseUnit.getSeriousErrorCount() > 0) {
                 return 1;
             }
-            return 0;            
-		}
-		return 1;		
+            return 0;            	
 	}
 	/**
 	 * Entry to translator.

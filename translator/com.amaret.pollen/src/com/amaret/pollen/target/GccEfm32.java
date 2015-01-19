@@ -60,12 +60,16 @@ public class GccEfm32 extends GccBase {
     	cmd += " -I " + input + " -O " + output;
         return cmd;
     }
+    /**
+     * If serious error count > 0 produce c files but don't compile or link.
+     */
     protected String addSrcOutFiles(String cmd, File srcFile) {
         
         String srcFilePath = srcFile.getAbsolutePath();       
         String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
+        cmd += " " + srcFile;
         String outFile = baseFile + ".elf";
-        cmd += " " + srcFile + " -o " + outFile;
+        cmd += " -o " + outFile;
         return cmd;
     }
 
