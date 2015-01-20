@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g 2015-01-19 13:29:25
+// $ANTLR 3.4 /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g 2015-01-19 17:27:41
 
     package com.amaret.pollen.parser;
     import java.util.EnumSet;
@@ -795,7 +795,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_pollenEOF.add(pollenEOF10.getTree());
 
             // AST REWRITE
-            // elements: stmtPackage, unitTypeDefinition, stmtInjectionList, importList, stmtInjectionList
+            // elements: unitTypeDefinition, importList, stmtInjectionList, stmtInjectionList, stmtPackage
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -1432,7 +1432,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceCloseNLL.add(braceCloseNLL26.getTree());
 
             // AST REWRITE
-            // elements: extendsClause, classFeatureList, IDENT, implementsClause
+            // elements: extendsClause, IDENT, classFeatureList, implementsClause
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -1604,7 +1604,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_intrinsicPrintProxy.add(intrinsicPrintProxy31.getTree());
 
             // AST REWRITE
-            // elements: classHostCtor, classTargCtor, intrinsicPrintProxy, classFeature, intrinsicUnitName
+            // elements: classHostCtor, intrinsicUnitName, classTargCtor, intrinsicPrintProxy, classFeature
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2852,7 +2852,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceCloseNLL.add(braceCloseNLL46.getTree());
 
             // AST REWRITE
-            // elements: IDENT, moduleFeatureList, implementsClause, extendsClause
+            // elements: extendsClause, IDENT, moduleFeatureList, implementsClause
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3025,7 +3025,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_intrinsicPrintProxy.add(intrinsicPrintProxy51.getTree());
 
             // AST REWRITE
-            // elements: moduleFeature, intrinsicPrintProxy, intrinsicUnitName, moduleTargCtor, moduleHostCtor
+            // elements: moduleTargCtor, moduleFeature, moduleHostCtor, intrinsicUnitName, intrinsicPrintProxy
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -5189,7 +5189,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_enumVal.add(enumVal75.getTree());
 
                     // AST REWRITE
-                    // elements: IDENT, enumVal
+                    // elements: enumVal, IDENT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -5584,7 +5584,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceCloseNLL.add(braceCloseNLL88.getTree());
 
             // AST REWRITE
-            // elements: IDENT, protocolFeatureList, implementsClause, extendsClause
+            // elements: protocolFeatureList, extendsClause, implementsClause, IDENT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -6289,7 +6289,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceCloseNLL.add(braceCloseNLL102.getTree());
 
             // AST REWRITE
-            // elements: extendsClause, IDENT, implementsClause, compositionFeatureList
+            // elements: IDENT, implementsClause, extendsClause, compositionFeatureList
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -6891,7 +6891,7 @@ public TreeAdaptor getTreeAdaptor() {
                                    }
 
                     // AST REWRITE
-                    // elements: fcnBody, formalParameterList
+                    // elements: formalParameterList, fcnBody
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -7281,7 +7281,7 @@ public TreeAdaptor getTreeAdaptor() {
                                              }
 
                     // AST REWRITE
-                    // elements: importAs, metaArguments
+                    // elements: metaArguments, importAs
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -9285,7 +9285,7 @@ public TreeAdaptor getTreeAdaptor() {
                                  }
 
                     // AST REWRITE
-                    // elements: builtinType, IDENT, IDENT
+                    // elements: IDENT, builtinType, IDENT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -12465,7 +12465,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprLogicalAnd.add(exprLogicalAnd206.getTree());
 
             	    // AST REWRITE
-            	    // elements: exprLogicalAnd, exprLogicalOr, 200
+            	    // elements: 200, exprLogicalOr, exprLogicalAnd
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -12629,7 +12629,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprBitwiseOr.add(exprBitwiseOr209.getTree());
 
             	    // AST REWRITE
-            	    // elements: 133, exprLogicalAnd, exprBitwiseOr
+            	    // elements: 133, exprBitwiseOr, exprLogicalAnd
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -12957,7 +12957,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprBitwiseAnd.add(exprBitwiseAnd215.getTree());
 
             	    // AST REWRITE
-            	    // elements: 148, exprBitwiseXor, exprBitwiseAnd
+            	    // elements: exprBitwiseXor, exprBitwiseAnd, 148
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -13121,7 +13121,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprEquality.add(exprEquality218.getTree());
 
             	    // AST REWRITE
-            	    // elements: 134, exprEquality, exprBitwiseAnd
+            	    // elements: 134, exprBitwiseAnd, exprEquality
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -13288,7 +13288,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprRelational.add(exprRelational221.getTree());
 
             	    // AST REWRITE
-            	    // elements: exprEquality, exprRelational, equalityOp
+            	    // elements: exprEquality, equalityOp, exprRelational
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -13453,7 +13453,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprShift.add(exprShift224.getTree());
 
             	    // AST REWRITE
-            	    // elements: exprRelational, relationalOp, exprShift
+            	    // elements: relationalOp, exprRelational, exprShift
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -13948,7 +13948,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_exprUnary.add(exprUnary233.getTree());
 
             	    // AST REWRITE
-            	    // elements: multDivModOp, exprMultDiv, exprUnary
+            	    // elements: exprMultDiv, multDivModOp, exprUnary
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -14527,7 +14527,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_exprPrimary.add(exprPrimary240.getTree());
 
                     // AST REWRITE
-                    // elements: exprPrimary, logicalNotOp
+                    // elements: logicalNotOp, exprPrimary
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -14632,7 +14632,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_exprPrimary.add(exprPrimary244.getTree());
 
                     // AST REWRITE
-                    // elements: MINUS, exprPrimary
+                    // elements: exprPrimary, MINUS
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -14688,7 +14688,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_exprPrimary.add(exprPrimary246.getTree());
 
                     // AST REWRITE
-                    // elements: exprPrimary, incDecOp
+                    // elements: incDecOp, exprPrimary
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -14742,7 +14742,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_incDecOp.add(incDecOp248.getTree());
 
                     // AST REWRITE
-                    // elements: exprPrimary, incDecOp
+                    // elements: incDecOp, exprPrimary
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -15064,7 +15064,7 @@ public TreeAdaptor getTreeAdaptor() {
                         }
 
             // AST REWRITE
-            // elements: fcnType_fcnName, fcnBody, formalParameterList
+            // elements: formalParameterList, fcnBody, fcnType_fcnName
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -15224,7 +15224,7 @@ public TreeAdaptor getTreeAdaptor() {
                         }
 
             // AST REWRITE
-            // elements: formalParameterList, fcnType, fcnBody
+            // elements: fcnType, formalParameterList, fcnBody
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -15634,7 +15634,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
 
             // AST REWRITE
-            // elements: fcnType, formalParameterList
+            // elements: formalParameterList, fcnType
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -16318,7 +16318,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
 
             // AST REWRITE
-            // elements: formalParameterList, fcnType_fcnName
+            // elements: fcnType_fcnName, formalParameterList
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -17791,7 +17791,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: IDENT, typeNameArray, expr
+            // elements: expr, IDENT, typeNameArray
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -18165,7 +18165,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: fieldOrArrayAccess, IDENT, fcnArgumentList
+                    // elements: fieldOrArrayAccess, fcnArgumentList, IDENT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -18415,7 +18415,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: qualName, fcnArgumentList, fieldOrArrayAccess
+                    // elements: fcnArgumentList, fieldOrArrayAccess, qualName
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -18534,7 +18534,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: fcnArgumentList, arrayAccess, qualName, fieldOrArrayAccess
+                    // elements: qualName, arrayAccess, fieldOrArrayAccess, fcnArgumentList
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -20772,7 +20772,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_delim.add(delim372.getTree());
 
             // AST REWRITE
-            // elements: assign, varOrFcnOrArray, exprAssign
+            // elements: varOrFcnOrArray, exprAssign, assign
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -20905,7 +20905,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_delim.add(delim376.getTree());
 
             // AST REWRITE
-            // elements: assign, expr, injectionCode
+            // elements: assign, injectionCode, expr
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -21289,7 +21289,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_delim.add(delim386.getTree());
 
             // AST REWRITE
-            // elements: varOrFcnOrArray, PEG, exprAssign
+            // elements: exprAssign, varOrFcnOrArray, PEG
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -22512,7 +22512,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_stmtBlock.add(stmtBlock415.getTree());
 
             // AST REWRITE
-            // elements: stmtBlock, stmtForNext, stmtForCond, stmtForInit, defaultLoopVar
+            // elements: stmtForInit, stmtForNext, stmtForCond, defaultLoopVar, stmtBlock
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -23006,7 +23006,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: typeName, expr, IDENT
+                    // elements: IDENT, expr, typeName
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -23355,7 +23355,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_braceCloseNLL.add(braceCloseNLL436.getTree());
 
             // AST REWRITE
-            // elements: stmtDefault, stmtsCase, expr
+            // elements: stmtsCase, expr, stmtDefault
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -23794,7 +23794,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_stmts.add(stmts446.getTree());
 
                     // AST REWRITE
-                    // elements: stmts, INT_LIT
+                    // elements: INT_LIT, stmts
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -24072,7 +24072,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_delim.add(delim459.getTree());
 
             // AST REWRITE
-            // elements: expr, stmtBlock
+            // elements: stmtBlock, expr
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -24207,7 +24207,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: stmtsElif, stmtElse, stmtIfBlock
+            // elements: stmtIfBlock, stmtsElif, stmtElse
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -24353,7 +24353,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_stmtBlock.add(stmtBlock468.getTree());
 
             // AST REWRITE
-            // elements: expr, stmtBlock
+            // elements: stmtBlock, expr
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -24840,7 +24840,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: expr, stmtBlock, stmtElse
+            // elements: stmtBlock, expr, stmtElse
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -24914,7 +24914,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtWhile"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1997:1: stmtWhile : 'while' '(' expr ')' ( NLL )? stmtBlock -> ^( S_WHILE[\"S_WHILE\"] expr stmtBlock ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1997:1: stmtWhile : 'while' '(' expr ')' stmtWhile2 -> ^( S_WHILE[\"S_WHILE\"] expr stmtWhile2 ) ;
     public final pollenParser.stmtWhile_return stmtWhile() throws RecognitionException {
         pollenParser.stmtWhile_return retval = new pollenParser.stmtWhile_return();
         retval.start = input.LT(1);
@@ -24925,25 +24925,22 @@ public TreeAdaptor getTreeAdaptor() {
         Atom string_literal482=null;
         Atom char_literal483=null;
         Atom char_literal485=null;
-        Atom NLL486=null;
         pollenParser.expr_return expr484 =null;
 
-        pollenParser.stmtBlock_return stmtBlock487 =null;
+        pollenParser.stmtWhile2_return stmtWhile2486 =null;
 
 
         BaseNode string_literal482_tree=null;
         BaseNode char_literal483_tree=null;
         BaseNode char_literal485_tree=null;
-        BaseNode NLL486_tree=null;
         RewriteRuleTokenStream stream_198=new RewriteRuleTokenStream(adaptor,"token 198");
         RewriteRuleTokenStream stream_135=new RewriteRuleTokenStream(adaptor,"token 135");
         RewriteRuleTokenStream stream_136=new RewriteRuleTokenStream(adaptor,"token 136");
-        RewriteRuleTokenStream stream_NLL=new RewriteRuleTokenStream(adaptor,"token NLL");
-        RewriteRuleSubtreeStream stream_stmtBlock=new RewriteRuleSubtreeStream(adaptor,"rule stmtBlock");
         RewriteRuleSubtreeStream stream_expr=new RewriteRuleSubtreeStream(adaptor,"rule expr");
+        RewriteRuleSubtreeStream stream_stmtWhile2=new RewriteRuleSubtreeStream(adaptor,"rule stmtWhile2");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1998:5: ( 'while' '(' expr ')' ( NLL )? stmtBlock -> ^( S_WHILE[\"S_WHILE\"] expr stmtBlock ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1998:10: 'while' '(' expr ')' ( NLL )? stmtBlock
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1998:5: ( 'while' '(' expr ')' stmtWhile2 -> ^( S_WHILE[\"S_WHILE\"] expr stmtWhile2 ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1998:10: 'while' '(' expr ')' stmtWhile2
             {
             string_literal482=(Atom)match(input,198,FOLLOW_198_in_stmtWhile15449); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_198.add(string_literal482);
@@ -24964,36 +24961,15 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_136.add(char_literal485);
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1998:29: ( NLL )?
-            int alt130=2;
-            int LA130_0 = input.LA(1);
-
-            if ( (LA130_0==NLL) ) {
-                alt130=1;
-            }
-            switch (alt130) {
-                case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1998:30: NLL
-                    {
-                    NLL486=(Atom)match(input,NLL,FOLLOW_NLL_in_stmtWhile15456); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_NLL.add(NLL486);
-
-
-                    }
-                    break;
-
-            }
-
-
-            pushFollow(FOLLOW_stmtBlock_in_stmtWhile15460);
-            stmtBlock487=stmtBlock();
+            pushFollow(FOLLOW_stmtWhile2_in_stmtWhile15455);
+            stmtWhile2486=stmtWhile2();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_stmtBlock.add(stmtBlock487.getTree());
+            if ( state.backtracking==0 ) stream_stmtWhile2.add(stmtWhile2486.getTree());
 
             // AST REWRITE
-            // elements: stmtBlock, expr
+            // elements: expr, stmtWhile2
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -25005,9 +24981,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 1998:46: -> ^( S_WHILE[\"S_WHILE\"] expr stmtBlock )
+            // 1998:40: -> ^( S_WHILE[\"S_WHILE\"] expr stmtWhile2 )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1998:49: ^( S_WHILE[\"S_WHILE\"] expr stmtBlock )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1998:43: ^( S_WHILE[\"S_WHILE\"] expr stmtWhile2 )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -25016,7 +24992,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_expr.nextTree());
 
-                adaptor.addChild(root_1, stream_stmtBlock.nextTree());
+                adaptor.addChild(root_1, stream_stmtWhile2.nextTree());
 
                 adaptor.addChild(root_0, root_1);
                 }
@@ -25053,6 +25029,167 @@ public TreeAdaptor getTreeAdaptor() {
     // $ANTLR end "stmtWhile"
 
 
+    public static class stmtWhile2_return extends ParserRuleReturnScope {
+        BaseNode tree;
+        public Object getTree() { return tree; }
+    };
+
+
+    // $ANTLR start "stmtWhile2"
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2000:1: stmtWhile2 : ( ';' ( NLL ) -> ^( S_BLOCK[\"S_BLOCK\"] LIST[\"LIST\"] ) | ( NLL !)? stmtBlock );
+    public final pollenParser.stmtWhile2_return stmtWhile2() throws RecognitionException {
+        pollenParser.stmtWhile2_return retval = new pollenParser.stmtWhile2_return();
+        retval.start = input.LT(1);
+
+
+        BaseNode root_0 = null;
+
+        Atom char_literal487=null;
+        Atom NLL488=null;
+        Atom NLL489=null;
+        pollenParser.stmtBlock_return stmtBlock490 =null;
+
+
+        BaseNode char_literal487_tree=null;
+        BaseNode NLL488_tree=null;
+        BaseNode NLL489_tree=null;
+        RewriteRuleTokenStream stream_SEMI=new RewriteRuleTokenStream(adaptor,"token SEMI");
+        RewriteRuleTokenStream stream_NLL=new RewriteRuleTokenStream(adaptor,"token NLL");
+
+        try {
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2001:5: ( ';' ( NLL ) -> ^( S_BLOCK[\"S_BLOCK\"] LIST[\"LIST\"] ) | ( NLL !)? stmtBlock )
+            int alt131=2;
+            int LA131_0 = input.LA(1);
+
+            if ( (LA131_0==SEMI) ) {
+                alt131=1;
+            }
+            else if ( (LA131_0==BRACE_OP||LA131_0==NLL) ) {
+                alt131=2;
+            }
+            else {
+                if (state.backtracking>0) {state.failed=true; return retval;}
+                NoViableAltException nvae =
+                    new NoViableAltException("", 131, 0, input);
+
+                throw nvae;
+
+            }
+            switch (alt131) {
+                case 1 :
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2001:7: ';' ( NLL )
+                    {
+                    char_literal487=(Atom)match(input,SEMI,FOLLOW_SEMI_in_stmtWhile215488); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_SEMI.add(char_literal487);
+
+
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2001:11: ( NLL )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2001:12: NLL
+                    {
+                    NLL488=(Atom)match(input,NLL,FOLLOW_NLL_in_stmtWhile215491); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_NLL.add(NLL488);
+
+
+                    }
+
+
+                    // AST REWRITE
+                    // elements: 
+                    // token labels: 
+                    // rule labels: retval
+                    // token list labels: 
+                    // rule list labels: 
+                    // wildcard labels: 
+                    if ( state.backtracking==0 ) {
+
+                    retval.tree = root_0;
+                    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
+
+                    root_0 = (BaseNode)adaptor.nil();
+                    // 2001:17: -> ^( S_BLOCK[\"S_BLOCK\"] LIST[\"LIST\"] )
+                    {
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2001:20: ^( S_BLOCK[\"S_BLOCK\"] LIST[\"LIST\"] )
+                        {
+                        BaseNode root_1 = (BaseNode)adaptor.nil();
+                        root_1 = (BaseNode)adaptor.becomeRoot(
+                        new StmtNode.Block(S_BLOCK, "S_BLOCK")
+                        , root_1);
+
+                        adaptor.addChild(root_1, 
+                        new ListNode(LIST, "LIST")
+                        );
+
+                        adaptor.addChild(root_0, root_1);
+                        }
+
+                    }
+
+
+                    retval.tree = root_0;
+                    }
+
+                    }
+                    break;
+                case 2 :
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2002:14: ( NLL !)? stmtBlock
+                    {
+                    root_0 = (BaseNode)adaptor.nil();
+
+
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2002:14: ( NLL !)?
+                    int alt130=2;
+                    int LA130_0 = input.LA(1);
+
+                    if ( (LA130_0==NLL) ) {
+                        alt130=1;
+                    }
+                    switch (alt130) {
+                        case 1 :
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2002:15: NLL !
+                            {
+                            NLL489=(Atom)match(input,NLL,FOLLOW_NLL_in_stmtWhile215526); if (state.failed) return retval;
+
+                            }
+                            break;
+
+                    }
+
+
+                    pushFollow(FOLLOW_stmtBlock_in_stmtWhile215531);
+                    stmtBlock490=stmtBlock();
+
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, stmtBlock490.getTree());
+
+                    }
+                    break;
+
+            }
+            retval.stop = input.LT(-1);
+
+
+            if ( state.backtracking==0 ) {
+
+            retval.tree = (BaseNode)adaptor.rulePostProcessing(root_0);
+            adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
+            }
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+    	retval.tree = (BaseNode)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+
+        }
+
+        finally {
+        	// do for sure before leaving
+        }
+        return retval;
+    }
+    // $ANTLR end "stmtWhile2"
+
+
     public static class stmtDecl_return extends ParserRuleReturnScope {
         BaseNode tree;
         public Object getTree() { return tree; }
@@ -25060,7 +25197,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtDecl"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2000:1: stmtDecl : stmtDeclAttr varDecl delim -> ^( S_DECL[\"S_DECL\"] varDecl ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2004:1: stmtDecl : stmtDeclAttr varDecl delim -> ^( S_DECL[\"S_DECL\"] varDecl ) ;
     public final pollenParser.stmtDecl_return stmtDecl() throws RecognitionException {
         pollenParser.stmtDecl_return retval = new pollenParser.stmtDecl_return();
         retval.start = input.LT(1);
@@ -25068,40 +25205,40 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        pollenParser.stmtDeclAttr_return stmtDeclAttr488 =null;
+        pollenParser.stmtDeclAttr_return stmtDeclAttr491 =null;
 
-        pollenParser.varDecl_return varDecl489 =null;
+        pollenParser.varDecl_return varDecl492 =null;
 
-        pollenParser.delim_return delim490 =null;
+        pollenParser.delim_return delim493 =null;
 
 
         RewriteRuleSubtreeStream stream_varDecl=new RewriteRuleSubtreeStream(adaptor,"rule varDecl");
         RewriteRuleSubtreeStream stream_stmtDeclAttr=new RewriteRuleSubtreeStream(adaptor,"rule stmtDeclAttr");
         RewriteRuleSubtreeStream stream_delim=new RewriteRuleSubtreeStream(adaptor,"rule delim");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2001:4: ( stmtDeclAttr varDecl delim -> ^( S_DECL[\"S_DECL\"] varDecl ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2001:10: stmtDeclAttr varDecl delim
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2005:4: ( stmtDeclAttr varDecl delim -> ^( S_DECL[\"S_DECL\"] varDecl ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2005:10: stmtDeclAttr varDecl delim
             {
-            pushFollow(FOLLOW_stmtDeclAttr_in_stmtDecl15495);
-            stmtDeclAttr488=stmtDeclAttr();
+            pushFollow(FOLLOW_stmtDeclAttr_in_stmtDecl15551);
+            stmtDeclAttr491=stmtDeclAttr();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_stmtDeclAttr.add(stmtDeclAttr488.getTree());
+            if ( state.backtracking==0 ) stream_stmtDeclAttr.add(stmtDeclAttr491.getTree());
 
-            pushFollow(FOLLOW_varDecl_in_stmtDecl15497);
-            varDecl489=varDecl();
-
-            state._fsp--;
-            if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_varDecl.add(varDecl489.getTree());
-
-            pushFollow(FOLLOW_delim_in_stmtDecl15499);
-            delim490=delim();
+            pushFollow(FOLLOW_varDecl_in_stmtDecl15553);
+            varDecl492=varDecl();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_delim.add(delim490.getTree());
+            if ( state.backtracking==0 ) stream_varDecl.add(varDecl492.getTree());
+
+            pushFollow(FOLLOW_delim_in_stmtDecl15555);
+            delim493=delim();
+
+            state._fsp--;
+            if (state.failed) return retval;
+            if ( state.backtracking==0 ) stream_delim.add(delim493.getTree());
 
             // AST REWRITE
             // elements: varDecl
@@ -25116,9 +25253,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2001:40: -> ^( S_DECL[\"S_DECL\"] varDecl )
+            // 2005:40: -> ^( S_DECL[\"S_DECL\"] varDecl )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2001:43: ^( S_DECL[\"S_DECL\"] varDecl )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2005:43: ^( S_DECL[\"S_DECL\"] varDecl )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -25169,7 +25306,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtDeclAttr"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2003:1: stmtDeclAttr : ( 'const' | 'volatile' |t= 'host' )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2007:1: stmtDeclAttr : ( 'const' | 'volatile' |t= 'host' )* ;
     public final pollenParser.stmtDeclAttr_return stmtDeclAttr() throws RecognitionException {
         pollenParser.stmtDeclAttr_return retval = new pollenParser.stmtDeclAttr_return();
         retval.start = input.LT(1);
@@ -25178,53 +25315,53 @@ public TreeAdaptor getTreeAdaptor() {
         BaseNode root_0 = null;
 
         Atom t=null;
-        Atom string_literal491=null;
-        Atom string_literal492=null;
+        Atom string_literal494=null;
+        Atom string_literal495=null;
 
         BaseNode t_tree=null;
-        BaseNode string_literal491_tree=null;
-        BaseNode string_literal492_tree=null;
+        BaseNode string_literal494_tree=null;
+        BaseNode string_literal495_tree=null;
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2004:5: ( ( 'const' | 'volatile' |t= 'host' )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2004:10: ( 'const' | 'volatile' |t= 'host' )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2008:5: ( ( 'const' | 'volatile' |t= 'host' )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2008:10: ( 'const' | 'volatile' |t= 'host' )*
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2004:10: ( 'const' | 'volatile' |t= 'host' )*
-            loop131:
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2008:10: ( 'const' | 'volatile' |t= 'host' )*
+            loop132:
             do {
-                int alt131=4;
+                int alt132=4;
                 switch ( input.LA(1) ) {
                 case 156:
                     {
-                    alt131=1;
+                    alt132=1;
                     }
                     break;
                 case 197:
                     {
-                    alt131=2;
+                    alt132=2;
                     }
                     break;
                 case 169:
                     {
-                    alt131=3;
+                    alt132=3;
                     }
                     break;
 
                 }
 
-                switch (alt131) {
+                switch (alt132) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2004:16: 'const'
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2008:16: 'const'
             	    {
-            	    string_literal491=(Atom)match(input,156,FOLLOW_156_in_stmtDeclAttr15540); if (state.failed) return retval;
+            	    string_literal494=(Atom)match(input,156,FOLLOW_156_in_stmtDeclAttr15596); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
-            	    string_literal491_tree = 
-            	    (BaseNode)adaptor.create(string_literal491)
+            	    string_literal494_tree = 
+            	    (BaseNode)adaptor.create(string_literal494)
             	    ;
-            	    adaptor.addChild(root_0, string_literal491_tree);
+            	    adaptor.addChild(root_0, string_literal494_tree);
             	    }
 
             	    if ( state.backtracking==0 ) { typeMods.add(Flags.CONST); }
@@ -25232,14 +25369,14 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2005:15: 'volatile'
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2009:15: 'volatile'
             	    {
-            	    string_literal492=(Atom)match(input,197,FOLLOW_197_in_stmtDeclAttr15558); if (state.failed) return retval;
+            	    string_literal495=(Atom)match(input,197,FOLLOW_197_in_stmtDeclAttr15614); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
-            	    string_literal492_tree = 
-            	    (BaseNode)adaptor.create(string_literal492)
+            	    string_literal495_tree = 
+            	    (BaseNode)adaptor.create(string_literal495)
             	    ;
-            	    adaptor.addChild(root_0, string_literal492_tree);
+            	    adaptor.addChild(root_0, string_literal495_tree);
             	    }
 
             	    if ( state.backtracking==0 ) { typeMods.add(Flags.VOLATILE); }
@@ -25247,9 +25384,9 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    break;
             	case 3 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2006:18: t= 'host'
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2010:18: t= 'host'
             	    {
-            	    t=(Atom)match(input,169,FOLLOW_169_in_stmtDeclAttr15581); if (state.failed) return retval;
+            	    t=(Atom)match(input,169,FOLLOW_169_in_stmtDeclAttr15637); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    t_tree = 
             	    (BaseNode)adaptor.create(t)
@@ -25263,7 +25400,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    break;
 
             	default :
-            	    break loop131;
+            	    break loop132;
                 }
             } while (true);
 
@@ -25301,7 +25438,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fieldDeclaration"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2009:1: fieldDeclaration : ( ( 'new' | 'host' 'new' )=> varDeclarationNew | varAttr varDecl delim -> varDecl );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2013:1: fieldDeclaration : ( ( 'new' | 'host' 'new' )=> varDeclarationNew | varAttr varDecl delim -> varDecl );
     public final pollenParser.fieldDeclaration_return fieldDeclaration() throws RecognitionException {
         pollenParser.fieldDeclaration_return retval = new pollenParser.fieldDeclaration_return();
         retval.start = input.LT(1);
@@ -25309,13 +25446,13 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        pollenParser.varDeclarationNew_return varDeclarationNew493 =null;
+        pollenParser.varDeclarationNew_return varDeclarationNew496 =null;
 
-        pollenParser.varAttr_return varAttr494 =null;
+        pollenParser.varAttr_return varAttr497 =null;
 
-        pollenParser.varDecl_return varDecl495 =null;
+        pollenParser.varDecl_return varDecl498 =null;
 
-        pollenParser.delim_return delim496 =null;
+        pollenParser.delim_return delim499 =null;
 
 
         RewriteRuleSubtreeStream stream_varAttr=new RewriteRuleSubtreeStream(adaptor,"rule varAttr");
@@ -25327,81 +25464,81 @@ public TreeAdaptor getTreeAdaptor() {
             stmtFlags.add(Flags.FIELD);
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2015:4: ( ( 'new' | 'host' 'new' )=> varDeclarationNew | varAttr varDecl delim -> varDecl )
-            int alt132=2;
-            int LA132_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2019:4: ( ( 'new' | 'host' 'new' )=> varDeclarationNew | varAttr varDecl delim -> varDecl )
+            int alt133=2;
+            int LA133_0 = input.LA(1);
 
-            if ( (LA132_0==179) && (synpred47_pollen())) {
-                alt132=1;
+            if ( (LA133_0==179) && (synpred47_pollen())) {
+                alt133=1;
             }
-            else if ( (LA132_0==169) ) {
-                int LA132_2 = input.LA(2);
+            else if ( (LA133_0==169) ) {
+                int LA133_2 = input.LA(2);
 
                 if ( (synpred47_pollen()) ) {
-                    alt132=1;
+                    alt133=1;
                 }
                 else if ( (true) ) {
-                    alt132=2;
+                    alt133=2;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 132, 2, input);
+                        new NoViableAltException("", 133, 2, input);
 
                     throw nvae;
 
                 }
             }
-            else if ( (LA132_0==IDENT||LA132_0==135||LA132_0==150||LA132_0==152||LA132_0==156||(LA132_0 >= 173 && LA132_0 <= 175)||LA132_0==188||LA132_0==190||(LA132_0 >= 194 && LA132_0 <= 197)) ) {
-                alt132=2;
+            else if ( (LA133_0==IDENT||LA133_0==135||LA133_0==150||LA133_0==152||LA133_0==156||(LA133_0 >= 173 && LA133_0 <= 175)||LA133_0==188||LA133_0==190||(LA133_0 >= 194 && LA133_0 <= 197)) ) {
+                alt133=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 132, 0, input);
+                    new NoViableAltException("", 133, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt132) {
+            switch (alt133) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2015:10: ( 'new' | 'host' 'new' )=> varDeclarationNew
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2019:10: ( 'new' | 'host' 'new' )=> varDeclarationNew
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_varDeclarationNew_in_fieldDeclaration15634);
-                    varDeclarationNew493=varDeclarationNew();
+                    pushFollow(FOLLOW_varDeclarationNew_in_fieldDeclaration15690);
+                    varDeclarationNew496=varDeclarationNew();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varDeclarationNew493.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varDeclarationNew496.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2016:10: varAttr varDecl delim
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2020:10: varAttr varDecl delim
                     {
-                    pushFollow(FOLLOW_varAttr_in_fieldDeclaration15645);
-                    varAttr494=varAttr();
+                    pushFollow(FOLLOW_varAttr_in_fieldDeclaration15701);
+                    varAttr497=varAttr();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_varAttr.add(varAttr494.getTree());
+                    if ( state.backtracking==0 ) stream_varAttr.add(varAttr497.getTree());
 
-                    pushFollow(FOLLOW_varDecl_in_fieldDeclaration15647);
-                    varDecl495=varDecl();
-
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_varDecl.add(varDecl495.getTree());
-
-                    pushFollow(FOLLOW_delim_in_fieldDeclaration15649);
-                    delim496=delim();
+                    pushFollow(FOLLOW_varDecl_in_fieldDeclaration15703);
+                    varDecl498=varDecl();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_delim.add(delim496.getTree());
+                    if ( state.backtracking==0 ) stream_varDecl.add(varDecl498.getTree());
+
+                    pushFollow(FOLLOW_delim_in_fieldDeclaration15705);
+                    delim499=delim();
+
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) stream_delim.add(delim499.getTree());
 
                     // AST REWRITE
                     // elements: varDecl
@@ -25416,7 +25553,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2016:35: -> varDecl
+                    // 2020:35: -> varDecl
                     {
                         adaptor.addChild(root_0, stream_varDecl.nextTree());
 
@@ -25461,7 +25598,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varDeclaration"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2018:1: varDeclaration : varAttr varDecl delim -> varDecl ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2022:1: varDeclaration : varAttr varDecl delim -> varDecl ;
     public final pollenParser.varDeclaration_return varDeclaration() throws RecognitionException {
         pollenParser.varDeclaration_return retval = new pollenParser.varDeclaration_return();
         retval.start = input.LT(1);
@@ -25469,11 +25606,11 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        pollenParser.varAttr_return varAttr497 =null;
+        pollenParser.varAttr_return varAttr500 =null;
 
-        pollenParser.varDecl_return varDecl498 =null;
+        pollenParser.varDecl_return varDecl501 =null;
 
-        pollenParser.delim_return delim499 =null;
+        pollenParser.delim_return delim502 =null;
 
 
         RewriteRuleSubtreeStream stream_varAttr=new RewriteRuleSubtreeStream(adaptor,"rule varAttr");
@@ -25484,29 +25621,29 @@ public TreeAdaptor getTreeAdaptor() {
             stmtFlags = EnumSet.noneOf(Flags.class);
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2026:4: ( varAttr varDecl delim -> varDecl )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2026:10: varAttr varDecl delim
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2030:4: ( varAttr varDecl delim -> varDecl )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2030:10: varAttr varDecl delim
             {
-            pushFollow(FOLLOW_varAttr_in_varDeclaration15688);
-            varAttr497=varAttr();
+            pushFollow(FOLLOW_varAttr_in_varDeclaration15744);
+            varAttr500=varAttr();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_varAttr.add(varAttr497.getTree());
+            if ( state.backtracking==0 ) stream_varAttr.add(varAttr500.getTree());
 
-            pushFollow(FOLLOW_varDecl_in_varDeclaration15690);
-            varDecl498=varDecl();
-
-            state._fsp--;
-            if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_varDecl.add(varDecl498.getTree());
-
-            pushFollow(FOLLOW_delim_in_varDeclaration15692);
-            delim499=delim();
+            pushFollow(FOLLOW_varDecl_in_varDeclaration15746);
+            varDecl501=varDecl();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_delim.add(delim499.getTree());
+            if ( state.backtracking==0 ) stream_varDecl.add(varDecl501.getTree());
+
+            pushFollow(FOLLOW_delim_in_varDeclaration15748);
+            delim502=delim();
+
+            state._fsp--;
+            if (state.failed) return retval;
+            if ( state.backtracking==0 ) stream_delim.add(delim502.getTree());
 
             // AST REWRITE
             // elements: varDecl
@@ -25521,7 +25658,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2026:35: -> varDecl
+            // 2030:35: -> varDecl
             {
                 adaptor.addChild(root_0, stream_varDecl.nextTree());
 
@@ -25567,7 +25704,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varAttr"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2028:1: varAttr : ( 'const' | 'volatile' | 'host' )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2032:1: varAttr : ( 'const' | 'volatile' | 'host' )* ;
     public final pollenParser.varAttr_return varAttr() throws RecognitionException {
         pollenParser.varAttr_return retval = new pollenParser.varAttr_return();
         retval.start = input.LT(1);
@@ -25575,54 +25712,54 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom string_literal500=null;
-        Atom string_literal501=null;
-        Atom string_literal502=null;
+        Atom string_literal503=null;
+        Atom string_literal504=null;
+        Atom string_literal505=null;
 
-        BaseNode string_literal500_tree=null;
-        BaseNode string_literal501_tree=null;
-        BaseNode string_literal502_tree=null;
+        BaseNode string_literal503_tree=null;
+        BaseNode string_literal504_tree=null;
+        BaseNode string_literal505_tree=null;
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2029:5: ( ( 'const' | 'volatile' | 'host' )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2029:10: ( 'const' | 'volatile' | 'host' )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2033:5: ( ( 'const' | 'volatile' | 'host' )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2033:10: ( 'const' | 'volatile' | 'host' )*
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2029:10: ( 'const' | 'volatile' | 'host' )*
-            loop133:
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2033:10: ( 'const' | 'volatile' | 'host' )*
+            loop134:
             do {
-                int alt133=4;
+                int alt134=4;
                 switch ( input.LA(1) ) {
                 case 156:
                     {
-                    alt133=1;
+                    alt134=1;
                     }
                     break;
                 case 197:
                     {
-                    alt133=2;
+                    alt134=2;
                     }
                     break;
                 case 169:
                     {
-                    alt133=3;
+                    alt134=3;
                     }
                     break;
 
                 }
 
-                switch (alt133) {
+                switch (alt134) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2029:16: 'const'
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2033:16: 'const'
             	    {
-            	    string_literal500=(Atom)match(input,156,FOLLOW_156_in_varAttr15723); if (state.failed) return retval;
+            	    string_literal503=(Atom)match(input,156,FOLLOW_156_in_varAttr15779); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
-            	    string_literal500_tree = 
-            	    (BaseNode)adaptor.create(string_literal500)
+            	    string_literal503_tree = 
+            	    (BaseNode)adaptor.create(string_literal503)
             	    ;
-            	    adaptor.addChild(root_0, string_literal500_tree);
+            	    adaptor.addChild(root_0, string_literal503_tree);
             	    }
 
             	    if ( state.backtracking==0 ) { typeMods.add(Flags.CONST); }
@@ -25630,14 +25767,14 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2030:15: 'volatile'
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2034:15: 'volatile'
             	    {
-            	    string_literal501=(Atom)match(input,197,FOLLOW_197_in_varAttr15741); if (state.failed) return retval;
+            	    string_literal504=(Atom)match(input,197,FOLLOW_197_in_varAttr15797); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
-            	    string_literal501_tree = 
-            	    (BaseNode)adaptor.create(string_literal501)
+            	    string_literal504_tree = 
+            	    (BaseNode)adaptor.create(string_literal504)
             	    ;
-            	    adaptor.addChild(root_0, string_literal501_tree);
+            	    adaptor.addChild(root_0, string_literal504_tree);
             	    }
 
             	    if ( state.backtracking==0 ) { typeMods.add(Flags.VOLATILE); }
@@ -25645,14 +25782,14 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    break;
             	case 3 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2031:17: 'host'
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2035:17: 'host'
             	    {
-            	    string_literal502=(Atom)match(input,169,FOLLOW_169_in_varAttr15761); if (state.failed) return retval;
+            	    string_literal505=(Atom)match(input,169,FOLLOW_169_in_varAttr15817); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
-            	    string_literal502_tree = 
-            	    (BaseNode)adaptor.create(string_literal502)
+            	    string_literal505_tree = 
+            	    (BaseNode)adaptor.create(string_literal505)
             	    ;
-            	    adaptor.addChild(root_0, string_literal502_tree);
+            	    adaptor.addChild(root_0, string_literal505_tree);
             	    }
 
             	    if ( state.backtracking==0 ) { typeMods.add(Flags.HOST); }
@@ -25661,7 +25798,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    break;
 
             	default :
-            	    break loop133;
+            	    break loop134;
                 }
             } while (true);
 
@@ -25705,7 +25842,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varDecl"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2034:1: varDecl : ( ( typeName IDENT ( ASSIGN ) )=> varDeclList | ( typeName IDENT '[' )=> varArray | ( typeName '[' )=> varArray2 | ( ( '(' )? typeName '(' )=> varFcnRef | ( ( '(' ) typeName typeName '(' )=> varFcnRef2 | ( typeName varInit )=> varDeclList );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2038:1: varDecl : ( ( typeName IDENT ( ASSIGN ) )=> varDeclList | ( typeName IDENT '[' )=> varArray | ( typeName '[' )=> varArray2 | ( ( '(' )? typeName '(' )=> varFcnRef | ( ( '(' ) typeName typeName '(' )=> varFcnRef2 | ( typeName varInit )=> varDeclList );
     public final pollenParser.varDecl_return varDecl() throws RecognitionException {
         varDecl_stack.push(new varDecl_scope());
         pollenParser.varDecl_return retval = new pollenParser.varDecl_return();
@@ -25714,17 +25851,17 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        pollenParser.varDeclList_return varDeclList503 =null;
+        pollenParser.varDeclList_return varDeclList506 =null;
 
-        pollenParser.varArray_return varArray504 =null;
+        pollenParser.varArray_return varArray507 =null;
 
-        pollenParser.varArray2_return varArray2505 =null;
+        pollenParser.varArray2_return varArray2508 =null;
 
-        pollenParser.varFcnRef_return varFcnRef506 =null;
+        pollenParser.varFcnRef_return varFcnRef509 =null;
 
-        pollenParser.varFcnRef2_return varFcnRef2507 =null;
+        pollenParser.varFcnRef2_return varFcnRef2510 =null;
 
-        pollenParser.varDeclList_return varDeclList508 =null;
+        pollenParser.varDeclList_return varDeclList511 =null;
 
 
 
@@ -25733,32 +25870,32 @@ public TreeAdaptor getTreeAdaptor() {
             stmtFlags.addAll(typeMods);
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2044:5: ( ( typeName IDENT ( ASSIGN ) )=> varDeclList | ( typeName IDENT '[' )=> varArray | ( typeName '[' )=> varArray2 | ( ( '(' )? typeName '(' )=> varFcnRef | ( ( '(' ) typeName typeName '(' )=> varFcnRef2 | ( typeName varInit )=> varDeclList )
-            int alt134=6;
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2048:5: ( ( typeName IDENT ( ASSIGN ) )=> varDeclList | ( typeName IDENT '[' )=> varArray | ( typeName '[' )=> varArray2 | ( ( '(' )? typeName '(' )=> varFcnRef | ( ( '(' ) typeName typeName '(' )=> varFcnRef2 | ( typeName varInit )=> varDeclList )
+            int alt135=6;
             switch ( input.LA(1) ) {
             case 150:
                 {
-                int LA134_1 = input.LA(2);
+                int LA135_1 = input.LA(2);
 
                 if ( (synpred48_pollen()) ) {
-                    alt134=1;
+                    alt135=1;
                 }
                 else if ( (synpred49_pollen()) ) {
-                    alt134=2;
+                    alt135=2;
                 }
                 else if ( (synpred50_pollen()) ) {
-                    alt134=3;
+                    alt135=3;
                 }
                 else if ( (synpred51_pollen()) ) {
-                    alt134=4;
+                    alt135=4;
                 }
                 else if ( (synpred53_pollen()) ) {
-                    alt134=6;
+                    alt135=6;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 134, 1, input);
+                        new NoViableAltException("", 135, 1, input);
 
                     throw nvae;
 
@@ -25767,27 +25904,27 @@ public TreeAdaptor getTreeAdaptor() {
                 break;
             case 152:
                 {
-                int LA134_2 = input.LA(2);
+                int LA135_2 = input.LA(2);
 
                 if ( (synpred48_pollen()) ) {
-                    alt134=1;
+                    alt135=1;
                 }
                 else if ( (synpred49_pollen()) ) {
-                    alt134=2;
+                    alt135=2;
                 }
                 else if ( (synpred50_pollen()) ) {
-                    alt134=3;
+                    alt135=3;
                 }
                 else if ( (synpred51_pollen()) ) {
-                    alt134=4;
+                    alt135=4;
                 }
                 else if ( (synpred53_pollen()) ) {
-                    alt134=6;
+                    alt135=6;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 134, 2, input);
+                        new NoViableAltException("", 135, 2, input);
 
                     throw nvae;
 
@@ -25796,27 +25933,27 @@ public TreeAdaptor getTreeAdaptor() {
                 break;
             case 175:
                 {
-                int LA134_3 = input.LA(2);
+                int LA135_3 = input.LA(2);
 
                 if ( (synpred48_pollen()) ) {
-                    alt134=1;
+                    alt135=1;
                 }
                 else if ( (synpred49_pollen()) ) {
-                    alt134=2;
+                    alt135=2;
                 }
                 else if ( (synpred50_pollen()) ) {
-                    alt134=3;
+                    alt135=3;
                 }
                 else if ( (synpred51_pollen()) ) {
-                    alt134=4;
+                    alt135=4;
                 }
                 else if ( (synpred53_pollen()) ) {
-                    alt134=6;
+                    alt135=6;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 134, 3, input);
+                        new NoViableAltException("", 135, 3, input);
 
                     throw nvae;
 
@@ -25825,27 +25962,27 @@ public TreeAdaptor getTreeAdaptor() {
                 break;
             case 173:
                 {
-                int LA134_4 = input.LA(2);
+                int LA135_4 = input.LA(2);
 
                 if ( (synpred48_pollen()) ) {
-                    alt134=1;
+                    alt135=1;
                 }
                 else if ( (synpred49_pollen()) ) {
-                    alt134=2;
+                    alt135=2;
                 }
                 else if ( (synpred50_pollen()) ) {
-                    alt134=3;
+                    alt135=3;
                 }
                 else if ( (synpred51_pollen()) ) {
-                    alt134=4;
+                    alt135=4;
                 }
                 else if ( (synpred53_pollen()) ) {
-                    alt134=6;
+                    alt135=6;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 134, 4, input);
+                        new NoViableAltException("", 135, 4, input);
 
                     throw nvae;
 
@@ -25854,27 +25991,27 @@ public TreeAdaptor getTreeAdaptor() {
                 break;
             case 174:
                 {
-                int LA134_5 = input.LA(2);
+                int LA135_5 = input.LA(2);
 
                 if ( (synpred48_pollen()) ) {
-                    alt134=1;
+                    alt135=1;
                 }
                 else if ( (synpred49_pollen()) ) {
-                    alt134=2;
+                    alt135=2;
                 }
                 else if ( (synpred50_pollen()) ) {
-                    alt134=3;
+                    alt135=3;
                 }
                 else if ( (synpred51_pollen()) ) {
-                    alt134=4;
+                    alt135=4;
                 }
                 else if ( (synpred53_pollen()) ) {
-                    alt134=6;
+                    alt135=6;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 134, 5, input);
+                        new NoViableAltException("", 135, 5, input);
 
                     throw nvae;
 
@@ -25883,27 +26020,27 @@ public TreeAdaptor getTreeAdaptor() {
                 break;
             case 188:
                 {
-                int LA134_6 = input.LA(2);
+                int LA135_6 = input.LA(2);
 
                 if ( (synpred48_pollen()) ) {
-                    alt134=1;
+                    alt135=1;
                 }
                 else if ( (synpred49_pollen()) ) {
-                    alt134=2;
+                    alt135=2;
                 }
                 else if ( (synpred50_pollen()) ) {
-                    alt134=3;
+                    alt135=3;
                 }
                 else if ( (synpred51_pollen()) ) {
-                    alt134=4;
+                    alt135=4;
                 }
                 else if ( (synpred53_pollen()) ) {
-                    alt134=6;
+                    alt135=6;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 134, 6, input);
+                        new NoViableAltException("", 135, 6, input);
 
                     throw nvae;
 
@@ -25912,27 +26049,27 @@ public TreeAdaptor getTreeAdaptor() {
                 break;
             case 190:
                 {
-                int LA134_7 = input.LA(2);
+                int LA135_7 = input.LA(2);
 
                 if ( (synpred48_pollen()) ) {
-                    alt134=1;
+                    alt135=1;
                 }
                 else if ( (synpred49_pollen()) ) {
-                    alt134=2;
+                    alt135=2;
                 }
                 else if ( (synpred50_pollen()) ) {
-                    alt134=3;
+                    alt135=3;
                 }
                 else if ( (synpred51_pollen()) ) {
-                    alt134=4;
+                    alt135=4;
                 }
                 else if ( (synpred53_pollen()) ) {
-                    alt134=6;
+                    alt135=6;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 134, 7, input);
+                        new NoViableAltException("", 135, 7, input);
 
                     throw nvae;
 
@@ -25941,27 +26078,27 @@ public TreeAdaptor getTreeAdaptor() {
                 break;
             case 196:
                 {
-                int LA134_8 = input.LA(2);
+                int LA135_8 = input.LA(2);
 
                 if ( (synpred48_pollen()) ) {
-                    alt134=1;
+                    alt135=1;
                 }
                 else if ( (synpred49_pollen()) ) {
-                    alt134=2;
+                    alt135=2;
                 }
                 else if ( (synpred50_pollen()) ) {
-                    alt134=3;
+                    alt135=3;
                 }
                 else if ( (synpred51_pollen()) ) {
-                    alt134=4;
+                    alt135=4;
                 }
                 else if ( (synpred53_pollen()) ) {
-                    alt134=6;
+                    alt135=6;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 134, 8, input);
+                        new NoViableAltException("", 135, 8, input);
 
                     throw nvae;
 
@@ -25970,27 +26107,27 @@ public TreeAdaptor getTreeAdaptor() {
                 break;
             case 194:
                 {
-                int LA134_9 = input.LA(2);
+                int LA135_9 = input.LA(2);
 
                 if ( (synpred48_pollen()) ) {
-                    alt134=1;
+                    alt135=1;
                 }
                 else if ( (synpred49_pollen()) ) {
-                    alt134=2;
+                    alt135=2;
                 }
                 else if ( (synpred50_pollen()) ) {
-                    alt134=3;
+                    alt135=3;
                 }
                 else if ( (synpred51_pollen()) ) {
-                    alt134=4;
+                    alt135=4;
                 }
                 else if ( (synpred53_pollen()) ) {
-                    alt134=6;
+                    alt135=6;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 134, 9, input);
+                        new NoViableAltException("", 135, 9, input);
 
                     throw nvae;
 
@@ -25999,27 +26136,27 @@ public TreeAdaptor getTreeAdaptor() {
                 break;
             case 195:
                 {
-                int LA134_10 = input.LA(2);
+                int LA135_10 = input.LA(2);
 
                 if ( (synpred48_pollen()) ) {
-                    alt134=1;
+                    alt135=1;
                 }
                 else if ( (synpred49_pollen()) ) {
-                    alt134=2;
+                    alt135=2;
                 }
                 else if ( (synpred50_pollen()) ) {
-                    alt134=3;
+                    alt135=3;
                 }
                 else if ( (synpred51_pollen()) ) {
-                    alt134=4;
+                    alt135=4;
                 }
                 else if ( (synpred53_pollen()) ) {
-                    alt134=6;
+                    alt135=6;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 134, 10, input);
+                        new NoViableAltException("", 135, 10, input);
 
                     throw nvae;
 
@@ -26028,27 +26165,27 @@ public TreeAdaptor getTreeAdaptor() {
                 break;
             case IDENT:
                 {
-                int LA134_11 = input.LA(2);
+                int LA135_11 = input.LA(2);
 
                 if ( (synpred48_pollen()) ) {
-                    alt134=1;
+                    alt135=1;
                 }
                 else if ( (synpred49_pollen()) ) {
-                    alt134=2;
+                    alt135=2;
                 }
                 else if ( (synpred50_pollen()) ) {
-                    alt134=3;
+                    alt135=3;
                 }
                 else if ( (synpred51_pollen()) ) {
-                    alt134=4;
+                    alt135=4;
                 }
                 else if ( (synpred53_pollen()) ) {
-                    alt134=6;
+                    alt135=6;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 134, 11, input);
+                        new NoViableAltException("", 135, 11, input);
 
                     throw nvae;
 
@@ -26057,18 +26194,18 @@ public TreeAdaptor getTreeAdaptor() {
                 break;
             case 135:
                 {
-                int LA134_12 = input.LA(2);
+                int LA135_12 = input.LA(2);
 
                 if ( (synpred51_pollen()) ) {
-                    alt134=4;
+                    alt135=4;
                 }
                 else if ( (synpred52_pollen()) ) {
-                    alt134=5;
+                    alt135=5;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 134, 12, input);
+                        new NoViableAltException("", 135, 12, input);
 
                     throw nvae;
 
@@ -26078,100 +26215,100 @@ public TreeAdaptor getTreeAdaptor() {
             default:
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 134, 0, input);
+                    new NoViableAltException("", 135, 0, input);
 
                 throw nvae;
 
             }
 
-            switch (alt134) {
+            switch (alt135) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2044:10: ( typeName IDENT ( ASSIGN ) )=> varDeclList
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2048:10: ( typeName IDENT ( ASSIGN ) )=> varDeclList
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_varDeclList_in_varDecl15815);
-                    varDeclList503=varDeclList();
+                    pushFollow(FOLLOW_varDeclList_in_varDecl15871);
+                    varDeclList506=varDeclList();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varDeclList503.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varDeclList506.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2045:10: ( typeName IDENT '[' )=> varArray
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2049:10: ( typeName IDENT '[' )=> varArray
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_varArray_in_varDecl15836);
-                    varArray504=varArray();
+                    pushFollow(FOLLOW_varArray_in_varDecl15892);
+                    varArray507=varArray();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varArray504.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varArray507.getTree());
 
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2046:10: ( typeName '[' )=> varArray2
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2050:10: ( typeName '[' )=> varArray2
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_varArray2_in_varDecl15857);
-                    varArray2505=varArray2();
+                    pushFollow(FOLLOW_varArray2_in_varDecl15913);
+                    varArray2508=varArray2();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varArray2505.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varArray2508.getTree());
 
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2047:11: ( ( '(' )? typeName '(' )=> varFcnRef
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2051:11: ( ( '(' )? typeName '(' )=> varFcnRef
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_varFcnRef_in_varDecl15883);
-                    varFcnRef506=varFcnRef();
+                    pushFollow(FOLLOW_varFcnRef_in_varDecl15939);
+                    varFcnRef509=varFcnRef();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varFcnRef506.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varFcnRef509.getTree());
 
                     }
                     break;
                 case 5 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2048:11: ( ( '(' ) typeName typeName '(' )=> varFcnRef2
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2052:11: ( ( '(' ) typeName typeName '(' )=> varFcnRef2
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_varFcnRef2_in_varDecl15912);
-                    varFcnRef2507=varFcnRef2();
+                    pushFollow(FOLLOW_varFcnRef2_in_varDecl15968);
+                    varFcnRef2510=varFcnRef2();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varFcnRef2507.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varFcnRef2510.getTree());
 
                     }
                     break;
                 case 6 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2049:11: ( typeName varInit )=> varDeclList
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2053:11: ( typeName varInit )=> varDeclList
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_varDeclList_in_varDecl15932);
-                    varDeclList508=varDeclList();
+                    pushFollow(FOLLOW_varDeclList_in_varDecl15988);
+                    varDeclList511=varDeclList();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varDeclList508.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varDeclList511.getTree());
 
                     }
                     break;
@@ -26209,7 +26346,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varDeclarationNew"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2051:1: varDeclarationNew : ( 'new' qualName IDENT fcnArgumentList delim -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) ) | ( 'host' 'new' )=> 'host' 'new' qualName IDENT fcnArgumentList delim -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2055:1: varDeclarationNew : ( 'new' qualName IDENT fcnArgumentList delim -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) ) | ( 'host' 'new' )=> 'host' 'new' qualName IDENT fcnArgumentList delim -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) ) );
     public final pollenParser.varDeclarationNew_return varDeclarationNew() throws RecognitionException {
         pollenParser.varDeclarationNew_return retval = new pollenParser.varDeclarationNew_return();
         retval.start = input.LT(1);
@@ -26217,29 +26354,29 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom string_literal509=null;
-        Atom IDENT511=null;
-        Atom string_literal514=null;
-        Atom string_literal515=null;
-        Atom IDENT517=null;
-        pollenParser.qualName_return qualName510 =null;
+        Atom string_literal512=null;
+        Atom IDENT514=null;
+        Atom string_literal517=null;
+        Atom string_literal518=null;
+        Atom IDENT520=null;
+        pollenParser.qualName_return qualName513 =null;
 
-        pollenParser.fcnArgumentList_return fcnArgumentList512 =null;
+        pollenParser.fcnArgumentList_return fcnArgumentList515 =null;
 
-        pollenParser.delim_return delim513 =null;
+        pollenParser.delim_return delim516 =null;
 
-        pollenParser.qualName_return qualName516 =null;
+        pollenParser.qualName_return qualName519 =null;
 
-        pollenParser.fcnArgumentList_return fcnArgumentList518 =null;
+        pollenParser.fcnArgumentList_return fcnArgumentList521 =null;
 
-        pollenParser.delim_return delim519 =null;
+        pollenParser.delim_return delim522 =null;
 
 
-        BaseNode string_literal509_tree=null;
-        BaseNode IDENT511_tree=null;
-        BaseNode string_literal514_tree=null;
-        BaseNode string_literal515_tree=null;
-        BaseNode IDENT517_tree=null;
+        BaseNode string_literal512_tree=null;
+        BaseNode IDENT514_tree=null;
+        BaseNode string_literal517_tree=null;
+        BaseNode string_literal518_tree=null;
+        BaseNode IDENT520_tree=null;
         RewriteRuleTokenStream stream_179=new RewriteRuleTokenStream(adaptor,"token 179");
         RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
         RewriteRuleTokenStream stream_169=new RewriteRuleTokenStream(adaptor,"token 169");
@@ -26252,56 +26389,56 @@ public TreeAdaptor getTreeAdaptor() {
             String ctor = ""; 
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2060:5: ( 'new' qualName IDENT fcnArgumentList delim -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) ) | ( 'host' 'new' )=> 'host' 'new' qualName IDENT fcnArgumentList delim -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) ) )
-            int alt135=2;
-            int LA135_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2064:5: ( 'new' qualName IDENT fcnArgumentList delim -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) ) | ( 'host' 'new' )=> 'host' 'new' qualName IDENT fcnArgumentList delim -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) ) )
+            int alt136=2;
+            int LA136_0 = input.LA(1);
 
-            if ( (LA135_0==179) ) {
-                alt135=1;
+            if ( (LA136_0==179) ) {
+                alt136=1;
             }
-            else if ( (LA135_0==169) && (synpred54_pollen())) {
-                alt135=2;
+            else if ( (LA136_0==169) && (synpred54_pollen())) {
+                alt136=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 135, 0, input);
+                    new NoViableAltException("", 136, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt135) {
+            switch (alt136) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2060:10: 'new' qualName IDENT fcnArgumentList delim
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2064:10: 'new' qualName IDENT fcnArgumentList delim
                     {
-                    string_literal509=(Atom)match(input,179,FOLLOW_179_in_varDeclarationNew15971); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_179.add(string_literal509);
+                    string_literal512=(Atom)match(input,179,FOLLOW_179_in_varDeclarationNew16027); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_179.add(string_literal512);
 
 
-                    pushFollow(FOLLOW_qualName_in_varDeclarationNew15973);
-                    qualName510=qualName();
-
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_qualName.add(qualName510.getTree());
-
-                    IDENT511=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varDeclarationNew15975); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT511);
-
-
-                    pushFollow(FOLLOW_fcnArgumentList_in_varDeclarationNew15977);
-                    fcnArgumentList512=fcnArgumentList();
+                    pushFollow(FOLLOW_qualName_in_varDeclarationNew16029);
+                    qualName513=qualName();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_fcnArgumentList.add(fcnArgumentList512.getTree());
+                    if ( state.backtracking==0 ) stream_qualName.add(qualName513.getTree());
 
-                    pushFollow(FOLLOW_delim_in_varDeclarationNew15980);
-                    delim513=delim();
+                    IDENT514=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varDeclarationNew16031); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT514);
+
+
+                    pushFollow(FOLLOW_fcnArgumentList_in_varDeclarationNew16033);
+                    fcnArgumentList515=fcnArgumentList();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_delim.add(delim513.getTree());
+                    if ( state.backtracking==0 ) stream_fcnArgumentList.add(fcnArgumentList515.getTree());
+
+                    pushFollow(FOLLOW_delim_in_varDeclarationNew16036);
+                    delim516=delim();
+
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) stream_delim.add(delim516.getTree());
 
                     if ( state.backtracking==0 ) { 
                                       stmtFlags.add(Flags.NEW); 
@@ -26309,7 +26446,7 @@ public TreeAdaptor getTreeAdaptor() {
                                  }
 
                     // AST REWRITE
-                    // elements: qualName, IDENT, IDENT, fcnArgumentList
+                    // elements: qualName, fcnArgumentList, IDENT, IDENT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -26321,16 +26458,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2065:14: -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) )
+                    // 2069:14: -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2065:17: ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2069:17: ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.TypedMember(D_VAR, "D_VAR", stmtFlags)
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2065:67: ^( T_USR[\"T_USR\", typeMods] qualName )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2069:67: ^( T_USR[\"T_USR\", typeMods] qualName )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -26346,21 +26483,21 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_IDENT.nextNode()
                         );
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2066:24: ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2070:24: ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.New(E_NEW, "E_NEW")
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2067:31: ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2071:31: ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Call(E_CALL, "E_CALL")
                         , root_3);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2068:32: ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2072:32: ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] )
                         {
                         BaseNode root_4 = (BaseNode)adaptor.nil();
                         root_4 = (BaseNode)adaptor.becomeRoot(
@@ -26368,7 +26505,7 @@ public TreeAdaptor getTreeAdaptor() {
                         , root_4);
 
                         adaptor.addChild(root_4, 
-                        (BaseNode)adaptor.create(IDENT, (qualName510!=null?input.toString(qualName510.start,qualName510.stop):null) + "." + ctor)
+                        (BaseNode)adaptor.create(IDENT, (qualName513!=null?input.toString(qualName513.start,qualName513.stop):null) + "." + ctor)
                         );
 
                         adaptor.addChild(root_3, root_4);
@@ -26394,40 +26531,40 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2071:6: ( 'host' 'new' )=> 'host' 'new' qualName IDENT fcnArgumentList delim
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2075:6: ( 'host' 'new' )=> 'host' 'new' qualName IDENT fcnArgumentList delim
                     {
-                    string_literal514=(Atom)match(input,169,FOLLOW_169_in_varDeclarationNew16252); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_169.add(string_literal514);
+                    string_literal517=(Atom)match(input,169,FOLLOW_169_in_varDeclarationNew16308); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_169.add(string_literal517);
 
 
-                    string_literal515=(Atom)match(input,179,FOLLOW_179_in_varDeclarationNew16254); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_179.add(string_literal515);
+                    string_literal518=(Atom)match(input,179,FOLLOW_179_in_varDeclarationNew16310); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_179.add(string_literal518);
 
 
-                    pushFollow(FOLLOW_qualName_in_varDeclarationNew16256);
-                    qualName516=qualName();
-
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_qualName.add(qualName516.getTree());
-
-                    IDENT517=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varDeclarationNew16258); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT517);
-
-
-                    pushFollow(FOLLOW_fcnArgumentList_in_varDeclarationNew16260);
-                    fcnArgumentList518=fcnArgumentList();
+                    pushFollow(FOLLOW_qualName_in_varDeclarationNew16312);
+                    qualName519=qualName();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_fcnArgumentList.add(fcnArgumentList518.getTree());
+                    if ( state.backtracking==0 ) stream_qualName.add(qualName519.getTree());
 
-                    pushFollow(FOLLOW_delim_in_varDeclarationNew16263);
-                    delim519=delim();
+                    IDENT520=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varDeclarationNew16314); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT520);
+
+
+                    pushFollow(FOLLOW_fcnArgumentList_in_varDeclarationNew16316);
+                    fcnArgumentList521=fcnArgumentList();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_delim.add(delim519.getTree());
+                    if ( state.backtracking==0 ) stream_fcnArgumentList.add(fcnArgumentList521.getTree());
+
+                    pushFollow(FOLLOW_delim_in_varDeclarationNew16319);
+                    delim522=delim();
+
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) stream_delim.add(delim522.getTree());
 
                     if ( state.backtracking==0 ) {   stmtFlags.add(Flags.NEW); 
                                       stmtFlags.add(Flags.HOST);
@@ -26436,7 +26573,7 @@ public TreeAdaptor getTreeAdaptor() {
                                  }
 
                     // AST REWRITE
-                    // elements: IDENT, IDENT, qualName, fcnArgumentList
+                    // elements: qualName, IDENT, fcnArgumentList, IDENT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -26448,16 +26585,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2077:14: -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) )
+                    // 2081:14: -> ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2077:17: ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2081:17: ^( D_VAR[\"D_VAR\", stmtFlags] ^( T_USR[\"T_USR\", typeMods] qualName ) IDENT ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) ) )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
                         new DeclNode.TypedMember(D_VAR, "D_VAR", stmtFlags)
                         , root_1);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2077:67: ^( T_USR[\"T_USR\", typeMods] qualName )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2081:67: ^( T_USR[\"T_USR\", typeMods] qualName )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
@@ -26473,21 +26610,21 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_IDENT.nextNode()
                         );
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2078:24: ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2082:24: ^( E_NEW[\"E_NEW\"] ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList ) )
                         {
                         BaseNode root_2 = (BaseNode)adaptor.nil();
                         root_2 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.New(E_NEW, "E_NEW")
                         , root_2);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2079:31: ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2083:31: ^( E_CALL[\"E_CALL\"] ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] ) fcnArgumentList )
                         {
                         BaseNode root_3 = (BaseNode)adaptor.nil();
                         root_3 = (BaseNode)adaptor.becomeRoot(
                         new ExprNode.Call(E_CALL, "E_CALL")
                         , root_3);
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2080:32: ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2084:32: ^( E_IDENT[\"E_IDENT\"] IDENT[$qualName.text + \".\" + ctor] )
                         {
                         BaseNode root_4 = (BaseNode)adaptor.nil();
                         root_4 = (BaseNode)adaptor.becomeRoot(
@@ -26495,7 +26632,7 @@ public TreeAdaptor getTreeAdaptor() {
                         , root_4);
 
                         adaptor.addChild(root_4, 
-                        (BaseNode)adaptor.create(IDENT, (qualName516!=null?input.toString(qualName516.start,qualName516.stop):null) + "." + ctor)
+                        (BaseNode)adaptor.create(IDENT, (qualName519!=null?input.toString(qualName519.start,qualName519.stop):null) + "." + ctor)
                         );
 
                         adaptor.addChild(root_3, root_4);
@@ -26556,7 +26693,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varFcnRef"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2085:1: varFcnRef : ( ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )? | typeName fcnRefTypeList IDENT ( ASSIGN expr )? ) -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ( expr )? ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2089:1: varFcnRef : ( ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )? | typeName fcnRefTypeList IDENT ( ASSIGN expr )? ) -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ( expr )? ) ;
     public final pollenParser.varFcnRef_return varFcnRef() throws RecognitionException {
         pollenParser.varFcnRef_return retval = new pollenParser.varFcnRef_return();
         retval.start = input.LT(1);
@@ -26564,31 +26701,31 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom char_literal520=null;
         Atom char_literal523=null;
-        Atom IDENT524=null;
-        Atom ASSIGN525=null;
-        Atom IDENT529=null;
-        Atom ASSIGN530=null;
-        pollenParser.typeName_return typeName521 =null;
+        Atom char_literal526=null;
+        Atom IDENT527=null;
+        Atom ASSIGN528=null;
+        Atom IDENT532=null;
+        Atom ASSIGN533=null;
+        pollenParser.typeName_return typeName524 =null;
 
-        pollenParser.fcnRefTypeList_return fcnRefTypeList522 =null;
+        pollenParser.fcnRefTypeList_return fcnRefTypeList525 =null;
 
-        pollenParser.expr_return expr526 =null;
+        pollenParser.expr_return expr529 =null;
 
-        pollenParser.typeName_return typeName527 =null;
+        pollenParser.typeName_return typeName530 =null;
 
-        pollenParser.fcnRefTypeList_return fcnRefTypeList528 =null;
+        pollenParser.fcnRefTypeList_return fcnRefTypeList531 =null;
 
-        pollenParser.expr_return expr531 =null;
+        pollenParser.expr_return expr534 =null;
 
 
-        BaseNode char_literal520_tree=null;
         BaseNode char_literal523_tree=null;
-        BaseNode IDENT524_tree=null;
-        BaseNode ASSIGN525_tree=null;
-        BaseNode IDENT529_tree=null;
-        BaseNode ASSIGN530_tree=null;
+        BaseNode char_literal526_tree=null;
+        BaseNode IDENT527_tree=null;
+        BaseNode ASSIGN528_tree=null;
+        BaseNode IDENT532_tree=null;
+        BaseNode ASSIGN533_tree=null;
         RewriteRuleTokenStream stream_135=new RewriteRuleTokenStream(adaptor,"token 135");
         RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
         RewriteRuleTokenStream stream_136=new RewriteRuleTokenStream(adaptor,"token 136");
@@ -26597,90 +26734,90 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_expr=new RewriteRuleSubtreeStream(adaptor,"rule expr");
         RewriteRuleSubtreeStream stream_fcnRefTypeList=new RewriteRuleSubtreeStream(adaptor,"rule fcnRefTypeList");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2086:5: ( ( ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )? | typeName fcnRefTypeList IDENT ( ASSIGN expr )? ) -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ( expr )? ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2086:11: ( ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )? | typeName fcnRefTypeList IDENT ( ASSIGN expr )? )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2090:5: ( ( ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )? | typeName fcnRefTypeList IDENT ( ASSIGN expr )? ) -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ( expr )? ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2090:11: ( ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )? | typeName fcnRefTypeList IDENT ( ASSIGN expr )? )
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2086:11: ( ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )? | typeName fcnRefTypeList IDENT ( ASSIGN expr )? )
-            int alt138=2;
-            int LA138_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2090:11: ( ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )? | typeName fcnRefTypeList IDENT ( ASSIGN expr )? )
+            int alt139=2;
+            int LA139_0 = input.LA(1);
 
-            if ( (LA138_0==135) ) {
-                alt138=1;
+            if ( (LA139_0==135) ) {
+                alt139=1;
             }
-            else if ( (LA138_0==IDENT||LA138_0==150||LA138_0==152||(LA138_0 >= 173 && LA138_0 <= 175)||LA138_0==188||LA138_0==190||(LA138_0 >= 194 && LA138_0 <= 196)) ) {
-                alt138=2;
+            else if ( (LA139_0==IDENT||LA139_0==150||LA139_0==152||(LA139_0 >= 173 && LA139_0 <= 175)||LA139_0==188||LA139_0==190||(LA139_0 >= 194 && LA139_0 <= 196)) ) {
+                alt139=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 138, 0, input);
+                    new NoViableAltException("", 139, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt138) {
+            switch (alt139) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2086:13: ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2090:13: ( '(' ) typeName fcnRefTypeList ( ')' ) IDENT ( ASSIGN expr )?
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2086:13: ( '(' )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2086:14: '('
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2090:13: ( '(' )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2090:14: '('
                     {
-                    char_literal520=(Atom)match(input,135,FOLLOW_135_in_varFcnRef16544); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_135.add(char_literal520);
+                    char_literal523=(Atom)match(input,135,FOLLOW_135_in_varFcnRef16600); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_135.add(char_literal523);
 
 
                     }
 
 
-                    pushFollow(FOLLOW_typeName_in_varFcnRef16547);
-                    typeName521=typeName();
+                    pushFollow(FOLLOW_typeName_in_varFcnRef16603);
+                    typeName524=typeName();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_typeName.add(typeName521.getTree());
+                    if ( state.backtracking==0 ) stream_typeName.add(typeName524.getTree());
 
-                    pushFollow(FOLLOW_fcnRefTypeList_in_varFcnRef16549);
-                    fcnRefTypeList522=fcnRefTypeList();
+                    pushFollow(FOLLOW_fcnRefTypeList_in_varFcnRef16605);
+                    fcnRefTypeList525=fcnRefTypeList();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_fcnRefTypeList.add(fcnRefTypeList522.getTree());
+                    if ( state.backtracking==0 ) stream_fcnRefTypeList.add(fcnRefTypeList525.getTree());
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2086:43: ( ')' )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2086:44: ')'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2090:43: ( ')' )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2090:44: ')'
                     {
-                    char_literal523=(Atom)match(input,136,FOLLOW_136_in_varFcnRef16552); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_136.add(char_literal523);
+                    char_literal526=(Atom)match(input,136,FOLLOW_136_in_varFcnRef16608); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_136.add(char_literal526);
 
 
                     }
 
 
-                    IDENT524=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varFcnRef16555); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT524);
+                    IDENT527=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varFcnRef16611); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT527);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2086:55: ( ASSIGN expr )?
-                    int alt136=2;
-                    int LA136_0 = input.LA(1);
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2090:55: ( ASSIGN expr )?
+                    int alt137=2;
+                    int LA137_0 = input.LA(1);
 
-                    if ( (LA136_0==ASSIGN) ) {
-                        alt136=1;
+                    if ( (LA137_0==ASSIGN) ) {
+                        alt137=1;
                     }
-                    switch (alt136) {
+                    switch (alt137) {
                         case 1 :
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2086:56: ASSIGN expr
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2090:56: ASSIGN expr
                             {
-                            ASSIGN525=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varFcnRef16558); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN525);
+                            ASSIGN528=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varFcnRef16614); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN528);
 
 
-                            pushFollow(FOLLOW_expr_in_varFcnRef16560);
-                            expr526=expr();
+                            pushFollow(FOLLOW_expr_in_varFcnRef16616);
+                            expr529=expr();
 
                             state._fsp--;
                             if (state.failed) return retval;
-                            if ( state.backtracking==0 ) stream_expr.add(expr526.getTree());
+                            if ( state.backtracking==0 ) stream_expr.add(expr529.getTree());
 
                             }
                             break;
@@ -26691,47 +26828,47 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2087:16: typeName fcnRefTypeList IDENT ( ASSIGN expr )?
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2091:16: typeName fcnRefTypeList IDENT ( ASSIGN expr )?
                     {
-                    pushFollow(FOLLOW_typeName_in_varFcnRef16579);
-                    typeName527=typeName();
+                    pushFollow(FOLLOW_typeName_in_varFcnRef16635);
+                    typeName530=typeName();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_typeName.add(typeName527.getTree());
+                    if ( state.backtracking==0 ) stream_typeName.add(typeName530.getTree());
 
-                    pushFollow(FOLLOW_fcnRefTypeList_in_varFcnRef16581);
-                    fcnRefTypeList528=fcnRefTypeList();
+                    pushFollow(FOLLOW_fcnRefTypeList_in_varFcnRef16637);
+                    fcnRefTypeList531=fcnRefTypeList();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_fcnRefTypeList.add(fcnRefTypeList528.getTree());
+                    if ( state.backtracking==0 ) stream_fcnRefTypeList.add(fcnRefTypeList531.getTree());
 
-                    IDENT529=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varFcnRef16584); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT529);
+                    IDENT532=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varFcnRef16640); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT532);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2087:47: ( ASSIGN expr )?
-                    int alt137=2;
-                    int LA137_0 = input.LA(1);
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2091:47: ( ASSIGN expr )?
+                    int alt138=2;
+                    int LA138_0 = input.LA(1);
 
-                    if ( (LA137_0==ASSIGN) ) {
-                        alt137=1;
+                    if ( (LA138_0==ASSIGN) ) {
+                        alt138=1;
                     }
-                    switch (alt137) {
+                    switch (alt138) {
                         case 1 :
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2087:48: ASSIGN expr
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2091:48: ASSIGN expr
                             {
-                            ASSIGN530=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varFcnRef16587); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN530);
+                            ASSIGN533=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varFcnRef16643); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN533);
 
 
-                            pushFollow(FOLLOW_expr_in_varFcnRef16589);
-                            expr531=expr();
+                            pushFollow(FOLLOW_expr_in_varFcnRef16645);
+                            expr534=expr();
 
                             state._fsp--;
                             if (state.failed) return retval;
-                            if ( state.backtracking==0 ) stream_expr.add(expr531.getTree());
+                            if ( state.backtracking==0 ) stream_expr.add(expr534.getTree());
 
                             }
                             break;
@@ -26746,7 +26883,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: fcnRefTypeList, IDENT, typeName, expr
+            // elements: IDENT, fcnRefTypeList, typeName, expr
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -26758,9 +26895,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2088:9: -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ( expr )? )
+            // 2092:9: -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ( expr )? )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2088:12: ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ( expr )? )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2092:12: ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT ( expr )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -26775,7 +26912,7 @@ public TreeAdaptor getTreeAdaptor() {
                 stream_IDENT.nextNode()
                 );
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2088:95: ( expr )?
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2092:95: ( expr )?
                 if ( stream_expr.hasNext() ) {
                     adaptor.addChild(root_1, stream_expr.nextTree());
 
@@ -26824,7 +26961,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varFcnRef2"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2090:1: varFcnRef2 : '(' rtnType typeName fcnRefTypeList ')' IDENT ( ASSIGN expr )? -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT rtnType ( expr )? ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2094:1: varFcnRef2 : '(' rtnType typeName fcnRefTypeList ')' IDENT ( ASSIGN expr )? -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT rtnType ( expr )? ) ;
     public final pollenParser.varFcnRef2_return varFcnRef2() throws RecognitionException {
         pollenParser.varFcnRef2_return retval = new pollenParser.varFcnRef2_return();
         retval.start = input.LT(1);
@@ -26832,23 +26969,23 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom char_literal532=null;
-        Atom char_literal536=null;
-        Atom IDENT537=null;
-        Atom ASSIGN538=null;
-        pollenParser.rtnType_return rtnType533 =null;
+        Atom char_literal535=null;
+        Atom char_literal539=null;
+        Atom IDENT540=null;
+        Atom ASSIGN541=null;
+        pollenParser.rtnType_return rtnType536 =null;
 
-        pollenParser.typeName_return typeName534 =null;
+        pollenParser.typeName_return typeName537 =null;
 
-        pollenParser.fcnRefTypeList_return fcnRefTypeList535 =null;
+        pollenParser.fcnRefTypeList_return fcnRefTypeList538 =null;
 
-        pollenParser.expr_return expr539 =null;
+        pollenParser.expr_return expr542 =null;
 
 
-        BaseNode char_literal532_tree=null;
-        BaseNode char_literal536_tree=null;
-        BaseNode IDENT537_tree=null;
-        BaseNode ASSIGN538_tree=null;
+        BaseNode char_literal535_tree=null;
+        BaseNode char_literal539_tree=null;
+        BaseNode IDENT540_tree=null;
+        BaseNode ASSIGN541_tree=null;
         RewriteRuleTokenStream stream_135=new RewriteRuleTokenStream(adaptor,"token 135");
         RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
         RewriteRuleTokenStream stream_136=new RewriteRuleTokenStream(adaptor,"token 136");
@@ -26858,63 +26995,63 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_expr=new RewriteRuleSubtreeStream(adaptor,"rule expr");
         RewriteRuleSubtreeStream stream_fcnRefTypeList=new RewriteRuleSubtreeStream(adaptor,"rule fcnRefTypeList");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2091:5: ( '(' rtnType typeName fcnRefTypeList ')' IDENT ( ASSIGN expr )? -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT rtnType ( expr )? ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2091:11: '(' rtnType typeName fcnRefTypeList ')' IDENT ( ASSIGN expr )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2095:5: ( '(' rtnType typeName fcnRefTypeList ')' IDENT ( ASSIGN expr )? -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT rtnType ( expr )? ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2095:11: '(' rtnType typeName fcnRefTypeList ')' IDENT ( ASSIGN expr )?
             {
-            char_literal532=(Atom)match(input,135,FOLLOW_135_in_varFcnRef216643); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_135.add(char_literal532);
+            char_literal535=(Atom)match(input,135,FOLLOW_135_in_varFcnRef216699); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_135.add(char_literal535);
 
 
-            pushFollow(FOLLOW_rtnType_in_varFcnRef216645);
-            rtnType533=rtnType();
-
-            state._fsp--;
-            if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_rtnType.add(rtnType533.getTree());
-
-            pushFollow(FOLLOW_typeName_in_varFcnRef216647);
-            typeName534=typeName();
+            pushFollow(FOLLOW_rtnType_in_varFcnRef216701);
+            rtnType536=rtnType();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_typeName.add(typeName534.getTree());
+            if ( state.backtracking==0 ) stream_rtnType.add(rtnType536.getTree());
 
-            pushFollow(FOLLOW_fcnRefTypeList_in_varFcnRef216649);
-            fcnRefTypeList535=fcnRefTypeList();
+            pushFollow(FOLLOW_typeName_in_varFcnRef216703);
+            typeName537=typeName();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_fcnRefTypeList.add(fcnRefTypeList535.getTree());
+            if ( state.backtracking==0 ) stream_typeName.add(typeName537.getTree());
 
-            char_literal536=(Atom)match(input,136,FOLLOW_136_in_varFcnRef216651); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_136.add(char_literal536);
+            pushFollow(FOLLOW_fcnRefTypeList_in_varFcnRef216705);
+            fcnRefTypeList538=fcnRefTypeList();
+
+            state._fsp--;
+            if (state.failed) return retval;
+            if ( state.backtracking==0 ) stream_fcnRefTypeList.add(fcnRefTypeList538.getTree());
+
+            char_literal539=(Atom)match(input,136,FOLLOW_136_in_varFcnRef216707); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_136.add(char_literal539);
 
 
-            IDENT537=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varFcnRef216653); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_IDENT.add(IDENT537);
+            IDENT540=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varFcnRef216709); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_IDENT.add(IDENT540);
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2091:57: ( ASSIGN expr )?
-            int alt139=2;
-            int LA139_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2095:57: ( ASSIGN expr )?
+            int alt140=2;
+            int LA140_0 = input.LA(1);
 
-            if ( (LA139_0==ASSIGN) ) {
-                alt139=1;
+            if ( (LA140_0==ASSIGN) ) {
+                alt140=1;
             }
-            switch (alt139) {
+            switch (alt140) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2091:58: ASSIGN expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2095:58: ASSIGN expr
                     {
-                    ASSIGN538=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varFcnRef216656); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN538);
+                    ASSIGN541=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varFcnRef216712); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN541);
 
 
-                    pushFollow(FOLLOW_expr_in_varFcnRef216658);
-                    expr539=expr();
+                    pushFollow(FOLLOW_expr_in_varFcnRef216714);
+                    expr542=expr();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_expr.add(expr539.getTree());
+                    if ( state.backtracking==0 ) stream_expr.add(expr542.getTree());
 
                     }
                     break;
@@ -26925,7 +27062,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) { stmtFlags.add(Flags.FCN_REF_RTN); }
 
             // AST REWRITE
-            // elements: IDENT, typeName, rtnType, expr, fcnRefTypeList
+            // elements: rtnType, expr, IDENT, fcnRefTypeList, typeName
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -26937,9 +27074,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2093:9: -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT rtnType ( expr )? )
+            // 2097:9: -> ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT rtnType ( expr )? )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2093:12: ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT rtnType ( expr )? )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2097:12: ^( D_FCN_REF[\"D_FCN_REF\", stmtFlags] typeName fcnRefTypeList IDENT rtnType ( expr )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -26956,7 +27093,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_rtnType.nextTree());
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2093:103: ( expr )?
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2097:103: ( expr )?
                 if ( stream_expr.hasNext() ) {
                     adaptor.addChild(root_1, stream_expr.nextTree());
 
@@ -27005,7 +27142,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "rtnType"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2095:1: rtnType : typeName ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2099:1: rtnType : typeName ;
     public final pollenParser.rtnType_return rtnType() throws RecognitionException {
         pollenParser.rtnType_return retval = new pollenParser.rtnType_return();
         retval.start = input.LT(1);
@@ -27013,23 +27150,23 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        pollenParser.typeName_return typeName540 =null;
+        pollenParser.typeName_return typeName543 =null;
 
 
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2096:5: ( typeName )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2096:10: typeName
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2100:5: ( typeName )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2100:10: typeName
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            pushFollow(FOLLOW_typeName_in_rtnType16735);
-            typeName540=typeName();
+            pushFollow(FOLLOW_typeName_in_rtnType16791);
+            typeName543=typeName();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) adaptor.addChild(root_0, typeName540.getTree());
+            if ( state.backtracking==0 ) adaptor.addChild(root_0, typeName543.getTree());
 
             }
 
@@ -27064,7 +27201,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnRefTypeList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2099:1: fcnRefTypeList : '(' fcnRefTypes ')' -> fcnRefTypes ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2103:1: fcnRefTypeList : '(' fcnRefTypes ')' -> fcnRefTypes ;
     public final pollenParser.fcnRefTypeList_return fcnRefTypeList() throws RecognitionException {
         pollenParser.fcnRefTypeList_return retval = new pollenParser.fcnRefTypeList_return();
         retval.start = input.LT(1);
@@ -27072,33 +27209,33 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom char_literal541=null;
-        Atom char_literal543=null;
-        pollenParser.fcnRefTypes_return fcnRefTypes542 =null;
+        Atom char_literal544=null;
+        Atom char_literal546=null;
+        pollenParser.fcnRefTypes_return fcnRefTypes545 =null;
 
 
-        BaseNode char_literal541_tree=null;
-        BaseNode char_literal543_tree=null;
+        BaseNode char_literal544_tree=null;
+        BaseNode char_literal546_tree=null;
         RewriteRuleTokenStream stream_135=new RewriteRuleTokenStream(adaptor,"token 135");
         RewriteRuleTokenStream stream_136=new RewriteRuleTokenStream(adaptor,"token 136");
         RewriteRuleSubtreeStream stream_fcnRefTypes=new RewriteRuleSubtreeStream(adaptor,"rule fcnRefTypes");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2100:5: ( '(' fcnRefTypes ')' -> fcnRefTypes )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2100:11: '(' fcnRefTypes ')'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2104:5: ( '(' fcnRefTypes ')' -> fcnRefTypes )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2104:11: '(' fcnRefTypes ')'
             {
-            char_literal541=(Atom)match(input,135,FOLLOW_135_in_fcnRefTypeList16756); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_135.add(char_literal541);
+            char_literal544=(Atom)match(input,135,FOLLOW_135_in_fcnRefTypeList16812); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_135.add(char_literal544);
 
 
-            pushFollow(FOLLOW_fcnRefTypes_in_fcnRefTypeList16758);
-            fcnRefTypes542=fcnRefTypes();
+            pushFollow(FOLLOW_fcnRefTypes_in_fcnRefTypeList16814);
+            fcnRefTypes545=fcnRefTypes();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_fcnRefTypes.add(fcnRefTypes542.getTree());
+            if ( state.backtracking==0 ) stream_fcnRefTypes.add(fcnRefTypes545.getTree());
 
-            char_literal543=(Atom)match(input,136,FOLLOW_136_in_fcnRefTypeList16760); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_136.add(char_literal543);
+            char_literal546=(Atom)match(input,136,FOLLOW_136_in_fcnRefTypeList16816); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_136.add(char_literal546);
 
 
             // AST REWRITE
@@ -27114,7 +27251,7 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2100:31: -> fcnRefTypes
+            // 2104:31: -> fcnRefTypes
             {
                 adaptor.addChild(root_0, stream_fcnRefTypes.nextTree());
 
@@ -27157,7 +27294,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fcnRefTypes"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2102:1: fcnRefTypes : ( typeName ( ',' typeName )* -> ^( LIST[\"LIST\"] ( typeName )+ ) | -> ^( LIST[\"LIST\"] ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2106:1: fcnRefTypes : ( typeName ( ',' typeName )* -> ^( LIST[\"LIST\"] ( typeName )+ ) | -> ^( LIST[\"LIST\"] ) );
     public final pollenParser.fcnRefTypes_return fcnRefTypes() throws RecognitionException {
         pollenParser.fcnRefTypes_return retval = new pollenParser.fcnRefTypes_return();
         retval.start = input.LT(1);
@@ -27165,76 +27302,76 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom char_literal545=null;
-        pollenParser.typeName_return typeName544 =null;
+        Atom char_literal548=null;
+        pollenParser.typeName_return typeName547 =null;
 
-        pollenParser.typeName_return typeName546 =null;
+        pollenParser.typeName_return typeName549 =null;
 
 
-        BaseNode char_literal545_tree=null;
+        BaseNode char_literal548_tree=null;
         RewriteRuleTokenStream stream_138=new RewriteRuleTokenStream(adaptor,"token 138");
         RewriteRuleSubtreeStream stream_typeName=new RewriteRuleSubtreeStream(adaptor,"rule typeName");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2103:5: ( typeName ( ',' typeName )* -> ^( LIST[\"LIST\"] ( typeName )+ ) | -> ^( LIST[\"LIST\"] ) )
-            int alt141=2;
-            int LA141_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2107:5: ( typeName ( ',' typeName )* -> ^( LIST[\"LIST\"] ( typeName )+ ) | -> ^( LIST[\"LIST\"] ) )
+            int alt142=2;
+            int LA142_0 = input.LA(1);
 
-            if ( (LA141_0==IDENT||LA141_0==150||LA141_0==152||(LA141_0 >= 173 && LA141_0 <= 175)||LA141_0==188||LA141_0==190||(LA141_0 >= 194 && LA141_0 <= 196)) ) {
-                alt141=1;
+            if ( (LA142_0==IDENT||LA142_0==150||LA142_0==152||(LA142_0 >= 173 && LA142_0 <= 175)||LA142_0==188||LA142_0==190||(LA142_0 >= 194 && LA142_0 <= 196)) ) {
+                alt142=1;
             }
-            else if ( (LA141_0==136) ) {
-                alt141=2;
+            else if ( (LA142_0==136) ) {
+                alt142=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 141, 0, input);
+                    new NoViableAltException("", 142, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt141) {
+            switch (alt142) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2103:10: typeName ( ',' typeName )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2107:10: typeName ( ',' typeName )*
                     {
-                    pushFollow(FOLLOW_typeName_in_fcnRefTypes16783);
-                    typeName544=typeName();
+                    pushFollow(FOLLOW_typeName_in_fcnRefTypes16839);
+                    typeName547=typeName();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_typeName.add(typeName544.getTree());
+                    if ( state.backtracking==0 ) stream_typeName.add(typeName547.getTree());
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2103:19: ( ',' typeName )*
-                    loop140:
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2107:19: ( ',' typeName )*
+                    loop141:
                     do {
-                        int alt140=2;
-                        int LA140_0 = input.LA(1);
+                        int alt141=2;
+                        int LA141_0 = input.LA(1);
 
-                        if ( (LA140_0==138) ) {
-                            alt140=1;
+                        if ( (LA141_0==138) ) {
+                            alt141=1;
                         }
 
 
-                        switch (alt140) {
+                        switch (alt141) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2103:20: ',' typeName
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2107:20: ',' typeName
                     	    {
-                    	    char_literal545=(Atom)match(input,138,FOLLOW_138_in_fcnRefTypes16786); if (state.failed) return retval; 
-                    	    if ( state.backtracking==0 ) stream_138.add(char_literal545);
+                    	    char_literal548=(Atom)match(input,138,FOLLOW_138_in_fcnRefTypes16842); if (state.failed) return retval; 
+                    	    if ( state.backtracking==0 ) stream_138.add(char_literal548);
 
 
-                    	    pushFollow(FOLLOW_typeName_in_fcnRefTypes16788);
-                    	    typeName546=typeName();
+                    	    pushFollow(FOLLOW_typeName_in_fcnRefTypes16844);
+                    	    typeName549=typeName();
 
                     	    state._fsp--;
                     	    if (state.failed) return retval;
-                    	    if ( state.backtracking==0 ) stream_typeName.add(typeName546.getTree());
+                    	    if ( state.backtracking==0 ) stream_typeName.add(typeName549.getTree());
 
                     	    }
                     	    break;
 
                     	default :
-                    	    break loop140;
+                    	    break loop141;
                         }
                     } while (true);
 
@@ -27252,9 +27389,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2104:9: -> ^( LIST[\"LIST\"] ( typeName )+ )
+                    // 2108:9: -> ^( LIST[\"LIST\"] ( typeName )+ )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2104:12: ^( LIST[\"LIST\"] ( typeName )+ )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2108:12: ^( LIST[\"LIST\"] ( typeName )+ )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -27282,7 +27419,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2105:10: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2109:10: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -27297,9 +27434,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2105:10: -> ^( LIST[\"LIST\"] )
+                    // 2109:10: -> ^( LIST[\"LIST\"] )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2105:13: ^( LIST[\"LIST\"] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2109:13: ^( LIST[\"LIST\"] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -27357,7 +27494,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varArray"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2107:1: varArray : typeNameArray IDENT varArraySpec ( varArrayInit[stmtFlags] )? -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2111:1: varArray : typeNameArray IDENT varArraySpec ( varArrayInit[stmtFlags] )? -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? ) ;
     public final pollenParser.varArray_return varArray() throws RecognitionException {
         varArray_stack.push(new varArray_scope());
         pollenParser.varArray_return retval = new pollenParser.varArray_return();
@@ -27366,62 +27503,62 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom IDENT548=null;
-        pollenParser.typeNameArray_return typeNameArray547 =null;
+        Atom IDENT551=null;
+        pollenParser.typeNameArray_return typeNameArray550 =null;
 
-        pollenParser.varArraySpec_return varArraySpec549 =null;
+        pollenParser.varArraySpec_return varArraySpec552 =null;
 
-        pollenParser.varArrayInit_return varArrayInit550 =null;
+        pollenParser.varArrayInit_return varArrayInit553 =null;
 
 
-        BaseNode IDENT548_tree=null;
+        BaseNode IDENT551_tree=null;
         RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
         RewriteRuleSubtreeStream stream_typeNameArray=new RewriteRuleSubtreeStream(adaptor,"rule typeNameArray");
         RewriteRuleSubtreeStream stream_varArraySpec=new RewriteRuleSubtreeStream(adaptor,"rule varArraySpec");
         RewriteRuleSubtreeStream stream_varArrayInit=new RewriteRuleSubtreeStream(adaptor,"rule varArrayInit");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2115:5: ( typeNameArray IDENT varArraySpec ( varArrayInit[stmtFlags] )? -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2115:10: typeNameArray IDENT varArraySpec ( varArrayInit[stmtFlags] )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2119:5: ( typeNameArray IDENT varArraySpec ( varArrayInit[stmtFlags] )? -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2119:10: typeNameArray IDENT varArraySpec ( varArrayInit[stmtFlags] )?
             {
-            pushFollow(FOLLOW_typeNameArray_in_varArray16858);
-            typeNameArray547=typeNameArray();
+            pushFollow(FOLLOW_typeNameArray_in_varArray16914);
+            typeNameArray550=typeNameArray();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_typeNameArray.add(typeNameArray547.getTree());
+            if ( state.backtracking==0 ) stream_typeNameArray.add(typeNameArray550.getTree());
 
-            if ( state.backtracking==0 ) { ((varArray_scope)varArray_stack.peek()).typArrSpec = (typeNameArray547!=null?((BaseNode)typeNameArray547.tree):null); }
+            if ( state.backtracking==0 ) { ((varArray_scope)varArray_stack.peek()).typArrSpec = (typeNameArray550!=null?((BaseNode)typeNameArray550.tree):null); }
 
-            IDENT548=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varArray16870); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_IDENT.add(IDENT548);
+            IDENT551=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varArray16926); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_IDENT.add(IDENT551);
 
 
-            pushFollow(FOLLOW_varArraySpec_in_varArray16881);
-            varArraySpec549=varArraySpec();
+            pushFollow(FOLLOW_varArraySpec_in_varArray16937);
+            varArraySpec552=varArraySpec();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_varArraySpec.add(varArraySpec549.getTree());
+            if ( state.backtracking==0 ) stream_varArraySpec.add(varArraySpec552.getTree());
 
-            if ( state.backtracking==0 ) { ((varArray_scope)varArray_stack.peek()).varArrSpec = (varArraySpec549!=null?((BaseNode)varArraySpec549.tree):null); }
+            if ( state.backtracking==0 ) { ((varArray_scope)varArray_stack.peek()).varArrSpec = (varArraySpec552!=null?((BaseNode)varArraySpec552.tree):null); }
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2118:9: ( varArrayInit[stmtFlags] )?
-            int alt142=2;
-            int LA142_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2122:9: ( varArrayInit[stmtFlags] )?
+            int alt143=2;
+            int LA143_0 = input.LA(1);
 
-            if ( (LA142_0==ASSIGN||LA142_0==PEG) ) {
-                alt142=1;
+            if ( (LA143_0==ASSIGN||LA143_0==PEG) ) {
+                alt143=1;
             }
-            switch (alt142) {
+            switch (alt143) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2118:9: varArrayInit[stmtFlags]
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2122:9: varArrayInit[stmtFlags]
                     {
-                    pushFollow(FOLLOW_varArrayInit_in_varArray16894);
-                    varArrayInit550=varArrayInit(stmtFlags);
+                    pushFollow(FOLLOW_varArrayInit_in_varArray16950);
+                    varArrayInit553=varArrayInit(stmtFlags);
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_varArrayInit.add(varArrayInit550.getTree());
+                    if ( state.backtracking==0 ) stream_varArrayInit.add(varArrayInit553.getTree());
 
                     }
                     break;
@@ -27430,7 +27567,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: IDENT, varArraySpec, varArrayInit, typeNameArray
+            // elements: typeNameArray, IDENT, varArrayInit, varArraySpec
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -27442,9 +27579,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2119:13: -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? )
+            // 2123:13: -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2119:17: ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2123:17: ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -27459,7 +27596,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_varArraySpec.nextTree());
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2121:36: ( varArrayInit )?
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2125:36: ( varArrayInit )?
                 if ( stream_varArrayInit.hasNext() ) {
                     adaptor.addChild(root_1, stream_varArrayInit.nextTree());
 
@@ -27519,7 +27656,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varArray2"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2123:1: varArray2 : typeNameArray varArraySpec IDENT ( varArrayInit[stmtFlags] )? -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2127:1: varArray2 : typeNameArray varArraySpec IDENT ( varArrayInit[stmtFlags] )? -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? ) ;
     public final pollenParser.varArray2_return varArray2() throws RecognitionException {
         varArray2_stack.push(new varArray2_scope());
         pollenParser.varArray2_return retval = new pollenParser.varArray2_return();
@@ -27528,62 +27665,62 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom IDENT553=null;
-        pollenParser.typeNameArray_return typeNameArray551 =null;
+        Atom IDENT556=null;
+        pollenParser.typeNameArray_return typeNameArray554 =null;
 
-        pollenParser.varArraySpec_return varArraySpec552 =null;
+        pollenParser.varArraySpec_return varArraySpec555 =null;
 
-        pollenParser.varArrayInit_return varArrayInit554 =null;
+        pollenParser.varArrayInit_return varArrayInit557 =null;
 
 
-        BaseNode IDENT553_tree=null;
+        BaseNode IDENT556_tree=null;
         RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
         RewriteRuleSubtreeStream stream_typeNameArray=new RewriteRuleSubtreeStream(adaptor,"rule typeNameArray");
         RewriteRuleSubtreeStream stream_varArraySpec=new RewriteRuleSubtreeStream(adaptor,"rule varArraySpec");
         RewriteRuleSubtreeStream stream_varArrayInit=new RewriteRuleSubtreeStream(adaptor,"rule varArrayInit");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2131:5: ( typeNameArray varArraySpec IDENT ( varArrayInit[stmtFlags] )? -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2131:9: typeNameArray varArraySpec IDENT ( varArrayInit[stmtFlags] )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2135:5: ( typeNameArray varArraySpec IDENT ( varArrayInit[stmtFlags] )? -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2135:9: typeNameArray varArraySpec IDENT ( varArrayInit[stmtFlags] )?
             {
-            pushFollow(FOLLOW_typeNameArray_in_varArray216994);
-            typeNameArray551=typeNameArray();
+            pushFollow(FOLLOW_typeNameArray_in_varArray217050);
+            typeNameArray554=typeNameArray();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_typeNameArray.add(typeNameArray551.getTree());
+            if ( state.backtracking==0 ) stream_typeNameArray.add(typeNameArray554.getTree());
 
-            if ( state.backtracking==0 ) { ((varArray2_scope)varArray2_stack.peek()).typArrSpec = (typeNameArray551!=null?((BaseNode)typeNameArray551.tree):null); }
+            if ( state.backtracking==0 ) { ((varArray2_scope)varArray2_stack.peek()).typArrSpec = (typeNameArray554!=null?((BaseNode)typeNameArray554.tree):null); }
 
-            pushFollow(FOLLOW_varArraySpec_in_varArray217006);
-            varArraySpec552=varArraySpec();
+            pushFollow(FOLLOW_varArraySpec_in_varArray217062);
+            varArraySpec555=varArraySpec();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_varArraySpec.add(varArraySpec552.getTree());
+            if ( state.backtracking==0 ) stream_varArraySpec.add(varArraySpec555.getTree());
 
-            if ( state.backtracking==0 ) { ((varArray2_scope)varArray2_stack.peek()).varArrSpec = (varArraySpec552!=null?((BaseNode)varArraySpec552.tree):null); }
+            if ( state.backtracking==0 ) { ((varArray2_scope)varArray2_stack.peek()).varArrSpec = (varArraySpec555!=null?((BaseNode)varArraySpec555.tree):null); }
 
-            IDENT553=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varArray217020); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_IDENT.add(IDENT553);
+            IDENT556=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varArray217076); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_IDENT.add(IDENT556);
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2134:9: ( varArrayInit[stmtFlags] )?
-            int alt143=2;
-            int LA143_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2138:9: ( varArrayInit[stmtFlags] )?
+            int alt144=2;
+            int LA144_0 = input.LA(1);
 
-            if ( (LA143_0==ASSIGN||LA143_0==PEG) ) {
-                alt143=1;
+            if ( (LA144_0==ASSIGN||LA144_0==PEG) ) {
+                alt144=1;
             }
-            switch (alt143) {
+            switch (alt144) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2134:9: varArrayInit[stmtFlags]
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2138:9: varArrayInit[stmtFlags]
                     {
-                    pushFollow(FOLLOW_varArrayInit_in_varArray217031);
-                    varArrayInit554=varArrayInit(stmtFlags);
+                    pushFollow(FOLLOW_varArrayInit_in_varArray217087);
+                    varArrayInit557=varArrayInit(stmtFlags);
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_varArrayInit.add(varArrayInit554.getTree());
+                    if ( state.backtracking==0 ) stream_varArrayInit.add(varArrayInit557.getTree());
 
                     }
                     break;
@@ -27592,7 +27729,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: varArraySpec, IDENT, varArrayInit, typeNameArray
+            // elements: typeNameArray, varArraySpec, varArrayInit, IDENT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -27604,9 +27741,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2135:13: -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? )
+            // 2139:13: -> ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2135:17: ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2139:17: ^( D_ARR[\"D_ARR\", stmtFlags] typeNameArray IDENT varArraySpec ( varArrayInit )? )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -27621,7 +27758,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_varArraySpec.nextTree());
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2137:36: ( varArrayInit )?
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2141:36: ( varArrayInit )?
                 if ( stream_varArrayInit.hasNext() ) {
                     adaptor.addChild(root_1, stream_varArrayInit.nextTree());
 
@@ -27674,7 +27811,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varArraySpec"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2139:1: varArraySpec : ( '[' varDim ']' )+ -> ^( LIST[\"LIST\"] ( varDim )+ ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2143:1: varArraySpec : ( '[' varDim ']' )+ -> ^( LIST[\"LIST\"] ( varDim )+ ) ;
     public final pollenParser.varArraySpec_return varArraySpec() throws RecognitionException {
         pollenParser.varArraySpec_return retval = new pollenParser.varArraySpec_return();
         retval.start = input.LT(1);
@@ -27682,62 +27819,62 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom char_literal555=null;
-        Atom char_literal557=null;
-        pollenParser.varDim_return varDim556 =null;
+        Atom char_literal558=null;
+        Atom char_literal560=null;
+        pollenParser.varDim_return varDim559 =null;
 
 
-        BaseNode char_literal555_tree=null;
-        BaseNode char_literal557_tree=null;
+        BaseNode char_literal558_tree=null;
+        BaseNode char_literal560_tree=null;
         RewriteRuleTokenStream stream_146=new RewriteRuleTokenStream(adaptor,"token 146");
         RewriteRuleTokenStream stream_147=new RewriteRuleTokenStream(adaptor,"token 147");
         RewriteRuleSubtreeStream stream_varDim=new RewriteRuleSubtreeStream(adaptor,"rule varDim");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2140:5: ( ( '[' varDim ']' )+ -> ^( LIST[\"LIST\"] ( varDim )+ ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2140:10: ( '[' varDim ']' )+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2144:5: ( ( '[' varDim ']' )+ -> ^( LIST[\"LIST\"] ( varDim )+ ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2144:10: ( '[' varDim ']' )+
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2140:10: ( '[' varDim ']' )+
-            int cnt144=0;
-            loop144:
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2144:10: ( '[' varDim ']' )+
+            int cnt145=0;
+            loop145:
             do {
-                int alt144=2;
-                int LA144_0 = input.LA(1);
+                int alt145=2;
+                int LA145_0 = input.LA(1);
 
-                if ( (LA144_0==146) ) {
-                    alt144=1;
+                if ( (LA145_0==146) ) {
+                    alt145=1;
                 }
 
 
-                switch (alt144) {
+                switch (alt145) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2140:11: '[' varDim ']'
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2144:11: '[' varDim ']'
             	    {
-            	    char_literal555=(Atom)match(input,146,FOLLOW_146_in_varArraySpec17125); if (state.failed) return retval; 
-            	    if ( state.backtracking==0 ) stream_146.add(char_literal555);
+            	    char_literal558=(Atom)match(input,146,FOLLOW_146_in_varArraySpec17181); if (state.failed) return retval; 
+            	    if ( state.backtracking==0 ) stream_146.add(char_literal558);
 
 
-            	    pushFollow(FOLLOW_varDim_in_varArraySpec17127);
-            	    varDim556=varDim();
+            	    pushFollow(FOLLOW_varDim_in_varArraySpec17183);
+            	    varDim559=varDim();
 
             	    state._fsp--;
             	    if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) stream_varDim.add(varDim556.getTree());
+            	    if ( state.backtracking==0 ) stream_varDim.add(varDim559.getTree());
 
-            	    char_literal557=(Atom)match(input,147,FOLLOW_147_in_varArraySpec17129); if (state.failed) return retval; 
-            	    if ( state.backtracking==0 ) stream_147.add(char_literal557);
+            	    char_literal560=(Atom)match(input,147,FOLLOW_147_in_varArraySpec17185); if (state.failed) return retval; 
+            	    if ( state.backtracking==0 ) stream_147.add(char_literal560);
 
 
             	    }
             	    break;
 
             	default :
-            	    if ( cnt144 >= 1 ) break loop144;
+            	    if ( cnt145 >= 1 ) break loop145;
             	    if (state.backtracking>0) {state.failed=true; return retval;}
                         EarlyExitException eee =
-                            new EarlyExitException(144, input);
+                            new EarlyExitException(145, input);
                         throw eee;
                 }
-                cnt144++;
+                cnt145++;
             } while (true);
 
 
@@ -27754,9 +27891,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2140:31: -> ^( LIST[\"LIST\"] ( varDim )+ )
+            // 2144:31: -> ^( LIST[\"LIST\"] ( varDim )+ )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2140:36: ^( LIST[\"LIST\"] ( varDim )+ )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2144:36: ^( LIST[\"LIST\"] ( varDim )+ )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -27814,7 +27951,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varArrayInit"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2142:1: varArrayInit[EnumSet<Flags> f] : ( ( ASSIGN initializer ) -> initializer | ( PEG initializer ) -> initializer );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2146:1: varArrayInit[EnumSet<Flags> f] : ( ( ASSIGN initializer ) -> initializer | ( PEG initializer ) -> initializer );
     public final pollenParser.varArrayInit_return varArrayInit(EnumSet<Flags> f) throws RecognitionException {
         pollenParser.varArrayInit_return retval = new pollenParser.varArrayInit_return();
         retval.start = input.LT(1);
@@ -27822,54 +27959,54 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom ASSIGN558=null;
-        Atom PEG560=null;
-        pollenParser.initializer_return initializer559 =null;
+        Atom ASSIGN561=null;
+        Atom PEG563=null;
+        pollenParser.initializer_return initializer562 =null;
 
-        pollenParser.initializer_return initializer561 =null;
+        pollenParser.initializer_return initializer564 =null;
 
 
-        BaseNode ASSIGN558_tree=null;
-        BaseNode PEG560_tree=null;
+        BaseNode ASSIGN561_tree=null;
+        BaseNode PEG563_tree=null;
         RewriteRuleTokenStream stream_PEG=new RewriteRuleTokenStream(adaptor,"token PEG");
         RewriteRuleTokenStream stream_ASSIGN=new RewriteRuleTokenStream(adaptor,"token ASSIGN");
         RewriteRuleSubtreeStream stream_initializer=new RewriteRuleSubtreeStream(adaptor,"rule initializer");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2143:5: ( ( ASSIGN initializer ) -> initializer | ( PEG initializer ) -> initializer )
-            int alt145=2;
-            int LA145_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2147:5: ( ( ASSIGN initializer ) -> initializer | ( PEG initializer ) -> initializer )
+            int alt146=2;
+            int LA146_0 = input.LA(1);
 
-            if ( (LA145_0==ASSIGN) ) {
-                alt145=1;
+            if ( (LA146_0==ASSIGN) ) {
+                alt146=1;
             }
-            else if ( (LA145_0==PEG) ) {
-                alt145=2;
+            else if ( (LA146_0==PEG) ) {
+                alt146=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 145, 0, input);
+                    new NoViableAltException("", 146, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt145) {
+            switch (alt146) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2143:10: ( ASSIGN initializer )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2147:10: ( ASSIGN initializer )
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2143:10: ( ASSIGN initializer )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2143:11: ASSIGN initializer
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2147:10: ( ASSIGN initializer )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2147:11: ASSIGN initializer
                     {
-                    ASSIGN558=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varArrayInit17170); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN558);
+                    ASSIGN561=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varArrayInit17226); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN561);
 
 
-                    pushFollow(FOLLOW_initializer_in_varArrayInit17172);
-                    initializer559=initializer();
+                    pushFollow(FOLLOW_initializer_in_varArrayInit17228);
+                    initializer562=initializer();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_initializer.add(initializer559.getTree());
+                    if ( state.backtracking==0 ) stream_initializer.add(initializer562.getTree());
 
                     }
 
@@ -27887,7 +28024,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2143:47: -> initializer
+                    // 2147:47: -> initializer
                     {
                         adaptor.addChild(root_0, stream_initializer.nextTree());
 
@@ -27900,21 +28037,21 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2144:10: ( PEG initializer )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2148:10: ( PEG initializer )
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2144:10: ( PEG initializer )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2144:11: PEG initializer
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2148:10: ( PEG initializer )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2148:11: PEG initializer
                     {
-                    PEG560=(Atom)match(input,PEG,FOLLOW_PEG_in_varArrayInit17205); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_PEG.add(PEG560);
+                    PEG563=(Atom)match(input,PEG,FOLLOW_PEG_in_varArrayInit17261); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_PEG.add(PEG563);
 
 
-                    pushFollow(FOLLOW_initializer_in_varArrayInit17207);
-                    initializer561=initializer();
+                    pushFollow(FOLLOW_initializer_in_varArrayInit17263);
+                    initializer564=initializer();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_initializer.add(initializer561.getTree());
+                    if ( state.backtracking==0 ) stream_initializer.add(initializer564.getTree());
 
                     }
 
@@ -27934,7 +28071,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2144:52: -> initializer
+                    // 2148:52: -> initializer
                     {
                         adaptor.addChild(root_0, stream_initializer.nextTree());
 
@@ -27979,7 +28116,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varDim"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2146:1: varDim : ( expr | -> ^( E_CONST[\"E_CONST\", fl] INT_LIT[ParseUnit.ARRAY_WITHOUT_DIMENSION] ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2150:1: varDim : ( expr | -> ^( E_CONST[\"E_CONST\", fl] INT_LIT[ParseUnit.ARRAY_WITHOUT_DIMENSION] ) );
     public final pollenParser.varDim_return varDim() throws RecognitionException {
         pollenParser.varDim_return retval = new pollenParser.varDim_return();
         retval.start = input.LT(1);
@@ -27987,7 +28124,7 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        pollenParser.expr_return expr562 =null;
+        pollenParser.expr_return expr565 =null;
 
 
 
@@ -27996,42 +28133,42 @@ public TreeAdaptor getTreeAdaptor() {
           fl.add(LitFlags.NUM); fl.add(LitFlags.INT);
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2151:5: ( expr | -> ^( E_CONST[\"E_CONST\", fl] INT_LIT[ParseUnit.ARRAY_WITHOUT_DIMENSION] ) )
-            int alt146=2;
-            int LA146_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2155:5: ( expr | -> ^( E_CONST[\"E_CONST\", fl] INT_LIT[ParseUnit.ARRAY_WITHOUT_DIMENSION] ) )
+            int alt147=2;
+            int LA147_0 = input.LA(1);
 
-            if ( (LA146_0==BIT_NOT||LA146_0==CHAR||LA146_0==DEC||LA146_0==HEX_LIT||LA146_0==IDENT||(LA146_0 >= INC && LA146_0 <= INT_LIT)||LA146_0==LOG_NOT||LA146_0==MINUS||LA146_0==OCT_LIT||LA146_0==REAL_LIT||LA146_0==STRING||LA146_0==135||LA146_0==145||LA146_0==166||LA146_0==180||LA146_0==192) ) {
-                alt146=1;
+            if ( (LA147_0==BIT_NOT||LA147_0==CHAR||LA147_0==DEC||LA147_0==HEX_LIT||LA147_0==IDENT||(LA147_0 >= INC && LA147_0 <= INT_LIT)||LA147_0==LOG_NOT||LA147_0==MINUS||LA147_0==OCT_LIT||LA147_0==REAL_LIT||LA147_0==STRING||LA147_0==135||LA147_0==145||LA147_0==166||LA147_0==180||LA147_0==192) ) {
+                alt147=1;
             }
-            else if ( (LA146_0==147) ) {
-                alt146=2;
+            else if ( (LA147_0==147) ) {
+                alt147=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 146, 0, input);
+                    new NoViableAltException("", 147, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt146) {
+            switch (alt147) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2151:12: expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2155:12: expr
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_expr_in_varDim17244);
-                    expr562=expr();
+                    pushFollow(FOLLOW_expr_in_varDim17300);
+                    expr565=expr();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, expr562.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, expr565.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2153:11: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2157:11: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -28046,9 +28183,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2153:11: -> ^( E_CONST[\"E_CONST\", fl] INT_LIT[ParseUnit.ARRAY_WITHOUT_DIMENSION] )
+                    // 2157:11: -> ^( E_CONST[\"E_CONST\", fl] INT_LIT[ParseUnit.ARRAY_WITHOUT_DIMENSION] )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2153:14: ^( E_CONST[\"E_CONST\", fl] INT_LIT[ParseUnit.ARRAY_WITHOUT_DIMENSION] )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2157:14: ^( E_CONST[\"E_CONST\", fl] INT_LIT[ParseUnit.ARRAY_WITHOUT_DIMENSION] )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -28103,7 +28240,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "initializer"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2156:1: initializer : ( expr | ( 'new' )=> exprNew | braceOpenNLL initializer_list braceNLLClose );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2160:1: initializer : ( expr | ( 'new' )=> exprNew | braceOpenNLL initializer_list braceNLLClose );
     public final pollenParser.initializer_return initializer() throws RecognitionException {
         pollenParser.initializer_return retval = new pollenParser.initializer_return();
         retval.start = input.LT(1);
@@ -28111,97 +28248,97 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        pollenParser.expr_return expr563 =null;
+        pollenParser.expr_return expr566 =null;
 
-        pollenParser.exprNew_return exprNew564 =null;
+        pollenParser.exprNew_return exprNew567 =null;
 
-        pollenParser.braceOpenNLL_return braceOpenNLL565 =null;
+        pollenParser.braceOpenNLL_return braceOpenNLL568 =null;
 
-        pollenParser.initializer_list_return initializer_list566 =null;
+        pollenParser.initializer_list_return initializer_list569 =null;
 
-        pollenParser.braceNLLClose_return braceNLLClose567 =null;
+        pollenParser.braceNLLClose_return braceNLLClose570 =null;
 
 
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2157:5: ( expr | ( 'new' )=> exprNew | braceOpenNLL initializer_list braceNLLClose )
-            int alt147=3;
-            int LA147_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2161:5: ( expr | ( 'new' )=> exprNew | braceOpenNLL initializer_list braceNLLClose )
+            int alt148=3;
+            int LA148_0 = input.LA(1);
 
-            if ( (LA147_0==BIT_NOT||LA147_0==CHAR||LA147_0==DEC||LA147_0==HEX_LIT||LA147_0==IDENT||(LA147_0 >= INC && LA147_0 <= INT_LIT)||LA147_0==LOG_NOT||LA147_0==MINUS||LA147_0==OCT_LIT||LA147_0==REAL_LIT||LA147_0==STRING||LA147_0==135||LA147_0==145||LA147_0==166||LA147_0==180||LA147_0==192) ) {
-                alt147=1;
+            if ( (LA148_0==BIT_NOT||LA148_0==CHAR||LA148_0==DEC||LA148_0==HEX_LIT||LA148_0==IDENT||(LA148_0 >= INC && LA148_0 <= INT_LIT)||LA148_0==LOG_NOT||LA148_0==MINUS||LA148_0==OCT_LIT||LA148_0==REAL_LIT||LA148_0==STRING||LA148_0==135||LA148_0==145||LA148_0==166||LA148_0==180||LA148_0==192) ) {
+                alt148=1;
             }
-            else if ( (LA147_0==179) && (synpred55_pollen())) {
-                alt147=2;
+            else if ( (LA148_0==179) && (synpred55_pollen())) {
+                alt148=2;
             }
-            else if ( (LA147_0==BRACE_OP) ) {
-                alt147=3;
+            else if ( (LA148_0==BRACE_OP) ) {
+                alt148=3;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 147, 0, input);
+                    new NoViableAltException("", 148, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt147) {
+            switch (alt148) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2157:8: expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2161:8: expr
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_expr_in_initializer17298);
-                    expr563=expr();
+                    pushFollow(FOLLOW_expr_in_initializer17354);
+                    expr566=expr();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, expr563.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, expr566.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2158:8: ( 'new' )=> exprNew
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2162:8: ( 'new' )=> exprNew
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_exprNew_in_initializer17314);
-                    exprNew564=exprNew();
+                    pushFollow(FOLLOW_exprNew_in_initializer17370);
+                    exprNew567=exprNew();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, exprNew564.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, exprNew567.getTree());
 
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2159:8: braceOpenNLL initializer_list braceNLLClose
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2163:8: braceOpenNLL initializer_list braceNLLClose
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_braceOpenNLL_in_initializer17323);
-                    braceOpenNLL565=braceOpenNLL();
+                    pushFollow(FOLLOW_braceOpenNLL_in_initializer17379);
+                    braceOpenNLL568=braceOpenNLL();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, braceOpenNLL565.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, braceOpenNLL568.getTree());
 
-                    pushFollow(FOLLOW_initializer_list_in_initializer17325);
-                    initializer_list566=initializer_list();
-
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, initializer_list566.getTree());
-
-                    pushFollow(FOLLOW_braceNLLClose_in_initializer17327);
-                    braceNLLClose567=braceNLLClose();
+                    pushFollow(FOLLOW_initializer_list_in_initializer17381);
+                    initializer_list569=initializer_list();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, braceNLLClose567.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, initializer_list569.getTree());
+
+                    pushFollow(FOLLOW_braceNLLClose_in_initializer17383);
+                    braceNLLClose570=braceNLLClose();
+
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, braceNLLClose570.getTree());
 
                     }
                     break;
@@ -28237,7 +28374,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "initializer_list"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2164:1: initializer_list : initializer ( ',' ( NLL )? initializer )* -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2168:1: initializer_list : initializer ( ',' ( NLL )? initializer )* -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) ) ;
     public final pollenParser.initializer_list_return initializer_list() throws RecognitionException {
         pollenParser.initializer_list_return retval = new pollenParser.initializer_list_return();
         retval.start = input.LT(1);
@@ -28245,61 +28382,61 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom char_literal569=null;
-        Atom NLL570=null;
-        pollenParser.initializer_return initializer568 =null;
-
+        Atom char_literal572=null;
+        Atom NLL573=null;
         pollenParser.initializer_return initializer571 =null;
 
+        pollenParser.initializer_return initializer574 =null;
 
-        BaseNode char_literal569_tree=null;
-        BaseNode NLL570_tree=null;
+
+        BaseNode char_literal572_tree=null;
+        BaseNode NLL573_tree=null;
         RewriteRuleTokenStream stream_138=new RewriteRuleTokenStream(adaptor,"token 138");
         RewriteRuleTokenStream stream_NLL=new RewriteRuleTokenStream(adaptor,"token NLL");
         RewriteRuleSubtreeStream stream_initializer=new RewriteRuleSubtreeStream(adaptor,"rule initializer");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2165:5: ( initializer ( ',' ( NLL )? initializer )* -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2165:10: initializer ( ',' ( NLL )? initializer )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2169:5: ( initializer ( ',' ( NLL )? initializer )* -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2169:10: initializer ( ',' ( NLL )? initializer )*
             {
-            pushFollow(FOLLOW_initializer_in_initializer_list17354);
-            initializer568=initializer();
+            pushFollow(FOLLOW_initializer_in_initializer_list17410);
+            initializer571=initializer();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_initializer.add(initializer568.getTree());
+            if ( state.backtracking==0 ) stream_initializer.add(initializer571.getTree());
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2165:22: ( ',' ( NLL )? initializer )*
-            loop149:
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2169:22: ( ',' ( NLL )? initializer )*
+            loop150:
             do {
-                int alt149=2;
-                int LA149_0 = input.LA(1);
+                int alt150=2;
+                int LA150_0 = input.LA(1);
 
-                if ( (LA149_0==138) ) {
-                    alt149=1;
+                if ( (LA150_0==138) ) {
+                    alt150=1;
                 }
 
 
-                switch (alt149) {
+                switch (alt150) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2165:23: ',' ( NLL )? initializer
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2169:23: ',' ( NLL )? initializer
             	    {
-            	    char_literal569=(Atom)match(input,138,FOLLOW_138_in_initializer_list17357); if (state.failed) return retval; 
-            	    if ( state.backtracking==0 ) stream_138.add(char_literal569);
+            	    char_literal572=(Atom)match(input,138,FOLLOW_138_in_initializer_list17413); if (state.failed) return retval; 
+            	    if ( state.backtracking==0 ) stream_138.add(char_literal572);
 
 
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2165:27: ( NLL )?
-            	    int alt148=2;
-            	    int LA148_0 = input.LA(1);
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2169:27: ( NLL )?
+            	    int alt149=2;
+            	    int LA149_0 = input.LA(1);
 
-            	    if ( (LA148_0==NLL) ) {
-            	        alt148=1;
+            	    if ( (LA149_0==NLL) ) {
+            	        alt149=1;
             	    }
-            	    switch (alt148) {
+            	    switch (alt149) {
             	        case 1 :
-            	            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2165:27: NLL
+            	            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2169:27: NLL
             	            {
-            	            NLL570=(Atom)match(input,NLL,FOLLOW_NLL_in_initializer_list17359); if (state.failed) return retval; 
-            	            if ( state.backtracking==0 ) stream_NLL.add(NLL570);
+            	            NLL573=(Atom)match(input,NLL,FOLLOW_NLL_in_initializer_list17415); if (state.failed) return retval; 
+            	            if ( state.backtracking==0 ) stream_NLL.add(NLL573);
 
 
             	            }
@@ -28308,18 +28445,18 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
 
 
-            	    pushFollow(FOLLOW_initializer_in_initializer_list17362);
-            	    initializer571=initializer();
+            	    pushFollow(FOLLOW_initializer_in_initializer_list17418);
+            	    initializer574=initializer();
 
             	    state._fsp--;
             	    if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) stream_initializer.add(initializer571.getTree());
+            	    if ( state.backtracking==0 ) stream_initializer.add(initializer574.getTree());
 
             	    }
             	    break;
 
             	default :
-            	    break loop149;
+            	    break loop150;
                 }
             } while (true);
 
@@ -28337,16 +28474,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2165:48: -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) )
+            // 2169:48: -> ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2165:51: ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2169:51: ^( E_VEC[\"E_VEC\"] ^( LIST[\"LIST\"] ( initializer )+ ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new ExprNode.Vec(E_VEC, "E_VEC")
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2165:83: ^( LIST[\"LIST\"] ( initializer )+ )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2169:83: ^( LIST[\"LIST\"] ( initializer )+ )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
@@ -28407,7 +28544,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "braceNLLClose"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2168:1: braceNLLClose : ( ( NLL BRACE_CL )=> NLL ! BRACE_CL !| BRACE_CL !);
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2172:1: braceNLLClose : ( ( NLL BRACE_CL )=> NLL ! BRACE_CL !| BRACE_CL !);
     public final pollenParser.braceNLLClose_return braceNLLClose() throws RecognitionException {
         pollenParser.braceNLLClose_return retval = new pollenParser.braceNLLClose_return();
         retval.start = input.LT(1);
@@ -28415,53 +28552,53 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom NLL572=null;
-        Atom BRACE_CL573=null;
-        Atom BRACE_CL574=null;
+        Atom NLL575=null;
+        Atom BRACE_CL576=null;
+        Atom BRACE_CL577=null;
 
-        BaseNode NLL572_tree=null;
-        BaseNode BRACE_CL573_tree=null;
-        BaseNode BRACE_CL574_tree=null;
+        BaseNode NLL575_tree=null;
+        BaseNode BRACE_CL576_tree=null;
+        BaseNode BRACE_CL577_tree=null;
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2169:5: ( ( NLL BRACE_CL )=> NLL ! BRACE_CL !| BRACE_CL !)
-            int alt150=2;
-            int LA150_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2173:5: ( ( NLL BRACE_CL )=> NLL ! BRACE_CL !| BRACE_CL !)
+            int alt151=2;
+            int LA151_0 = input.LA(1);
 
-            if ( (LA150_0==NLL) && (synpred56_pollen())) {
-                alt150=1;
+            if ( (LA151_0==NLL) && (synpred56_pollen())) {
+                alt151=1;
             }
-            else if ( (LA150_0==BRACE_CL) ) {
-                alt150=2;
+            else if ( (LA151_0==BRACE_CL) ) {
+                alt151=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 150, 0, input);
+                    new NoViableAltException("", 151, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt150) {
+            switch (alt151) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2169:9: ( NLL BRACE_CL )=> NLL ! BRACE_CL !
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2173:9: ( NLL BRACE_CL )=> NLL ! BRACE_CL !
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    NLL572=(Atom)match(input,NLL,FOLLOW_NLL_in_braceNLLClose17417); if (state.failed) return retval;
+                    NLL575=(Atom)match(input,NLL,FOLLOW_NLL_in_braceNLLClose17473); if (state.failed) return retval;
 
-                    BRACE_CL573=(Atom)match(input,BRACE_CL,FOLLOW_BRACE_CL_in_braceNLLClose17420); if (state.failed) return retval;
+                    BRACE_CL576=(Atom)match(input,BRACE_CL,FOLLOW_BRACE_CL_in_braceNLLClose17476); if (state.failed) return retval;
 
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2170:9: BRACE_CL !
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2174:9: BRACE_CL !
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    BRACE_CL574=(Atom)match(input,BRACE_CL,FOLLOW_BRACE_CL_in_braceNLLClose17431); if (state.failed) return retval;
+                    BRACE_CL577=(Atom)match(input,BRACE_CL,FOLLOW_BRACE_CL_in_braceNLLClose17487); if (state.failed) return retval;
 
                     }
                     break;
@@ -28498,7 +28635,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varDeclList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2173:1: varDeclList : ( varBuiltInType ! varListBuiltInType | userTypeName ! varListUserDefType );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2177:1: varDeclList : ( varBuiltInType ! varListBuiltInType | userTypeName ! varListUserDefType );
     public final pollenParser.varDeclList_return varDeclList() throws RecognitionException {
         pollenParser.varDeclList_return retval = new pollenParser.varDeclList_return();
         retval.start = input.LT(1);
@@ -28506,13 +28643,13 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        pollenParser.varBuiltInType_return varBuiltInType575 =null;
+        pollenParser.varBuiltInType_return varBuiltInType578 =null;
 
-        pollenParser.varListBuiltInType_return varListBuiltInType576 =null;
+        pollenParser.varListBuiltInType_return varListBuiltInType579 =null;
 
-        pollenParser.userTypeName_return userTypeName577 =null;
+        pollenParser.userTypeName_return userTypeName580 =null;
 
-        pollenParser.varListUserDefType_return varListUserDefType578 =null;
+        pollenParser.varListUserDefType_return varListUserDefType581 =null;
 
 
 
@@ -28520,68 +28657,68 @@ public TreeAdaptor getTreeAdaptor() {
             assert ((varDecl_scope)varDecl_stack.peek()).typ != null;
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2177:5: ( varBuiltInType ! varListBuiltInType | userTypeName ! varListUserDefType )
-            int alt151=2;
-            int LA151_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2181:5: ( varBuiltInType ! varListBuiltInType | userTypeName ! varListUserDefType )
+            int alt152=2;
+            int LA152_0 = input.LA(1);
 
-            if ( (LA151_0==150||LA151_0==152||(LA151_0 >= 173 && LA151_0 <= 175)||LA151_0==188||LA151_0==190||(LA151_0 >= 194 && LA151_0 <= 196)) ) {
-                alt151=1;
+            if ( (LA152_0==150||LA152_0==152||(LA152_0 >= 173 && LA152_0 <= 175)||LA152_0==188||LA152_0==190||(LA152_0 >= 194 && LA152_0 <= 196)) ) {
+                alt152=1;
             }
-            else if ( (LA151_0==IDENT) ) {
-                alt151=2;
+            else if ( (LA152_0==IDENT) ) {
+                alt152=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 151, 0, input);
+                    new NoViableAltException("", 152, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt151) {
+            switch (alt152) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2177:10: varBuiltInType ! varListBuiltInType
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2181:10: varBuiltInType ! varListBuiltInType
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_varBuiltInType_in_varDeclList17461);
-                    varBuiltInType575=varBuiltInType();
+                    pushFollow(FOLLOW_varBuiltInType_in_varDeclList17517);
+                    varBuiltInType578=varBuiltInType();
 
                     state._fsp--;
                     if (state.failed) return retval;
 
-                    if ( state.backtracking==0 ) {((varDecl_scope)varDecl_stack.peek()).typ = (varBuiltInType575!=null?((BaseNode)varBuiltInType575.tree):null); }
+                    if ( state.backtracking==0 ) {((varDecl_scope)varDecl_stack.peek()).typ = (varBuiltInType578!=null?((BaseNode)varBuiltInType578.tree):null); }
 
-                    pushFollow(FOLLOW_varListBuiltInType_in_varDeclList17466);
-                    varListBuiltInType576=varListBuiltInType();
+                    pushFollow(FOLLOW_varListBuiltInType_in_varDeclList17522);
+                    varListBuiltInType579=varListBuiltInType();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varListBuiltInType576.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varListBuiltInType579.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2178:10: userTypeName ! varListUserDefType
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2182:10: userTypeName ! varListUserDefType
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_userTypeName_in_varDeclList17477);
-                    userTypeName577=userTypeName();
+                    pushFollow(FOLLOW_userTypeName_in_varDeclList17533);
+                    userTypeName580=userTypeName();
 
                     state._fsp--;
                     if (state.failed) return retval;
 
-                    if ( state.backtracking==0 ) {((varDecl_scope)varDecl_stack.peek()).typ = (userTypeName577!=null?((BaseNode)userTypeName577.tree):null); }
+                    if ( state.backtracking==0 ) {((varDecl_scope)varDecl_stack.peek()).typ = (userTypeName580!=null?((BaseNode)userTypeName580.tree):null); }
 
-                    pushFollow(FOLLOW_varListUserDefType_in_varDeclList17482);
-                    varListUserDefType578=varListUserDefType();
+                    pushFollow(FOLLOW_varListUserDefType_in_varDeclList17538);
+                    varListUserDefType581=varListUserDefType();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varListUserDefType578.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, varListUserDefType581.getTree());
 
                     }
                     break;
@@ -28618,7 +28755,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varBuiltInType"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2180:1: varBuiltInType : builtinType -> ^( T_STD[\"T_STD\", stmtFlags] builtinType ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2184:1: varBuiltInType : builtinType -> ^( T_STD[\"T_STD\", stmtFlags] builtinType ) ;
     public final pollenParser.varBuiltInType_return varBuiltInType() throws RecognitionException {
         pollenParser.varBuiltInType_return retval = new pollenParser.varBuiltInType_return();
         retval.start = input.LT(1);
@@ -28626,20 +28763,20 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        pollenParser.builtinType_return builtinType579 =null;
+        pollenParser.builtinType_return builtinType582 =null;
 
 
         RewriteRuleSubtreeStream stream_builtinType=new RewriteRuleSubtreeStream(adaptor,"rule builtinType");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2181:5: ( builtinType -> ^( T_STD[\"T_STD\", stmtFlags] builtinType ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2181:10: builtinType
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2185:5: ( builtinType -> ^( T_STD[\"T_STD\", stmtFlags] builtinType ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2185:10: builtinType
             {
-            pushFollow(FOLLOW_builtinType_in_varBuiltInType17505);
-            builtinType579=builtinType();
+            pushFollow(FOLLOW_builtinType_in_varBuiltInType17561);
+            builtinType582=builtinType();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_builtinType.add(builtinType579.getTree());
+            if ( state.backtracking==0 ) stream_builtinType.add(builtinType582.getTree());
 
             // AST REWRITE
             // elements: builtinType
@@ -28654,9 +28791,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2181:22: -> ^( T_STD[\"T_STD\", stmtFlags] builtinType )
+            // 2185:22: -> ^( T_STD[\"T_STD\", stmtFlags] builtinType )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2181:25: ^( T_STD[\"T_STD\", stmtFlags] builtinType )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2185:25: ^( T_STD[\"T_STD\", stmtFlags] builtinType )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -28707,7 +28844,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varListBuiltInType"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2183:1: varListBuiltInType : varInit2 ( ',' ! varInit2 )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2187:1: varListBuiltInType : varInit2 ( ',' ! varInit2 )* ;
     public final pollenParser.varListBuiltInType_return varListBuiltInType() throws RecognitionException {
         pollenParser.varListBuiltInType_return retval = new pollenParser.varListBuiltInType_return();
         retval.start = input.LT(1);
@@ -28715,57 +28852,57 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom char_literal581=null;
-        pollenParser.varInit2_return varInit2580 =null;
+        Atom char_literal584=null;
+        pollenParser.varInit2_return varInit2583 =null;
 
-        pollenParser.varInit2_return varInit2582 =null;
+        pollenParser.varInit2_return varInit2585 =null;
 
 
-        BaseNode char_literal581_tree=null;
+        BaseNode char_literal584_tree=null;
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2184:5: ( varInit2 ( ',' ! varInit2 )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2184:10: varInit2 ( ',' ! varInit2 )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2188:5: ( varInit2 ( ',' ! varInit2 )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2188:10: varInit2 ( ',' ! varInit2 )*
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            pushFollow(FOLLOW_varInit2_in_varListBuiltInType17538);
-            varInit2580=varInit2();
+            pushFollow(FOLLOW_varInit2_in_varListBuiltInType17594);
+            varInit2583=varInit2();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) adaptor.addChild(root_0, varInit2580.getTree());
+            if ( state.backtracking==0 ) adaptor.addChild(root_0, varInit2583.getTree());
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2184:19: ( ',' ! varInit2 )*
-            loop152:
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2188:19: ( ',' ! varInit2 )*
+            loop153:
             do {
-                int alt152=2;
-                int LA152_0 = input.LA(1);
+                int alt153=2;
+                int LA153_0 = input.LA(1);
 
-                if ( (LA152_0==138) ) {
-                    alt152=1;
+                if ( (LA153_0==138) ) {
+                    alt153=1;
                 }
 
 
-                switch (alt152) {
+                switch (alt153) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2184:20: ',' ! varInit2
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2188:20: ',' ! varInit2
             	    {
-            	    char_literal581=(Atom)match(input,138,FOLLOW_138_in_varListBuiltInType17541); if (state.failed) return retval;
+            	    char_literal584=(Atom)match(input,138,FOLLOW_138_in_varListBuiltInType17597); if (state.failed) return retval;
 
-            	    pushFollow(FOLLOW_varInit2_in_varListBuiltInType17544);
-            	    varInit2582=varInit2();
+            	    pushFollow(FOLLOW_varInit2_in_varListBuiltInType17600);
+            	    varInit2585=varInit2();
 
             	    state._fsp--;
             	    if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, varInit2582.getTree());
+            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, varInit2585.getTree());
 
             	    }
             	    break;
 
             	default :
-            	    break loop152;
+            	    break loop153;
                 }
             } while (true);
 
@@ -28803,7 +28940,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varListUserDefType"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2186:1: varListUserDefType : varInit ( ',' ! varInit )* ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2190:1: varListUserDefType : varInit ( ',' ! varInit )* ;
     public final pollenParser.varListUserDefType_return varListUserDefType() throws RecognitionException {
         pollenParser.varListUserDefType_return retval = new pollenParser.varListUserDefType_return();
         retval.start = input.LT(1);
@@ -28811,57 +28948,57 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom char_literal584=null;
-        pollenParser.varInit_return varInit583 =null;
+        Atom char_literal587=null;
+        pollenParser.varInit_return varInit586 =null;
 
-        pollenParser.varInit_return varInit585 =null;
+        pollenParser.varInit_return varInit588 =null;
 
 
-        BaseNode char_literal584_tree=null;
+        BaseNode char_literal587_tree=null;
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2187:5: ( varInit ( ',' ! varInit )* )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2187:10: varInit ( ',' ! varInit )*
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2191:5: ( varInit ( ',' ! varInit )* )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2191:10: varInit ( ',' ! varInit )*
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            pushFollow(FOLLOW_varInit_in_varListUserDefType17570);
-            varInit583=varInit();
+            pushFollow(FOLLOW_varInit_in_varListUserDefType17626);
+            varInit586=varInit();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) adaptor.addChild(root_0, varInit583.getTree());
+            if ( state.backtracking==0 ) adaptor.addChild(root_0, varInit586.getTree());
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2187:18: ( ',' ! varInit )*
-            loop153:
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2191:18: ( ',' ! varInit )*
+            loop154:
             do {
-                int alt153=2;
-                int LA153_0 = input.LA(1);
+                int alt154=2;
+                int LA154_0 = input.LA(1);
 
-                if ( (LA153_0==138) ) {
-                    alt153=1;
+                if ( (LA154_0==138) ) {
+                    alt154=1;
                 }
 
 
-                switch (alt153) {
+                switch (alt154) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2187:19: ',' ! varInit
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2191:19: ',' ! varInit
             	    {
-            	    char_literal584=(Atom)match(input,138,FOLLOW_138_in_varListUserDefType17573); if (state.failed) return retval;
+            	    char_literal587=(Atom)match(input,138,FOLLOW_138_in_varListUserDefType17629); if (state.failed) return retval;
 
-            	    pushFollow(FOLLOW_varInit_in_varListUserDefType17576);
-            	    varInit585=varInit();
+            	    pushFollow(FOLLOW_varInit_in_varListUserDefType17632);
+            	    varInit588=varInit();
 
             	    state._fsp--;
             	    if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, varInit585.getTree());
+            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, varInit588.getTree());
 
             	    }
             	    break;
 
             	default :
-            	    break loop153;
+            	    break loop154;
                 }
             } while (true);
 
@@ -28899,7 +29036,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varInit2"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2189:1: varInit2 : ( ( IDENT ASSIGN )=> IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2193:1: varInit2 : ( ( IDENT ASSIGN )=> IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) );
     public final pollenParser.varInit2_return varInit2() throws RecognitionException {
         pollenParser.varInit2_return retval = new pollenParser.varInit2_return();
         retval.start = input.LT(1);
@@ -28907,36 +29044,36 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom IDENT586=null;
-        Atom ASSIGN587=null;
         Atom IDENT589=null;
-        pollenParser.expr_return expr588 =null;
+        Atom ASSIGN590=null;
+        Atom IDENT592=null;
+        pollenParser.expr_return expr591 =null;
 
 
-        BaseNode IDENT586_tree=null;
-        BaseNode ASSIGN587_tree=null;
         BaseNode IDENT589_tree=null;
+        BaseNode ASSIGN590_tree=null;
+        BaseNode IDENT592_tree=null;
         RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
         RewriteRuleTokenStream stream_ASSIGN=new RewriteRuleTokenStream(adaptor,"token ASSIGN");
         RewriteRuleSubtreeStream stream_expr=new RewriteRuleSubtreeStream(adaptor,"rule expr");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2190:5: ( ( IDENT ASSIGN )=> IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) )
-            int alt154=2;
-            int LA154_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2194:5: ( ( IDENT ASSIGN )=> IDENT ASSIGN expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) )
+            int alt155=2;
+            int LA155_0 = input.LA(1);
 
-            if ( (LA154_0==IDENT) ) {
-                int LA154_1 = input.LA(2);
+            if ( (LA155_0==IDENT) ) {
+                int LA155_1 = input.LA(2);
 
                 if ( (synpred57_pollen()) ) {
-                    alt154=1;
+                    alt155=1;
                 }
                 else if ( (true) ) {
-                    alt154=2;
+                    alt155=2;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 154, 1, input);
+                        new NoViableAltException("", 155, 1, input);
 
                     throw nvae;
 
@@ -28945,29 +29082,29 @@ public TreeAdaptor getTreeAdaptor() {
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 154, 0, input);
+                    new NoViableAltException("", 155, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt154) {
+            switch (alt155) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2190:10: ( IDENT ASSIGN )=> IDENT ASSIGN expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2194:10: ( IDENT ASSIGN )=> IDENT ASSIGN expr
                     {
-                    IDENT586=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit217617); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT586);
+                    IDENT589=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit217673); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT589);
 
 
-                    ASSIGN587=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varInit217619); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN587);
+                    ASSIGN590=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varInit217675); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN590);
 
 
-                    pushFollow(FOLLOW_expr_in_varInit217621);
-                    expr588=expr();
+                    pushFollow(FOLLOW_expr_in_varInit217677);
+                    expr591=expr();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_expr.add(expr588.getTree());
+                    if ( state.backtracking==0 ) stream_expr.add(expr591.getTree());
 
                     // AST REWRITE
                     // elements: IDENT, expr
@@ -28982,9 +29119,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2191:9: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
+                    // 2195:9: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2191:12: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2195:12: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -29011,10 +29148,10 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2193:11: IDENT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2197:11: IDENT
                     {
-                    IDENT589=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit217672); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT589);
+                    IDENT592=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit217728); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT592);
 
 
                     // AST REWRITE
@@ -29030,9 +29167,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2194:9: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
+                    // 2198:9: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2194:12: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2198:12: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -29089,7 +29226,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "varInit"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2197:1: varInit : ( ( IDENT BIND )=> IDENT BIND userTypeName -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( ^( E_TYP[\"E_TYP\"] userTypeName ) )? ) | ( IDENT PEG )=> IDENT PEG expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? ) | ( IDENT ASSIGN 'new' )=> IDENT ASSIGN exprNew -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT exprNew ) | ( IDENT ASSIGN )=> IDENT ASSIGN ( expr ) -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2201:1: varInit : ( ( IDENT BIND )=> IDENT BIND userTypeName -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( ^( E_TYP[\"E_TYP\"] userTypeName ) )? ) | ( IDENT PEG )=> IDENT PEG expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? ) | ( IDENT ASSIGN 'new' )=> IDENT ASSIGN exprNew -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT exprNew ) | ( IDENT ASSIGN )=> IDENT ASSIGN ( expr ) -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) );
     public final pollenParser.varInit_return varInit() throws RecognitionException {
         pollenParser.varInit_return retval = new pollenParser.varInit_return();
         retval.start = input.LT(1);
@@ -29097,33 +29234,33 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom IDENT590=null;
-        Atom BIND591=null;
         Atom IDENT593=null;
-        Atom PEG594=null;
+        Atom BIND594=null;
         Atom IDENT596=null;
-        Atom ASSIGN597=null;
+        Atom PEG597=null;
         Atom IDENT599=null;
         Atom ASSIGN600=null;
         Atom IDENT602=null;
-        pollenParser.userTypeName_return userTypeName592 =null;
+        Atom ASSIGN603=null;
+        Atom IDENT605=null;
+        pollenParser.userTypeName_return userTypeName595 =null;
 
-        pollenParser.expr_return expr595 =null;
+        pollenParser.expr_return expr598 =null;
 
-        pollenParser.exprNew_return exprNew598 =null;
+        pollenParser.exprNew_return exprNew601 =null;
 
-        pollenParser.expr_return expr601 =null;
+        pollenParser.expr_return expr604 =null;
 
 
-        BaseNode IDENT590_tree=null;
-        BaseNode BIND591_tree=null;
         BaseNode IDENT593_tree=null;
-        BaseNode PEG594_tree=null;
+        BaseNode BIND594_tree=null;
         BaseNode IDENT596_tree=null;
-        BaseNode ASSIGN597_tree=null;
+        BaseNode PEG597_tree=null;
         BaseNode IDENT599_tree=null;
         BaseNode ASSIGN600_tree=null;
         BaseNode IDENT602_tree=null;
+        BaseNode ASSIGN603_tree=null;
+        BaseNode IDENT605_tree=null;
         RewriteRuleTokenStream stream_BIND=new RewriteRuleTokenStream(adaptor,"token BIND");
         RewriteRuleTokenStream stream_PEG=new RewriteRuleTokenStream(adaptor,"token PEG");
         RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
@@ -29132,32 +29269,32 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_userTypeName=new RewriteRuleSubtreeStream(adaptor,"rule userTypeName");
         RewriteRuleSubtreeStream stream_expr=new RewriteRuleSubtreeStream(adaptor,"rule expr");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2198:5: ( ( IDENT BIND )=> IDENT BIND userTypeName -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( ^( E_TYP[\"E_TYP\"] userTypeName ) )? ) | ( IDENT PEG )=> IDENT PEG expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? ) | ( IDENT ASSIGN 'new' )=> IDENT ASSIGN exprNew -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT exprNew ) | ( IDENT ASSIGN )=> IDENT ASSIGN ( expr ) -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) )
-            int alt155=5;
-            int LA155_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2202:5: ( ( IDENT BIND )=> IDENT BIND userTypeName -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( ^( E_TYP[\"E_TYP\"] userTypeName ) )? ) | ( IDENT PEG )=> IDENT PEG expr -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? ) | ( IDENT ASSIGN 'new' )=> IDENT ASSIGN exprNew -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT exprNew ) | ( IDENT ASSIGN )=> IDENT ASSIGN ( expr ) -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr ) | IDENT -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ) )
+            int alt156=5;
+            int LA156_0 = input.LA(1);
 
-            if ( (LA155_0==IDENT) ) {
-                int LA155_1 = input.LA(2);
+            if ( (LA156_0==IDENT) ) {
+                int LA156_1 = input.LA(2);
 
                 if ( (synpred58_pollen()) ) {
-                    alt155=1;
+                    alt156=1;
                 }
                 else if ( (synpred59_pollen()) ) {
-                    alt155=2;
+                    alt156=2;
                 }
                 else if ( (synpred60_pollen()) ) {
-                    alt155=3;
+                    alt156=3;
                 }
                 else if ( (synpred61_pollen()) ) {
-                    alt155=4;
+                    alt156=4;
                 }
                 else if ( (true) ) {
-                    alt155=5;
+                    alt156=5;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 155, 1, input);
+                        new NoViableAltException("", 156, 1, input);
 
                     throw nvae;
 
@@ -29166,34 +29303,34 @@ public TreeAdaptor getTreeAdaptor() {
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 155, 0, input);
+                    new NoViableAltException("", 156, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt155) {
+            switch (alt156) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2198:10: ( IDENT BIND )=> IDENT BIND userTypeName
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2202:10: ( IDENT BIND )=> IDENT BIND userTypeName
                     {
-                    IDENT590=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit17730); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT590);
+                    IDENT593=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit17786); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT593);
 
 
-                    BIND591=(Atom)match(input,BIND,FOLLOW_BIND_in_varInit17732); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_BIND.add(BIND591);
+                    BIND594=(Atom)match(input,BIND,FOLLOW_BIND_in_varInit17788); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_BIND.add(BIND594);
 
 
-                    pushFollow(FOLLOW_userTypeName_in_varInit17734);
-                    userTypeName592=userTypeName();
+                    pushFollow(FOLLOW_userTypeName_in_varInit17790);
+                    userTypeName595=userTypeName();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_userTypeName.add(userTypeName592.getTree());
+                    if ( state.backtracking==0 ) stream_userTypeName.add(userTypeName595.getTree());
 
                     if ( state.backtracking==0 ) { stmtFlags.add(Flags.PROTOCOL_MEMBER);  stmtFlags.add(Flags.BIND); }
 
                     // AST REWRITE
-                    // elements: userTypeName, IDENT
+                    // elements: IDENT, userTypeName
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -29205,9 +29342,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2199:9: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( ^( E_TYP[\"E_TYP\"] userTypeName ) )? )
+                    // 2203:9: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( ^( E_TYP[\"E_TYP\"] userTypeName ) )? )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2199:12: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( ^( E_TYP[\"E_TYP\"] userTypeName ) )? )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2203:12: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( ^( E_TYP[\"E_TYP\"] userTypeName ) )? )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -29220,9 +29357,9 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_IDENT.nextNode()
                         );
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2199:84: ( ^( E_TYP[\"E_TYP\"] userTypeName ) )?
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2203:84: ( ^( E_TYP[\"E_TYP\"] userTypeName ) )?
                         if ( stream_userTypeName.hasNext() ) {
-                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2199:84: ^( E_TYP[\"E_TYP\"] userTypeName )
+                            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2203:84: ^( E_TYP[\"E_TYP\"] userTypeName )
                             {
                             BaseNode root_2 = (BaseNode)adaptor.nil();
                             root_2 = (BaseNode)adaptor.becomeRoot(
@@ -29249,27 +29386,27 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2200:11: ( IDENT PEG )=> IDENT PEG expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2204:11: ( IDENT PEG )=> IDENT PEG expr
                     {
-                    IDENT593=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit17798); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT593);
+                    IDENT596=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit17854); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT596);
 
 
-                    PEG594=(Atom)match(input,PEG,FOLLOW_PEG_in_varInit17800); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_PEG.add(PEG594);
+                    PEG597=(Atom)match(input,PEG,FOLLOW_PEG_in_varInit17856); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_PEG.add(PEG597);
 
 
-                    pushFollow(FOLLOW_expr_in_varInit17802);
-                    expr595=expr();
+                    pushFollow(FOLLOW_expr_in_varInit17858);
+                    expr598=expr();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_expr.add(expr595.getTree());
+                    if ( state.backtracking==0 ) stream_expr.add(expr598.getTree());
 
                     if ( state.backtracking==0 ) { stmtFlags.add(Flags.PEG); }
 
                     // AST REWRITE
-                    // elements: expr, IDENT
+                    // elements: IDENT, expr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -29281,9 +29418,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2201:9: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? )
+                    // 2205:9: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2201:12: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2205:12: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT ( expr )? )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -29296,7 +29433,7 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_IDENT.nextNode()
                         );
 
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2201:84: ( expr )?
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2205:84: ( expr )?
                         if ( stream_expr.hasNext() ) {
                             adaptor.addChild(root_1, stream_expr.nextTree());
 
@@ -29315,22 +29452,22 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2202:11: ( IDENT ASSIGN 'new' )=> IDENT ASSIGN exprNew
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2206:11: ( IDENT ASSIGN 'new' )=> IDENT ASSIGN exprNew
                     {
-                    IDENT596=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit17855); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT596);
+                    IDENT599=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit17911); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT599);
 
 
-                    ASSIGN597=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varInit17857); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN597);
+                    ASSIGN600=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varInit17913); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN600);
 
 
-                    pushFollow(FOLLOW_exprNew_in_varInit17859);
-                    exprNew598=exprNew();
+                    pushFollow(FOLLOW_exprNew_in_varInit17915);
+                    exprNew601=exprNew();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_exprNew.add(exprNew598.getTree());
+                    if ( state.backtracking==0 ) stream_exprNew.add(exprNew601.getTree());
 
                     // AST REWRITE
                     // elements: IDENT, exprNew
@@ -29345,9 +29482,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2203:9: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT exprNew )
+                    // 2207:9: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT exprNew )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2203:12: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT exprNew )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2207:12: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT exprNew )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -29374,31 +29511,31 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2205:11: ( IDENT ASSIGN )=> IDENT ASSIGN ( expr )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2209:11: ( IDENT ASSIGN )=> IDENT ASSIGN ( expr )
                     {
-                    IDENT599=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit17917); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT599);
+                    IDENT602=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit17973); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT602);
 
 
-                    ASSIGN600=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varInit17919); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN600);
+                    ASSIGN603=(Atom)match(input,ASSIGN,FOLLOW_ASSIGN_in_varInit17975); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_ASSIGN.add(ASSIGN603);
 
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2205:40: ( expr )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2205:41: expr
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2209:40: ( expr )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2209:41: expr
                     {
-                    pushFollow(FOLLOW_expr_in_varInit17922);
-                    expr601=expr();
+                    pushFollow(FOLLOW_expr_in_varInit17978);
+                    expr604=expr();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_expr.add(expr601.getTree());
+                    if ( state.backtracking==0 ) stream_expr.add(expr604.getTree());
 
                     }
 
 
                     // AST REWRITE
-                    // elements: expr, IDENT
+                    // elements: IDENT, expr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -29410,9 +29547,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2206:9: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
+                    // 2210:9: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2206:12: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2210:12: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT expr )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -29439,10 +29576,10 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2208:10: IDENT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2212:10: IDENT
                     {
-                    IDENT602=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit17973); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT602);
+                    IDENT605=(Atom)match(input,IDENT,FOLLOW_IDENT_in_varInit18029); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_IDENT.add(IDENT605);
 
 
                     // AST REWRITE
@@ -29458,9 +29595,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2209:9: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
+                    // 2213:9: -> ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2209:12: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2213:12: ^( D_VAR[\"D_VAR\", stmtFlags] IDENT )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -29518,7 +29655,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "builtinType"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2212:1: builtinType returns [EnumSet<LitFlags> f] : ( 'bool' | 'byte' | 'int8' | 'int16' | 'int32' | 'real' | 'string' | 'uint8' | 'uint16' | 'uint32' );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2216:1: builtinType returns [EnumSet<LitFlags> f] : ( 'bool' | 'byte' | 'int8' | 'int16' | 'int32' | 'real' | 'string' | 'uint8' | 'uint16' | 'uint32' );
     public final pollenParser.builtinType_return builtinType() throws RecognitionException {
         pollenParser.builtinType_return retval = new pollenParser.builtinType_return();
         retval.start = input.LT(1);
@@ -29526,9 +29663,6 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom string_literal603=null;
-        Atom string_literal604=null;
-        Atom string_literal605=null;
         Atom string_literal606=null;
         Atom string_literal607=null;
         Atom string_literal608=null;
@@ -29536,10 +29670,10 @@ public TreeAdaptor getTreeAdaptor() {
         Atom string_literal610=null;
         Atom string_literal611=null;
         Atom string_literal612=null;
+        Atom string_literal613=null;
+        Atom string_literal614=null;
+        Atom string_literal615=null;
 
-        BaseNode string_literal603_tree=null;
-        BaseNode string_literal604_tree=null;
-        BaseNode string_literal605_tree=null;
         BaseNode string_literal606_tree=null;
         BaseNode string_literal607_tree=null;
         BaseNode string_literal608_tree=null;
@@ -29547,132 +29681,81 @@ public TreeAdaptor getTreeAdaptor() {
         BaseNode string_literal610_tree=null;
         BaseNode string_literal611_tree=null;
         BaseNode string_literal612_tree=null;
+        BaseNode string_literal613_tree=null;
+        BaseNode string_literal614_tree=null;
+        BaseNode string_literal615_tree=null;
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2213:5: ( 'bool' | 'byte' | 'int8' | 'int16' | 'int32' | 'real' | 'string' | 'uint8' | 'uint16' | 'uint32' )
-            int alt156=10;
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2217:5: ( 'bool' | 'byte' | 'int8' | 'int16' | 'int32' | 'real' | 'string' | 'uint8' | 'uint16' | 'uint32' )
+            int alt157=10;
             switch ( input.LA(1) ) {
             case 150:
                 {
-                alt156=1;
+                alt157=1;
                 }
                 break;
             case 152:
                 {
-                alt156=2;
+                alt157=2;
                 }
                 break;
             case 175:
                 {
-                alt156=3;
+                alt157=3;
                 }
                 break;
             case 173:
                 {
-                alt156=4;
+                alt157=4;
                 }
                 break;
             case 174:
                 {
-                alt156=5;
+                alt157=5;
                 }
                 break;
             case 188:
                 {
-                alt156=6;
+                alt157=6;
                 }
                 break;
             case 190:
                 {
-                alt156=7;
+                alt157=7;
                 }
                 break;
             case 196:
                 {
-                alt156=8;
+                alt157=8;
                 }
                 break;
             case 194:
                 {
-                alt156=9;
+                alt157=9;
                 }
                 break;
             case 195:
                 {
-                alt156=10;
+                alt157=10;
                 }
                 break;
             default:
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 156, 0, input);
+                    new NoViableAltException("", 157, 0, input);
 
                 throw nvae;
 
             }
 
-            switch (alt156) {
+            switch (alt157) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2213:9: 'bool'
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2217:9: 'bool'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    string_literal603=(Atom)match(input,150,FOLLOW_150_in_builtinType18022); if (state.failed) return retval;
-                    if ( state.backtracking==0 ) {
-                    string_literal603_tree = 
-                    (BaseNode)adaptor.create(string_literal603)
-                    ;
-                    adaptor.addChild(root_0, string_literal603_tree);
-                    }
-
-                    if ( state.backtracking==0 ) {retval.f = EnumSet.noneOf(LitFlags.class); retval.f.add(LitFlags.BOOL);}
-
-                    }
-                    break;
-                case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2214:9: 'byte'
-                    {
-                    root_0 = (BaseNode)adaptor.nil();
-
-
-                    string_literal604=(Atom)match(input,152,FOLLOW_152_in_builtinType18043); if (state.failed) return retval;
-                    if ( state.backtracking==0 ) {
-                    string_literal604_tree = 
-                    (BaseNode)adaptor.create(string_literal604)
-                    ;
-                    adaptor.addChild(root_0, string_literal604_tree);
-                    }
-
-                    if ( state.backtracking==0 ) {retval.f = EnumSet.noneOf(LitFlags.class); retval.f.add(LitFlags.CHR);}
-
-                    }
-                    break;
-                case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2215:9: 'int8'
-                    {
-                    root_0 = (BaseNode)adaptor.nil();
-
-
-                    string_literal605=(Atom)match(input,175,FOLLOW_175_in_builtinType18064); if (state.failed) return retval;
-                    if ( state.backtracking==0 ) {
-                    string_literal605_tree = 
-                    (BaseNode)adaptor.create(string_literal605)
-                    ;
-                    adaptor.addChild(root_0, string_literal605_tree);
-                    }
-
-                    if ( state.backtracking==0 ) {retval.f = EnumSet.noneOf(LitFlags.class); retval.f.add(LitFlags.NUM);}
-
-                    }
-                    break;
-                case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2216:9: 'int16'
-                    {
-                    root_0 = (BaseNode)adaptor.nil();
-
-
-                    string_literal606=(Atom)match(input,173,FOLLOW_173_in_builtinType18086); if (state.failed) return retval;
+                    string_literal606=(Atom)match(input,150,FOLLOW_150_in_builtinType18078); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal606_tree = 
                     (BaseNode)adaptor.create(string_literal606)
@@ -29680,17 +29763,17 @@ public TreeAdaptor getTreeAdaptor() {
                     adaptor.addChild(root_0, string_literal606_tree);
                     }
 
-                    if ( state.backtracking==0 ) {retval.f = EnumSet.noneOf(LitFlags.class); retval.f.add(LitFlags.NUM);}
+                    if ( state.backtracking==0 ) {retval.f = EnumSet.noneOf(LitFlags.class); retval.f.add(LitFlags.BOOL);}
 
                     }
                     break;
-                case 5 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2217:9: 'int32'
+                case 2 :
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2218:9: 'byte'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    string_literal607=(Atom)match(input,174,FOLLOW_174_in_builtinType18106); if (state.failed) return retval;
+                    string_literal607=(Atom)match(input,152,FOLLOW_152_in_builtinType18099); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal607_tree = 
                     (BaseNode)adaptor.create(string_literal607)
@@ -29698,17 +29781,17 @@ public TreeAdaptor getTreeAdaptor() {
                     adaptor.addChild(root_0, string_literal607_tree);
                     }
 
-                    if ( state.backtracking==0 ) {retval.f = EnumSet.noneOf(LitFlags.class); retval.f.add(LitFlags.NUM);}
+                    if ( state.backtracking==0 ) {retval.f = EnumSet.noneOf(LitFlags.class); retval.f.add(LitFlags.CHR);}
 
                     }
                     break;
-                case 6 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2218:9: 'real'
+                case 3 :
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2219:9: 'int8'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    string_literal608=(Atom)match(input,188,FOLLOW_188_in_builtinType18126); if (state.failed) return retval;
+                    string_literal608=(Atom)match(input,175,FOLLOW_175_in_builtinType18120); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal608_tree = 
                     (BaseNode)adaptor.create(string_literal608)
@@ -29720,13 +29803,13 @@ public TreeAdaptor getTreeAdaptor() {
 
                     }
                     break;
-                case 7 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2219:9: 'string'
+                case 4 :
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2220:9: 'int16'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    string_literal609=(Atom)match(input,190,FOLLOW_190_in_builtinType18148); if (state.failed) return retval;
+                    string_literal609=(Atom)match(input,173,FOLLOW_173_in_builtinType18142); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal609_tree = 
                     (BaseNode)adaptor.create(string_literal609)
@@ -29734,17 +29817,17 @@ public TreeAdaptor getTreeAdaptor() {
                     adaptor.addChild(root_0, string_literal609_tree);
                     }
 
-                    if ( state.backtracking==0 ) {retval.f = EnumSet.noneOf(LitFlags.class); retval.f.add(LitFlags.STR);}
+                    if ( state.backtracking==0 ) {retval.f = EnumSet.noneOf(LitFlags.class); retval.f.add(LitFlags.NUM);}
 
                     }
                     break;
-                case 8 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2220:9: 'uint8'
+                case 5 :
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2221:9: 'int32'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    string_literal610=(Atom)match(input,196,FOLLOW_196_in_builtinType18167); if (state.failed) return retval;
+                    string_literal610=(Atom)match(input,174,FOLLOW_174_in_builtinType18162); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal610_tree = 
                     (BaseNode)adaptor.create(string_literal610)
@@ -29756,13 +29839,13 @@ public TreeAdaptor getTreeAdaptor() {
 
                     }
                     break;
-                case 9 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2221:9: 'uint16'
+                case 6 :
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2222:9: 'real'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    string_literal611=(Atom)match(input,194,FOLLOW_194_in_builtinType18187); if (state.failed) return retval;
+                    string_literal611=(Atom)match(input,188,FOLLOW_188_in_builtinType18182); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal611_tree = 
                     (BaseNode)adaptor.create(string_literal611)
@@ -29774,18 +29857,72 @@ public TreeAdaptor getTreeAdaptor() {
 
                     }
                     break;
-                case 10 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2222:9: 'uint32'
+                case 7 :
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2223:9: 'string'
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    string_literal612=(Atom)match(input,195,FOLLOW_195_in_builtinType18205); if (state.failed) return retval;
+                    string_literal612=(Atom)match(input,190,FOLLOW_190_in_builtinType18204); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal612_tree = 
                     (BaseNode)adaptor.create(string_literal612)
                     ;
                     adaptor.addChild(root_0, string_literal612_tree);
+                    }
+
+                    if ( state.backtracking==0 ) {retval.f = EnumSet.noneOf(LitFlags.class); retval.f.add(LitFlags.STR);}
+
+                    }
+                    break;
+                case 8 :
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2224:9: 'uint8'
+                    {
+                    root_0 = (BaseNode)adaptor.nil();
+
+
+                    string_literal613=(Atom)match(input,196,FOLLOW_196_in_builtinType18223); if (state.failed) return retval;
+                    if ( state.backtracking==0 ) {
+                    string_literal613_tree = 
+                    (BaseNode)adaptor.create(string_literal613)
+                    ;
+                    adaptor.addChild(root_0, string_literal613_tree);
+                    }
+
+                    if ( state.backtracking==0 ) {retval.f = EnumSet.noneOf(LitFlags.class); retval.f.add(LitFlags.NUM);}
+
+                    }
+                    break;
+                case 9 :
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2225:9: 'uint16'
+                    {
+                    root_0 = (BaseNode)adaptor.nil();
+
+
+                    string_literal614=(Atom)match(input,194,FOLLOW_194_in_builtinType18243); if (state.failed) return retval;
+                    if ( state.backtracking==0 ) {
+                    string_literal614_tree = 
+                    (BaseNode)adaptor.create(string_literal614)
+                    ;
+                    adaptor.addChild(root_0, string_literal614_tree);
+                    }
+
+                    if ( state.backtracking==0 ) {retval.f = EnumSet.noneOf(LitFlags.class); retval.f.add(LitFlags.NUM);}
+
+                    }
+                    break;
+                case 10 :
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2226:9: 'uint32'
+                    {
+                    root_0 = (BaseNode)adaptor.nil();
+
+
+                    string_literal615=(Atom)match(input,195,FOLLOW_195_in_builtinType18261); if (state.failed) return retval;
+                    if ( state.backtracking==0 ) {
+                    string_literal615_tree = 
+                    (BaseNode)adaptor.create(string_literal615)
+                    ;
+                    adaptor.addChild(root_0, string_literal615_tree);
                     }
 
                     if ( state.backtracking==0 ) {retval.f = EnumSet.noneOf(LitFlags.class); retval.f.add(LitFlags.NUM);}
@@ -29832,7 +29969,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "qualName"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2225:1: qualName : IDENT ( ( qualNameList )? ) -> IDENT[$IDENT.text + $qualName::s] ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2229:1: qualName : IDENT ( ( qualNameList )? ) -> IDENT[$IDENT.text + $qualName::s] ;
     public final pollenParser.qualName_return qualName() throws RecognitionException {
         qualName_stack.push(new qualName_scope());
         pollenParser.qualName_return retval = new pollenParser.qualName_return();
@@ -29841,11 +29978,11 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom IDENT613=null;
-        pollenParser.qualNameList_return qualNameList614 =null;
+        Atom IDENT616=null;
+        pollenParser.qualNameList_return qualNameList617 =null;
 
 
-        BaseNode IDENT613_tree=null;
+        BaseNode IDENT616_tree=null;
         RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
         RewriteRuleSubtreeStream stream_qualNameList=new RewriteRuleSubtreeStream(adaptor,"rule qualNameList");
 
@@ -29853,33 +29990,33 @@ public TreeAdaptor getTreeAdaptor() {
             ((qualName_scope)qualName_stack.peek()).s = "";
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2252:5: ( IDENT ( ( qualNameList )? ) -> IDENT[$IDENT.text + $qualName::s] )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2252:8: IDENT ( ( qualNameList )? )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2256:5: ( IDENT ( ( qualNameList )? ) -> IDENT[$IDENT.text + $qualName::s] )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2256:8: IDENT ( ( qualNameList )? )
             {
-            IDENT613=(Atom)match(input,IDENT,FOLLOW_IDENT_in_qualName18256); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_IDENT.add(IDENT613);
+            IDENT616=(Atom)match(input,IDENT,FOLLOW_IDENT_in_qualName18312); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_IDENT.add(IDENT616);
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2252:14: ( ( qualNameList )? )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2252:15: ( qualNameList )?
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2256:14: ( ( qualNameList )? )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2256:15: ( qualNameList )?
             {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2252:15: ( qualNameList )?
-            int alt157=2;
-            int LA157_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2256:15: ( qualNameList )?
+            int alt158=2;
+            int LA158_0 = input.LA(1);
 
-            if ( (LA157_0==139) ) {
-                alt157=1;
+            if ( (LA158_0==139) ) {
+                alt158=1;
             }
-            switch (alt157) {
+            switch (alt158) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2252:15: qualNameList
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2256:15: qualNameList
                     {
-                    pushFollow(FOLLOW_qualNameList_in_qualName18259);
-                    qualNameList614=qualNameList();
+                    pushFollow(FOLLOW_qualNameList_in_qualName18315);
+                    qualNameList617=qualNameList();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_qualNameList.add(qualNameList614.getTree());
+                    if ( state.backtracking==0 ) stream_qualNameList.add(qualNameList617.getTree());
 
                     }
                     break;
@@ -29903,10 +30040,10 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2252:31: -> IDENT[$IDENT.text + $qualName::s]
+            // 2256:31: -> IDENT[$IDENT.text + $qualName::s]
             {
                 adaptor.addChild(root_0, 
-                (BaseNode)adaptor.create(IDENT, (IDENT613!=null?IDENT613.getText():null) + ((qualName_scope)qualName_stack.peek()).s)
+                (BaseNode)adaptor.create(IDENT, (IDENT616!=null?IDENT616.getText():null) + ((qualName_scope)qualName_stack.peek()).s)
                 );
 
             }
@@ -29967,7 +30104,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "qualNameList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2255:1: qualNameList : ( '.' ! IDENT !)+ ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2259:1: qualNameList : ( '.' ! IDENT !)+ ;
     public final pollenParser.qualNameList_return qualNameList() throws RecognitionException {
         pollenParser.qualNameList_return retval = new pollenParser.qualNameList_return();
         retval.start = input.LT(1);
@@ -29975,52 +30112,52 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom char_literal615=null;
-        Atom IDENT616=null;
+        Atom char_literal618=null;
+        Atom IDENT619=null;
 
-        BaseNode char_literal615_tree=null;
-        BaseNode IDENT616_tree=null;
+        BaseNode char_literal618_tree=null;
+        BaseNode IDENT619_tree=null;
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2256:5: ( ( '.' ! IDENT !)+ )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2257:5: ( '.' ! IDENT !)+
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2260:5: ( ( '.' ! IDENT !)+ )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2261:5: ( '.' ! IDENT !)+
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2257:5: ( '.' ! IDENT !)+
-            int cnt158=0;
-            loop158:
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2261:5: ( '.' ! IDENT !)+
+            int cnt159=0;
+            loop159:
             do {
-                int alt158=2;
-                int LA158_0 = input.LA(1);
+                int alt159=2;
+                int LA159_0 = input.LA(1);
 
-                if ( (LA158_0==139) ) {
-                    alt158=1;
+                if ( (LA159_0==139) ) {
+                    alt159=1;
                 }
 
 
-                switch (alt158) {
+                switch (alt159) {
             	case 1 :
-            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2257:9: '.' ! IDENT !
+            	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2261:9: '.' ! IDENT !
             	    {
-            	    char_literal615=(Atom)match(input,139,FOLLOW_139_in_qualNameList18294); if (state.failed) return retval;
+            	    char_literal618=(Atom)match(input,139,FOLLOW_139_in_qualNameList18350); if (state.failed) return retval;
 
-            	    IDENT616=(Atom)match(input,IDENT,FOLLOW_IDENT_in_qualNameList18318); if (state.failed) return retval;
+            	    IDENT619=(Atom)match(input,IDENT,FOLLOW_IDENT_in_qualNameList18374); if (state.failed) return retval;
 
-            	    if ( state.backtracking==0 ) {((qualName_scope)qualName_stack.peek()).s += "." + (IDENT616!=null?IDENT616.getText():null);}
+            	    if ( state.backtracking==0 ) {((qualName_scope)qualName_stack.peek()).s += "." + (IDENT619!=null?IDENT619.getText():null);}
 
             	    }
             	    break;
 
             	default :
-            	    if ( cnt158 >= 1 ) break loop158;
+            	    if ( cnt159 >= 1 ) break loop159;
             	    if (state.backtracking>0) {state.failed=true; return retval;}
                         EarlyExitException eee =
-                            new EarlyExitException(158, input);
+                            new EarlyExitException(159, input);
                         throw eee;
                 }
-                cnt158++;
+                cnt159++;
             } while (true);
 
 
@@ -30057,7 +30194,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "arrayLit"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2262:1: arrayLit : '[' arrayLitList ']' -> ^( LIST[\"LIST\"] arrayLitList ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2266:1: arrayLit : '[' arrayLitList ']' -> ^( LIST[\"LIST\"] arrayLitList ) ;
     public final pollenParser.arrayLit_return arrayLit() throws RecognitionException {
         pollenParser.arrayLit_return retval = new pollenParser.arrayLit_return();
         retval.start = input.LT(1);
@@ -30065,33 +30202,33 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom char_literal617=null;
-        Atom char_literal619=null;
-        pollenParser.arrayLitList_return arrayLitList618 =null;
+        Atom char_literal620=null;
+        Atom char_literal622=null;
+        pollenParser.arrayLitList_return arrayLitList621 =null;
 
 
-        BaseNode char_literal617_tree=null;
-        BaseNode char_literal619_tree=null;
+        BaseNode char_literal620_tree=null;
+        BaseNode char_literal622_tree=null;
         RewriteRuleTokenStream stream_146=new RewriteRuleTokenStream(adaptor,"token 146");
         RewriteRuleTokenStream stream_147=new RewriteRuleTokenStream(adaptor,"token 147");
         RewriteRuleSubtreeStream stream_arrayLitList=new RewriteRuleSubtreeStream(adaptor,"rule arrayLitList");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2263:5: ( '[' arrayLitList ']' -> ^( LIST[\"LIST\"] arrayLitList ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2263:10: '[' arrayLitList ']'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2267:5: ( '[' arrayLitList ']' -> ^( LIST[\"LIST\"] arrayLitList ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2267:10: '[' arrayLitList ']'
             {
-            char_literal617=(Atom)match(input,146,FOLLOW_146_in_arrayLit18378); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_146.add(char_literal617);
+            char_literal620=(Atom)match(input,146,FOLLOW_146_in_arrayLit18434); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_146.add(char_literal620);
 
 
-            pushFollow(FOLLOW_arrayLitList_in_arrayLit18383);
-            arrayLitList618=arrayLitList();
+            pushFollow(FOLLOW_arrayLitList_in_arrayLit18439);
+            arrayLitList621=arrayLitList();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_arrayLitList.add(arrayLitList618.getTree());
+            if ( state.backtracking==0 ) stream_arrayLitList.add(arrayLitList621.getTree());
 
-            char_literal619=(Atom)match(input,147,FOLLOW_147_in_arrayLit18388); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_147.add(char_literal619);
+            char_literal622=(Atom)match(input,147,FOLLOW_147_in_arrayLit18444); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_147.add(char_literal622);
 
 
             // AST REWRITE
@@ -30107,9 +30244,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2263:40: -> ^( LIST[\"LIST\"] arrayLitList )
+            // 2267:40: -> ^( LIST[\"LIST\"] arrayLitList )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2263:43: ^( LIST[\"LIST\"] arrayLitList )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2267:43: ^( LIST[\"LIST\"] arrayLitList )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -30160,7 +30297,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "arrayLitList"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2265:1: arrayLitList : ( arrayLitElem ( ',' arrayLitElem )* -> ( arrayLitElem )+ | -> NIL );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2269:1: arrayLitList : ( arrayLitElem ( ',' arrayLitElem )* -> ( arrayLitElem )+ | -> NIL );
     public final pollenParser.arrayLitList_return arrayLitList() throws RecognitionException {
         pollenParser.arrayLitList_return retval = new pollenParser.arrayLitList_return();
         retval.start = input.LT(1);
@@ -30168,76 +30305,76 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom char_literal621=null;
-        pollenParser.arrayLitElem_return arrayLitElem620 =null;
+        Atom char_literal624=null;
+        pollenParser.arrayLitElem_return arrayLitElem623 =null;
 
-        pollenParser.arrayLitElem_return arrayLitElem622 =null;
+        pollenParser.arrayLitElem_return arrayLitElem625 =null;
 
 
-        BaseNode char_literal621_tree=null;
+        BaseNode char_literal624_tree=null;
         RewriteRuleTokenStream stream_138=new RewriteRuleTokenStream(adaptor,"token 138");
         RewriteRuleSubtreeStream stream_arrayLitElem=new RewriteRuleSubtreeStream(adaptor,"rule arrayLitElem");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2266:5: ( arrayLitElem ( ',' arrayLitElem )* -> ( arrayLitElem )+ | -> NIL )
-            int alt160=2;
-            int LA160_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2270:5: ( arrayLitElem ( ',' arrayLitElem )* -> ( arrayLitElem )+ | -> NIL )
+            int alt161=2;
+            int LA161_0 = input.LA(1);
 
-            if ( (LA160_0==CHAR||LA160_0==HEX_LIT||LA160_0==IDENT||LA160_0==INT_LIT||LA160_0==OCT_LIT||LA160_0==REAL_LIT||LA160_0==STRING||LA160_0==166||LA160_0==180||LA160_0==192) ) {
-                alt160=1;
+            if ( (LA161_0==CHAR||LA161_0==HEX_LIT||LA161_0==IDENT||LA161_0==INT_LIT||LA161_0==OCT_LIT||LA161_0==REAL_LIT||LA161_0==STRING||LA161_0==166||LA161_0==180||LA161_0==192) ) {
+                alt161=1;
             }
-            else if ( (LA160_0==147) ) {
-                alt160=2;
+            else if ( (LA161_0==147) ) {
+                alt161=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 160, 0, input);
+                    new NoViableAltException("", 161, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt160) {
+            switch (alt161) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2266:10: arrayLitElem ( ',' arrayLitElem )*
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2270:10: arrayLitElem ( ',' arrayLitElem )*
                     {
-                    pushFollow(FOLLOW_arrayLitElem_in_arrayLitList18422);
-                    arrayLitElem620=arrayLitElem();
+                    pushFollow(FOLLOW_arrayLitElem_in_arrayLitList18478);
+                    arrayLitElem623=arrayLitElem();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_arrayLitElem.add(arrayLitElem620.getTree());
+                    if ( state.backtracking==0 ) stream_arrayLitElem.add(arrayLitElem623.getTree());
 
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2266:26: ( ',' arrayLitElem )*
-                    loop159:
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2270:26: ( ',' arrayLitElem )*
+                    loop160:
                     do {
-                        int alt159=2;
-                        int LA159_0 = input.LA(1);
+                        int alt160=2;
+                        int LA160_0 = input.LA(1);
 
-                        if ( (LA159_0==138) ) {
-                            alt159=1;
+                        if ( (LA160_0==138) ) {
+                            alt160=1;
                         }
 
 
-                        switch (alt159) {
+                        switch (alt160) {
                     	case 1 :
-                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2266:27: ',' arrayLitElem
+                    	    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2270:27: ',' arrayLitElem
                     	    {
-                    	    char_literal621=(Atom)match(input,138,FOLLOW_138_in_arrayLitList18428); if (state.failed) return retval; 
-                    	    if ( state.backtracking==0 ) stream_138.add(char_literal621);
+                    	    char_literal624=(Atom)match(input,138,FOLLOW_138_in_arrayLitList18484); if (state.failed) return retval; 
+                    	    if ( state.backtracking==0 ) stream_138.add(char_literal624);
 
 
-                    	    pushFollow(FOLLOW_arrayLitElem_in_arrayLitList18433);
-                    	    arrayLitElem622=arrayLitElem();
+                    	    pushFollow(FOLLOW_arrayLitElem_in_arrayLitList18489);
+                    	    arrayLitElem625=arrayLitElem();
 
                     	    state._fsp--;
                     	    if (state.failed) return retval;
-                    	    if ( state.backtracking==0 ) stream_arrayLitElem.add(arrayLitElem622.getTree());
+                    	    if ( state.backtracking==0 ) stream_arrayLitElem.add(arrayLitElem625.getTree());
 
                     	    }
                     	    break;
 
                     	default :
-                    	    break loop159;
+                    	    break loop160;
                         }
                     } while (true);
 
@@ -30255,7 +30392,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2266:52: -> ( arrayLitElem )+
+                    // 2270:52: -> ( arrayLitElem )+
                     {
                         if ( !(stream_arrayLitElem.hasNext()) ) {
                             throw new RewriteEarlyExitException();
@@ -30275,7 +30412,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2267:10: 
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2271:10: 
                     {
                     // AST REWRITE
                     // elements: 
@@ -30290,7 +30427,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2267:10: -> NIL
+                    // 2271:10: -> NIL
                     {
                         adaptor.addChild(root_0, 
                         (BaseNode)adaptor.create(NIL, "NIL")
@@ -30337,7 +30474,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "arrayLitElem"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2269:1: arrayLitElem : ( primitiveLit | namedConstant );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2273:1: arrayLitElem : ( primitiveLit | namedConstant );
     public final pollenParser.arrayLitElem_return arrayLitElem() throws RecognitionException {
         pollenParser.arrayLitElem_return retval = new pollenParser.arrayLitElem_return();
         retval.start = input.LT(1);
@@ -30345,59 +30482,59 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        pollenParser.primitiveLit_return primitiveLit623 =null;
+        pollenParser.primitiveLit_return primitiveLit626 =null;
 
-        pollenParser.namedConstant_return namedConstant624 =null;
+        pollenParser.namedConstant_return namedConstant627 =null;
 
 
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2270:5: ( primitiveLit | namedConstant )
-            int alt161=2;
-            int LA161_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2274:5: ( primitiveLit | namedConstant )
+            int alt162=2;
+            int LA162_0 = input.LA(1);
 
-            if ( (LA161_0==CHAR||LA161_0==HEX_LIT||LA161_0==INT_LIT||LA161_0==OCT_LIT||LA161_0==REAL_LIT||LA161_0==STRING||LA161_0==166||LA161_0==180||LA161_0==192) ) {
-                alt161=1;
+            if ( (LA162_0==CHAR||LA162_0==HEX_LIT||LA162_0==INT_LIT||LA162_0==OCT_LIT||LA162_0==REAL_LIT||LA162_0==STRING||LA162_0==166||LA162_0==180||LA162_0==192) ) {
+                alt162=1;
             }
-            else if ( (LA161_0==IDENT) ) {
-                alt161=2;
+            else if ( (LA162_0==IDENT) ) {
+                alt162=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 161, 0, input);
+                    new NoViableAltException("", 162, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt161) {
+            switch (alt162) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2270:10: primitiveLit
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2274:10: primitiveLit
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_primitiveLit_in_arrayLitElem18475);
-                    primitiveLit623=primitiveLit();
+                    pushFollow(FOLLOW_primitiveLit_in_arrayLitElem18531);
+                    primitiveLit626=primitiveLit();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, primitiveLit623.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, primitiveLit626.getTree());
 
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2270:31: namedConstant
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2274:31: namedConstant
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_namedConstant_in_arrayLitElem18485);
-                    namedConstant624=namedConstant();
+                    pushFollow(FOLLOW_namedConstant_in_arrayLitElem18541);
+                    namedConstant627=namedConstant();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, namedConstant624.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, namedConstant627.getTree());
 
                     }
                     break;
@@ -30434,7 +30571,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "namedConstant"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2272:1: namedConstant : qualName ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2276:1: namedConstant : qualName ;
     public final pollenParser.namedConstant_return namedConstant() throws RecognitionException {
         pollenParser.namedConstant_return retval = new pollenParser.namedConstant_return();
         retval.start = input.LT(1);
@@ -30442,23 +30579,23 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        pollenParser.qualName_return qualName625 =null;
+        pollenParser.qualName_return qualName628 =null;
 
 
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2273:5: ( qualName )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2273:10: qualName
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2277:5: ( qualName )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2277:10: qualName
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            pushFollow(FOLLOW_qualName_in_namedConstant18504);
-            qualName625=qualName();
+            pushFollow(FOLLOW_qualName_in_namedConstant18560);
+            qualName628=qualName();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) adaptor.addChild(root_0, qualName625.getTree());
+            if ( state.backtracking==0 ) adaptor.addChild(root_0, qualName628.getTree());
 
             }
 
@@ -30493,7 +30630,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "boolLit"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2275:1: boolLit : ( 'true' | 'false' ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2279:1: boolLit : ( 'true' | 'false' ) ;
     public final pollenParser.boolLit_return boolLit() throws RecognitionException {
         pollenParser.boolLit_return retval = new pollenParser.boolLit_return();
         retval.start = input.LT(1);
@@ -30501,23 +30638,23 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom set626=null;
+        Atom set629=null;
 
-        BaseNode set626_tree=null;
+        BaseNode set629_tree=null;
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2276:5: ( ( 'true' | 'false' ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2276:7: ( 'true' | 'false' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2280:5: ( ( 'true' | 'false' ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2280:7: ( 'true' | 'false' )
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            set626=(Atom)input.LT(1);
+            set629=(Atom)input.LT(1);
 
             if ( input.LA(1)==166||input.LA(1)==192 ) {
                 input.consume();
                 if ( state.backtracking==0 ) adaptor.addChild(root_0, 
-                (BaseNode)adaptor.create(set626)
+                (BaseNode)adaptor.create(set629)
                 );
                 state.errorRecovery=false;
                 state.failed=false;
@@ -30564,7 +30701,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "nullLit"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2278:1: nullLit : 'null' ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2282:1: nullLit : 'null' ;
     public final pollenParser.nullLit_return nullLit() throws RecognitionException {
         pollenParser.nullLit_return retval = new pollenParser.nullLit_return();
         retval.start = input.LT(1);
@@ -30572,23 +30709,23 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom string_literal627=null;
+        Atom string_literal630=null;
 
-        BaseNode string_literal627_tree=null;
+        BaseNode string_literal630_tree=null;
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2279:5: ( 'null' )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2279:10: 'null'
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2283:5: ( 'null' )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2283:10: 'null'
             {
             root_0 = (BaseNode)adaptor.nil();
 
 
-            string_literal627=(Atom)match(input,180,FOLLOW_180_in_nullLit18555); if (state.failed) return retval;
+            string_literal630=(Atom)match(input,180,FOLLOW_180_in_nullLit18611); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
-            string_literal627_tree = 
-            (BaseNode)adaptor.create(string_literal627)
+            string_literal630_tree = 
+            (BaseNode)adaptor.create(string_literal630)
             ;
-            adaptor.addChild(root_0, string_literal627_tree);
+            adaptor.addChild(root_0, string_literal630_tree);
             }
 
             if ( state.backtracking==0 ) {((primitiveLit_scope)primitiveLit_stack.peek()).litFlags.add(LitFlags.NULL);}
@@ -30626,7 +30763,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "numLit"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2281:1: numLit : ( INT_LIT | OCT_LIT | REAL_LIT | HEX_LIT );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2285:1: numLit : ( INT_LIT | OCT_LIT | REAL_LIT | HEX_LIT );
     public final pollenParser.numLit_return numLit() throws RecognitionException {
         pollenParser.numLit_return retval = new pollenParser.numLit_return();
         retval.start = input.LT(1);
@@ -30634,62 +30771,62 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom INT_LIT628=null;
-        Atom OCT_LIT629=null;
-        Atom REAL_LIT630=null;
-        Atom HEX_LIT631=null;
+        Atom INT_LIT631=null;
+        Atom OCT_LIT632=null;
+        Atom REAL_LIT633=null;
+        Atom HEX_LIT634=null;
 
-        BaseNode INT_LIT628_tree=null;
-        BaseNode OCT_LIT629_tree=null;
-        BaseNode REAL_LIT630_tree=null;
-        BaseNode HEX_LIT631_tree=null;
+        BaseNode INT_LIT631_tree=null;
+        BaseNode OCT_LIT632_tree=null;
+        BaseNode REAL_LIT633_tree=null;
+        BaseNode HEX_LIT634_tree=null;
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2285:5: ( INT_LIT | OCT_LIT | REAL_LIT | HEX_LIT )
-            int alt162=4;
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2289:5: ( INT_LIT | OCT_LIT | REAL_LIT | HEX_LIT )
+            int alt163=4;
             switch ( input.LA(1) ) {
             case INT_LIT:
                 {
-                alt162=1;
+                alt163=1;
                 }
                 break;
             case OCT_LIT:
                 {
-                alt162=2;
+                alt163=2;
                 }
                 break;
             case REAL_LIT:
                 {
-                alt162=3;
+                alt163=3;
                 }
                 break;
             case HEX_LIT:
                 {
-                alt162=4;
+                alt163=4;
                 }
                 break;
             default:
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 162, 0, input);
+                    new NoViableAltException("", 163, 0, input);
 
                 throw nvae;
 
             }
 
-            switch (alt162) {
+            switch (alt163) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2285:10: INT_LIT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2289:10: INT_LIT
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    INT_LIT628=(Atom)match(input,INT_LIT,FOLLOW_INT_LIT_in_numLit18581); if (state.failed) return retval;
+                    INT_LIT631=(Atom)match(input,INT_LIT,FOLLOW_INT_LIT_in_numLit18637); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    INT_LIT628_tree = 
-                    (BaseNode)adaptor.create(INT_LIT628)
+                    INT_LIT631_tree = 
+                    (BaseNode)adaptor.create(INT_LIT631)
                     ;
-                    adaptor.addChild(root_0, INT_LIT628_tree);
+                    adaptor.addChild(root_0, INT_LIT631_tree);
                     }
 
                     if ( state.backtracking==0 ) {((primitiveLit_scope)primitiveLit_stack.peek()).litFlags.add(LitFlags.INT);}
@@ -30697,17 +30834,17 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2286:11: OCT_LIT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2290:11: OCT_LIT
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    OCT_LIT629=(Atom)match(input,OCT_LIT,FOLLOW_OCT_LIT_in_numLit18599); if (state.failed) return retval;
+                    OCT_LIT632=(Atom)match(input,OCT_LIT,FOLLOW_OCT_LIT_in_numLit18655); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    OCT_LIT629_tree = 
-                    (BaseNode)adaptor.create(OCT_LIT629)
+                    OCT_LIT632_tree = 
+                    (BaseNode)adaptor.create(OCT_LIT632)
                     ;
-                    adaptor.addChild(root_0, OCT_LIT629_tree);
+                    adaptor.addChild(root_0, OCT_LIT632_tree);
                     }
 
                     if ( state.backtracking==0 ) {((primitiveLit_scope)primitiveLit_stack.peek()).litFlags.add(LitFlags.OCT);}
@@ -30715,17 +30852,17 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2287:11: REAL_LIT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2291:11: REAL_LIT
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    REAL_LIT630=(Atom)match(input,REAL_LIT,FOLLOW_REAL_LIT_in_numLit18617); if (state.failed) return retval;
+                    REAL_LIT633=(Atom)match(input,REAL_LIT,FOLLOW_REAL_LIT_in_numLit18673); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    REAL_LIT630_tree = 
-                    (BaseNode)adaptor.create(REAL_LIT630)
+                    REAL_LIT633_tree = 
+                    (BaseNode)adaptor.create(REAL_LIT633)
                     ;
-                    adaptor.addChild(root_0, REAL_LIT630_tree);
+                    adaptor.addChild(root_0, REAL_LIT633_tree);
                     }
 
                     if ( state.backtracking==0 ) {((primitiveLit_scope)primitiveLit_stack.peek()).litFlags.add(LitFlags.REAL);}
@@ -30733,17 +30870,17 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2288:11: HEX_LIT
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2292:11: HEX_LIT
                     {
                     root_0 = (BaseNode)adaptor.nil();
 
 
-                    HEX_LIT631=(Atom)match(input,HEX_LIT,FOLLOW_HEX_LIT_in_numLit18635); if (state.failed) return retval;
+                    HEX_LIT634=(Atom)match(input,HEX_LIT,FOLLOW_HEX_LIT_in_numLit18691); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    HEX_LIT631_tree = 
-                    (BaseNode)adaptor.create(HEX_LIT631)
+                    HEX_LIT634_tree = 
+                    (BaseNode)adaptor.create(HEX_LIT634)
                     ;
-                    adaptor.addChild(root_0, HEX_LIT631_tree);
+                    adaptor.addChild(root_0, HEX_LIT634_tree);
                     }
 
                     if ( state.backtracking==0 ) {((primitiveLit_scope)primitiveLit_stack.peek()).litFlags.add(LitFlags.HEX);}
@@ -30792,7 +30929,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "primitiveLit"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2291:1: primitiveLit : ( boolLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit ) | numLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit ) | nullLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit ) | STRING -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING ) | CHAR -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR ) );
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2295:1: primitiveLit : ( boolLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit ) | numLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit ) | nullLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit ) | STRING -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING ) | CHAR -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR ) );
     public final pollenParser.primitiveLit_return primitiveLit() throws RecognitionException {
         primitiveLit_stack.push(new primitiveLit_scope());
         pollenParser.primitiveLit_return retval = new pollenParser.primitiveLit_return();
@@ -30801,17 +30938,17 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom STRING635=null;
-        Atom CHAR636=null;
-        pollenParser.boolLit_return boolLit632 =null;
+        Atom STRING638=null;
+        Atom CHAR639=null;
+        pollenParser.boolLit_return boolLit635 =null;
 
-        pollenParser.numLit_return numLit633 =null;
+        pollenParser.numLit_return numLit636 =null;
 
-        pollenParser.nullLit_return nullLit634 =null;
+        pollenParser.nullLit_return nullLit637 =null;
 
 
-        BaseNode STRING635_tree=null;
-        BaseNode CHAR636_tree=null;
+        BaseNode STRING638_tree=null;
+        BaseNode CHAR639_tree=null;
         RewriteRuleTokenStream stream_STRING=new RewriteRuleTokenStream(adaptor,"token STRING");
         RewriteRuleTokenStream stream_CHAR=new RewriteRuleTokenStream(adaptor,"token CHAR");
         RewriteRuleSubtreeStream stream_boolLit=new RewriteRuleSubtreeStream(adaptor,"rule boolLit");
@@ -30821,13 +30958,13 @@ public TreeAdaptor getTreeAdaptor() {
             ((primitiveLit_scope)primitiveLit_stack.peek()).litFlags = EnumSet.noneOf(LitFlags.class);
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2298:5: ( boolLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit ) | numLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit ) | nullLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit ) | STRING -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING ) | CHAR -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR ) )
-            int alt163=5;
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2302:5: ( boolLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit ) | numLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit ) | nullLit -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit ) | STRING -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING ) | CHAR -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR ) )
+            int alt164=5;
             switch ( input.LA(1) ) {
             case 166:
             case 192:
                 {
-                alt163=1;
+                alt164=1;
                 }
                 break;
             case HEX_LIT:
@@ -30835,43 +30972,43 @@ public TreeAdaptor getTreeAdaptor() {
             case OCT_LIT:
             case REAL_LIT:
                 {
-                alt163=2;
+                alt164=2;
                 }
                 break;
             case 180:
                 {
-                alt163=3;
+                alt164=3;
                 }
                 break;
             case STRING:
                 {
-                alt163=4;
+                alt164=4;
                 }
                 break;
             case CHAR:
                 {
-                alt163=5;
+                alt164=5;
                 }
                 break;
             default:
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 163, 0, input);
+                    new NoViableAltException("", 164, 0, input);
 
                 throw nvae;
 
             }
 
-            switch (alt163) {
+            switch (alt164) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2298:10: boolLit
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2302:10: boolLit
                     {
-                    pushFollow(FOLLOW_boolLit_in_primitiveLit18672);
-                    boolLit632=boolLit();
+                    pushFollow(FOLLOW_boolLit_in_primitiveLit18728);
+                    boolLit635=boolLit();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_boolLit.add(boolLit632.getTree());
+                    if ( state.backtracking==0 ) stream_boolLit.add(boolLit635.getTree());
 
                     // AST REWRITE
                     // elements: boolLit
@@ -30886,9 +31023,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2298:18: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit )
+                    // 2302:18: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2298:21: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2302:21: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] boolLit )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -30909,14 +31046,14 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2299:10: numLit
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2303:10: numLit
                     {
-                    pushFollow(FOLLOW_numLit_in_primitiveLit18697);
-                    numLit633=numLit();
+                    pushFollow(FOLLOW_numLit_in_primitiveLit18753);
+                    numLit636=numLit();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_numLit.add(numLit633.getTree());
+                    if ( state.backtracking==0 ) stream_numLit.add(numLit636.getTree());
 
                     // AST REWRITE
                     // elements: numLit
@@ -30931,9 +31068,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2299:18: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit )
+                    // 2303:18: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2299:21: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2303:21: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] numLit )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -30954,14 +31091,14 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2300:10: nullLit
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2304:10: nullLit
                     {
-                    pushFollow(FOLLOW_nullLit_in_primitiveLit18723);
-                    nullLit634=nullLit();
+                    pushFollow(FOLLOW_nullLit_in_primitiveLit18779);
+                    nullLit637=nullLit();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_nullLit.add(nullLit634.getTree());
+                    if ( state.backtracking==0 ) stream_nullLit.add(nullLit637.getTree());
 
                     // AST REWRITE
                     // elements: nullLit
@@ -30976,9 +31113,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2300:18: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit )
+                    // 2304:18: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2300:21: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2304:21: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] nullLit )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -30999,10 +31136,10 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2301:10: STRING
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2305:10: STRING
                     {
-                    STRING635=(Atom)match(input,STRING,FOLLOW_STRING_in_primitiveLit18748); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_STRING.add(STRING635);
+                    STRING638=(Atom)match(input,STRING,FOLLOW_STRING_in_primitiveLit18804); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_STRING.add(STRING638);
 
 
                     if ( state.backtracking==0 ) {((primitiveLit_scope)primitiveLit_stack.peek()).litFlags.add(LitFlags.STR);}
@@ -31020,9 +31157,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2302:8: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING )
+                    // 2306:8: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2302:11: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2306:11: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] STRING )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -31045,10 +31182,10 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2303:10: CHAR
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2307:10: CHAR
                     {
-                    CHAR636=(Atom)match(input,CHAR,FOLLOW_CHAR_in_primitiveLit18785); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_CHAR.add(CHAR636);
+                    CHAR639=(Atom)match(input,CHAR,FOLLOW_CHAR_in_primitiveLit18841); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_CHAR.add(CHAR639);
 
 
                     if ( state.backtracking==0 ) {((primitiveLit_scope)primitiveLit_stack.peek()).litFlags.add(LitFlags.CHR);}
@@ -31066,9 +31203,9 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2304:9: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR )
+                    // 2308:9: -> ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR )
                     {
-                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2304:12: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR )
+                        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2308:12: ^( E_CONST[\"E_CONST\", $primitiveLit::litFlags] CHAR )
                         {
                         BaseNode root_1 = (BaseNode)adaptor.nil();
                         root_1 = (BaseNode)adaptor.becomeRoot(
@@ -31124,7 +31261,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "stmtInjection"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2306:1: stmtInjection : inject NLL -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2310:1: stmtInjection : inject NLL -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) ;
     public final pollenParser.stmtInjection_return stmtInjection() throws RecognitionException {
         pollenParser.stmtInjection_return retval = new pollenParser.stmtInjection_return();
         retval.start = input.LT(1);
@@ -31132,26 +31269,26 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom NLL638=null;
-        pollenParser.inject_return inject637 =null;
+        Atom NLL641=null;
+        pollenParser.inject_return inject640 =null;
 
 
-        BaseNode NLL638_tree=null;
+        BaseNode NLL641_tree=null;
         RewriteRuleTokenStream stream_NLL=new RewriteRuleTokenStream(adaptor,"token NLL");
         RewriteRuleSubtreeStream stream_inject=new RewriteRuleSubtreeStream(adaptor,"rule inject");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2307:5: ( inject NLL -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2307:10: inject NLL
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2311:5: ( inject NLL -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2311:10: inject NLL
             {
-            pushFollow(FOLLOW_inject_in_stmtInjection18830);
-            inject637=inject();
+            pushFollow(FOLLOW_inject_in_stmtInjection18886);
+            inject640=inject();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_inject.add(inject637.getTree());
+            if ( state.backtracking==0 ) stream_inject.add(inject640.getTree());
 
-            NLL638=(Atom)match(input,NLL,FOLLOW_NLL_in_stmtInjection18840); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_NLL.add(NLL638);
+            NLL641=(Atom)match(input,NLL,FOLLOW_NLL_in_stmtInjection18896); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_NLL.add(NLL641);
 
 
             // AST REWRITE
@@ -31167,16 +31304,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2309:9: -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
+            // 2313:9: -> ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2309:12: ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2313:12: ^( S_INJ[\"S_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new StmtNode.Inject(S_INJ, "S_INJ")
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2309:47: ^( E_INJ[\"E_INJ\"] inject )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2313:47: ^( E_INJ[\"E_INJ\"] inject )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
@@ -31230,7 +31367,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "inject"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2313:1: inject : c= INJECT -> ^( LIST[\"LIST\"] ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2317:1: inject : c= INJECT -> ^( LIST[\"LIST\"] ) ;
     public final pollenParser.inject_return inject() throws RecognitionException {
         pollenParser.inject_return retval = new pollenParser.inject_return();
         retval.start = input.LT(1);
@@ -31247,10 +31384,10 @@ public TreeAdaptor getTreeAdaptor() {
             BaseNode r = (BaseNode)adaptor.nil();
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2317:5: (c= INJECT -> ^( LIST[\"LIST\"] ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2317:10: c= INJECT
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2321:5: (c= INJECT -> ^( LIST[\"LIST\"] ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2321:10: c= INJECT
             {
-            c=(Atom)match(input,INJECT,FOLLOW_INJECT_in_inject18905); if (state.failed) return retval; 
+            c=(Atom)match(input,INJECT,FOLLOW_INJECT_in_inject18961); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_INJECT.add(c);
 
 
@@ -31272,9 +31409,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2321:9: -> ^( LIST[\"LIST\"] )
+            // 2325:9: -> ^( LIST[\"LIST\"] )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2321:12: ^( LIST[\"LIST\"] )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2325:12: ^( LIST[\"LIST\"] )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -31325,7 +31462,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "injectionCode"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2323:1: injectionCode : inject -> ^( E_INJ[\"E_INJ\"] inject ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2327:1: injectionCode : inject -> ^( E_INJ[\"E_INJ\"] inject ) ;
     public final pollenParser.injectionCode_return injectionCode() throws RecognitionException {
         pollenParser.injectionCode_return retval = new pollenParser.injectionCode_return();
         retval.start = input.LT(1);
@@ -31333,20 +31470,20 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        pollenParser.inject_return inject639 =null;
+        pollenParser.inject_return inject642 =null;
 
 
         RewriteRuleSubtreeStream stream_inject=new RewriteRuleSubtreeStream(adaptor,"rule inject");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2324:5: ( inject -> ^( E_INJ[\"E_INJ\"] inject ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2324:10: inject
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2328:5: ( inject -> ^( E_INJ[\"E_INJ\"] inject ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2328:10: inject
             {
-            pushFollow(FOLLOW_inject_in_injectionCode18947);
-            inject639=inject();
+            pushFollow(FOLLOW_inject_in_injectionCode19003);
+            inject642=inject();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_inject.add(inject639.getTree());
+            if ( state.backtracking==0 ) stream_inject.add(inject642.getTree());
 
             // AST REWRITE
             // elements: inject
@@ -31361,9 +31498,9 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2325:9: -> ^( E_INJ[\"E_INJ\"] inject )
+            // 2329:9: -> ^( E_INJ[\"E_INJ\"] inject )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2325:12: ^( E_INJ[\"E_INJ\"] inject )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2329:12: ^( E_INJ[\"E_INJ\"] inject )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
@@ -31414,7 +31551,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "injectionDecl"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2327:1: injectionDecl : inject ( NLL ) -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) ;
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2331:1: injectionDecl : inject ( NLL ) -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) ;
     public final pollenParser.injectionDecl_return injectionDecl() throws RecognitionException {
         pollenParser.injectionDecl_return retval = new pollenParser.injectionDecl_return();
         retval.start = input.LT(1);
@@ -31422,29 +31559,29 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom NLL641=null;
-        pollenParser.inject_return inject640 =null;
+        Atom NLL644=null;
+        pollenParser.inject_return inject643 =null;
 
 
-        BaseNode NLL641_tree=null;
+        BaseNode NLL644_tree=null;
         RewriteRuleTokenStream stream_NLL=new RewriteRuleTokenStream(adaptor,"token NLL");
         RewriteRuleSubtreeStream stream_inject=new RewriteRuleSubtreeStream(adaptor,"rule inject");
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2328:5: ( inject ( NLL ) -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2328:10: inject ( NLL )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2332:5: ( inject ( NLL ) -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) ) )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2332:10: inject ( NLL )
             {
-            pushFollow(FOLLOW_inject_in_injectionDecl18990);
-            inject640=inject();
+            pushFollow(FOLLOW_inject_in_injectionDecl19046);
+            inject643=inject();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) stream_inject.add(inject640.getTree());
+            if ( state.backtracking==0 ) stream_inject.add(inject643.getTree());
 
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2329:17: ( NLL )
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2329:18: NLL
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2333:17: ( NLL )
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2333:18: NLL
             {
-            NLL641=(Atom)match(input,NLL,FOLLOW_NLL_in_injectionDecl19009); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_NLL.add(NLL641);
+            NLL644=(Atom)match(input,NLL,FOLLOW_NLL_in_injectionDecl19065); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_NLL.add(NLL644);
 
 
             }
@@ -31463,16 +31600,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (BaseNode)adaptor.nil();
-            // 2330:18: -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
+            // 2334:18: -> ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
             {
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2330:21: ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2334:21: ^( D_INJ[\"D_INJ\"] ^( E_INJ[\"E_INJ\"] inject ) )
                 {
                 BaseNode root_1 = (BaseNode)adaptor.nil();
                 root_1 = (BaseNode)adaptor.becomeRoot(
                 new DeclNode.Inject(D_INJ, "D_INJ")
                 , root_1);
 
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2330:55: ^( E_INJ[\"E_INJ\"] inject )
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2334:55: ^( E_INJ[\"E_INJ\"] inject )
                 {
                 BaseNode root_2 = (BaseNode)adaptor.nil();
                 root_2 = (BaseNode)adaptor.becomeRoot(
@@ -31526,7 +31663,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "delim"
-    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2332:1: delim : ( ( SEMI NLL )=> SEMI NLL ->| ( SEMI ) ->| ( NLL ) ->);
+    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2336:1: delim : ( ( SEMI NLL )=> SEMI NLL ->| ( SEMI ) ->| ( NLL ) ->);
     public final pollenParser.delim_return delim() throws RecognitionException {
         pollenParser.delim_return retval = new pollenParser.delim_return();
         retval.start = input.LT(1);
@@ -31534,62 +31671,62 @@ public TreeAdaptor getTreeAdaptor() {
 
         BaseNode root_0 = null;
 
-        Atom SEMI642=null;
-        Atom NLL643=null;
-        Atom SEMI644=null;
-        Atom NLL645=null;
+        Atom SEMI645=null;
+        Atom NLL646=null;
+        Atom SEMI647=null;
+        Atom NLL648=null;
 
-        BaseNode SEMI642_tree=null;
-        BaseNode NLL643_tree=null;
-        BaseNode SEMI644_tree=null;
-        BaseNode NLL645_tree=null;
+        BaseNode SEMI645_tree=null;
+        BaseNode NLL646_tree=null;
+        BaseNode SEMI647_tree=null;
+        BaseNode NLL648_tree=null;
         RewriteRuleTokenStream stream_SEMI=new RewriteRuleTokenStream(adaptor,"token SEMI");
         RewriteRuleTokenStream stream_NLL=new RewriteRuleTokenStream(adaptor,"token NLL");
 
         try {
-            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2333:5: ( ( SEMI NLL )=> SEMI NLL ->| ( SEMI ) ->| ( NLL ) ->)
-            int alt164=3;
-            int LA164_0 = input.LA(1);
+            // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2337:5: ( ( SEMI NLL )=> SEMI NLL ->| ( SEMI ) ->| ( NLL ) ->)
+            int alt165=3;
+            int LA165_0 = input.LA(1);
 
-            if ( (LA164_0==SEMI) ) {
-                int LA164_1 = input.LA(2);
+            if ( (LA165_0==SEMI) ) {
+                int LA165_1 = input.LA(2);
 
                 if ( (synpred62_pollen()) ) {
-                    alt164=1;
+                    alt165=1;
                 }
                 else if ( (true) ) {
-                    alt164=2;
+                    alt165=2;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 164, 1, input);
+                        new NoViableAltException("", 165, 1, input);
 
                     throw nvae;
 
                 }
             }
-            else if ( (LA164_0==NLL) ) {
-                alt164=3;
+            else if ( (LA165_0==NLL) ) {
+                alt165=3;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 164, 0, input);
+                    new NoViableAltException("", 165, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt164) {
+            switch (alt165) {
                 case 1 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2333:10: ( SEMI NLL )=> SEMI NLL
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2337:10: ( SEMI NLL )=> SEMI NLL
                     {
-                    SEMI642=(Atom)match(input,SEMI,FOLLOW_SEMI_in_delim19078); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_SEMI.add(SEMI642);
+                    SEMI645=(Atom)match(input,SEMI,FOLLOW_SEMI_in_delim19134); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_SEMI.add(SEMI645);
 
 
-                    NLL643=(Atom)match(input,NLL,FOLLOW_NLL_in_delim19080); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_NLL.add(NLL643);
+                    NLL646=(Atom)match(input,NLL,FOLLOW_NLL_in_delim19136); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_NLL.add(NLL646);
 
 
                     // AST REWRITE
@@ -31605,7 +31742,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2333:34: ->
+                    // 2337:34: ->
                     {
                         root_0 = null;
                     }
@@ -31617,13 +31754,13 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2334:10: ( SEMI )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2338:10: ( SEMI )
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2334:10: ( SEMI )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2334:11: SEMI
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2338:10: ( SEMI )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2338:11: SEMI
                     {
-                    SEMI644=(Atom)match(input,SEMI,FOLLOW_SEMI_in_delim19096); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_SEMI.add(SEMI644);
+                    SEMI647=(Atom)match(input,SEMI,FOLLOW_SEMI_in_delim19152); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_SEMI.add(SEMI647);
 
 
                     }
@@ -31642,7 +31779,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2334:17: ->
+                    // 2338:17: ->
                     {
                         root_0 = null;
                     }
@@ -31654,13 +31791,13 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2335:10: ( NLL )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2339:10: ( NLL )
                     {
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2335:10: ( NLL )
-                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2335:11: NLL
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2339:10: ( NLL )
+                    // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2339:11: NLL
                     {
-                    NLL645=(Atom)match(input,NLL,FOLLOW_NLL_in_delim19111); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_NLL.add(NLL645);
+                    NLL648=(Atom)match(input,NLL,FOLLOW_NLL_in_delim19167); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_NLL.add(NLL648);
 
 
                     }
@@ -31679,7 +31816,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (BaseNode)adaptor.nil();
-                    // 2335:18: ->
+                    // 2339:18: ->
                     {
                         root_0 = null;
                     }
@@ -31739,13 +31876,13 @@ public TreeAdaptor getTreeAdaptor() {
         if (state.failed) return ;
 
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:570:46: ( NLL )?
-        int alt165=2;
-        int LA165_0 = input.LA(1);
+        int alt166=2;
+        int LA166_0 = input.LA(1);
 
-        if ( (LA165_0==NLL) ) {
-            alt165=1;
+        if ( (LA166_0==NLL) ) {
+            alt166=1;
         }
-        switch (alt165) {
+        switch (alt166) {
             case 1 :
                 // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:570:46: NLL
                 {
@@ -31782,13 +31919,13 @@ public TreeAdaptor getTreeAdaptor() {
         if (state.failed) return ;
 
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:571:27: ( '[' ']' )?
-        int alt166=2;
-        int LA166_0 = input.LA(1);
+        int alt167=2;
+        int LA167_0 = input.LA(1);
 
-        if ( (LA166_0==146) ) {
-            alt166=1;
+        if ( (LA167_0==146) ) {
+            alt167=1;
         }
-        switch (alt166) {
+        switch (alt167) {
             case 1 :
                 // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:571:28: '[' ']'
                 {
@@ -31815,13 +31952,13 @@ public TreeAdaptor getTreeAdaptor() {
         if (state.failed) return ;
 
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:571:69: ( NLL )?
-        int alt167=2;
-        int LA167_0 = input.LA(1);
+        int alt168=2;
+        int LA168_0 = input.LA(1);
 
-        if ( (LA167_0==NLL) ) {
-            alt167=1;
+        if ( (LA168_0==NLL) ) {
+            alt168=1;
         }
-        switch (alt167) {
+        switch (alt168) {
             case 1 :
                 // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:571:69: NLL
                 {
@@ -31846,13 +31983,13 @@ public TreeAdaptor getTreeAdaptor() {
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:572:10: ( 'public' )? 'enum'
         {
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:572:10: ( 'public' )?
-        int alt168=2;
-        int LA168_0 = input.LA(1);
+        int alt169=2;
+        int LA169_0 = input.LA(1);
 
-        if ( (LA168_0==187) ) {
-            alt168=1;
+        if ( (LA169_0==187) ) {
+            alt169=1;
         }
-        switch (alt168) {
+        switch (alt169) {
             case 1 :
                 // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:572:11: 'public'
                 {
@@ -31895,13 +32032,13 @@ public TreeAdaptor getTreeAdaptor() {
         if (state.failed) return ;
 
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:776:49: ( NLL )?
-        int alt169=2;
-        int LA169_0 = input.LA(1);
+        int alt170=2;
+        int LA170_0 = input.LA(1);
 
-        if ( (LA169_0==NLL) ) {
-            alt169=1;
+        if ( (LA170_0==NLL) ) {
+            alt170=1;
         }
-        switch (alt169) {
+        switch (alt170) {
             case 1 :
                 // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:776:49: NLL
                 {
@@ -31938,13 +32075,13 @@ public TreeAdaptor getTreeAdaptor() {
         if (state.failed) return ;
 
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:777:30: ( '[' ']' )?
-        int alt170=2;
-        int LA170_0 = input.LA(1);
+        int alt171=2;
+        int LA171_0 = input.LA(1);
 
-        if ( (LA170_0==146) ) {
-            alt170=1;
+        if ( (LA171_0==146) ) {
+            alt171=1;
         }
-        switch (alt170) {
+        switch (alt171) {
             case 1 :
                 // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:777:31: '[' ']'
                 {
@@ -31971,13 +32108,13 @@ public TreeAdaptor getTreeAdaptor() {
         if (state.failed) return ;
 
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:777:72: ( NLL )?
-        int alt171=2;
-        int LA171_0 = input.LA(1);
+        int alt172=2;
+        int LA172_0 = input.LA(1);
 
-        if ( (LA171_0==NLL) ) {
-            alt171=1;
+        if ( (LA172_0==NLL) ) {
+            alt172=1;
         }
-        switch (alt171) {
+        switch (alt172) {
             case 1 :
                 // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:777:72: NLL
                 {
@@ -31999,24 +32136,24 @@ public TreeAdaptor getTreeAdaptor() {
     // $ANTLR start synpred6_pollen
     public final void synpred6_pollen_fragment() throws RecognitionException {
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:778:12: ( 'new' | 'host' 'new' )
-        int alt172=2;
-        int LA172_0 = input.LA(1);
+        int alt173=2;
+        int LA173_0 = input.LA(1);
 
-        if ( (LA172_0==179) ) {
-            alt172=1;
+        if ( (LA173_0==179) ) {
+            alt173=1;
         }
-        else if ( (LA172_0==169) ) {
-            alt172=2;
+        else if ( (LA173_0==169) ) {
+            alt173=2;
         }
         else {
             if (state.backtracking>0) {state.failed=true; return ;}
             NoViableAltException nvae =
-                new NoViableAltException("", 172, 0, input);
+                new NoViableAltException("", 173, 0, input);
 
             throw nvae;
 
         }
-        switch (alt172) {
+        switch (alt173) {
             case 1 :
                 // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:778:13: 'new'
                 {
@@ -32044,13 +32181,13 @@ public TreeAdaptor getTreeAdaptor() {
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:780:13: ( 'public' )? 'enum'
         {
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:780:13: ( 'public' )?
-        int alt173=2;
-        int LA173_0 = input.LA(1);
+        int alt174=2;
+        int LA174_0 = input.LA(1);
 
-        if ( (LA173_0==187) ) {
-            alt173=1;
+        if ( (LA174_0==187) ) {
+            alt174=1;
         }
-        switch (alt173) {
+        switch (alt174) {
             case 1 :
                 // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:780:14: 'public'
                 {
@@ -32089,13 +32226,13 @@ public TreeAdaptor getTreeAdaptor() {
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:889:10: ( 'public' )? 'enum'
         {
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:889:10: ( 'public' )?
-        int alt174=2;
-        int LA174_0 = input.LA(1);
+        int alt175=2;
+        int LA175_0 = input.LA(1);
 
-        if ( (LA174_0==187) ) {
-            alt174=1;
+        if ( (LA175_0==187) ) {
+            alt175=1;
         }
-        switch (alt174) {
+        switch (alt175) {
             case 1 :
                 // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:889:11: 'public'
                 {
@@ -32184,13 +32321,13 @@ public TreeAdaptor getTreeAdaptor() {
         if (state.failed) return ;
 
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:954:48: ( NLL )?
-        int alt175=2;
-        int LA175_0 = input.LA(1);
+        int alt176=2;
+        int LA176_0 = input.LA(1);
 
-        if ( (LA175_0==NLL) ) {
-            alt175=1;
+        if ( (LA176_0==NLL) ) {
+            alt176=1;
         }
-        switch (alt175) {
+        switch (alt176) {
             case 1 :
                 // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:954:48: NLL
                 {
@@ -32233,13 +32370,13 @@ public TreeAdaptor getTreeAdaptor() {
         if (state.failed) return ;
 
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:955:38: ( '[' ']' )?
-        int alt176=2;
-        int LA176_0 = input.LA(1);
+        int alt177=2;
+        int LA177_0 = input.LA(1);
 
-        if ( (LA176_0==146) ) {
-            alt176=1;
+        if ( (LA177_0==146) ) {
+            alt177=1;
         }
-        switch (alt176) {
+        switch (alt177) {
             case 1 :
                 // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:955:39: '[' ']'
                 {
@@ -32260,13 +32397,13 @@ public TreeAdaptor getTreeAdaptor() {
         if (state.failed) return ;
 
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:955:70: ( NLL )?
-        int alt177=2;
-        int LA177_0 = input.LA(1);
+        int alt178=2;
+        int LA178_0 = input.LA(1);
 
-        if ( (LA177_0==NLL) ) {
-            alt177=1;
+        if ( (LA178_0==NLL) ) {
+            alt178=1;
         }
-        switch (alt177) {
+        switch (alt178) {
             case 1 :
                 // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:955:70: NLL
                 {
@@ -32291,13 +32428,13 @@ public TreeAdaptor getTreeAdaptor() {
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:956:12: ( 'public' )? 'enum'
         {
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:956:12: ( 'public' )?
-        int alt178=2;
-        int LA178_0 = input.LA(1);
+        int alt179=2;
+        int LA179_0 = input.LA(1);
 
-        if ( (LA178_0==187) ) {
-            alt178=1;
+        if ( (LA179_0==187) ) {
+            alt179=1;
         }
-        switch (alt178) {
+        switch (alt179) {
             case 1 :
                 // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:956:13: 'public'
                 {
@@ -32324,13 +32461,13 @@ public TreeAdaptor getTreeAdaptor() {
         match(input,BRACE_OP,FOLLOW_BRACE_OP_in_synpred15_pollen7787); if (state.failed) return ;
 
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1309:17: ( NLL )?
-        int alt179=2;
-        int LA179_0 = input.LA(1);
+        int alt180=2;
+        int LA180_0 = input.LA(1);
 
-        if ( (LA179_0==NLL) ) {
-            alt179=1;
+        if ( (LA180_0==NLL) ) {
+            alt180=1;
         }
-        switch (alt179) {
+        switch (alt180) {
             case 1 :
                 // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1309:17: NLL
                 {
@@ -32379,13 +32516,13 @@ public TreeAdaptor getTreeAdaptor() {
         match(input,138,FOLLOW_138_in_synpred17_pollen8000); if (state.failed) return ;
 
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1324:16: ( NLL )?
-        int alt180=2;
-        int LA180_0 = input.LA(1);
+        int alt181=2;
+        int LA181_0 = input.LA(1);
 
-        if ( (LA180_0==NLL) ) {
-            alt180=1;
+        if ( (LA181_0==NLL) ) {
+            alt181=1;
         }
-        switch (alt180) {
+        switch (alt181) {
             case 1 :
                 // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1324:16: NLL
                 {
@@ -32765,24 +32902,24 @@ public TreeAdaptor getTreeAdaptor() {
     // $ANTLR start synpred40_pollen
     public final void synpred40_pollen_fragment() throws RecognitionException {
         // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:11: ( 'new' | 'host' 'new' )
-        int alt181=2;
-        int LA181_0 = input.LA(1);
+        int alt182=2;
+        int LA182_0 = input.LA(1);
 
-        if ( (LA181_0==179) ) {
-            alt181=1;
+        if ( (LA182_0==179) ) {
+            alt182=1;
         }
-        else if ( (LA181_0==169) ) {
-            alt181=2;
+        else if ( (LA182_0==169) ) {
+            alt182=2;
         }
         else {
             if (state.backtracking>0) {state.failed=true; return ;}
             NoViableAltException nvae =
-                new NoViableAltException("", 181, 0, input);
+                new NoViableAltException("", 182, 0, input);
 
             throw nvae;
 
         }
-        switch (alt181) {
+        switch (alt182) {
             case 1 :
                 // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:1814:12: 'new'
                 {
@@ -32882,38 +33019,38 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred47_pollen
     public final void synpred47_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2015:10: ( 'new' | 'host' 'new' )
-        int alt182=2;
-        int LA182_0 = input.LA(1);
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2019:10: ( 'new' | 'host' 'new' )
+        int alt183=2;
+        int LA183_0 = input.LA(1);
 
-        if ( (LA182_0==179) ) {
-            alt182=1;
+        if ( (LA183_0==179) ) {
+            alt183=1;
         }
-        else if ( (LA182_0==169) ) {
-            alt182=2;
+        else if ( (LA183_0==169) ) {
+            alt183=2;
         }
         else {
             if (state.backtracking>0) {state.failed=true; return ;}
             NoViableAltException nvae =
-                new NoViableAltException("", 182, 0, input);
+                new NoViableAltException("", 183, 0, input);
 
             throw nvae;
 
         }
-        switch (alt182) {
+        switch (alt183) {
             case 1 :
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2015:11: 'new'
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2019:11: 'new'
                 {
-                match(input,179,FOLLOW_179_in_synpred47_pollen15624); if (state.failed) return ;
+                match(input,179,FOLLOW_179_in_synpred47_pollen15680); if (state.failed) return ;
 
                 }
                 break;
             case 2 :
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2015:19: 'host' 'new'
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2019:19: 'host' 'new'
                 {
-                match(input,169,FOLLOW_169_in_synpred47_pollen15628); if (state.failed) return ;
+                match(input,169,FOLLOW_169_in_synpred47_pollen15684); if (state.failed) return ;
 
-                match(input,179,FOLLOW_179_in_synpred47_pollen15630); if (state.failed) return ;
+                match(input,179,FOLLOW_179_in_synpred47_pollen15686); if (state.failed) return ;
 
                 }
                 break;
@@ -32924,21 +33061,21 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred48_pollen
     public final void synpred48_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2044:10: ( typeName IDENT ( ASSIGN ) )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2044:11: typeName IDENT ( ASSIGN )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2048:10: ( typeName IDENT ( ASSIGN ) )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2048:11: typeName IDENT ( ASSIGN )
         {
-        pushFollow(FOLLOW_typeName_in_synpred48_pollen15804);
+        pushFollow(FOLLOW_typeName_in_synpred48_pollen15860);
         typeName();
 
         state._fsp--;
         if (state.failed) return ;
 
-        match(input,IDENT,FOLLOW_IDENT_in_synpred48_pollen15806); if (state.failed) return ;
+        match(input,IDENT,FOLLOW_IDENT_in_synpred48_pollen15862); if (state.failed) return ;
 
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2044:26: ( ASSIGN )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2044:27: ASSIGN
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2048:26: ( ASSIGN )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2048:27: ASSIGN
         {
-        match(input,ASSIGN,FOLLOW_ASSIGN_in_synpred48_pollen15809); if (state.failed) return ;
+        match(input,ASSIGN,FOLLOW_ASSIGN_in_synpred48_pollen15865); if (state.failed) return ;
 
         }
 
@@ -32950,18 +33087,18 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred49_pollen
     public final void synpred49_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2045:10: ( typeName IDENT '[' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2045:11: typeName IDENT '['
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2049:10: ( typeName IDENT '[' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2049:11: typeName IDENT '['
         {
-        pushFollow(FOLLOW_typeName_in_synpred49_pollen15827);
+        pushFollow(FOLLOW_typeName_in_synpred49_pollen15883);
         typeName();
 
         state._fsp--;
         if (state.failed) return ;
 
-        match(input,IDENT,FOLLOW_IDENT_in_synpred49_pollen15829); if (state.failed) return ;
+        match(input,IDENT,FOLLOW_IDENT_in_synpred49_pollen15885); if (state.failed) return ;
 
-        match(input,146,FOLLOW_146_in_synpred49_pollen15831); if (state.failed) return ;
+        match(input,146,FOLLOW_146_in_synpred49_pollen15887); if (state.failed) return ;
 
         }
 
@@ -32970,16 +33107,16 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred50_pollen
     public final void synpred50_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2046:10: ( typeName '[' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2046:11: typeName '['
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2050:10: ( typeName '[' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2050:11: typeName '['
         {
-        pushFollow(FOLLOW_typeName_in_synpred50_pollen15849);
+        pushFollow(FOLLOW_typeName_in_synpred50_pollen15905);
         typeName();
 
         state._fsp--;
         if (state.failed) return ;
 
-        match(input,146,FOLLOW_146_in_synpred50_pollen15851); if (state.failed) return ;
+        match(input,146,FOLLOW_146_in_synpred50_pollen15907); if (state.failed) return ;
 
         }
 
@@ -32988,21 +33125,21 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred51_pollen
     public final void synpred51_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2047:11: ( ( '(' )? typeName '(' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2047:12: ( '(' )? typeName '('
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2051:11: ( ( '(' )? typeName '(' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2051:12: ( '(' )? typeName '('
         {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2047:12: ( '(' )?
-        int alt183=2;
-        int LA183_0 = input.LA(1);
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2051:12: ( '(' )?
+        int alt184=2;
+        int LA184_0 = input.LA(1);
 
-        if ( (LA183_0==135) ) {
-            alt183=1;
+        if ( (LA184_0==135) ) {
+            alt184=1;
         }
-        switch (alt183) {
+        switch (alt184) {
             case 1 :
-                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2047:13: '('
+                // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2051:13: '('
                 {
-                match(input,135,FOLLOW_135_in_synpred51_pollen15871); if (state.failed) return ;
+                match(input,135,FOLLOW_135_in_synpred51_pollen15927); if (state.failed) return ;
 
                 }
                 break;
@@ -33010,13 +33147,13 @@ public TreeAdaptor getTreeAdaptor() {
         }
 
 
-        pushFollow(FOLLOW_typeName_in_synpred51_pollen15875);
+        pushFollow(FOLLOW_typeName_in_synpred51_pollen15931);
         typeName();
 
         state._fsp--;
         if (state.failed) return ;
 
-        match(input,135,FOLLOW_135_in_synpred51_pollen15877); if (state.failed) return ;
+        match(input,135,FOLLOW_135_in_synpred51_pollen15933); if (state.failed) return ;
 
         }
 
@@ -33025,30 +33162,30 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred52_pollen
     public final void synpred52_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2048:11: ( ( '(' ) typeName typeName '(' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2048:13: ( '(' ) typeName typeName '('
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2052:11: ( ( '(' ) typeName typeName '(' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2052:13: ( '(' ) typeName typeName '('
         {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2048:13: ( '(' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2048:14: '('
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2052:13: ( '(' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2052:14: '('
         {
-        match(input,135,FOLLOW_135_in_synpred52_pollen15899); if (state.failed) return ;
+        match(input,135,FOLLOW_135_in_synpred52_pollen15955); if (state.failed) return ;
 
         }
 
 
-        pushFollow(FOLLOW_typeName_in_synpred52_pollen15902);
+        pushFollow(FOLLOW_typeName_in_synpred52_pollen15958);
         typeName();
 
         state._fsp--;
         if (state.failed) return ;
 
-        pushFollow(FOLLOW_typeName_in_synpred52_pollen15904);
+        pushFollow(FOLLOW_typeName_in_synpred52_pollen15960);
         typeName();
 
         state._fsp--;
         if (state.failed) return ;
 
-        match(input,135,FOLLOW_135_in_synpred52_pollen15906); if (state.failed) return ;
+        match(input,135,FOLLOW_135_in_synpred52_pollen15962); if (state.failed) return ;
 
         }
 
@@ -33057,16 +33194,16 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred53_pollen
     public final void synpred53_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2049:11: ( typeName varInit )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2049:12: typeName varInit
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2053:11: ( typeName varInit )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2053:12: typeName varInit
         {
-        pushFollow(FOLLOW_typeName_in_synpred53_pollen15925);
+        pushFollow(FOLLOW_typeName_in_synpred53_pollen15981);
         typeName();
 
         state._fsp--;
         if (state.failed) return ;
 
-        pushFollow(FOLLOW_varInit_in_synpred53_pollen15927);
+        pushFollow(FOLLOW_varInit_in_synpred53_pollen15983);
         varInit();
 
         state._fsp--;
@@ -33079,12 +33216,12 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred54_pollen
     public final void synpred54_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2071:6: ( 'host' 'new' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2071:7: 'host' 'new'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2075:6: ( 'host' 'new' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2075:7: 'host' 'new'
         {
-        match(input,169,FOLLOW_169_in_synpred54_pollen16245); if (state.failed) return ;
+        match(input,169,FOLLOW_169_in_synpred54_pollen16301); if (state.failed) return ;
 
-        match(input,179,FOLLOW_179_in_synpred54_pollen16247); if (state.failed) return ;
+        match(input,179,FOLLOW_179_in_synpred54_pollen16303); if (state.failed) return ;
 
         }
 
@@ -33093,10 +33230,10 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred55_pollen
     public final void synpred55_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2158:8: ( 'new' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2158:9: 'new'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2162:8: ( 'new' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2162:9: 'new'
         {
-        match(input,179,FOLLOW_179_in_synpred55_pollen17309); if (state.failed) return ;
+        match(input,179,FOLLOW_179_in_synpred55_pollen17365); if (state.failed) return ;
 
         }
 
@@ -33105,12 +33242,12 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred56_pollen
     public final void synpred56_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2169:9: ( NLL BRACE_CL )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2169:10: NLL BRACE_CL
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2173:9: ( NLL BRACE_CL )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2173:10: NLL BRACE_CL
         {
-        match(input,NLL,FOLLOW_NLL_in_synpred56_pollen17410); if (state.failed) return ;
+        match(input,NLL,FOLLOW_NLL_in_synpred56_pollen17466); if (state.failed) return ;
 
-        match(input,BRACE_CL,FOLLOW_BRACE_CL_in_synpred56_pollen17412); if (state.failed) return ;
+        match(input,BRACE_CL,FOLLOW_BRACE_CL_in_synpred56_pollen17468); if (state.failed) return ;
 
         }
 
@@ -33119,12 +33256,12 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred57_pollen
     public final void synpred57_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2190:10: ( IDENT ASSIGN )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2190:11: IDENT ASSIGN
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2194:10: ( IDENT ASSIGN )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2194:11: IDENT ASSIGN
         {
-        match(input,IDENT,FOLLOW_IDENT_in_synpred57_pollen17611); if (state.failed) return ;
+        match(input,IDENT,FOLLOW_IDENT_in_synpred57_pollen17667); if (state.failed) return ;
 
-        match(input,ASSIGN,FOLLOW_ASSIGN_in_synpred57_pollen17613); if (state.failed) return ;
+        match(input,ASSIGN,FOLLOW_ASSIGN_in_synpred57_pollen17669); if (state.failed) return ;
 
         }
 
@@ -33133,12 +33270,12 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred58_pollen
     public final void synpred58_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2198:10: ( IDENT BIND )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2198:11: IDENT BIND
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2202:10: ( IDENT BIND )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2202:11: IDENT BIND
         {
-        match(input,IDENT,FOLLOW_IDENT_in_synpred58_pollen17724); if (state.failed) return ;
+        match(input,IDENT,FOLLOW_IDENT_in_synpred58_pollen17780); if (state.failed) return ;
 
-        match(input,BIND,FOLLOW_BIND_in_synpred58_pollen17726); if (state.failed) return ;
+        match(input,BIND,FOLLOW_BIND_in_synpred58_pollen17782); if (state.failed) return ;
 
         }
 
@@ -33147,12 +33284,12 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred59_pollen
     public final void synpred59_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2200:11: ( IDENT PEG )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2200:12: IDENT PEG
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2204:11: ( IDENT PEG )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2204:12: IDENT PEG
         {
-        match(input,IDENT,FOLLOW_IDENT_in_synpred59_pollen17792); if (state.failed) return ;
+        match(input,IDENT,FOLLOW_IDENT_in_synpred59_pollen17848); if (state.failed) return ;
 
-        match(input,PEG,FOLLOW_PEG_in_synpred59_pollen17794); if (state.failed) return ;
+        match(input,PEG,FOLLOW_PEG_in_synpred59_pollen17850); if (state.failed) return ;
 
         }
 
@@ -33161,14 +33298,14 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred60_pollen
     public final void synpred60_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2202:11: ( IDENT ASSIGN 'new' )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2202:12: IDENT ASSIGN 'new'
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2206:11: ( IDENT ASSIGN 'new' )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2206:12: IDENT ASSIGN 'new'
         {
-        match(input,IDENT,FOLLOW_IDENT_in_synpred60_pollen17848); if (state.failed) return ;
+        match(input,IDENT,FOLLOW_IDENT_in_synpred60_pollen17904); if (state.failed) return ;
 
-        match(input,ASSIGN,FOLLOW_ASSIGN_in_synpred60_pollen17850); if (state.failed) return ;
+        match(input,ASSIGN,FOLLOW_ASSIGN_in_synpred60_pollen17906); if (state.failed) return ;
 
-        match(input,179,FOLLOW_179_in_synpred60_pollen17852); if (state.failed) return ;
+        match(input,179,FOLLOW_179_in_synpred60_pollen17908); if (state.failed) return ;
 
         }
 
@@ -33177,12 +33314,12 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred61_pollen
     public final void synpred61_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2205:11: ( IDENT ASSIGN )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2205:12: IDENT ASSIGN
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2209:11: ( IDENT ASSIGN )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2209:12: IDENT ASSIGN
         {
-        match(input,IDENT,FOLLOW_IDENT_in_synpred61_pollen17912); if (state.failed) return ;
+        match(input,IDENT,FOLLOW_IDENT_in_synpred61_pollen17968); if (state.failed) return ;
 
-        match(input,ASSIGN,FOLLOW_ASSIGN_in_synpred61_pollen17914); if (state.failed) return ;
+        match(input,ASSIGN,FOLLOW_ASSIGN_in_synpred61_pollen17970); if (state.failed) return ;
 
         }
 
@@ -33191,12 +33328,12 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred62_pollen
     public final void synpred62_pollen_fragment() throws RecognitionException {
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2333:10: ( SEMI NLL )
-        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2333:11: SEMI NLL
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2337:10: ( SEMI NLL )
+        // /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g:2337:11: SEMI NLL
         {
-        match(input,SEMI,FOLLOW_SEMI_in_synpred62_pollen19071); if (state.failed) return ;
+        match(input,SEMI,FOLLOW_SEMI_in_synpred62_pollen19127); if (state.failed) return ;
 
-        match(input,NLL,FOLLOW_NLL_in_synpred62_pollen19073); if (state.failed) return ;
+        match(input,NLL,FOLLOW_NLL_in_synpred62_pollen19129); if (state.failed) return ;
 
         }
 
@@ -34550,169 +34687,172 @@ public TreeAdaptor getTreeAdaptor() {
     public static final BitSet FOLLOW_198_in_stmtWhile15449 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000080L});
     public static final BitSet FOLLOW_135_in_stmtWhile15451 = new BitSet(new long[]{0x4000000000012400L,0x00000040880085C2L,0x0010004000020080L,0x0000000000000001L});
     public static final BitSet FOLLOW_expr_in_stmtWhile15452 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000100L});
-    public static final BitSet FOLLOW_136_in_stmtWhile15453 = new BitSet(new long[]{0x0000000000001000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_NLL_in_stmtWhile15456 = new BitSet(new long[]{0x0000000000001000L});
-    public static final BitSet FOLLOW_stmtBlock_in_stmtWhile15460 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_stmtDeclAttr_in_stmtDecl15495 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400080L,0x000000000000001CL});
-    public static final BitSet FOLLOW_varDecl_in_stmtDecl15497 = new BitSet(new long[]{0x0000000000000000L,0x0000000201000000L});
-    public static final BitSet FOLLOW_delim_in_stmtDecl15499 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_156_in_stmtDeclAttr15540 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000020010000000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_197_in_stmtDeclAttr15558 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000020010000000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_169_in_stmtDeclAttr15581 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000020010000000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_varDeclarationNew_in_fieldDeclaration15634 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_varAttr_in_fieldDeclaration15645 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400080L,0x000000000000001CL});
-    public static final BitSet FOLLOW_varDecl_in_fieldDeclaration15647 = new BitSet(new long[]{0x0000000000000000L,0x0000000201000000L});
-    public static final BitSet FOLLOW_delim_in_fieldDeclaration15649 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_varAttr_in_varDeclaration15688 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400080L,0x000000000000001CL});
-    public static final BitSet FOLLOW_varDecl_in_varDeclaration15690 = new BitSet(new long[]{0x0000000000000000L,0x0000000201000000L});
-    public static final BitSet FOLLOW_delim_in_varDeclaration15692 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_156_in_varAttr15723 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000020010000000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_197_in_varAttr15741 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000020010000000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_169_in_varAttr15761 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000020010000000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_varDeclList_in_varDecl15815 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_varArray_in_varDecl15836 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_varArray2_in_varDecl15857 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_varFcnRef_in_varDecl15883 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_varFcnRef2_in_varDecl15912 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_varDeclList_in_varDecl15932 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_179_in_varDeclarationNew15971 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_qualName_in_varDeclarationNew15973 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_varDeclarationNew15975 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000080L});
-    public static final BitSet FOLLOW_fcnArgumentList_in_varDeclarationNew15977 = new BitSet(new long[]{0x0000000000000000L,0x0000000201000000L});
-    public static final BitSet FOLLOW_delim_in_varDeclarationNew15980 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_169_in_varDeclarationNew16252 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0008000000000000L});
-    public static final BitSet FOLLOW_179_in_varDeclarationNew16254 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_qualName_in_varDeclarationNew16256 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_varDeclarationNew16258 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000080L});
-    public static final BitSet FOLLOW_fcnArgumentList_in_varDeclarationNew16260 = new BitSet(new long[]{0x0000000000000000L,0x0000000201000000L});
-    public static final BitSet FOLLOW_delim_in_varDeclarationNew16263 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_135_in_varFcnRef16544 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400000L,0x000000000000001CL});
-    public static final BitSet FOLLOW_typeName_in_varFcnRef16547 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000080L});
-    public static final BitSet FOLLOW_fcnRefTypeList_in_varFcnRef16549 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000100L});
-    public static final BitSet FOLLOW_136_in_varFcnRef16552 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_varFcnRef16555 = new BitSet(new long[]{0x0000000000000022L});
-    public static final BitSet FOLLOW_ASSIGN_in_varFcnRef16558 = new BitSet(new long[]{0x4000000000012400L,0x00000040880085C2L,0x0010004000020080L,0x0000000000000001L});
-    public static final BitSet FOLLOW_expr_in_varFcnRef16560 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_typeName_in_varFcnRef16579 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000080L});
-    public static final BitSet FOLLOW_fcnRefTypeList_in_varFcnRef16581 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_varFcnRef16584 = new BitSet(new long[]{0x0000000000000022L});
-    public static final BitSet FOLLOW_ASSIGN_in_varFcnRef16587 = new BitSet(new long[]{0x4000000000012400L,0x00000040880085C2L,0x0010004000020080L,0x0000000000000001L});
-    public static final BitSet FOLLOW_expr_in_varFcnRef16589 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_135_in_varFcnRef216643 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400000L,0x000000000000001CL});
-    public static final BitSet FOLLOW_rtnType_in_varFcnRef216645 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400000L,0x000000000000001CL});
-    public static final BitSet FOLLOW_typeName_in_varFcnRef216647 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000080L});
-    public static final BitSet FOLLOW_fcnRefTypeList_in_varFcnRef216649 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000100L});
-    public static final BitSet FOLLOW_136_in_varFcnRef216651 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_varFcnRef216653 = new BitSet(new long[]{0x0000000000000022L});
-    public static final BitSet FOLLOW_ASSIGN_in_varFcnRef216656 = new BitSet(new long[]{0x4000000000012400L,0x00000040880085C2L,0x0010004000020080L,0x0000000000000001L});
-    public static final BitSet FOLLOW_expr_in_varFcnRef216658 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_typeName_in_rtnType16735 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_135_in_fcnRefTypeList16756 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400100L,0x000000000000001CL});
-    public static final BitSet FOLLOW_fcnRefTypes_in_fcnRefTypeList16758 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000100L});
-    public static final BitSet FOLLOW_136_in_fcnRefTypeList16760 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_typeName_in_fcnRefTypes16783 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
-    public static final BitSet FOLLOW_138_in_fcnRefTypes16786 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400000L,0x000000000000001CL});
-    public static final BitSet FOLLOW_typeName_in_fcnRefTypes16788 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
-    public static final BitSet FOLLOW_typeNameArray_in_varArray16858 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_varArray16870 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000040000L});
-    public static final BitSet FOLLOW_varArraySpec_in_varArray16881 = new BitSet(new long[]{0x0000000000000022L,0x0000000010000000L});
-    public static final BitSet FOLLOW_varArrayInit_in_varArray16894 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_typeNameArray_in_varArray216994 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000040000L});
-    public static final BitSet FOLLOW_varArraySpec_in_varArray217006 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_varArray217020 = new BitSet(new long[]{0x0000000000000022L,0x0000000010000000L});
-    public static final BitSet FOLLOW_varArrayInit_in_varArray217031 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_146_in_varArraySpec17125 = new BitSet(new long[]{0x4000000000012400L,0x00000040880085C2L,0x00100040000A0080L,0x0000000000000001L});
-    public static final BitSet FOLLOW_varDim_in_varArraySpec17127 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_147_in_varArraySpec17129 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000040000L});
-    public static final BitSet FOLLOW_ASSIGN_in_varArrayInit17170 = new BitSet(new long[]{0x4000000000013400L,0x00000040880085C2L,0x0018004000020080L,0x0000000000000001L});
-    public static final BitSet FOLLOW_initializer_in_varArrayInit17172 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PEG_in_varArrayInit17205 = new BitSet(new long[]{0x4000000000013400L,0x00000040880085C2L,0x0018004000020080L,0x0000000000000001L});
-    public static final BitSet FOLLOW_initializer_in_varArrayInit17207 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_varDim17244 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_initializer17298 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_exprNew_in_initializer17314 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_braceOpenNLL_in_initializer17323 = new BitSet(new long[]{0x4000000000013400L,0x00000040880085C2L,0x0018004000020080L,0x0000000000000001L});
-    public static final BitSet FOLLOW_initializer_list_in_initializer17325 = new BitSet(new long[]{0x0000000000000800L,0x0000000001000000L});
-    public static final BitSet FOLLOW_braceNLLClose_in_initializer17327 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_initializer_in_initializer_list17354 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
-    public static final BitSet FOLLOW_138_in_initializer_list17357 = new BitSet(new long[]{0x4000000000013400L,0x00000040890085C2L,0x0018004000020080L,0x0000000000000001L});
-    public static final BitSet FOLLOW_NLL_in_initializer_list17359 = new BitSet(new long[]{0x4000000000013400L,0x00000040880085C2L,0x0018004000020080L,0x0000000000000001L});
-    public static final BitSet FOLLOW_initializer_in_initializer_list17362 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
-    public static final BitSet FOLLOW_NLL_in_braceNLLClose17417 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_BRACE_CL_in_braceNLLClose17420 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_BRACE_CL_in_braceNLLClose17431 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_varBuiltInType_in_varDeclList17461 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_varListBuiltInType_in_varDeclList17466 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_userTypeName_in_varDeclList17477 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_varListUserDefType_in_varDeclList17482 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_builtinType_in_varBuiltInType17505 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_varInit2_in_varListBuiltInType17538 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
-    public static final BitSet FOLLOW_138_in_varListBuiltInType17541 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_varInit2_in_varListBuiltInType17544 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
-    public static final BitSet FOLLOW_varInit_in_varListUserDefType17570 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
-    public static final BitSet FOLLOW_138_in_varListUserDefType17573 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_varInit_in_varListUserDefType17576 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
-    public static final BitSet FOLLOW_IDENT_in_varInit217617 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ASSIGN_in_varInit217619 = new BitSet(new long[]{0x4000000000012400L,0x00000040880085C2L,0x0010004000020080L,0x0000000000000001L});
-    public static final BitSet FOLLOW_expr_in_varInit217621 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_varInit217672 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_varInit17730 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_BIND_in_varInit17732 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_userTypeName_in_varInit17734 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_varInit17798 = new BitSet(new long[]{0x0000000000000000L,0x0000000010000000L});
-    public static final BitSet FOLLOW_PEG_in_varInit17800 = new BitSet(new long[]{0x4000000000012400L,0x00000040880085C2L,0x0010004000020080L,0x0000000000000001L});
-    public static final BitSet FOLLOW_expr_in_varInit17802 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_varInit17855 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ASSIGN_in_varInit17857 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0008000000000000L});
-    public static final BitSet FOLLOW_exprNew_in_varInit17859 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_varInit17917 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ASSIGN_in_varInit17919 = new BitSet(new long[]{0x4000000000012400L,0x00000040880085C2L,0x0010004000020080L,0x0000000000000001L});
-    public static final BitSet FOLLOW_expr_in_varInit17922 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_varInit17973 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_150_in_builtinType18022 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_152_in_builtinType18043 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_175_in_builtinType18064 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_173_in_builtinType18086 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_174_in_builtinType18106 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_188_in_builtinType18126 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_190_in_builtinType18148 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_196_in_builtinType18167 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_194_in_builtinType18187 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_195_in_builtinType18205 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_qualName18256 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000800L});
-    public static final BitSet FOLLOW_qualNameList_in_qualName18259 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_139_in_qualNameList18294 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_qualNameList18318 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000800L});
-    public static final BitSet FOLLOW_146_in_arrayLit18378 = new BitSet(new long[]{0x4000000000002000L,0x0000004088000102L,0x0010004000080000L,0x0000000000000001L});
-    public static final BitSet FOLLOW_arrayLitList_in_arrayLit18383 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_147_in_arrayLit18388 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_arrayLitElem_in_arrayLitList18422 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
-    public static final BitSet FOLLOW_138_in_arrayLitList18428 = new BitSet(new long[]{0x4000000000002000L,0x0000004088000102L,0x0010004000000000L,0x0000000000000001L});
-    public static final BitSet FOLLOW_arrayLitElem_in_arrayLitList18433 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
-    public static final BitSet FOLLOW_primitiveLit_in_arrayLitElem18475 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_namedConstant_in_arrayLitElem18485 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_qualName_in_namedConstant18504 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_set_in_boolLit18528 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_180_in_nullLit18555 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_LIT_in_numLit18581 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_OCT_LIT_in_numLit18599 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_REAL_LIT_in_numLit18617 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_HEX_LIT_in_numLit18635 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_boolLit_in_primitiveLit18672 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_numLit_in_primitiveLit18697 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_nullLit_in_primitiveLit18723 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_primitiveLit18748 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_CHAR_in_primitiveLit18785 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_inject_in_stmtInjection18830 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_NLL_in_stmtInjection18840 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INJECT_in_inject18905 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_inject_in_injectionCode18947 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_inject_in_injectionDecl18990 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_NLL_in_injectionDecl19009 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_SEMI_in_delim19078 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_NLL_in_delim19080 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_SEMI_in_delim19096 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NLL_in_delim19111 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_136_in_stmtWhile15453 = new BitSet(new long[]{0x0000000000001000L,0x0000000201000000L});
+    public static final BitSet FOLLOW_stmtWhile2_in_stmtWhile15455 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_SEMI_in_stmtWhile215488 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_NLL_in_stmtWhile215491 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NLL_in_stmtWhile215526 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_stmtBlock_in_stmtWhile215531 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_stmtDeclAttr_in_stmtDecl15551 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400080L,0x000000000000001CL});
+    public static final BitSet FOLLOW_varDecl_in_stmtDecl15553 = new BitSet(new long[]{0x0000000000000000L,0x0000000201000000L});
+    public static final BitSet FOLLOW_delim_in_stmtDecl15555 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_156_in_stmtDeclAttr15596 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000020010000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_197_in_stmtDeclAttr15614 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000020010000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_169_in_stmtDeclAttr15637 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000020010000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_varDeclarationNew_in_fieldDeclaration15690 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_varAttr_in_fieldDeclaration15701 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400080L,0x000000000000001CL});
+    public static final BitSet FOLLOW_varDecl_in_fieldDeclaration15703 = new BitSet(new long[]{0x0000000000000000L,0x0000000201000000L});
+    public static final BitSet FOLLOW_delim_in_fieldDeclaration15705 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_varAttr_in_varDeclaration15744 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400080L,0x000000000000001CL});
+    public static final BitSet FOLLOW_varDecl_in_varDeclaration15746 = new BitSet(new long[]{0x0000000000000000L,0x0000000201000000L});
+    public static final BitSet FOLLOW_delim_in_varDeclaration15748 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_156_in_varAttr15779 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000020010000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_197_in_varAttr15797 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000020010000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_169_in_varAttr15817 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000020010000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_varDeclList_in_varDecl15871 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_varArray_in_varDecl15892 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_varArray2_in_varDecl15913 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_varFcnRef_in_varDecl15939 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_varFcnRef2_in_varDecl15968 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_varDeclList_in_varDecl15988 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_179_in_varDeclarationNew16027 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_qualName_in_varDeclarationNew16029 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_varDeclarationNew16031 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000080L});
+    public static final BitSet FOLLOW_fcnArgumentList_in_varDeclarationNew16033 = new BitSet(new long[]{0x0000000000000000L,0x0000000201000000L});
+    public static final BitSet FOLLOW_delim_in_varDeclarationNew16036 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_169_in_varDeclarationNew16308 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0008000000000000L});
+    public static final BitSet FOLLOW_179_in_varDeclarationNew16310 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_qualName_in_varDeclarationNew16312 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_varDeclarationNew16314 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000080L});
+    public static final BitSet FOLLOW_fcnArgumentList_in_varDeclarationNew16316 = new BitSet(new long[]{0x0000000000000000L,0x0000000201000000L});
+    public static final BitSet FOLLOW_delim_in_varDeclarationNew16319 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_135_in_varFcnRef16600 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400000L,0x000000000000001CL});
+    public static final BitSet FOLLOW_typeName_in_varFcnRef16603 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000080L});
+    public static final BitSet FOLLOW_fcnRefTypeList_in_varFcnRef16605 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000100L});
+    public static final BitSet FOLLOW_136_in_varFcnRef16608 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_varFcnRef16611 = new BitSet(new long[]{0x0000000000000022L});
+    public static final BitSet FOLLOW_ASSIGN_in_varFcnRef16614 = new BitSet(new long[]{0x4000000000012400L,0x00000040880085C2L,0x0010004000020080L,0x0000000000000001L});
+    public static final BitSet FOLLOW_expr_in_varFcnRef16616 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_typeName_in_varFcnRef16635 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000080L});
+    public static final BitSet FOLLOW_fcnRefTypeList_in_varFcnRef16637 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_varFcnRef16640 = new BitSet(new long[]{0x0000000000000022L});
+    public static final BitSet FOLLOW_ASSIGN_in_varFcnRef16643 = new BitSet(new long[]{0x4000000000012400L,0x00000040880085C2L,0x0010004000020080L,0x0000000000000001L});
+    public static final BitSet FOLLOW_expr_in_varFcnRef16645 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_135_in_varFcnRef216699 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400000L,0x000000000000001CL});
+    public static final BitSet FOLLOW_rtnType_in_varFcnRef216701 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400000L,0x000000000000001CL});
+    public static final BitSet FOLLOW_typeName_in_varFcnRef216703 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000080L});
+    public static final BitSet FOLLOW_fcnRefTypeList_in_varFcnRef216705 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000100L});
+    public static final BitSet FOLLOW_136_in_varFcnRef216707 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_varFcnRef216709 = new BitSet(new long[]{0x0000000000000022L});
+    public static final BitSet FOLLOW_ASSIGN_in_varFcnRef216712 = new BitSet(new long[]{0x4000000000012400L,0x00000040880085C2L,0x0010004000020080L,0x0000000000000001L});
+    public static final BitSet FOLLOW_expr_in_varFcnRef216714 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_typeName_in_rtnType16791 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_135_in_fcnRefTypeList16812 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400100L,0x000000000000001CL});
+    public static final BitSet FOLLOW_fcnRefTypes_in_fcnRefTypeList16814 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000100L});
+    public static final BitSet FOLLOW_136_in_fcnRefTypeList16816 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_typeName_in_fcnRefTypes16839 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
+    public static final BitSet FOLLOW_138_in_fcnRefTypes16842 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400000L,0x000000000000001CL});
+    public static final BitSet FOLLOW_typeName_in_fcnRefTypes16844 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
+    public static final BitSet FOLLOW_typeNameArray_in_varArray16914 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_varArray16926 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000040000L});
+    public static final BitSet FOLLOW_varArraySpec_in_varArray16937 = new BitSet(new long[]{0x0000000000000022L,0x0000000010000000L});
+    public static final BitSet FOLLOW_varArrayInit_in_varArray16950 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_typeNameArray_in_varArray217050 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000040000L});
+    public static final BitSet FOLLOW_varArraySpec_in_varArray217062 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_varArray217076 = new BitSet(new long[]{0x0000000000000022L,0x0000000010000000L});
+    public static final BitSet FOLLOW_varArrayInit_in_varArray217087 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_146_in_varArraySpec17181 = new BitSet(new long[]{0x4000000000012400L,0x00000040880085C2L,0x00100040000A0080L,0x0000000000000001L});
+    public static final BitSet FOLLOW_varDim_in_varArraySpec17183 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_147_in_varArraySpec17185 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000040000L});
+    public static final BitSet FOLLOW_ASSIGN_in_varArrayInit17226 = new BitSet(new long[]{0x4000000000013400L,0x00000040880085C2L,0x0018004000020080L,0x0000000000000001L});
+    public static final BitSet FOLLOW_initializer_in_varArrayInit17228 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PEG_in_varArrayInit17261 = new BitSet(new long[]{0x4000000000013400L,0x00000040880085C2L,0x0018004000020080L,0x0000000000000001L});
+    public static final BitSet FOLLOW_initializer_in_varArrayInit17263 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_varDim17300 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_initializer17354 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_exprNew_in_initializer17370 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_braceOpenNLL_in_initializer17379 = new BitSet(new long[]{0x4000000000013400L,0x00000040880085C2L,0x0018004000020080L,0x0000000000000001L});
+    public static final BitSet FOLLOW_initializer_list_in_initializer17381 = new BitSet(new long[]{0x0000000000000800L,0x0000000001000000L});
+    public static final BitSet FOLLOW_braceNLLClose_in_initializer17383 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_initializer_in_initializer_list17410 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
+    public static final BitSet FOLLOW_138_in_initializer_list17413 = new BitSet(new long[]{0x4000000000013400L,0x00000040890085C2L,0x0018004000020080L,0x0000000000000001L});
+    public static final BitSet FOLLOW_NLL_in_initializer_list17415 = new BitSet(new long[]{0x4000000000013400L,0x00000040880085C2L,0x0018004000020080L,0x0000000000000001L});
+    public static final BitSet FOLLOW_initializer_in_initializer_list17418 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
+    public static final BitSet FOLLOW_NLL_in_braceNLLClose17473 = new BitSet(new long[]{0x0000000000000800L});
+    public static final BitSet FOLLOW_BRACE_CL_in_braceNLLClose17476 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_BRACE_CL_in_braceNLLClose17487 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_varBuiltInType_in_varDeclList17517 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_varListBuiltInType_in_varDeclList17522 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_userTypeName_in_varDeclList17533 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_varListUserDefType_in_varDeclList17538 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_builtinType_in_varBuiltInType17561 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_varInit2_in_varListBuiltInType17594 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
+    public static final BitSet FOLLOW_138_in_varListBuiltInType17597 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_varInit2_in_varListBuiltInType17600 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
+    public static final BitSet FOLLOW_varInit_in_varListUserDefType17626 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
+    public static final BitSet FOLLOW_138_in_varListUserDefType17629 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_varInit_in_varListUserDefType17632 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
+    public static final BitSet FOLLOW_IDENT_in_varInit217673 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ASSIGN_in_varInit217675 = new BitSet(new long[]{0x4000000000012400L,0x00000040880085C2L,0x0010004000020080L,0x0000000000000001L});
+    public static final BitSet FOLLOW_expr_in_varInit217677 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_varInit217728 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_varInit17786 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_BIND_in_varInit17788 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_userTypeName_in_varInit17790 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_varInit17854 = new BitSet(new long[]{0x0000000000000000L,0x0000000010000000L});
+    public static final BitSet FOLLOW_PEG_in_varInit17856 = new BitSet(new long[]{0x4000000000012400L,0x00000040880085C2L,0x0010004000020080L,0x0000000000000001L});
+    public static final BitSet FOLLOW_expr_in_varInit17858 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_varInit17911 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ASSIGN_in_varInit17913 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0008000000000000L});
+    public static final BitSet FOLLOW_exprNew_in_varInit17915 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_varInit17973 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ASSIGN_in_varInit17975 = new BitSet(new long[]{0x4000000000012400L,0x00000040880085C2L,0x0010004000020080L,0x0000000000000001L});
+    public static final BitSet FOLLOW_expr_in_varInit17978 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_varInit18029 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_150_in_builtinType18078 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_152_in_builtinType18099 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_175_in_builtinType18120 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_173_in_builtinType18142 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_174_in_builtinType18162 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_188_in_builtinType18182 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_190_in_builtinType18204 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_196_in_builtinType18223 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_194_in_builtinType18243 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_195_in_builtinType18261 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_qualName18312 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000800L});
+    public static final BitSet FOLLOW_qualNameList_in_qualName18315 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_139_in_qualNameList18350 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_qualNameList18374 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000800L});
+    public static final BitSet FOLLOW_146_in_arrayLit18434 = new BitSet(new long[]{0x4000000000002000L,0x0000004088000102L,0x0010004000080000L,0x0000000000000001L});
+    public static final BitSet FOLLOW_arrayLitList_in_arrayLit18439 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_147_in_arrayLit18444 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_arrayLitElem_in_arrayLitList18478 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
+    public static final BitSet FOLLOW_138_in_arrayLitList18484 = new BitSet(new long[]{0x4000000000002000L,0x0000004088000102L,0x0010004000000000L,0x0000000000000001L});
+    public static final BitSet FOLLOW_arrayLitElem_in_arrayLitList18489 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000000000400L});
+    public static final BitSet FOLLOW_primitiveLit_in_arrayLitElem18531 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_namedConstant_in_arrayLitElem18541 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_qualName_in_namedConstant18560 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_boolLit18584 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_180_in_nullLit18611 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_LIT_in_numLit18637 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_OCT_LIT_in_numLit18655 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_REAL_LIT_in_numLit18673 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_HEX_LIT_in_numLit18691 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_boolLit_in_primitiveLit18728 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_numLit_in_primitiveLit18753 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_nullLit_in_primitiveLit18779 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_primitiveLit18804 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_CHAR_in_primitiveLit18841 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_inject_in_stmtInjection18886 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_NLL_in_stmtInjection18896 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INJECT_in_inject18961 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_inject_in_injectionCode19003 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_inject_in_injectionDecl19046 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_NLL_in_injectionDecl19065 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_SEMI_in_delim19134 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_NLL_in_delim19136 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_SEMI_in_delim19152 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NLL_in_delim19167 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_fcnAttr_in_synpred1_pollen1479 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400000L,0x000000000000001CL});
     public static final BitSet FOLLOW_fcnType_in_synpred1_pollen1481 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000080L});
     public static final BitSet FOLLOW_formalParameterList_in_synpred1_pollen1483 = new BitSet(new long[]{0x0000000000001000L,0x0000000001000000L});
@@ -34827,43 +34967,43 @@ public TreeAdaptor getTreeAdaptor() {
     public static final BitSet FOLLOW_INJECT_in_synpred45_pollen14720 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_153_in_synpred46_pollen14953 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000100L});
     public static final BitSet FOLLOW_INT_LIT_in_synpred46_pollen14955 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_179_in_synpred47_pollen15624 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_169_in_synpred47_pollen15628 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0008000000000000L});
-    public static final BitSet FOLLOW_179_in_synpred47_pollen15630 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_typeName_in_synpred48_pollen15804 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_synpred48_pollen15806 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ASSIGN_in_synpred48_pollen15809 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_typeName_in_synpred49_pollen15827 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_synpred49_pollen15829 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000040000L});
-    public static final BitSet FOLLOW_146_in_synpred49_pollen15831 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_typeName_in_synpred50_pollen15849 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000040000L});
-    public static final BitSet FOLLOW_146_in_synpred50_pollen15851 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_135_in_synpred51_pollen15871 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400000L,0x000000000000001CL});
-    public static final BitSet FOLLOW_typeName_in_synpred51_pollen15875 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000080L});
-    public static final BitSet FOLLOW_135_in_synpred51_pollen15877 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_135_in_synpred52_pollen15899 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400000L,0x000000000000001CL});
-    public static final BitSet FOLLOW_typeName_in_synpred52_pollen15902 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400000L,0x000000000000001CL});
-    public static final BitSet FOLLOW_typeName_in_synpred52_pollen15904 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000080L});
-    public static final BitSet FOLLOW_135_in_synpred52_pollen15906 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_typeName_in_synpred53_pollen15925 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_varInit_in_synpred53_pollen15927 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_169_in_synpred54_pollen16245 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0008000000000000L});
-    public static final BitSet FOLLOW_179_in_synpred54_pollen16247 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_179_in_synpred55_pollen17309 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NLL_in_synpred56_pollen17410 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_BRACE_CL_in_synpred56_pollen17412 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_synpred57_pollen17611 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ASSIGN_in_synpred57_pollen17613 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_synpred58_pollen17724 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_BIND_in_synpred58_pollen17726 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_synpred59_pollen17792 = new BitSet(new long[]{0x0000000000000000L,0x0000000010000000L});
-    public static final BitSet FOLLOW_PEG_in_synpred59_pollen17794 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_synpred60_pollen17848 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ASSIGN_in_synpred60_pollen17850 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0008000000000000L});
-    public static final BitSet FOLLOW_179_in_synpred60_pollen17852 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_synpred61_pollen17912 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ASSIGN_in_synpred61_pollen17914 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_SEMI_in_synpred62_pollen19071 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_NLL_in_synpred62_pollen19073 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_179_in_synpred47_pollen15680 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_169_in_synpred47_pollen15684 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0008000000000000L});
+    public static final BitSet FOLLOW_179_in_synpred47_pollen15686 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_typeName_in_synpred48_pollen15860 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_synpred48_pollen15862 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ASSIGN_in_synpred48_pollen15865 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_typeName_in_synpred49_pollen15883 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_synpred49_pollen15885 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000040000L});
+    public static final BitSet FOLLOW_146_in_synpred49_pollen15887 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_typeName_in_synpred50_pollen15905 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000040000L});
+    public static final BitSet FOLLOW_146_in_synpred50_pollen15907 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_135_in_synpred51_pollen15927 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400000L,0x000000000000001CL});
+    public static final BitSet FOLLOW_typeName_in_synpred51_pollen15931 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000080L});
+    public static final BitSet FOLLOW_135_in_synpred51_pollen15933 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_135_in_synpred52_pollen15955 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400000L,0x000000000000001CL});
+    public static final BitSet FOLLOW_typeName_in_synpred52_pollen15958 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L,0x5000E00001400000L,0x000000000000001CL});
+    public static final BitSet FOLLOW_typeName_in_synpred52_pollen15960 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000080L});
+    public static final BitSet FOLLOW_135_in_synpred52_pollen15962 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_typeName_in_synpred53_pollen15981 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_varInit_in_synpred53_pollen15983 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_169_in_synpred54_pollen16301 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0008000000000000L});
+    public static final BitSet FOLLOW_179_in_synpred54_pollen16303 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_179_in_synpred55_pollen17365 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NLL_in_synpred56_pollen17466 = new BitSet(new long[]{0x0000000000000800L});
+    public static final BitSet FOLLOW_BRACE_CL_in_synpred56_pollen17468 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_synpred57_pollen17667 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ASSIGN_in_synpred57_pollen17669 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_synpred58_pollen17780 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_BIND_in_synpred58_pollen17782 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_synpred59_pollen17848 = new BitSet(new long[]{0x0000000000000000L,0x0000000010000000L});
+    public static final BitSet FOLLOW_PEG_in_synpred59_pollen17850 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_synpred60_pollen17904 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ASSIGN_in_synpred60_pollen17906 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0008000000000000L});
+    public static final BitSet FOLLOW_179_in_synpred60_pollen17908 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_synpred61_pollen17968 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ASSIGN_in_synpred61_pollen17970 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_SEMI_in_synpred62_pollen19127 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_NLL_in_synpred62_pollen19129 = new BitSet(new long[]{0x0000000000000002L});
 
 }

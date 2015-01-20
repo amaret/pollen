@@ -1995,7 +1995,11 @@ stmtProvided
         -> ^(S_PROVIDED<StmtNode.Provided>["S_PROVIDED"] expr stmtBlock stmtElse?)
     ;
 stmtWhile
-    :    'while' '('expr')' (NLL)? stmtBlock -> ^(S_WHILE<StmtNode.While>["S_WHILE"] expr stmtBlock)
+    :    'while' '('expr')' stmtWhile2 -> ^(S_WHILE<StmtNode.While>["S_WHILE"] expr stmtWhile2) //// (NLL)? stmtBlock 
+    ;
+stmtWhile2
+    :	';' (NLL) -> ^(S_BLOCK<StmtNode.Block>["S_BLOCK"] LIST<ListNode>["LIST"])
+    |        (NLL!)? stmtBlock 
     ;
 stmtDecl
    :     stmtDeclAttr varDecl delim    -> ^(S_DECL<StmtNode.Decl>["S_DECL"] varDecl)
