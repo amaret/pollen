@@ -23,7 +23,8 @@ public class Script {
         }
         catch (Exception jse) {
         	if (ProcessUnits.isVerbose()) {
-        		ParseUnit.current().reportFailure("JavaScript termination: " + jse.getMessage());       		
+        		jse.printStackTrace();
+        		ParseUnit.current().reportFailure("JavaScript termination: " + jse.getMessage());           		
         	}
         	ParseUnit.current().reportFailure(jse, "Termination due to errors encountered.");
             return null;

@@ -218,12 +218,14 @@ public class Generator {
     	//if (!curUnit.isProtocol()) {
         //if (!curUnit.isComposition() && !curUnit.isProtocol()) {
         //if (curUnit.isModule() || curUnit.isClass() || curUnit.isEnum()) {
-            File file = ParseUnit.cacheFile(curUnit.getQualName(), ".js");
-            getFmt().reset();
-            UnitJScript unitJScript = new UnitJScript(this);
-            unitJScript.generate(curUnit);
-            if (curUnit.isUnitUsed())
-            	writeFile(file, getFmt().toBytes());
+		File file = null;
+		if (curUnit.isUnitUsed())
+			file = ParseUnit.cacheFile(curUnit.getQualName(), ".js");
+		getFmt().reset();
+		UnitJScript unitJScript = new UnitJScript(this);
+		unitJScript.generate(curUnit);
+		if (curUnit.isUnitUsed())
+			writeFile(file, getFmt().toBytes());
         //}
     }
 	/**
@@ -370,7 +372,9 @@ public class Generator {
 	 */
 	private void genBody() throws Exception {
         if ((curUnit.isModule() || curUnit.isClass()) && !curUnit.isHost()) {
-            File file = ParseUnit.cacheFile(curUnit.getQualName(), ".c");
+        	File file = null;
+        	if (curUnit.isUnitUsed())
+        		file = ParseUnit.cacheFile(curUnit.getQualName(), ".c");
             getFmt().reset();
             UnitBody unitBody = new UnitBody(this);
             unitBody.generate(curUnit);
@@ -386,7 +390,9 @@ public class Generator {
 	private void genHeader() throws Exception {
 		if ((curUnit.isModule() || curUnit.isClass() || curUnit.isEnum())
 				&& !curUnit.isHost()) {
-			File file = ParseUnit.cacheFile(curUnit.getQualName(), ".h");
+        	File file = null;
+        	if (curUnit.isUnitUsed())
+        		file = ParseUnit.cacheFile(curUnit.getQualName(), ".h");
 			getFmt().reset();
 			UnitHeader unitHeader = new UnitHeader(this);
 			unitHeader.generateUnitHdr(curUnit);
