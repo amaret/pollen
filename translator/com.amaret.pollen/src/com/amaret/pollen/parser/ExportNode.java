@@ -189,7 +189,7 @@ public class ExportNode extends BaseNode implements ISymbolNode {
     	ParseUnit currUnit = ParseUnit.current();    	
 
         Atom exportedName = getName();
-        if (exportedName.getText().matches(ParseUnit.INTRINSIC_PREFIX + ".*")) {
+        if (exportedName.getText().matches(ParseUnit.POLLEN_PREFIX + ".*")) {
         	String n = getName().getText().substring(getName().getText().lastIndexOf("_")+1);      	
 			ParseUnit.current().reportError(ParseUnit.current().getCurrUnitNode(), "Invalid export ('export " + "pollen." + n + "') will be ignored.");  
 			return false;

@@ -1137,7 +1137,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				}
 			}
 
-			if (name.getText().matches(ParseUnit.INTRINSIC_PREFIX + ".*")) {
+			if (name.getText().matches(ParseUnit.POLLEN_PREFIX + ".*")) {
 				flags.add(Flags.PUBLIC); // always
 				if (isMethod()) {
 					String n = getName().getText();
@@ -1814,8 +1814,10 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		@Override
 		protected boolean pass1Begin() {
 			super.pass1Begin();
-			if (this.getName().getText()
-					.equals(ParseUnit.INTRINSIC_PRINT_PROXY))
+			String nn = this.getName().getText();
+			if (nn.equals(ParseUnit.INTRINSIC_PRINT_PROXY)
+				|| 	nn.equals(ParseUnit.INTRINSIC_SLEEP_WAKE_PROXY)
+						|| nn.equals(ParseUnit.INTRINSIC_DYNAMIC_MEMORY_PROXY))
 				intrinsicUsed = true; // always
 
 			UnitNode curr = ParseUnit.current().getCurrUnitNode();

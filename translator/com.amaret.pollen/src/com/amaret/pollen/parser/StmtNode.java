@@ -502,14 +502,26 @@ public class StmtNode extends BaseNode {
         
         @Override
         protected void pass2End() {
-        	if (ProcessUnits.getPollenPrint().isEmpty() && !ParseUnit.current().getCurrUnitNode().isHostScope())
-        		ParseUnit.current().reportWarning(this, "a print statement with no '-p' option on the command line will be a no-op (in target contexts)");
-        	if (toLog()) {
-        		ParseUnit.current().reportWarning(this, "\'print log\' is an unimplemented feature (print will go to stdout)");
-        	}
-        	if (toStderr())	{
-        		ParseUnit.current().reportWarning(this, "\'print err\' is an unimplemented feature (print will go to stdout)");
-        	}
+			if (ProcessUnits.getPollenProtocolImpl(
+					ProcessUnits.PollenProtocol.PRINT).isEmpty()
+					&& !ParseUnit.current().getCurrUnitNode().isHostScope())
+				ParseUnit
+						.current()
+						.reportWarning(
+								this,
+								"a print statement without a bound print implementation will be a no-op (in target contexts). Binding occurs by binding the pollen print protocol to an implementation with the bind operator, or using the '-p' option.");
+			if (toLog()) {
+				ParseUnit
+						.current()
+						.reportWarning(this,
+								"\'print log\' is an unimplemented feature (print will go to stdout)");
+			}
+			if (toStderr()) {
+				ParseUnit
+						.current()
+						.reportWarning(this,
+								"\'print err\' is an unimplemented feature (print will go to stdout)");
+			}
 
         }
     }

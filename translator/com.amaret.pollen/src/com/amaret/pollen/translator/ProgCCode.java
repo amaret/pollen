@@ -113,26 +113,26 @@ public class ProgCCode {
 
     private void genEpilogue() {
     	
-        gen.aux.genTitle(ParseUnit.POLLEN_PRINT);
+        gen.aux.genTitle("pollen print");
         
         gen.getFmt().print("%tvoid %1pollen__print_bool(bool b) {\n%+", gen.uname_target());
-        genIntrinsicPrintCall("print_bool", "b");        
+        genPollenPrintCall("print_bool", "b");        
         gen.getFmt().print("%-}\n");
         
         gen.getFmt().print("%tvoid %1pollen__print_int(int32 i) {\n%+", gen.uname_target());
-        genIntrinsicPrintCall("print_int", "i");
+        genPollenPrintCall("print_int", "i");
         gen.getFmt().print("%-}\n");
         
         gen.getFmt().print("%tvoid %1pollen__print_real(float f) {\n%+", gen.uname_target());
-        genIntrinsicPrintCall("print_real", "f");
+        genPollenPrintCall("print_real", "f");
         gen.getFmt().print("%-}\n");
         
         gen.getFmt().print("%tvoid %1pollen__print_uint(uint32 u) {\n%+", gen.uname_target());
-        genIntrinsicPrintCall("print_uint", "u");
+        genPollenPrintCall("print_uint", "u");
         gen.getFmt().print("%-}\n");
         
         gen.getFmt().print("%tvoid %1pollen__print_str(string s) {\n%+", gen.uname_target());
-        genIntrinsicPrintCall("print_str", "s");
+        genPollenPrintCall("print_str", "s");
         gen.getFmt().print("%-}\n");
         
         //gen.getFmt().print("%tvoid %1pollen__print_x(void* print, void* val) {\n%+", gen.uname_target());
@@ -140,7 +140,7 @@ public class ProgCCode {
         
         // if assertions are turned on, generate pollen.assert
         if (ProcessUnits.isAsserts()) {
-        	gen.aux.genTitle("pollen.assert(bool, string)");
+        	gen.aux.genTitle(ParseUnit.POLLEN_ASSERT + "(bool, string)");
             gen.getFmt().print("%tvoid %1pollen__assert__E(bool b, string msg) {\n%+", gen.uname_target());
             gen.getFmt().print("%tif (!b) {\n");
             gen.getFmt().print("%t%t%1pollen__print_str(msg);\n", gen.uname_target());
@@ -159,35 +159,23 @@ public class ProgCCode {
         
         // Generate defaults for pollen.reset, pollen.ready, pollen.shutdown, pollen.wake, pollen.hibernate.
         // if they do not exist.
-        if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.INTRINSIC_PREFIX + "reset")) {
+        if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.POLLEN_PREFIX + "reset")) {
         	gen.aux.genTitle(ParseUnit.POLLEN_RESET + "()");
             gen.getFmt().print("%tvoid %1pollen__reset__E() {\n%+", gen.uname_target());
             gen.getFmt().print("%t/* empty default */\n");
             gen.getFmt().print("%-}\n");
         }
-        if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.INTRINSIC_PREFIX + "ready")) {
+        if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.POLLEN_PREFIX + "ready")) {
         	gen.aux.genTitle(ParseUnit.POLLEN_READY + "()");
             gen.getFmt().print("%tvoid %1pollen__ready__E() {\n%+", gen.uname_target());
             gen.getFmt().print("%t/* empty default */\n");
             gen.getFmt().print("%-}\n");
         }
-        if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.INTRINSIC_PREFIX + "shutdown")) {
+        if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.POLLEN_PREFIX + "shutdown")) {
         	gen.aux.genTitle(ParseUnit.POLLEN_SHUTDOWN + "(uint8 id)");
             gen.getFmt().print("%tvoid %1pollen__shutdown__E(uint8 id) {\n%+", gen.uname_target());
             gen.getFmt().print("%tvolatile int dummy = 0xCAFE;\n");
             gen.getFmt().print("%twhile (dummy) ;\n");
-            gen.getFmt().print("%-}\n");
-        }
-        if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.INTRINSIC_PREFIX + "wake")) {
-        	gen.aux.genTitle(ParseUnit.POLLEN_WAKE + "(uint8 id)");
-            gen.getFmt().print("%tvoid %1pollen__wake__E(uint8 id) {\n%+", gen.uname_target());
-            gen.getFmt().print("%t/* empty default */\n");
-            gen.getFmt().print("%-}\n");
-        }
-        if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.INTRINSIC_PREFIX + "hibernate")) {
-        	gen.aux.genTitle(ParseUnit.POLLEN_HIBERNATE + "(uint8 id)");
-            gen.getFmt().print("%tvoid %1pollen__hibernate__E(uint8 id) {\n%+", gen.uname_target());
-            gen.getFmt().print("%t/* empty default */\n");
             gen.getFmt().print("%-}\n");
         }
               
@@ -209,13 +197,13 @@ public class ProgCCode {
 	/**
 	 * Emit the call to the print implementation.
 	 */
-	private void genIntrinsicPrintCall(String fcnCall, String parm) {
+	private void genPollenPrintCall(String fcnCall, String parm) {
 		SymbolEntry s = gen.curUnit().getUnitType().getScopeDeleg().lookupName(ParseUnit.INTRINSIC_PRINT_PROXY);
-		if (s == null && !ProcessUnits.getPollenPrintProxyModule().isEmpty()) {
+		if (s == null && !ProcessUnits.getPollenProxyModule(ProcessUnits.PollenProtocol.PRINT).isEmpty()) {
 			// Note because intrinsic can be set anywhere it may not be accessible by normal pollen rules.
 			// That is why we get its symtab by using 'findUnit()'. 
 			UnitNode u = ParseUnit.current().findUnit(
-					ProcessUnits.getPollenPrintProxyModule(), "");
+					ProcessUnits.getPollenProxyModule(ProcessUnits.PollenProtocol.PRINT), "");
 			if (u != null)
 				s = u.getUnitType().lookupName(ParseUnit.INTRINSIC_PRINT_PROXY,
 						false);

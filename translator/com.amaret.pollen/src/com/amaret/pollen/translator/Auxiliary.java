@@ -1,6 +1,7 @@
 package com.amaret.pollen.translator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -537,24 +538,75 @@ public class Auxiliary {
 		genExpr(right);
 	}
 	private void genExpr$Call(ExprNode.Call expr, ExprNode thisExpr) {
-				
+		
  		String n = expr.getName() instanceof ExprNode.Ident ? ((ExprNode.Ident) expr.getName()).getName().getText() : "";
  		 		
-		if (n.equals(ParseUnit.INTRINSIC_PREFIX + "assert")) {				
+		if (n.equals(ParseUnit.POLLEN_PREFIX + "assert")) {				
 			if (!ProcessUnits.isAsserts())
 				return;  // suppress call
 			else {
-				if (ProcessUnits.getPollenPrint().isEmpty()) 
-					ParseUnit.current().reportWarning(expr, "\'assert\' message will not print if \'-p\' option is unspecified");
+				if (ProcessUnits.getPollenProtocolImpl(ProcessUnits.PollenProtocol.PRINT).isEmpty()) 
+					ParseUnit.current().reportWarning(expr, "\'assert\' message will not print if the pollen print protocol is unimplmented (see the '-p' option)");
 			}
 		}
 		if (n.equals(ParseUnit.CTOR_CLASS_HOST)) {
 			this.genHostNew(expr);
 			return;
-		}				
-		genExpr(expr.getName());
+		}	
+		if (n.matches(ParseUnit.POLLEN_PREFIX + ".*")
+				&& !ParseUnit.Intrinsics.contains(n)) {
+			genPollenProtocolCall(n, expr);	
+		}
+		else
+			genExpr(expr.getName());
 		
 		genCallArgs(expr, thisExpr);
+	}
+	/**
+	 * Emit the call to the pollen protocol implementation.
+	 * (Which must have been bound to the protocol somewhere.)
+	 */
+	private void genPollenProtocolCall(String fcnCall, ExprNode.Call ex) {
+		String proxy = "";
+		String call = fcnCall.substring(fcnCall.lastIndexOf("_")+1);
+		ProcessUnits.PollenProtocol proto = ProcessUnits.PollenProtocol.NONE;
+		if (ParseUnit.SleepWakeMembers.contains(fcnCall)) {
+			proto = ProcessUnits.PollenProtocol.SLEEP_WAKE;
+			proxy = ParseUnit.INTRINSIC_SLEEP_WAKE_PROXY;
+		}
+		else if (ParseUnit.DynamicMemoryMembers.contains(fcnCall)) {
+			proto = ProcessUnits.PollenProtocol.DYNAMIC_MEMORY;
+			proxy = ParseUnit.INTRINSIC_DYNAMIC_MEMORY_PROXY;
+		}		
+		if (proxy.isEmpty()) {
+			ParseUnit.current().reportSeriousError(ex, "'pollen." + call + "()': Unknown pollen protocol member. Attempt to call failed.");
+			return;
+		}
+		SymbolEntry s = gen.curUnit().getUnitType().getScopeDeleg().lookupName(proxy);
+		if (s == null && !ProcessUnits.getPollenProxyModule(proto).isEmpty()) {
+			// Note because intrinsic can be set anywhere it may not be accessible by normal pollen rules.
+			// That is why we get its symtab by using 'findUnit()'. 
+			UnitNode u = ParseUnit.current().findUnit(
+					ProcessUnits.getPollenProxyModule(proto), "");
+			if (u != null)
+				s = u.getUnitType().lookupName(proxy,
+						false);
+		}
+        ISymbolNode n = s != null ? s.node() : null;
+        if (n instanceof DeclNode.TypedMember &&  ((DeclNode.TypedMember)n).getBindToUnit() != null) {
+        	IScope sc = ((DeclNode.TypedMember)n).getBindToUnit().getUnitType();
+        	SymbolEntry fcn = ((DeclNode.TypedMember)n).getBindToUnit().getUnitType().getScopeDeleg().lookupName(call);
+			if (fcn != null) {
+				gen.getFmt().print(
+						"%t%1",
+						((DeclNode.TypedMember) n).getOutputQNameTarget(gen,
+								fcn.node(), sc, EnumSet.noneOf(Flags.class)));
+			}
+        }
+        else
+        if (n == null) {
+			ParseUnit.current().reportSeriousError(ex, "'pollen." + call + "()': A pollen protocol function was called but the pollen protocol was not bound to an implementating module so this call has no implementation.");
+        }
 	}
 	private void genExprCallThruFcnPtrArray(ExprNode.Ident expr) {
 		if (!expr.isCallThruFcnPtrArray())
@@ -1719,7 +1771,7 @@ public class Auxiliary {
 				switch (catChar.charAt(0)) {
 				case 'b':
 					t = !firstTime ? "\n\t" : "";
-					gen.getFmt().print("%3%1%2print_bool(", uname_target, ParseUnit.INTRINSIC_PREFIX, t);
+					gen.getFmt().print("%3%1%2print_bool(", uname_target, ParseUnit.POLLEN_PREFIX, t);
 					gen.aux.genExpr(expr);
 					gen.getFmt().print(");");
 					firstTime = false;
@@ -1727,28 +1779,28 @@ public class Auxiliary {
 				case 'i':
 				case 'n':
 					t = !firstTime ? "\n\t" : "";
-					gen.getFmt().print("%3%1%2print_int((int32)", uname_target, ParseUnit.INTRINSIC_PREFIX, t);
+					gen.getFmt().print("%3%1%2print_int((int32)", uname_target, ParseUnit.POLLEN_PREFIX, t);
 					gen.aux.genExpr(expr);
 					gen.getFmt().print(");");
 					firstTime = false;
 					break;
 				case 'u':
 					t = !firstTime ? "\n\t" : "";
-					gen.getFmt().print("%3%1%2print_uint((uint32)", uname_target, ParseUnit.INTRINSIC_PREFIX, t);
+					gen.getFmt().print("%3%1%2print_uint((uint32)", uname_target, ParseUnit.POLLEN_PREFIX, t);
 					gen.aux.genExpr(expr);
 					gen.getFmt().print(");");
 					firstTime = false;
 					break;
 				case 'f':
 					t = !firstTime ? "\n\t" : "";
-					gen.getFmt().print("%3%1%2print_real((float)", uname_target, ParseUnit.INTRINSIC_PREFIX, t);
+					gen.getFmt().print("%3%1%2print_real((float)", uname_target, ParseUnit.POLLEN_PREFIX, t);
 					gen.aux.genExpr(expr);
 					gen.getFmt().print(");");
 					firstTime = false;
 					break;
 				case 's':
 					t = !firstTime ? "\n\t" : "";
-					gen.getFmt().print("%3%1%2print_str((string)", uname_target, ParseUnit.INTRINSIC_PREFIX, t);
+					gen.getFmt().print("%3%1%2print_str((string)", uname_target, ParseUnit.POLLEN_PREFIX, t);
 					gen.aux.genExpr(expr);
 					gen.getFmt().print(");");
 					firstTime = false;
@@ -1936,7 +1988,7 @@ public class Auxiliary {
 	}
 
 	protected String mkPollenCname(String id) {
-		return id.startsWith("pollen.") ? ("pollen__" + id.substring(ParseUnit.INTRINSIC_PREFIX
+		return id.startsWith("pollen.") ? ("pollen__" + id.substring(ParseUnit.POLLEN_PREFIX
 				.length())) : id;
 	}
 

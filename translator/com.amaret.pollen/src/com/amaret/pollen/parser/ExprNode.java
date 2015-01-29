@@ -336,7 +336,7 @@ public class ExprNode extends BaseNode {
 				if (call.equals("getF"))
 					dbg = true;
 
-				boolean skipLookup = (call.matches(ParseUnit.INTRINSIC_PREFIX
+				boolean skipLookup = (call.matches(ParseUnit.POLLEN_PREFIX
 						+ ".*")) ? true : false;
 
 				if (!skipLookup) {
@@ -412,7 +412,7 @@ public class ExprNode extends BaseNode {
 								sc = sc.getEnclosingScope();
 								if (sc instanceof DeclNode.Usr
 										&& ((DeclNode.Usr) sc).isClass()) {
-									DeclNode.Fcn f = (Fcn) (fcn.node() instanceof DeclNode.Fcn ? fcn.node() : null);
+									DeclNode.Fcn f = (Fcn) (fcn != null && fcn.node() instanceof DeclNode.Fcn ? fcn.node() : null);
 									boolean thisQualifier = f != null ? f.getDefiningType() == sc : false;
 									// if calling a method in current class,
 									// 'this'

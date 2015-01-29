@@ -551,9 +551,9 @@ public class UnitHeader {
 
     	if (unit == null)
     		return;
+    	boolean title = tl;   
     	for (ImportNode imp : unit.getImports()) {
     		UnitNode u = imp.getUnit();
-        	boolean title = tl;   
     		if (u != null) {
     			if (!title) {
     				gen.aux.genTitle("imports");
@@ -576,20 +576,14 @@ public class UnitHeader {
     	
     	gen.aux.genTitle("forward declarations for intrinsics");
     	// if there is no local intrinsic definition, generate a forward
-        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "reset") == null) {
+        if (gen.curUnit().lookupFcn(ParseUnit.POLLEN_PREFIX + "reset") == null) {
         	gen.getFmt().print("void %1();\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_RESET));
         }
-        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "ready") == null) {
+        if (gen.curUnit().lookupFcn(ParseUnit.POLLEN_PREFIX + "ready") == null) {
         	gen.getFmt().print("void %1();\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_READY));
         }
-        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "shutdown") == null) {
+        if (gen.curUnit().lookupFcn(ParseUnit.POLLEN_PREFIX + "shutdown") == null) {
         	gen.getFmt().print("void %1(uint8 id);\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_SHUTDOWN));
-        }
-        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "wake") == null) {
-        	gen.getFmt().print("void %1(uint8 id);\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_WAKE));
-        }
-        if (gen.curUnit().lookupFcn(ParseUnit.INTRINSIC_PREFIX + "hibernate") == null) {
-        	gen.getFmt().print("void %1(uint8 id);\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_HIBERNATE));
         }
     }
     

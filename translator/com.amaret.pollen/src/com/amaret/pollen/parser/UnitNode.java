@@ -40,10 +40,10 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 	private Map<String, ImportNode> importMap = new HashMap<String, ImportNode>();
 	static final List<String> lifecycleMethods = Arrays.asList(
 			ParseUnit.POLLEN_RESET, ParseUnit.POLLEN_READY,
-			ParseUnit.POLLEN_SHUTDOWN, ParseUnit.POLLEN_HIBERNATE,
+			ParseUnit.POLLEN_SHUTDOWN, 
 			ParseUnit.POLLEN_RUN, 
 			// these versions are massaged for output
-			"pollen__reset", "pollen__ready", "pollen__shutdown", "pollen__hibernate", "pollen__run");
+			"pollen__reset", "pollen__ready", "pollen__shutdown", "pollen__run");
 
 	public void addFlags(EnumSet<Flags> e) {
 		flags.addAll(e);
@@ -587,9 +587,9 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 		for (int i = 0; i < this.getImports().size(); i++) {
 			ImportNode imp = this.getImports().get(i);
 			if (imp.getName().getText()
-					.equals(ParseUnit.INTRINSIC_PRINT_PROTOCOL))
+					.equals(ParseUnit.POLLEN_PRINT_PROTOCOL))
 				idxPrintProtocol = i;
-			if (imp.getName().getText().equals(ProcessUnits.getPollenPrint()))
+			if (imp.getName().getText().equals(ProcessUnits.getPollenProtocolImpl(ProcessUnits.PollenProtocol.PRINT)))
 				idxPrintImpl = i;
 		}
 		if (idxPrintImpl == -1 || idxPrintProtocol == -1) { // must occur in a
@@ -598,7 +598,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 															// imports the proto
 			if (idxPrintProtocol != -1
 					&& !this.getName().getText()
-							.equals(ProcessUnits.getPollenPrint()))
+							.equals(ProcessUnits.getPollenProtocolImpl(ProcessUnits.PollenProtocol.PRINT)))
 				this.getImports().remove(idxPrintProtocol);
 		}
 

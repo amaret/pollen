@@ -148,35 +148,50 @@ public class ParseUnit {
     public static boolean isJavaScriptRsvdWord(String id) {
     	return js_rsvdwords.contains(id);
     }
-	
-	// pollen names, source
-	public static final String POLLEN_PRINT = "pollen.print";
+    
+	//
+    //pollen names as they appear in pollen source
+    //
+	// print protocol, proxy, package
+    // The proxy is bound to the implementing module. 
+    // Its type is the protocol declared in package.
+    // TBD: pollen protocols could get their own class hierarchy.
 	public static final String POLLEN_PRINT_PROXY = "pollen.printProtocol";	
-	public static final String POLLEN_ENVIRONMENT = "pollen.environment";
 	public static final String POLLEN_PRINTPKG = "pollen.output";
 	public static final String POLLEN_PRINT_PROTOCOL = "PrintProtocol";
+	// sleep wake protocol, proxy, package
+	public static final String POLLEN_SLEEP_WAKE_PROXY = "pollen.sleepWakeProtocol";
+	public static final String POLLEN_SLEEP_WAKE_PKG = "pollen.utils";
+	public static final String POLLEN_SLEEP_WAKE_PROTOCOL = "SleepWakeProtocol";	
+	// dynamic memory protocol, proxy, package
+	public static final String POLLEN_DYNAMIC_MEMORY_PROXY = "pollen.dynamicMemoryProtocol";
+	public static final String POLLEN_DYNAMIC_MEMORY_PKG = "pollen.utils";
+	public static final String POLLEN_DYNAMIC_MEMORY_PROTOCOL = "DynamicMemoryProtocol";	
+	// pollen intrinsics
+    public static final String POLLEN_ENVIRONMENT = "pollen.environment";
 	public static final String POLLEN_RESET = "pollen.reset";
 	public static final String POLLEN_READY = "pollen.ready";
 	public static final String POLLEN_SHUTDOWN = "pollen.shutdown";
 	public static final String POLLEN_RUN = "pollen.run";
-	public static final String POLLEN_HIBERNATE = "pollen.hibernate";
-	public static final String POLLEN_WAKE = "pollen.wake";
-
-	// pollen names, generated
+	public static final String POLLEN_ASSERT = "pollen.assert";
+	//
+	// pollen names as generated in output
+	//
+	public static final String INTRINSIC_PRINT_PROXY = "pollenPrintProxy";
+	public static final String INTRINSIC_DYNAMIC_MEMORY_PROXY = "pollenDynamicMemoryProxy";
+	public static final String INTRINSIC_SLEEP_WAKE_PROXY = "pollenSleepWakeProxy";
 	public static final String EXPORT_PREFIX = "$$export";
-	// A name prefixed with intrinsic prefix will not be entered into the symtab (lookups will fail). 
-	public static final String INTRINSIC_PREFIX = "pollen__";
-	public static final String DEFAULT_LOOPVAR = INTRINSIC_PREFIX + "loopvar"; // for loops w/ undeclared loop variables
-	public static final String INTRINSIC_UNITVAR = INTRINSIC_PREFIX +"unitname";
-	public static final String INTRINSIC_PRINT_PROTOCOL= "PrintProtocol";
-	public static final String INTRINSIC_PRINT_PROXY = "intrinsicPrintProtocol";
+	// A name prefixed with pollen prefix will not be entered into the symtab (lookups will fail). 
+	public static final String POLLEN_PREFIX = "pollen__";
+	public static final String DEFAULT_LOOPVAR = POLLEN_PREFIX + "loopvar"; // for loops w/ undeclared loop variables
+	public static final String INTRINSIC_UNITVAR = POLLEN_PREFIX +"unitname";
 	public static final String CTOR_CLASS_TARGET = "new_";
 	public static final String CTOR_CLASS_HOST = "new_host";
 	public static final String CTOR_MODULE_TARGET = "targetInit";
 	public static final String CTOR_MODULE_HOST = "$$hostInit";
 	public static final String PRIVATE_INIT = "$$privateInit";
 	public static final String HOST_INIT_LASTPASS = "$$hostInitLastPass";
-	public static final String PRESET_INIT = INTRINSIC_PREFIX + "presets__";
+	public static final String PRESET_INIT = POLLEN_PREFIX + "presets__";
 	public static final String KIND_EXTERN = "__E";
 	public static final String KIND_INTERN = "__I";
 	public static final String KIND_ARRAY = "__A";
@@ -184,12 +199,21 @@ public class ParseUnit {
 	public static final String JAVASCRIPT_OBJECT_NOT_FOUND = "/* object not found */";
 	public static final String ARRAY_WITHOUT_DIMENSION = "-1";
 	
+	public static final ArrayList<String> SleepWakeMembers = new ArrayList<String>(Arrays.asList(
+            "pollen__sleep", "pollen__wake"
+     ));
+	public static final ArrayList<String> DynamicMemoryMembers = new ArrayList<String>(Arrays.asList(
+            "pollen__malloc", "pollen__free"
+     ));
+	public static final ArrayList<String> Intrinsics = new ArrayList<String>(
+			Arrays.asList("pollen__assert", "pollen__ready", "pollen__reset", "pollen__run", "pollen__shutdown"));
+	
 	public static boolean isIntrinsicCall(String s) {
-		if (!(s.matches(ParseUnit.INTRINSIC_PREFIX + ".*")))
+		if (!(s.matches(ParseUnit.POLLEN_PREFIX + ".*")))
 			return false;
 		if (s.equals(ParseUnit.INTRINSIC_UNITVAR))
 			return false;
-		if (s.equals(ParseUnit.INTRINSIC_PREFIX + ParseUnit.DEFAULT_LOOPVAR))
+		if (s.equals(ParseUnit.POLLEN_PREFIX + ParseUnit.DEFAULT_LOOPVAR))
 			return false;			
 		return true;
 	}
@@ -228,7 +252,7 @@ public class ParseUnit {
 	 */
 	public String getPollenFunctionOutputName(String n)  {
 		String fname = n.substring(n.lastIndexOf("_")+1);
-		fname = fname.substring(n.lastIndexOf(".")+1);
+		fname = fname.substring(fname.lastIndexOf(".")+1);
 		if (!pollenFunctionList.contains(fname)) {
 			String uname = ParseUnit.current().getCurrUnitNode().getName().getText();
 			fname = ParseUnit.current().getCurrUnitNode().getPkgName().getText().replace('.', '_') + '_'  + uname + '_'
@@ -242,7 +266,7 @@ public class ParseUnit {
 				UnitNode u = ParseUnit.current().getTopLevelUnit(); // default in top level unit
 				String uname = u.getName().getText();
 				fname = u.getPkgName().getText().replace('.', '_') + '_'  + uname + '_'
-						+ ParseUnit.INTRINSIC_PREFIX + fname + ParseUnit.KIND_EXTERN;
+						+ ParseUnit.POLLEN_PREFIX + fname + ParseUnit.KIND_EXTERN;
 				return fname;
 			}
 			else return ""; // no top level unit (?)
@@ -901,8 +925,6 @@ public class ParseUnit {
 						// 'from c import m'
 						// In that case fromPkg contains the composition name
 						// 'c'.
-//						System.out.println("parseImports, currNode:   " + ((Tree)currNode).toStringTree());
-//						System.out.println("parseImports, currImport: " + currImport.toStringTree());
 						currImport.setFromComposImportModule(true);
 						pkgPath = path.substring(0, path
 								.lastIndexOf(File.separator));
@@ -933,8 +955,8 @@ public class ParseUnit {
 								if (!(new File(pkgPath + File.separator + fromPkg))
 										.exists()) {
 									reportError(getPackageName() + "."
-											+ getFileName(), "missing package \'"
-													+ fromPkg + "\'");
+											+ getFileName(), "Missing package \'"
+													+ fromPkg + "\'.");
 									continue;
 								}
 							}
@@ -949,7 +971,12 @@ public class ParseUnit {
 					}
 
 				} catch (Termination te) {
-					reportError(currImport, te.getMessage());
+					if (currUnit!=null)
+						reportError(currImport, te.getMessage());
+					else {
+						// the error was on the file being parsed, not the client containing its import
+						reportError(importFromClient.getQualName() + ".p", te.getMessage());
+					}
 					System.exit(1);
 				}
 			}
@@ -1030,10 +1057,11 @@ public class ParseUnit {
 
 		setDebugMode(false);
 		checkParseUnit(inputPath, theImport, clientName, theImportName);
+		setDebugMode(false);
 		File f = new File(inputPath);
 		if (!f.exists()) {
 			reportFailure(
-					"Missing file \'" + getPackageName() + "/" + ParseUnit.mkUnitName(inputPath) + ".p\'\n");
+					"Missing file \'" + getPackageName() + "/" + ParseUnit.mkUnitName(inputPath) + ".p\'. Translator will terminate immediately.\n");
 		}
 
 		paths.add(inputPath);
@@ -1091,6 +1119,7 @@ public class ParseUnit {
 	}
 	static private List<String> metaInstancePaths = new ArrayList<String>();
 	/**
+	 * Handles some meta instantiation stuff but mostly gives good debug info on the specified unit.
 	 * @param inputPath
 	 * @param theImport		import stmt in client for imported type
 	 * @param client		importing client
@@ -1315,6 +1344,10 @@ public class ParseUnit {
 			msg = "'" + ((ExprNode.Ident) node).getName() + "': " + msg;
 		}
 
+		String filename = node.getFileName();
+		if (node instanceof ImportNode) {
+			
+		}
 		reportErrorConsole(node.getFileName(), node.getLine(), node
 				.getCharPositionInLine() + 1, msg);
 	}

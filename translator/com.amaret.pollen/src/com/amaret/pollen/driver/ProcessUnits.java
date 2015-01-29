@@ -1,10 +1,8 @@
 package com.amaret.pollen.driver;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -12,10 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
-import antlr.CommonToken;
-
-import com.amaret.pollen.parser.BaseNode;
-import com.amaret.pollen.parser.ExprNode;
 import com.amaret.pollen.parser.Flags;
 import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.ParseUnit.Property;
@@ -26,24 +20,38 @@ import com.amaret.pollen.translator.Generator;
 
 public class ProcessUnits {
 	private static String workingDir = "";
-	private static String pollenRoot = "";
 	private static String pollenTarget = "";
 	private static String pollenBundles = "";
 	private static String pollenEnv = "";
 	private static String pollenEnvPkg = "";
 	private static String pollenOutputDefault = ""; // if no -p get it from the bundles dir
-	private static String pollenPrint = "";
-	private static String pollenPrintPkg = "";
-	private static String pollenPrintProxyModule = ""; // where it is
 	private static String propsOption = "";
 	private static String cFlags="";
 	private static String mcu="";
 	private static boolean pollenPrintBindSeen = false;
+	private static boolean pollenSleepWakeBindSeen = false;
+	private static boolean pollenDynamicMemoryBindSeen = false;
 	private static boolean asserts = false;
 	private static boolean warnings = false;
 	private static boolean dashPoption = false;
 	private static boolean verbose = false;
 	private static boolean isCompatibilityMode = false;
+	
+	// pollen protocols: the implementing module, its package, and the module of the generated proxy
+	private static String pollenPrintModule = "";
+	private static String pollenPrintPkg = "";
+	private static String pollenPrintProxyModule = ""; 
+	private static String pollenSleepWakeModule = "";
+	private static String pollenSleepWakePkg = "";
+	private static String pollenSleepWakeProxyModule = ""; 
+	private static String pollenDynamicMemoryModule = "";
+	private static String pollenDynamicMemoryPkg = "";
+	private static String pollenDynamicMemoryProxyModule = ""; 
+	// An enum for the pollen protocols which can be bound
+    public static enum PollenProtocol {
+    	PRINT, SLEEP_WAKE, DYNAMIC_MEMORY, NONE	
+    }
+	
 	/**
 	 * More information should be generated. E.g. stack traces.
 	 * @return
@@ -106,20 +114,44 @@ public class ProcessUnits {
 		ProcessUnits.dashPoption = dashPoption;
 	}
 	/**
-	 * 
-	 * @return the <package.module> in which the print intrinsic is set.
+	 * @return the <package.module> in which the pollen protocol p is set.
 	 */
-	public static String getPollenPrintProxyModule() {
-		return pollenPrintProxyModule;
+	public static String getPollenProxyModule(PollenProtocol p) {
+		switch (p) {
+		case DYNAMIC_MEMORY:
+			return pollenDynamicMemoryProxyModule;
+		case SLEEP_WAKE:
+			return pollenSleepWakeProxyModule;
+		case PRINT:
+			return pollenPrintProxyModule;
+		default:
+			ParseUnit.current().reportFailure(
+				"Reference to unknown pollen protocol");
+		}
+		return "";
 	}
 	/**
-	 * This is the module in which the print intrinsic is initialized.
+	 * This is the module in which the pollen protocol p is initialized.
 	 * Set in parser. 
-	 * @param pollenPrintProxyModule
+	 * @param pollenProxyModule
 	 */
-	public static void setPollenPrintProxyModule(String pollenPrintProxyModule) {
-		ProcessUnits.pollenPrintProxyModule = pollenPrintProxyModule;
+	public static void setPollenProxyModule(PollenProtocol p, String name) {
+		switch (p) {
+		case DYNAMIC_MEMORY:
+			pollenDynamicMemoryProxyModule = name;
+			break;
+		case SLEEP_WAKE:
+			pollenSleepWakeProxyModule = name; 
+			break;
+		case PRINT:
+			pollenPrintProxyModule = name;
+			break;
+		default:
+			ParseUnit.current().reportFailure(
+					"Reference to unknown pollen protocol");
+		}
 	}
+
 	public static boolean isAsserts() {
 		return asserts;
 	}
@@ -200,67 +232,240 @@ public class ProcessUnits {
 	public static String getPollenEnv() {
 		return pollenEnv;
 	}
-	public static void setPollenPrint(String pollenPrint) {
-		ProcessUnits.pollenPrint = pollenPrint;
-	}
-	public static String getPollenPrint() {
-		return pollenPrint;
-	}
-	public static boolean doImportPrintImpl() {
-		if (pollenPrint.isEmpty())
-			return false;
-		boolean currFileIsPrintImpl = ParseUnit.current().getFileName()
-				.equals(pollenPrint + ".p");
-		if (isDashPoption() && ParseUnit.current().isParseToplevel() 
-				&& !currFileIsPrintImpl)
-			return true;
-		return false;
-	}
-	public static boolean doImportPrintProtocol() {
-		if (isDashPoption()) {
-			if (ParseUnit.current().isParseToplevel())
-				return true;
-			return false;
+	/**
+	 * Set the implementing module name for a pollen protocol.
+	 * Set by parser in the stmtBind rule, or with -p for print.
+	 * @param p which protocol is getting a module implementation.
+	 * @param name
+	 */
+	public static void setPollenProtocolImpl(PollenProtocol p, String name) {
+		switch (p) {
+		case DYNAMIC_MEMORY:
+			pollenDynamicMemoryModule = name;
+			break;
+		case SLEEP_WAKE:
+			pollenSleepWakeModule = name; 
+			break;
+		case PRINT:
+			pollenPrintModule = name;
+			break;
+		default:
+			ParseUnit.current().reportFailure(
+					"Reference to unknown pollen protocol");
 		}
-		// if not using -p, the bind can occur anywhere so we import it for all valid units.
-//		boolean scopeOk = !(ParseUnit.current().getParseUnitFlags()
-//				.contains(Flags.ENUM) || ParseUnit.current()
-//				.getParseUnitFlags().contains(Flags.PROTOCOL));
-		boolean currFileIsPrintProtocol = ParseUnit.current().getFileName()
-				.equals(ParseUnit.INTRINSIC_PRINT_PROTOCOL + ".p");
-		if (!currFileIsPrintProtocol)
-			return true; 
-		return false;
-	}
-	public static boolean isPollenPrintBindSeen() {
-		return pollenPrintBindSeen;
-	}
-	public static void setPollenPrintBindSeen(boolean pollenPrintBindSeen) {
-		ProcessUnits.pollenPrintBindSeen = pollenPrintBindSeen;
 	}
 	/**
-	 * This is the intrinsic protocol member which will be used in the emitted print methods.
-	 * Generate if '-p' specifies a print implementation.
+	 * 
+	 * @param p specifies which pollen protocol
+	 * @return the name of the implementing module
+	 */
+	public static String getPollenProtocolImpl(PollenProtocol p) {
+		switch (p) {
+		case DYNAMIC_MEMORY:
+			return pollenDynamicMemoryModule;
+		case SLEEP_WAKE:
+			return pollenSleepWakeModule;
+		case PRINT:
+			return pollenPrintModule;
+		default:
+			ParseUnit.current().reportFailure(
+					"Reference to unknown pollen protocol");
+		}
+		return "";		
+	}
+
+	/**
+	 * Called by parser.
+	 * @param p
+	 * @return true if an import for the protocol implementation should be synthesized.
+	 */
+	public static boolean doImportPollenProtocolImpl(PollenProtocol p) {
+		switch (p) {
+		case DYNAMIC_MEMORY:
+			return false;
+			/*
+			if (pollenDynamicMemoryModule.isEmpty())
+				return false;
+			if (!ParseUnit.current().getFileName()
+					.equals(ParseUnit.POLLEN_DYNAMIC_MEMORY_PROTOCOL + ".p"))
+				return true;
+			else
+				return false;
+			*/
+		case SLEEP_WAKE: 
+			return false;
+			/*
+			if (pollenSleepWakeModule.isEmpty())
+				return false;
+			if (!ParseUnit.current().getFileName()
+					.equals(ParseUnit.POLLEN_SLEEP_WAKE_PROTOCOL + ".p"))
+				return true;
+			else
+				return false;
+			*/
+		case PRINT:
+			if (isDashPoption()) {
+				if (ParseUnit.current().isParseToplevel())
+					return true;
+				return false;
+			}
+			/*
+			if (pollenPrintModule.isEmpty())
+				return false;
+			// if not using -p, the bind can occur anywhere so we import it for all valid units.
+			// boolean scopeOk = !(ParseUnit.current().getParseUnitFlags()
+			//		.contains(Flags.ENUM) || ParseUnit.current()
+			//		.getParseUnitFlags().contains(Flags.PROTOCOL));
+			boolean currFileIsPrintProtocol = ParseUnit.current().getFileName()
+					.equals(ParseUnit.POLLEN_PRINT_PROTOCOL + ".p");
+			if (!currFileIsPrintProtocol)
+				return true; 
+			*/
+			return false;
+		default:
+			ParseUnit.current().reportFailure(
+					"Reference to unknown pollen protocol");
+		}
+		
+		return false;		
+	}
+
+	/**
+	 * The bind of the pollen protocol can occur anywhere so we import it for all valid units, except 
+	 * the pollen protocols themselves. 
+	 * Note an exception: if -p is used for print, it can only be bound in the top level unit.
+	 * Called by parser
+	 * @param p the protocol
+	 * @return true to synthesize an import.
+	 */
+	public static boolean doImportPollenProtocol(PollenProtocol p) {
+		
+		String f = ParseUnit.current().getFileName();
+		if (f.equals(ParseUnit.POLLEN_DYNAMIC_MEMORY_PROTOCOL + ".p")
+				|| f.equals(ParseUnit.POLLEN_PRINT_PROTOCOL + ".p")
+				|| f.equals(ParseUnit.POLLEN_SLEEP_WAKE_PROTOCOL + ".p"))
+			return false;
+		
+		switch (p) {
+		case DYNAMIC_MEMORY:
+			return true;
+			
+		case SLEEP_WAKE:
+			return true;
+
+		case PRINT:
+			if (isDashPoption()) {
+				if (ParseUnit.current().isParseToplevel())
+					return true;
+				return false;
+			}
+			return true; 
+			
+		default:
+			ParseUnit.current().reportFailure(
+					"Reference to unknown pollen protocol");
+		}
+		
+		return false;		
+	}
+	/**
+	 * @param p specifies which pollen protocol is being queried as to whether it is bound
+	 * @return true if specified protocol is bound else false
+	 */
+	public static boolean isPollenProxyBindSeen(ProcessUnits.PollenProtocol p) {
+		switch (p) {
+		case DYNAMIC_MEMORY:
+			return pollenDynamicMemoryBindSeen;
+		case SLEEP_WAKE:
+			return pollenSleepWakeBindSeen;
+		case PRINT:
+			return pollenPrintBindSeen;
+		default:
+			ParseUnit.current().reportFailure(
+					"Reference to unknown pollen protocol");
+		}
+		return false;
+
+	}
+
+	public static void setPollenProxyBindSeen(ProcessUnits.PollenProtocol p,
+			boolean pollenProxyBindSeen) {
+		switch (p) {
+		case DYNAMIC_MEMORY:
+			pollenDynamicMemoryBindSeen = pollenProxyBindSeen;
+			break;
+		case SLEEP_WAKE:
+			pollenSleepWakeBindSeen = pollenProxyBindSeen;
+			break;
+		case PRINT:
+			pollenPrintBindSeen = pollenProxyBindSeen;
+			break;
+		default:
+			ParseUnit.current().reportFailure(
+					"Reference to unknown pollen protocol");
+		}
+	}
+	/**
+	 * If '-p' was specified on the command line to identify a print implementation this returns true.
+	 * That will trigger code generation of a protocol member to bind the implementation.
 	 * @return
 	 */
 	public static boolean doEmitPrintProxyViaDashP() {
 		boolean scopeOk = ParseUnit.current().getParseUnitFlags().contains(Flags.MODULE);
-		return (!pollenPrint.isEmpty() && isDashPoption() && scopeOk && ParseUnit.current().isParseToplevel());
+		return (!pollenPrintModule.isEmpty() && isDashPoption() && scopeOk && ParseUnit.current().isParseToplevel());
 	}
 	/**
-	 * This is the intrinsic protocol member which will be used in the emitted print methods.
-	 * Generate if a binding 'printProtocol := <mod>' was seen.
-	 * @return
+	 * This triggers generation of a pollen protocol member if a binding was seen.
+	 * @return true if a bind for specified pollen protocol was found else false
 	 */
-	public static boolean doEmitPrintProxyViaBind() {
+	public static boolean doEmitProxyViaBind(ProcessUnits.PollenProtocol p) {
 		boolean scopeOk = (ParseUnit.current().getParseUnitFlags().contains(Flags.MODULE)
 				|| ParseUnit.current().getParseUnitFlags().contains(Flags.COMPOSITION) 
 				|| ParseUnit.current().getParseUnitFlags().contains(Flags.CLASS))
 				&& !ParseUnit.current().isUnitUnderConstructionNested();
-		return (ProcessUnits.isPollenPrintBindSeen() && scopeOk);
+		return (ProcessUnits.isPollenProxyBindSeen(p) && scopeOk);
 	}
-	public static String getPollenPrintPkg() {
-		return pollenPrintPkg;
+	/**
+	 * This is only needed for protocols which are bound via a command line option, 
+	 * currently only '-p' for print. Called by the parser to synthesize an import.
+	 * @param p the protocol for which the package is to be returned
+	 * @return the package
+	 */
+	public static String getPollenProtocolPkg(PollenProtocol p) {
+		switch (p) {
+		case DYNAMIC_MEMORY:
+			return pollenDynamicMemoryPkg;
+		case SLEEP_WAKE:
+			return pollenSleepWakePkg;
+		case PRINT:
+			return pollenPrintPkg;
+		default:
+			ParseUnit.current().reportFailure(
+					"Reference to unknown pollen protocol");
+		}
+		return "";	
+		
+	}
+	/**
+	 * Set the package in which the implementation of the protocol is found.
+	 * @param p the protocol
+	 * @param name
+	 */
+	public static void setPollenProtocolPkg(PollenProtocol p, String name) {
+		switch (p) {
+		case DYNAMIC_MEMORY:
+			pollenDynamicMemoryPkg = name;
+			break;
+		case SLEEP_WAKE:
+			pollenSleepWakePkg = name; 
+			break;
+		case PRINT:
+			pollenPrintPkg = name;
+			break;
+		default:
+			ParseUnit.current().reportFailure(
+					"Reference to unknown pollen protocol");
+		}
 	}
 	public static String getWorkingDir() {
 		if (workingDir.isEmpty())
@@ -388,6 +593,9 @@ public class ProcessUnits {
         pollenHelp += " Note that the translator requires that \n $POLLEN_TARGET be specified whereas $POLLEN_BUNDLES is optional.";
 		pollenHelp += "\n" + "";
 		pollenHelp += "\nOPTIONS:";
+		pollenHelp += "\n" + "  -a"+ "\tTurns on asserts. If '-a' is not present, asserts are no-ops. If '-a'";
+		pollenHelp += "\n\tis present then this assert: \'pollen.assert(expr, \"string\")\'";
+		pollenHelp += "\n\twill print \"string\" if expr is true. Use with '-p'.";
 		pollenHelp += "\n" + "  -cFlags \"<flags>\"";
 		pollenHelp += "\n" + "\tSpecifies additional flags to be passed to the target C compiler.";
 		pollenHelp += "\n" + "\tThe default set of C compiler flags is specified in the properties";
@@ -424,7 +632,7 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.127";  // user release . internal rev . fix number
+	private static String  v = "0.2.128";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -459,6 +667,7 @@ public class ProcessUnits {
 		String p = "";
 		for (int i=0; i < args.length; i++) {
 			p = args[i];
+			
 			if (p.equals("-o")) {
 				// output directory
 				String odir = (args.length > (++i) ? args[i] : "");
@@ -513,8 +722,8 @@ public class ProcessUnits {
 				value = stripSuffix(value);
 				if (!(new File(value + ".p")).exists())
 					throw new Termination ("Invalid -p usage: must specifiy a fully qualified module for pollen.print");								
-				pollenPrintPkg = this.putModule(inputs, value);
-				setPollenPrint(value.substring(value.lastIndexOf(File.separator)+1));
+				setPollenProtocolPkg(PollenProtocol.PRINT, this.putModule(inputs, value));
+				setPollenProtocolImpl(PollenProtocol.PRINT, value.substring(value.lastIndexOf(File.separator)+1));
 				setDashPoption(true);
 				continue;
 			}
@@ -599,11 +808,17 @@ public class ProcessUnits {
 			if (pollenFile.isEmpty()) {
 				pollenFile = (new File(p + ".p")).exists() ? p + ".p" : "";
 			}
+
 			if (!pollenFile.isEmpty()) { // pollen file
-				if (!inputs.pollenFile.isEmpty()) {
-					throw new Termination ("Invalid inputs: translator accepts one pollen file (and a set of bundles). More than one pollen file encountered.");					
-				}				
-				inputs.pollenFile = pollenFile;
+				
+				// Commenting out the check below allows the top level module to appear anywhere in the command line. 
+				// The cloud compiler requires it to be last but many tests (>90) do not follow that. 
+				// Rather than change all those test scripts I take the last supplied '.p' file as the top level module. 
+				// if (!inputs.pollenFile.isEmpty()) {
+				// 	throw new Termination ("Invalid inputs: translator accepts one pollen file (and a set of bundles). More than one pollen file encountered.");					
+				// }	
+				
+				inputs.pollenFile = pollenFile;				
 				inputPath = pollenFile;
 		        putModule(inputs, pollenFile);
 				continue;

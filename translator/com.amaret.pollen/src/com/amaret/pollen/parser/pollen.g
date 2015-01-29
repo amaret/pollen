@@ -114,7 +114,9 @@ tokens {
         clientImport = cli;
         isVoidInstance = (cli != null && cli.getMeta() != null && cli.getMeta().size() == 0);
         instantiateToDefaults = (cli != null && cli.getMeta() == null);
-        ProcessUnits.setPollenPrintBindSeen(false);
+        ProcessUnits.setPollenProxyBindSeen(ProcessUnits.PollenProtocol.PRINT, false);
+        ProcessUnits.setPollenProxyBindSeen(ProcessUnits.PollenProtocol.SLEEP_WAKE, false);
+        ProcessUnits.setPollenProxyBindSeen(ProcessUnits.PollenProtocol.DYNAMIC_MEMORY, false);
     }
         
     EnumSet<Flags> featureFlags = EnumSet.noneOf(Flags.class); 
@@ -479,9 +481,11 @@ unitPackage
 scope {
     Object unitImports;
 }
-    :           stmtPackage
-                importList {$unitPackage::unitImports = $importList.tree;}                
-                importIntrinsicPrint
+    :              stmtPackage
+                   importList {$unitPackage::unitImports = $importList.tree;}                
+                   importPrintIntrinsic
+                   importSleepWakeIntrinsic
+                   importDynamicMemoryIntrinsic
                    stmtInjectionList //  the injects that go into the header file
                    unitTypeDefinition
                    stmtInjectionList
@@ -555,13 +559,15 @@ classFeatureList[String n]
   EnumSet<Flags> ft = EnumSet.noneOf(Flags.class);
   ft.add(Flags.CONSTRUCTOR); 
 }
-    :    classFeature* classHostCtor[fh] classTargCtor[ft]     intrinsicUnitName[n] intrinsicPrintProxy 
+    :    classFeature* classHostCtor[fh] classTargCtor[ft]     intrinsicUnitName[n] intrinsicPrintProxy intrinsicSleepWakeProxy intrinsicDynamicMemoryProxy
             -> ^(LIST<ListNode>["LIST"] 
                                 classFeature* 
                                 classHostCtor
                                 classTargCtor
                                 intrinsicUnitName
-                                intrinsicPrintProxy)
+                                intrinsicPrintProxy
+                                intrinsicSleepWakeProxy
+                                intrinsicDynamicMemoryProxy)
     ;
 classFeature 
 @init {
@@ -669,14 +675,15 @@ moduleFeatureList[String n]
       EnumSet<Flags> ft = EnumSet.noneOf(Flags.class);
       ft.add(Flags.CONSTRUCTOR); 
 }
-    :    moduleFeature*    moduleHostCtor[fh] moduleTargCtor[ft] intrinsicUnitName[n] intrinsicPrintProxy
+    :    moduleFeature*    moduleHostCtor[fh] moduleTargCtor[ft] intrinsicUnitName[n] intrinsicPrintProxy intrinsicSleepWakeProxy intrinsicDynamicMemoryProxy
             -> ^(LIST<ListNode>["LIST"] 
                 moduleFeature* 
                 moduleHostCtor 
                 moduleTargCtor 
                 intrinsicUnitName 
                 intrinsicPrintProxy
-                   )
+                intrinsicSleepWakeProxy
+                intrinsicDynamicMemoryProxy)
 ;
 intrinsicPrintProxy
 @init{
@@ -689,20 +696,54 @@ intrinsicPrintProxy
     :    {ProcessUnits.doEmitPrintProxyViaDashP()}? 
             -> ^(D_VAR<DeclNode.TypedMember>["D_VAR", EnumSet.of(Flags.INTRINSIC_VAR, Flags.BIND, Flags.PROTOCOL_MEMBER)]                 
                 ^(T_USR<TypeNode.Usr>["T_USR", EnumSet.of(Flags.INTRINSIC_VAR)] 
-                    IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL]
+                    IDENT[ParseUnit.POLLEN_PRINT_PROTOCOL]
                   ) 
                 IDENT[ParseUnit.INTRINSIC_PRINT_PROXY]                 
                  ^( E_TYP<ExprNode.Typ>["E_TYP"]     
                      ^(T_USR<TypeNode.Usr>["T_USR", EnumSet.noneOf(Flags.class)]                                   
-                         IDENT[ProcessUnits.getPollenPrint()]    )                   
+                         IDENT[ProcessUnits.getPollenProtocolImpl(ProcessUnits.PollenProtocol.PRINT)]    )                   
                    )
                    )
-        |   {ProcessUnits.doEmitPrintProxyViaBind()}? 
+        |   {ProcessUnits.doEmitProxyViaBind(ProcessUnits.PollenProtocol.PRINT)}? 
             -> ^(D_VAR<DeclNode.TypedMember>["D_VAR", flags]                 
                 ^(T_USR<TypeNode.Usr>["T_USR", EnumSet.of(Flags.INTRINSIC_VAR)] 
-                    IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL]
+                    IDENT[ParseUnit.POLLEN_PRINT_PROTOCOL]
                   ) 
                 IDENT[ParseUnit.INTRINSIC_PRINT_PROXY]                 
+                   )
+         | -> NIL    
+    ;
+intrinsicSleepWakeProxy
+@init{
+  EnumSet flags;
+  if (currType.getUnitFlags().contains(Flags.COMPOSITION)) 
+      flags = EnumSet.of(Flags.INTRINSIC_VAR, Flags.HOST, Flags.PROTOCOL_MEMBER) ;
+  else
+      flags = EnumSet.of(Flags.INTRINSIC_VAR, Flags.PROTOCOL_MEMBER);
+}
+    :    {ProcessUnits.doEmitProxyViaBind(ProcessUnits.PollenProtocol.SLEEP_WAKE)}? 
+            -> ^(D_VAR<DeclNode.TypedMember>["D_VAR", flags]                 
+                ^(T_USR<TypeNode.Usr>["T_USR", EnumSet.of(Flags.INTRINSIC_VAR)] 
+                    IDENT[ParseUnit.POLLEN_SLEEP_WAKE_PROTOCOL]
+                  ) 
+                    IDENT[ParseUnit.INTRINSIC_SLEEP_WAKE_PROXY]                 
+                   )
+         | -> NIL    
+    ;
+intrinsicDynamicMemoryProxy 
+@init{
+  EnumSet flags;
+  if (currType.getUnitFlags().contains(Flags.COMPOSITION)) 
+      flags = EnumSet.of(Flags.INTRINSIC_VAR, Flags.HOST, Flags.PROTOCOL_MEMBER) ;
+  else
+      flags = EnumSet.of(Flags.INTRINSIC_VAR, Flags.PROTOCOL_MEMBER);
+}
+    :    {ProcessUnits.doEmitProxyViaBind(ProcessUnits.PollenProtocol.DYNAMIC_MEMORY)}? 
+            -> ^(D_VAR<DeclNode.TypedMember>["D_VAR", flags]                 
+                ^(T_USR<TypeNode.Usr>["T_USR", EnumSet.of(Flags.INTRINSIC_VAR)] 
+                    IDENT[ParseUnit.POLLEN_DYNAMIC_MEMORY_PROTOCOL]
+                  ) 
+                    IDENT[ParseUnit.INTRINSIC_DYNAMIC_MEMORY_PROXY]                 
                    )
          | -> NIL    
     ;
@@ -917,7 +958,9 @@ compositionDefinition
 compositionFeatureList
     :    compositionFeature*    
         intrinsicPrintProxy
-        -> ^(LIST<ListNode>["LIST"] compositionFeature* intrinsicPrintProxy)
+        intrinsicSleepWakeProxy
+        intrinsicDynamicMemoryProxy
+        -> ^(LIST<ListNode>["LIST"] compositionFeature* intrinsicPrintProxy intrinsicSleepWakeProxy intrinsicDynamicMemoryProxy)
     ;
 compositionFeature
 @init {
@@ -986,13 +1029,6 @@ scope{
                     if ($stmtImport::qimp.isEmpty())
                         throw new PollenException("Missing module specification for pollen.environment", input);
                 }
-                else if ($qualName.text.equals(ParseUnit.POLLEN_PRINT)) {
-                    $stmtImport::qimp = ProcessUnits.getPollenPrint();
-                    defaultPkg = ProcessUnits.getPollenPrintPkg();
-                    importFlags.add(Flags.UNIT_USED);
-                    if ($stmtImport::qimp.isEmpty())
-                            throw new PollenException("Missing module specification for pollen.print", input);
-                }
                 else {
                     $stmtImport::qimp = $qualName.text;
                 }
@@ -1055,7 +1091,7 @@ importAs
     ;
 
 importList
-    :      stmtImports //importIntrinsicPrint
+    :      stmtImports //importPrintIntrinsic
     ;
 stmtImports
     :    stmtImport+  -> ^(LIST<ListNode>["LIST"]  stmtImport+)
@@ -1067,44 +1103,104 @@ stmtImports
     This rule synthesizes AST for intrinsic print when '-p' specifies a print implementation.
     It creates subtrees on empty input which can confuse antlr. Works but extend with care.
 */
-importIntrinsicPrint
+importPrintIntrinsic
 scope {
     List<Object> l;
 }
 @init {
-    $importIntrinsicPrint::l = new ArrayList<Object>();    
+    $importPrintIntrinsic::l = new ArrayList<Object>();    
 }
 
 @after {
-     for (Object o : $importIntrinsicPrint::l) {
+     for (Object o : $importPrintIntrinsic::l) {
          if (o instanceof ImportNode) {
              // add the instantiated import to unit imports
              ((CommonTree) $unitPackage::unitImports).addChild((ImportNode) o);            
          }
      }
 }
-    :     m1=importPrintImpl      {  $importIntrinsicPrint::l.add($m1.tree);}
-         m2=importPrintProtocol    {  $importIntrinsicPrint::l.add($m2.tree);}    
+    :     m1=importPrintImpl      {  $importPrintIntrinsic::l.add($m1.tree);}
+         m2=importPrintProtocol    {  $importPrintIntrinsic::l.add($m2.tree);}    
     ;
 // synthesize the imports for the print implementation (from the -p option)
 importPrintImpl
-    :    {ProcessUnits.doImportPrintImpl()}? 
+    :    {ProcessUnits.doImportPollenProtocolImpl(ProcessUnits.PollenProtocol.PRINT)}? 
            -> ^(IMPORT<ImportNode>["IMPORT",  EnumSet.of(Flags.UNIT_USED)] 
-            IDENT[ProcessUnits.getPollenPrintPkg()] 
-            IDENT[ProcessUnits.getPollenPrint()]
+            IDENT[ProcessUnits.getPollenProtocolPkg(ProcessUnits.PollenProtocol.PRINT)] 
+            IDENT[ProcessUnits.getPollenProtocolImpl(ProcessUnits.PollenProtocol.PRINT)]
             NIL)    
         |  -> NIL
     ;
 // To support binding print protocol without requiring -p option we must import the print protocol in every unit
 // (except itself). This happens only if -p is NOT used. 
 importPrintProtocol
-    :    {ProcessUnits.doImportPrintProtocol()}? 
+    :    {ProcessUnits.doImportPollenProtocol(ProcessUnits.PollenProtocol.PRINT)}? 
            -> ^(IMPORT<ImportNode>["IMPORT",  (EnumSet.of(Flags.UNIT_USED))] 
             IDENT[ParseUnit.POLLEN_PRINTPKG] 
-            IDENT[ParseUnit.INTRINSIC_PRINT_PROTOCOL]
+            IDENT[ParseUnit.POLLEN_PRINT_PROTOCOL]
             NIL)    
         |  -> NIL
     ;
+importSleepWakeIntrinsic
+scope {
+    List<Object> l;
+}
+@init {
+    $importSleepWakeIntrinsic::l = new ArrayList<Object>();    
+}
+
+@after {
+     for (Object o : $importSleepWakeIntrinsic::l) {
+         if (o instanceof ImportNode) {
+             // add the instantiated import to unit imports
+             ((CommonTree) $unitPackage::unitImports).addChild((ImportNode) o);            
+         }
+     }
+}
+    :     
+         m1=importSleepWakeProtocol    {  $importSleepWakeIntrinsic::l.add($m1.tree);}    
+    ;
+// To support binding  protocol anywhere we must import the  protocol in every unit
+// (except itself).
+importSleepWakeProtocol
+    :    {ProcessUnits.doImportPollenProtocol(ProcessUnits.PollenProtocol.SLEEP_WAKE)}? 
+           -> ^(IMPORT<ImportNode>["IMPORT",  (EnumSet.of(Flags.UNIT_USED))] 
+            IDENT[ParseUnit.POLLEN_SLEEP_WAKE_PKG] 
+            IDENT[ParseUnit.POLLEN_SLEEP_WAKE_PROTOCOL]
+            NIL)    
+        |  -> NIL
+    ;
+    
+importDynamicMemoryIntrinsic
+scope {
+    List<Object> l;
+}
+@init {
+    $importDynamicMemoryIntrinsic::l = new ArrayList<Object>();
+}
+
+@after {
+     for (Object o : $importDynamicMemoryIntrinsic::l) {
+         if (o instanceof ImportNode) {
+             // add the instantiated import to unit imports
+             ((CommonTree) $unitPackage::unitImports).addChild((ImportNode) o);            
+         }
+     }
+}
+    :     
+         m1=importDynamicMemoryProtocol    {  $importDynamicMemoryIntrinsic::l.add($m1.tree);}
+    ;
+// To support binding  protocol anywhere we must import the  protocol in every unit
+// (except itself).
+importDynamicMemoryProtocol
+    :    {ProcessUnits.doImportPollenProtocol(ProcessUnits.PollenProtocol.DYNAMIC_MEMORY)}?
+           -> ^(IMPORT<ImportNode>["IMPORT",  (EnumSet.of(Flags.UNIT_USED))] 
+            IDENT[ParseUnit.POLLEN_DYNAMIC_MEMORY_PKG]
+            IDENT[ParseUnit.POLLEN_DYNAMIC_MEMORY_PROTOCOL]
+            NIL)    
+        |  -> NIL
+    ;
+     
 meta 
 @init {
 }
@@ -1856,13 +1952,37 @@ stmtBind
                            "Either the '-p' option to bind a print protocol can be used or a print protocol can be bound in code - but both cannot be used at once");
                        }
                        if (getParserTypeInfoListSize() > 1) {
-                           ParseUnit.current().reportError(ParseUnit.POLLEN_PRINT_PROXY, "Invalid bind of intrinsic print protocol member: not allowed in nested class");
+                           ParseUnit.current().reportError(ParseUnit.POLLEN_PRINT_PROXY, "Invalid bind of protocol member: not allowed in nested class");
                        }
                                
                 qn = ParseUnit.INTRINSIC_PRINT_PROXY;
-                ProcessUnits.setPollenPrintBindSeen(true); // causes the print protocol member to be created
-                ProcessUnits.setPollenPrint($userTypeName.text);
-                ProcessUnits.setPollenPrintProxyModule(ParseUnit.mkPackageName(ParseUnit.current().getCurrPath()) + "."  + currType.getTypeName());
+                ProcessUnits.setPollenProxyBindSeen(ProcessUnits.PollenProtocol.PRINT, true); // causes the  protocol member to be created
+                ProcessUnits.setPollenProtocolImpl(ProcessUnits.PollenProtocol.PRINT, $userTypeName.text);
+                ProcessUnits.setPollenProxyModule(ProcessUnits.PollenProtocol.PRINT,ParseUnit.mkPackageName(ParseUnit.current().getCurrPath()) + "."  + currType.getTypeName());
+                
+            }
+            else if ($qualName.text.equals(ParseUnit.POLLEN_DYNAMIC_MEMORY_PROXY)) {
+            
+                       if (getParserTypeInfoListSize() > 1) {
+                           ParseUnit.current().reportError(ParseUnit.POLLEN_DYNAMIC_MEMORY_PROXY, "Invalid bind of protocol member: not allowed in nested class");
+                       }
+                               
+                qn = ParseUnit.INTRINSIC_DYNAMIC_MEMORY_PROXY;
+                ProcessUnits.setPollenProxyBindSeen(ProcessUnits.PollenProtocol.DYNAMIC_MEMORY, true); // causes the  protocol member to be created
+                ProcessUnits.setPollenProtocolImpl(ProcessUnits.PollenProtocol.DYNAMIC_MEMORY, $userTypeName.text);
+                ProcessUnits.setPollenProxyModule(ProcessUnits.PollenProtocol.DYNAMIC_MEMORY, ParseUnit.mkPackageName(ParseUnit.current().getCurrPath()) + "."  + currType.getTypeName());
+                
+            }
+            else if ($qualName.text.equals(ParseUnit.POLLEN_SLEEP_WAKE_PROXY)) {
+            
+                       if (getParserTypeInfoListSize() > 1) {
+                           ParseUnit.current().reportError(ParseUnit.POLLEN_SLEEP_WAKE_PROXY, "Invalid bind of protocol member: not allowed in nested class");
+                       }
+                               
+                qn = ParseUnit.INTRINSIC_SLEEP_WAKE_PROXY;
+                ProcessUnits.setPollenProxyBindSeen(ProcessUnits.PollenProtocol.SLEEP_WAKE, true); // causes the  protocol member to be created
+                ProcessUnits.setPollenProtocolImpl(ProcessUnits.PollenProtocol.SLEEP_WAKE, $userTypeName.text);
+                ProcessUnits.setPollenProxyModule(ProcessUnits.PollenProtocol.SLEEP_WAKE, ParseUnit.mkPackageName(ParseUnit.current().getCurrPath()) + "."  + currType.getTypeName());
                 
             }
             else
