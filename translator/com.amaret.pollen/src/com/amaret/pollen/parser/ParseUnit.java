@@ -32,7 +32,6 @@ public class ParseUnit {
 	private PrintStream out;
 	private PrintStream err;
 	private PrintStream info;
-	private PrintStream times;
 	private static ParseUnit currParse;
 	private static File currFile;
 	private static String pollenFile; // the .p file supplied to pollen translator
@@ -152,18 +151,21 @@ public class ParseUnit {
 	//
     //pollen names as they appear in pollen source
     //
-	// print protocol, proxy, package
+    // pollen protocols:
     // The proxy is bound to the implementing module. 
     // Its type is the protocol declared in package.
     // TBD: pollen protocols could get their own class hierarchy.
+    // Each protocol would have a derived static class instance.
+    //
+    // print: protocol, proxy, package
 	public static final String POLLEN_PRINT_PROXY = "pollen.printProtocol";	
 	public static final String POLLEN_PRINTPKG = "pollen.output";
 	public static final String POLLEN_PRINT_PROTOCOL = "PrintProtocol";
-	// sleep wake protocol, proxy, package
+	// sleep wake: protocol, proxy, package
 	public static final String POLLEN_SLEEP_WAKE_PROXY = "pollen.sleepWakeProtocol";
 	public static final String POLLEN_SLEEP_WAKE_PKG = "pollen.utils";
 	public static final String POLLEN_SLEEP_WAKE_PROTOCOL = "SleepWakeProtocol";	
-	// dynamic memory protocol, proxy, package
+	// dynamic memory: protocol, proxy, package
 	public static final String POLLEN_DYNAMIC_MEMORY_PROXY = "pollen.dynamicMemoryProtocol";
 	public static final String POLLEN_DYNAMIC_MEMORY_PKG = "pollen.utils";
 	public static final String POLLEN_DYNAMIC_MEMORY_PROTOCOL = "DynamicMemoryProtocol";	
@@ -198,15 +200,38 @@ public class ParseUnit {
 	public static final String KIND_VAR = "__V";
 	public static final String JAVASCRIPT_OBJECT_NOT_FOUND = "/* object not found */";
 	public static final String ARRAY_WITHOUT_DIMENSION = "-1";
+	//
+	// pollen intrinsic names output by translator
+	//
+	public static final String POLLEN__ASSERT = "pollen__assert";
+	public static final String POLLEN__ENVIRONMENT = "pollen__environment";
+	public static final String POLLEN__FREE = "pollen__free";
+	public static final String POLLEN__MALLOC = "pollen__malloc";
+	public static final String POLLEN__PRINT_BOOL = "pollen__printBool";
+	public static final String POLLEN__PRINT_INT = "pollen__printInt";
+	public static final String POLLEN__PRINT_REAL = "pollen__printReal";
+	public static final String POLLEN__PRINT_STR = "pollen__printStr";
+	public static final String POLLEN__PRINT_UINT = "pollen__printUint";
+	public static final String POLLEN__READY = "pollen__ready";
+	public static final String POLLEN__RESET = "pollen__reset";
+	public static final String POLLEN__RUN = "pollen__run";
+	public static final String POLLEN__SHUTDOWN = "pollen__shutdown";
+	public static final String POLLEN__SLEEP = "pollen__sleep";
+	public static final String POLLEN__WAKE = "pollen__wake";
+
 	
 	public static final ArrayList<String> SleepWakeMembers = new ArrayList<String>(Arrays.asList(
-            "pollen__sleep", "pollen__wake"
+            ParseUnit.POLLEN__SLEEP, ParseUnit.POLLEN__WAKE
      ));
 	public static final ArrayList<String> DynamicMemoryMembers = new ArrayList<String>(Arrays.asList(
-            "pollen__malloc", "pollen__free"
+            ParseUnit.POLLEN__MALLOC, ParseUnit.POLLEN__FREE
      ));
 	public static final ArrayList<String> Intrinsics = new ArrayList<String>(
-			Arrays.asList("pollen__assert", "pollen__ready", "pollen__reset", "pollen__run", "pollen__shutdown"));
+			Arrays.asList(ParseUnit.POLLEN__ASSERT, 
+					ParseUnit.POLLEN__READY, 
+					ParseUnit.POLLEN__RESET, 
+					ParseUnit.POLLEN__RUN, 
+					ParseUnit.POLLEN__SHUTDOWN));
 	
 	public static boolean isIntrinsicCall(String s) {
 		if (!(s.matches(ParseUnit.POLLEN_PREFIX + ".*")))
@@ -219,30 +244,32 @@ public class ParseUnit {
 	}
 	
 	/**
-	 * Here track the output names of pollen intrinsic functions (which will vary depending on where they are defined).
+	 * Track the output names of pollen intrinsic functions (which will vary depending 
+	 * on where they are defined due to module qualification).
+	 * Handle both source and output formats (pollen.shutdown, pollen__shutdown). 
 	 */
-	private List<String> pollenFunctionList = Arrays.asList("hibernate","ready", "reset", "run", "shutdown", "wake");
-	private Map<String, String> pollenFunctionsFound = new HashMap<String, String>();
+	private List<String> pollenIntrinsicFcnKeys = Arrays.asList("ready", "reset", "run", "shutdown");
+	private Map<String, String> pollenIntrinsicFcnsFound = new HashMap<String, String>();
 	/**
 	 * Create and store in a map the output name of a pollen intrinsic function
 	 * @param fname
 	 * @return false if something went wrong
 	 */
-	public boolean putPollenFunction(String fname) {
+	public boolean putPollenIntrinsicFcn(String fname) {
 		// handle both pollen.shutdown and pollen__shutdown formats
 		fname = fname.substring(fname.lastIndexOf("_")+1);
 		fname = fname.substring(fname.lastIndexOf(".")+1);
-		if (pollenFunctionsFound.containsKey(fname)) {
+		if (pollenIntrinsicFcnsFound.containsKey(fname)) {
 			reportError(ParseUnit.current().getCurrUnitNode(), "encountered more than one implementation for intrinsic pollen." + fname);
 			return false;
 		}
 		String key = fname;
-		if (!pollenFunctionList.contains(key))
+		if (!pollenIntrinsicFcnKeys.contains(key))
 			return true;
         String uname = ParseUnit.current().getCurrUnitNode().getName().getText();
         fname = ParseUnit.current().getCurrUnitNode().getPkgName().getText().replace('.', '_') + '_'  + uname + '_'
-        		+ "pollen__" + fname + ParseUnit.KIND_EXTERN;
-		pollenFunctionsFound.put(key, fname);
+        		+ ParseUnit.POLLEN_PREFIX + fname + ParseUnit.KIND_EXTERN;
+		pollenIntrinsicFcnsFound.put(key, fname);
 		return true;		
 	}
 	/**
@@ -250,16 +277,16 @@ public class ParseUnit {
 	 * @param fname
 	 * @return formatted name of the user defined version if there is one or the default name.
 	 */
-	public String getPollenFunctionOutputName(String n)  {
+	public String getPollenIntrinsicFcnOutputName(String n)  {
 		String fname = n.substring(n.lastIndexOf("_")+1);
 		fname = fname.substring(fname.lastIndexOf(".")+1);
-		if (!pollenFunctionList.contains(fname)) {
+		if (!pollenIntrinsicFcnKeys.contains(fname)) {
 			String uname = ParseUnit.current().getCurrUnitNode().getName().getText();
 			fname = ParseUnit.current().getCurrUnitNode().getPkgName().getText().replace('.', '_') + '_'  + uname + '_'
 					+ n + ParseUnit.KIND_EXTERN; // this can handle non function intrinsics
 			return fname;
 		}
-		String outputName = pollenFunctionsFound.get(fname);
+		String outputName = pollenIntrinsicFcnsFound.get(fname);
 
 		if (outputName == null) { // no user defined implementation found
 			if (ParseUnit.current().getTopLevelUnit() != null) {
@@ -280,10 +307,10 @@ public class ParseUnit {
 	public boolean foundUserDefinedIntrinsicFunction(String n) {
 		String fname = n.substring(n.lastIndexOf("_")+1);
 		fname = fname.substring(n.lastIndexOf(".")+1);
-		if (!pollenFunctionList.contains(fname)) {
+		if (!pollenIntrinsicFcnKeys.contains(fname)) {
 			return false;
 		}
-		if (pollenFunctionsFound.get(fname) == null)
+		if (pollenIntrinsicFcnsFound.get(fname) == null)
 			return false;
 		return true;		
 	}

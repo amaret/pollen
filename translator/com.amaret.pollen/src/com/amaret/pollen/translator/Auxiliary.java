@@ -1,7 +1,6 @@
 package com.amaret.pollen.translator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -20,7 +19,6 @@ import com.amaret.pollen.parser.DeclNode.Formal;
 import com.amaret.pollen.parser.DeclNode.ITypeSpec;
 import com.amaret.pollen.parser.DeclNode.Var;
 import com.amaret.pollen.parser.ExprNode;
-import com.amaret.pollen.parser.ExprNode.Binary;
 import com.amaret.pollen.parser.ExprNode.Call;
 import com.amaret.pollen.parser.ExprNode.Const;
 import com.amaret.pollen.parser.ExprNode.Ident;
@@ -886,7 +884,7 @@ public class Auxiliary {
 		SymbolEntry sym = expr.getSymbol();
 		if (sym == null) {
 			if (ParseUnit.isIntrinsicCall(expr.getName().getText()))
-				gen.getFmt().print(ParseUnit.current().getPollenFunctionOutputName(expr.getName().getText()));
+				gen.getFmt().print(ParseUnit.current().getPollenIntrinsicFcnOutputName(expr.getName().getText()));
 				//gen.getFmt().print("%1%2%3", gen.uname_target(), expr.getName(), ParseUnit.KIND_EXTERN);
 			else
 				gen.getFmt().print(expr.getName() + " /* ?? missing symbol ?? */ ");
@@ -1771,7 +1769,7 @@ public class Auxiliary {
 				switch (catChar.charAt(0)) {
 				case 'b':
 					t = !firstTime ? "\n\t" : "";
-					gen.getFmt().print("%3%1%2print_bool(", uname_target, ParseUnit.POLLEN_PREFIX, t);
+					gen.getFmt().print("%2%1" + ParseUnit.POLLEN__PRINT_BOOL + "(", uname_target, t);
 					gen.aux.genExpr(expr);
 					gen.getFmt().print(");");
 					firstTime = false;
@@ -1779,28 +1777,28 @@ public class Auxiliary {
 				case 'i':
 				case 'n':
 					t = !firstTime ? "\n\t" : "";
-					gen.getFmt().print("%3%1%2print_int((int32)", uname_target, ParseUnit.POLLEN_PREFIX, t);
+					gen.getFmt().print("%2%1" + ParseUnit.POLLEN__PRINT_INT + "((int32)", uname_target, t);
 					gen.aux.genExpr(expr);
 					gen.getFmt().print(");");
 					firstTime = false;
 					break;
 				case 'u':
 					t = !firstTime ? "\n\t" : "";
-					gen.getFmt().print("%3%1%2print_uint((uint32)", uname_target, ParseUnit.POLLEN_PREFIX, t);
+					gen.getFmt().print("%2%1" + ParseUnit.POLLEN__PRINT_UINT + "((uint32)", uname_target, t);
 					gen.aux.genExpr(expr);
 					gen.getFmt().print(");");
 					firstTime = false;
 					break;
 				case 'f':
 					t = !firstTime ? "\n\t" : "";
-					gen.getFmt().print("%3%1%2print_real((float)", uname_target, ParseUnit.POLLEN_PREFIX, t);
+					gen.getFmt().print("%2%1" + ParseUnit.POLLEN__PRINT_REAL + "((float)", uname_target, t);
 					gen.aux.genExpr(expr);
 					gen.getFmt().print(");");
 					firstTime = false;
 					break;
 				case 's':
 					t = !firstTime ? "\n\t" : "";
-					gen.getFmt().print("%3%1%2print_str((string)", uname_target, ParseUnit.POLLEN_PREFIX, t);
+					gen.getFmt().print("%2%1" + ParseUnit.POLLEN__PRINT_STR + "((string)", uname_target, t);
 					gen.aux.genExpr(expr);
 					gen.getFmt().print(");");
 					firstTime = false;
@@ -1988,7 +1986,7 @@ public class Auxiliary {
 	}
 
 	protected String mkPollenCname(String id) {
-		return id.startsWith("pollen.") ? ("pollen__" + id.substring(ParseUnit.POLLEN_PREFIX
+		return id.startsWith("pollen.") ? (ParseUnit.POLLEN_PREFIX + id.substring(ParseUnit.POLLEN_PREFIX
 				.length())) : id;
 	}
 

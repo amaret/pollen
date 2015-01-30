@@ -11,7 +11,6 @@ import org.antlr.runtime.tree.Tree;
 
 import com.amaret.pollen.parser.Cat.Agg;
 import com.amaret.pollen.parser.ExprNode.Vec;
-import com.amaret.pollen.parser.TypeNode.Usr;
 import com.amaret.pollen.target.ITarget.TypeInfo;
 import com.amaret.pollen.translator.Generator;
 
@@ -1146,7 +1145,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				        	n + ": pollen lifecycle functions must be defined in modules");
 				}
 				else {
-					ParseUnit.current().putPollenFunction(name.getText());
+					ParseUnit.current().putPollenIntrinsicFcn(name.getText());
 				}
 			}
 

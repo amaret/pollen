@@ -3,7 +3,6 @@ package com.amaret.pollen.target;
 import java.io.File;
 import java.util.EnumMap;
 
-import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.ParseUnit;
 
 public abstract class GccBase extends BaseTarget {

@@ -2,7 +2,6 @@ package com.amaret.pollen.target;
 
 import java.io.File;
 
-import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.ParseUnit;
 
 public class GccAvr extends GccBase {

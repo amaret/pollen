@@ -577,13 +577,13 @@ public class UnitHeader {
     	gen.aux.genTitle("forward declarations for intrinsics");
     	// if there is no local intrinsic definition, generate a forward
         if (gen.curUnit().lookupFcn(ParseUnit.POLLEN_PREFIX + "reset") == null) {
-        	gen.getFmt().print("void %1();\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_RESET));
+        	gen.getFmt().print("void %1();\n",ParseUnit.current().getPollenIntrinsicFcnOutputName(ParseUnit.POLLEN_RESET));
         }
         if (gen.curUnit().lookupFcn(ParseUnit.POLLEN_PREFIX + "ready") == null) {
-        	gen.getFmt().print("void %1();\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_READY));
+        	gen.getFmt().print("void %1();\n",ParseUnit.current().getPollenIntrinsicFcnOutputName(ParseUnit.POLLEN_READY));
         }
         if (gen.curUnit().lookupFcn(ParseUnit.POLLEN_PREFIX + "shutdown") == null) {
-        	gen.getFmt().print("void %1(uint8 id);\n",ParseUnit.current().getPollenFunctionOutputName(ParseUnit.POLLEN_SHUTDOWN));
+        	gen.getFmt().print("void %1(uint8 id);\n",ParseUnit.current().getPollenIntrinsicFcnOutputName(ParseUnit.POLLEN_SHUTDOWN));
         }
     }
     

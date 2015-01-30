@@ -586,7 +586,7 @@ public class UnitJScript {
         List<ImportNode> impL = unit.getImports();
         List<String> inserted = new java.util.ArrayList<String>();
         if (impL.size() > 0) {   		
-            gen.getFmt().print("%t%1.pollen__uses__ = function() {\n%+", gen.uname());
+            gen.getFmt().print("%t%1." + ParseUnit.POLLEN_PREFIX + "uses__ = function() {\n%+", gen.uname());
             for (ImportNode imp : impL) {
                 if (imp.getUnit() != null) { 
                         genUse(imp, inserted);

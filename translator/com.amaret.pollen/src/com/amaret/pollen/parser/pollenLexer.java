@@ -1,16 +1,22 @@
 // $ANTLR 3.4 /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g 2015-01-28 15:07:24
 
     package com.amaret.pollen.parser;
-    import java.util.EnumSet;
-    import com.amaret.pollen.parser.Atom;
-    
-
-import org.antlr.runtime.*;
-import java.util.Stack;
+    import java.util.ArrayList;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.Stack;
+
+import org.antlr.runtime.BaseRecognizer;
+import org.antlr.runtime.CharStream;
+import org.antlr.runtime.DFA;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.FailedPredicateException;
+import org.antlr.runtime.IntStream;
+import org.antlr.runtime.Lexer;
+import org.antlr.runtime.MismatchedSetException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.RecognizerSharedState;
+import org.antlr.runtime.Token;
 
 @SuppressWarnings({"all", "warnings", "unchecked"})
 public class pollenLexer extends Lexer {

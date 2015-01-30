@@ -9,7 +9,6 @@ import com.amaret.pollen.parser.Cat.Arr;
 import com.amaret.pollen.parser.DeclNode.Fcn;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
-import com.amaret.pollen.parser.DeclNode.Usr;
 
 public class ExprNode extends BaseNode {
 

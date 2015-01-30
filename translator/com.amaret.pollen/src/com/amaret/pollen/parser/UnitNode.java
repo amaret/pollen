@@ -43,7 +43,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 			ParseUnit.POLLEN_SHUTDOWN, 
 			ParseUnit.POLLEN_RUN, 
 			// these versions are massaged for output
-			"pollen__reset", "pollen__ready", "pollen__shutdown", "pollen__run");
+			ParseUnit.POLLEN__RESET, ParseUnit.POLLEN__READY, ParseUnit.POLLEN__SHUTDOWN, ParseUnit.POLLEN__RUN);
 
 	public void addFlags(EnumSet<Flags> e) {
 		flags.addAll(e);

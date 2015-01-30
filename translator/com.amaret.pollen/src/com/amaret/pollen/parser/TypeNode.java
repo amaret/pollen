@@ -8,7 +8,6 @@ import org.antlr.runtime.tree.Tree;
 
 import com.amaret.pollen.parser.Cat.Scalar;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
-import com.amaret.pollen.target.ITarget.TypeId;
 import com.amaret.pollen.target.ITarget.TypeInfo;
 import com.amaret.pollen.translator.Generator;
 
