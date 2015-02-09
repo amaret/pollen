@@ -335,7 +335,7 @@ public class ExprNode extends BaseNode {
 				if (call.equals("getF"))
 					dbg = true;
 
-				boolean skipLookup = (call.matches(ParseUnit.POLLEN_PREFIX
+				boolean skipLookup = (call.matches(ParseUnit.POLLEN_PREFIX__
 						+ ".*")) ? true : false;
 
 				if (!skipLookup) {

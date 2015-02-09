@@ -632,7 +632,7 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.129";  // user release . internal rev . fix number
+	private static String  v = "0.2.130";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}

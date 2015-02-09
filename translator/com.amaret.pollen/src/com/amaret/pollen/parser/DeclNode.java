@@ -462,7 +462,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			}
 			if (this.isHost()) {
 				ExprNode.Const ex = this.getFirstDim().getConstInitialValue();
-				if (ex != null && ex.getValue().getText().equals("-1")
+				if (ex != null && ex.getValue().getText().equals(ParseUnit.ARRAY_WITHOUT_DIMENSION)
 						&& this.getInit() == null)
 					ParseUnit
 							.current()
@@ -618,6 +618,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 
 		/**
 		 * Initialize the element nodes with ExprNodes.
+		 * Currently this checks conditions on host array initialization.
 		 * 
 		 * @return the initializing vector
 		 */
@@ -627,12 +628,24 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			ExprNode.Vec v = (Vec) getInit();
 			List<ExprNode> elemVals = v.getVals();
 			for (ExprNode elv : elemVals) {
-				if (elv instanceof ExprNode.New && !this.isHost()) {
-					// When malloc style init is implemented this may become legal but currently it won't work: the
-					// non-host array expects pointer elements which don't exist with the result of bad alignment (segv).  
-					ParseUnit.current().reportSeriousError(this, this.getName().getText() + ": an array declaration with constructor calls as array element initializers must be declared host");
-					break;
+				if (elv instanceof ExprNode.New) {
+					if (!this.isHost()) {
+						// When malloc style init is implemented this may become legal but currently it won't work: the
+						// non-host array expects pointer elements which don't exist with the result of bad alignment (segv).  
+						ParseUnit.current().reportSeriousError(this, this.getName().getText() + ": an array declaration with constructor calls as array element initializers must be declared host");
+						break;
+					} 
 				}
+				else if (elv instanceof ExprNode.Const) {
+					if (this.isHost() && ((ExprNode.Const)elv).getValue().getText().equals("null")) { // will alloc and init like references - wrong.
+						if (this.getTypeSpec() instanceof TypeNode.Usr) {
+							ParseUnit.current().reportError(this, "A host array of class elements should be initialized with the host class constructor.");
+							flags.remove(Flags.HOST); // this will be treated as an array of references.
+						}
+					}
+					
+				}
+
 			}
 			
 			int exprs = (v != null && v.getVals() != null) ? v.getVals().size()
@@ -1136,7 +1149,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				}
 			}
 
-			if (name.getText().matches(ParseUnit.POLLEN_PREFIX + ".*")) {
+			if (name.getText().matches(ParseUnit.POLLEN_PREFIX__ + ".*")) {
 				flags.add(Flags.PUBLIC); // always
 				if (isMethod()) {
 					String n = getName().getText();

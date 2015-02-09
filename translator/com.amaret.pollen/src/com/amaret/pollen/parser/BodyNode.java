@@ -35,7 +35,7 @@ public class BodyNode extends BaseNode implements IScope {
     }
     void addLocalVar(DeclNode.Var var) {
     	String  name = var.getName().getText();
-    	if (name.matches(ParseUnit.POLLEN_PREFIX + ".*"))
+    	if (name.matches(ParseUnit.POLLEN_PREFIX__ + ".*"))
     		return;
 		if (getFcn() != null && getFcn().isHost()) {
 			if (ParseUnit.isJavaScriptRsvdWord(var.getName().getText())) {

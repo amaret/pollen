@@ -290,7 +290,7 @@ public class Generator {
 
         File jsFile = ParseUnit.cacheFile(unit.getQualName(), "-prog.js");
         progFile = ParseUnit.cacheFile(unit.getQualName(), "-prog.c");
-        boolean missingRun = unit.getFcnMap().get(ParseUnit.POLLEN_PREFIX + "run") == null;
+        boolean missingRun = unit.getFcnMap().get(ParseUnit.POLLEN_PREFIX__ + "run") == null;
         boolean noProg = unit.isHost() || missingRun;
         if (noProg) {
         	if (missingRun)

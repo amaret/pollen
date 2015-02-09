@@ -539,7 +539,7 @@ public class Auxiliary {
 		
  		String n = expr.getName() instanceof ExprNode.Ident ? ((ExprNode.Ident) expr.getName()).getName().getText() : "";
  		 		
-		if (n.equals(ParseUnit.POLLEN_PREFIX + "assert")) {				
+		if (n.equals(ParseUnit.POLLEN_PREFIX__ + "assert")) {				
 			if (!ProcessUnits.isAsserts())
 				return;  // suppress call
 			else {
@@ -551,7 +551,7 @@ public class Auxiliary {
 			this.genHostNew(expr);
 			return;
 		}	
-		if (n.matches(ParseUnit.POLLEN_PREFIX + ".*")
+		if (n.matches(ParseUnit.POLLEN_PREFIX__ + ".*")
 				&& !ParseUnit.Intrinsics.contains(n)) {
 			genPollenProtocolCall(n, expr);	
 		}
@@ -1986,7 +1986,7 @@ public class Auxiliary {
 	}
 
 	protected String mkPollenCname(String id) {
-		return id.startsWith("pollen.") ? (ParseUnit.POLLEN_PREFIX + id.substring(ParseUnit.POLLEN_PREFIX
+		return id.startsWith("pollen.") ? (ParseUnit.POLLEN_PREFIX__ + id.substring(ParseUnit.POLLEN_PREFIX__
 				.length())) : id;
 	}
 
