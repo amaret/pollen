@@ -163,7 +163,7 @@ public class ParseUnit {
 	public static final String POLLEN_PRINT_PROTOCOL = "PrintProtocol";
 	// sleep wake: protocol, proxy, package
 	public static final String POLLEN_SLEEP_WAKE_PROXY = "pollen.sleepWakeProtocol";
-	public static final String POLLEN_SLEEP_WAKE_PKG = "pollen.utils";
+	public static final String POLLEN_SLEEP_WAKE_PKG = "pollen.hardware";
 	public static final String POLLEN_SLEEP_WAKE_PROTOCOL = "SleepWakeProtocol";	
 	// dynamic memory: protocol, proxy, package
 	public static final String POLLEN_DYNAMIC_MEMORY_PROXY = "pollen.dynamicMemoryProtocol";
