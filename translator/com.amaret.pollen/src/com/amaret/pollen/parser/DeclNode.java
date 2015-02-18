@@ -2901,7 +2901,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		}
 
 		public void pass2End() {
-
 			UnitNode u = ParseUnit.current().getCurrUnitNode();
 			if (!this.isHost() && u.isComposition()
 					&& (this.getDefiningScope() instanceof DeclNode.Usr)) {
@@ -2915,11 +2914,12 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			ITypeSpecInit tsi = (ITypeSpecInit) this;
 			ExprNode init = tsi.getInit();
 			if (init != null && init.getCat() instanceof Cat.Arr
-					&& !(init instanceof ExprNode.Call)) {
+					&& !(init instanceof ExprNode.Call) && !this.isPeggedOnDcln()) {
 				Cat baseCat = ((Cat.Arr) init.getCat()).getBase();
 				TypeRules.checkInit(tsi.getTypeCat(), init, baseCat, false);
 			} else if (this instanceof DeclNode.Arr && this.isPeggedOnDcln()) {
 				TypeRules.checkPeg(this, init.getCat(), this);
+				ParseUnit.current().reportError(this, "the pegging operator cannot be used in declarations."); // causes bus error
 			} 
 			else if (init != null) {
 				TypeRules.checkInit(tsi.getTypeCat(), init);

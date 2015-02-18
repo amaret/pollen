@@ -1589,6 +1589,13 @@ public class Auxiliary {
 			Cat c = stmt.getArr().getCat();
 			if (c.code().equals("s"))
 				gen.getFmt().print("(char*) ");
+			else {
+				ExprNode.Ident ref = stmt.getRef() instanceof ExprNode.Ident ? (Ident) stmt.getRef() : null;
+				Cat.Arr ca = (Arr) (ref != null && ref.getCat() instanceof Cat.Arr ? ref.getCat() : null);
+				if (ca != null) {
+					gen.getFmt().print("(" + ((Arr)ca).getBase().mkType() +  "*) ");
+				}
+			}
 			genExpr(stmt.getArr());
 			gen.getFmt().print(";");
 		}
