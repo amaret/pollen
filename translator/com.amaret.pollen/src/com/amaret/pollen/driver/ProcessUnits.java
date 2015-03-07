@@ -3,6 +3,7 @@ package com.amaret.pollen.driver;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -476,13 +477,25 @@ public class ProcessUnits {
 		return pollenTarget;
 	}
 	private static void setPollenTarget(String pollenTarget) {
-		ProcessUnits.pollenTarget = pollenTarget;
+		File b = new File(pollenTarget);
+		try {
+			ProcessUnits.pollenTarget  = b.getCanonicalPath();
+		} catch (IOException e) {
+			System.out.println("Pollen target error: " + e.getMessage());
+			System.exit(1);
+		}		
 	}
 	public static String getPollenBundles() {
 		return pollenBundles;
 	}
 	private static void setPollenBundles(String pollenBundles) {
-		ProcessUnits.pollenBundles = pollenBundles;
+		File b = new File(pollenBundles);
+		try {
+			ProcessUnits.pollenBundles  = b.getCanonicalPath();
+		} catch (IOException e) {
+			System.out.println("Pollen bundles error: " + e.getMessage());
+			System.exit(1);
+		}		
 	}
 	private static void setWorkingDir(String workingDir) {
 		ProcessUnits.workingDir = workingDir;
@@ -632,7 +645,7 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.131";  // user release . internal rev . fix number
+	private static String  v = "0.2.133";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -855,7 +868,7 @@ public class ProcessUnits {
 			value = getPollenBundles() + File.separator + value.substring(1);	
 		}
 		if (isRelativePath(value))	
-			value = System.getProperty("user.dir" + File.separator + value);
+			value = System.getProperty("user.dir") + File.separator + value;
 		return value;
 	}
 	/**
