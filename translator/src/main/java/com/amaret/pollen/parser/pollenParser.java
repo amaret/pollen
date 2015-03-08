@@ -1,3 +1,6 @@
+// Copyright Amaret, Inc 2011-2015
+// See https://github.com/amaret/pollen/blob/master/LICENSE
+
 // $ANTLR 3.4 /Users/lentil/Documents/MegansStuff/Documents/Grammar_Sample/com.amaret.pollen/parser/pollen.g 2015-01-28 15:07:21
 
     package com.amaret.pollen.parser;

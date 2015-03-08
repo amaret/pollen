@@ -1,3 +1,6 @@
+// Copyright Amaret, Inc 2011-2015
+// See https://github.com/amaret/pollen/blob/master/LICENSE
+
 import java.io.*;
 import org.antlr.runtime.*;
 import org.antlr.runtime.debug.DebugEventSocketProxy;
