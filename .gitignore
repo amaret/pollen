@@ -1,4 +1,11 @@
+.*.swp
 .gradle
 build/
 *.class
 .DS_Store
+.project
+.settings
+.classpath
+*.ipr
+*.iws
+*.iml
