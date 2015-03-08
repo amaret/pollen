@@ -10,7 +10,7 @@ dependencies {
 configurations.all {
 }
 
-sourceCompatibility = 1.6
+//sourceCompatibility = 1.6
 
 mainClassName = "com.amaret.pollen.driver.Driver"
 
