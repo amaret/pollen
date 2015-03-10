@@ -1,3 +1,6 @@
+// Copyright Amaret, Inc 2011-2015
+// See https://github.com/amaret/pollen/blob/master/LICENSE
+
 // $ANTLR 3.1.3 Mar 17, 2009 19:23:44 pollen.g 2012-08-15 13:36:36
 
     //package com.amaret.pollen.parser;

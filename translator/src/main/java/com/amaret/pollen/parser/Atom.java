@@ -1,7 +1,7 @@
 // Copyright Amaret, Inc 2011-2015
 // See https://github.com/amaret/pollen/blob/master/LICENSE
 
-//package com.amaret.pollen.parser;
+package com.amaret.pollen.parser;
 
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonToken;
@@ -15,22 +15,30 @@ public class Atom extends CommonToken {
 
 	public Atom(CharStream input, int type, int channel, int start, int stop) {
 		super(input, type, channel, start, stop);
+		line = pollenLexer.getLineNum();
+		fileName = pollenLexer.getFileName();
 	}
 
 	public Atom(int type, String text) {
 		super(type, text);
-	}
-
-	public Atom(int type) {
-		super(type);
+		line = pollenLexer.getLineNum();
+		fileName = pollenLexer.getFileName();
 	}
 
 	public Atom(Token oldToken) {
 		super(oldToken);
+		line = oldToken.getLine();
+		if (line == 0)
+			line = pollenLexer.getLineNum();
+		fileName = pollenLexer.getFileName();
 	}
 
 	public String getFileName() {
 		return fileName;
+	}
+	
+	public boolean isSynthesizedToken() {
+		return (input == null); // useful to know because linenum is invalid
 	}
 
 	public void setFileName(String fileName) {
@@ -44,6 +52,16 @@ public class Atom extends CommonToken {
 
 	public String toTokenString() {
 		return super.toString();
+	}
+	/**
+	 * For qualified name construction.
+	 */
+	public void stripQualifiers() {
+		String n = this.getText();
+		if (n.indexOf('.') != -1) {
+			n = n.substring(n.lastIndexOf('.') + 1);
+			this.setText(n);
+		}		
 	}
 
 }

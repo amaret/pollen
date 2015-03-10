@@ -1,3 +1,6 @@
+// Copyright Amaret, Inc 2011-2015
+// See https://github.com/amaret/pollen/blob/master/LICENSE
+
 // $ANTLR 3.4 /home/lucidbee/Documents/Grammar_Sample/pol.tst/AntlrWorksWorkspace/pol.g 2012-08-23 21:50:33
 
     //package com.amaret.pollen.parser;

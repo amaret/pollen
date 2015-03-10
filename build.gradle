@@ -1,0 +1,68 @@
+// Copyright Amaret, Inc 2011-2015
+
+configurations {
+    archives
+}
+artifacts {
+}
+
+buildscript {
+    repositories {
+            jcenter()
+            mavenCentral()
+    }
+    dependencies {
+    }
+}
+task clean (overwrite: true){
+}
+
+allprojects {
+  apply plugin: 'idea'
+  apply plugin: 'eclipse'
+
+  repositories {
+          mavenCentral()
+          jcenter()
+  }
+  dependencies {
+  }
+  task cleanClasspath(type:Delete) {
+      delete "$projectDir/.classpath"
+  }
+  clean.dependsOn cleanClasspath
+  task showClasspath << {
+    println sourceSets.main.runtimeClasspath.asPath+':'+sourceSets.test.runtimeClasspath.asPath
+  }
+}
+
+configurations.all {
+}
+
+subprojects {
+
+  version = "99.0.0"
+
+  group = 'amaret.pollen'
+
+  ext.groupId = group
+  ext.versionNumber = version
+
+}
+
+dependencies {
+    project(':translator')
+}
+
+task dist (overwrite: true){
+}
+
+task publish (overwrite: true){
+//    dependsOn dist, artifactoryPublish
+    dependsOn dist
+}
+
+task idea (overwrite: true){
+    dependsOn ideaProject, ideaWorkspace
+}
+
