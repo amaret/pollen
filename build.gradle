@@ -1,8 +1,8 @@
 // Copyright Amaret, Inc 2011-2015
 
-configurations {
-    archives
-}
+//configurations {
+//    archives
+//}
 artifacts {
 }
 
@@ -14,10 +14,11 @@ buildscript {
     dependencies {
     }
 }
-task clean (overwrite: true){
-}
+//task clean (overwrite: true){
+//}
 
 allprojects {
+  apply plugin: 'java'
   apply plugin: 'idea'
   apply plugin: 'eclipse'
 
@@ -65,4 +66,18 @@ task publish (overwrite: true){
 task idea (overwrite: true){
     dependsOn ideaProject, ideaWorkspace
 }
+
+task runTests(type:Exec) {
+  
+  commandLine "./Test.sh"
+
+  standardOutput = new ByteArrayOutputStream()
+
+  doLast {
+     String output = standardOutput.toString()
+     print(output)
+  }
+}
+
+test.dependsOn runTests
 
