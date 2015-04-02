@@ -1,6 +1,0 @@
-[submodule "pollen-test"]
-	path = pollen-test
-	url = git@bitbucket.org:amaret/pollen-test.git
-[submodule "acc.toolchain"]
-	path = acc.toolchain
-	url = git@bitbucket.org:amaret/acc.toolchain.git
