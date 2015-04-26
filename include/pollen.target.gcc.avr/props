@@ -1,0 +1,15 @@
+pollen.target.class = com.amaret.pollen.target.GccAvr
+pollen.target.compiler.flags = -fwhole-program -ffunction-sections \
+      	-fdata-sections -g -Os -std=gnu99 -Wl,--relax -Wl,--gc-sections
+pollen.target.compiler.flags.prefix =
+pollen.target.compiler.flags.suffix =
+# echo commands to stdout
+pollen.target.echo = yes
+pollen.target.name = pollen.target.gcc.avr
+pollen.target.tools.prefix = avr-
+pollen.target.mcu = 
+pollen.target.tools.home = /usr/bin
+pollen.target.loader = 
+pollen.target.loader.flags = 
+pollen.target.objformat.input = elf32-avr
+pollen.target.objformat.output = ihex
