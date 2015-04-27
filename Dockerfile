@@ -1,3 +1,4 @@
 FROM java
-MAINTAINER Amaret, Inc. <knock@amaret.com>
+
+MAINTAINER Amaret, Inc. <Knock@amaret.com>
 
