@@ -1,16 +1,16 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
 
 import com.amaret.pollen.parser.DeclNode.Fcn;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.parser.DeclNode.Usr;
-
+/**
+ * @author lucidbee (Megan Adams)
+ */
 public class ExportNode extends BaseNode implements ISymbolNode {
 
     static private final int NAME = 0;
     private IScope definingScope;
+	@SuppressWarnings("unused")
 	private IScope enclosingScope;
     
     ExportNode(int ttype, String ttext) {

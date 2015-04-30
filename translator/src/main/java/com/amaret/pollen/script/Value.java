@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.script;
 
 import org.mozilla.javascript.Context;
@@ -10,6 +7,10 @@ import org.mozilla.javascript.Scriptable;
 
 import com.amaret.pollen.parser.Atom;
 import com.amaret.pollen.parser.ParseUnit;
+
+/**
+ * @author lucidbee (Megan Adams)
+ */
 
 public class Value {
 

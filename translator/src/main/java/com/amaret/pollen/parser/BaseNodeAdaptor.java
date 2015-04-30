@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
 
 import org.antlr.runtime.CommonToken;
@@ -9,6 +6,10 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.antlr.runtime.tree.TreeAdaptor;
+
+/**
+ * @author lucidbee (Megan Adams)
+ */
 
 public class BaseNodeAdaptor extends CommonTreeAdaptor implements TreeAdaptor {
 

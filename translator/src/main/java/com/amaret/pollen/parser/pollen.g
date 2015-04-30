@@ -1,5 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
 
 grammar pollen;
 options {
@@ -98,6 +96,9 @@ tokens {
     import java.io.*;
     import com.amaret.pollen.parser.*;
     import com.amaret.pollen.driver.ProcessUnits;
+    /**
+     * @author lucidbee (Megan Adams)
+     */
 }
 @parser::members {
 
@@ -413,6 +414,9 @@ tokens {
     package com.amaret.pollen.parser;
     import java.util.EnumSet;
     import com.amaret.pollen.parser.Atom;
+    /**
+     * @author lucidbee (Megan Adams)
+     */
     }
 @lexer::members {
     private static String fileName = "";
@@ -1035,12 +1039,12 @@ scope{
                     $stmtImport::qimp = $qualName.text;
                 }
             }  
-                        (metaArguments { $stmtImport::metaArgs=$metaArguments.tree; })?
-                        importAs 
-                        delim) 
-                        {
-                               ParseUnit.current().addToImportsMaps($stmtImport::qimp, $stmtImport::asName, defaultPkg, $stmtImport::metaArgs);
-                         }
+            (metaArguments { $stmtImport::metaArgs=$metaArguments.tree; })?
+             importAs 
+             delim) 
+              {
+                   ParseUnit.current().addToImportsMaps($stmtImport::qimp, $stmtImport::asName, defaultPkg, $stmtImport::metaArgs);
+              }
          -> ^(IMPORT<ImportNode>["IMPORT", importFlags] IDENT[defaultPkg] IDENT[$stmtImport::qimp] importAs metaArguments?)
     ;
 catch [PollenException re] {
@@ -1048,6 +1052,11 @@ catch [PollenException re] {
     String msg = re.toString();
     emitErrorMessage(hdr+" "+msg);
 }
+
+
+importList
+    :      stmtImports //importPrintIntrinsic
+    ;
 
 importFrom
 @init{
@@ -1092,9 +1101,6 @@ importAs
     |    -> NIL
     ;
 
-importList
-    :      stmtImports //importPrintIntrinsic
-    ;
 stmtImports
     :    stmtImport+  -> ^(LIST<ListNode>["LIST"]  stmtImport+)
     |    -> ^(LIST<ListNode>["LIST"] )

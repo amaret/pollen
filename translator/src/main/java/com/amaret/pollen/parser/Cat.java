@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
 
 import java.util.ArrayList;
@@ -10,6 +7,10 @@ import java.util.List;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.parser.DeclNode.TypedMember;
 
+
+/**
+ * @author lucidbee (Megan Adams)
+ */
 
 public class Cat implements Cloneable {
     // type codes

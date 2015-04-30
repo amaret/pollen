@@ -1,12 +1,13 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+/**
+ * @author lucidbee (Megan Adams)
+ */
 
 public class BodyNode extends BaseNode implements IScope {
 

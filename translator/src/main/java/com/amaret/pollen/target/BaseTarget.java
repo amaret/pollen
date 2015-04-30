@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.target;
 
 import java.io.BufferedReader;
@@ -10,7 +7,9 @@ import java.io.PrintStream;
 
 import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.ParseUnit;
-
+/**
+ * @author lucidbee (Megan Adams)
+ */
 public abstract class BaseTarget implements ITarget {
 
     protected final String addCcOpts(String cmd) {

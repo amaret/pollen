@@ -1,11 +1,10 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
 
 import java.util.Map;
 import java.util.Set;
-
+/**
+ * @author lucidbee (Megan Adams)
+ */
 public interface IScope {
 
     public boolean defineSymbol(Atom name, ISymbolNode node);

@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 /**
  * 
  */
@@ -11,7 +8,7 @@ import java.util.EnumSet;
 import com.amaret.pollen.translator.Generator;
 
 /**
- * @author lentil
+ * @author lucidbee (Megan Adams)
  * Return for output a qualified name
  *
  */

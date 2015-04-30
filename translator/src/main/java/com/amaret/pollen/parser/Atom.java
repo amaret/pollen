@@ -1,11 +1,12 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
 
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.Token;
+
+/**
+ * @author lucidbee (Megan Adams)
+ */
 
 public class Atom extends CommonToken {
 

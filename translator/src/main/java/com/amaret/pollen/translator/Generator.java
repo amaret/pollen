@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 /**
  * 
  */
@@ -245,7 +242,7 @@ public class Generator {
         		if (imp.isSynthesizedFromMeta() && imp.getUnit().isMeta())
         			continue;
         		if (!impChain.contains(imp.getQualName())) {
-        			UnitNode u = imp.getExportUnit() != null ? imp.getExportUnit().getUnit() : imp.getUnit();
+        			// UnitNode u = imp.getExportUnit() != null ? imp.getExportUnit().getUnit() : imp.getUnit();
         			// String used =  (u.isUnitUsed() ? "USED     " : "NOT USED ");
         			// System.out.println(used + "unit " + u.getQualName() + ", import " + imp.getQualName());
         			
@@ -260,12 +257,11 @@ public class Generator {
         }
     }
     
-    @SuppressWarnings("unchecked")
     public ITarget loadTarget() throws Exception {
         ITarget targ = null;
         try {
             String clsName = ParseUnit.current().getProperty(ITarget.P_CLASS);
-            Class c = Class.forName(clsName);
+            Class<?> c = Class.forName(clsName);
             targ = (ITarget) c.newInstance();
         }
         catch (Exception e) {

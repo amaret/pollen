@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
 
 import java.util.HashMap;
@@ -12,6 +9,10 @@ import com.amaret.pollen.parser.Cat.Agg;
 import com.amaret.pollen.parser.Cat.Arr;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.parser.DeclNode.TypedMember;
+
+/**
+ * @author lucidbee (Megan Adams)
+ */
 
 public class TypeRules {
 	private static final int OP_ADD     = 0x1;
@@ -81,6 +82,7 @@ public class TypeRules {
 		}
 		
 		Cat rtn =  checkBinary(op, left, right, "operand type error");
+		@SuppressWarnings("unused")
 		boolean dbg = false;
 		if (rtn instanceof Cat.Error) {
 			dbg = true;
@@ -202,9 +204,6 @@ public class TypeRules {
 	}
 
     static void checkInit(Cat declCat, ExprNode init) {
-    	boolean dbg = false;
-    	if (init.getCat() == null)
-    		dbg = true;
         checkInit(declCat, init, init.getCat(), false);
     }
     static private void checkInit(Cat declCat, ExprNode init, boolean genArgs) {
@@ -223,9 +222,6 @@ public class TypeRules {
             checkInitVec(declCat, (ExprNode.Vec) init, genArgs);
             return;
         }
-        boolean dbg = false;
-        if (initCat instanceof Cat.Arr)
-        	dbg = true;
         Cat resCat = checkBinary("=", declCat, initCat, "initialization type mismatch");
         if (resCat instanceof Cat.Error) {
         	if (declCat.isAggTyp() && ((Cat.Agg)declCat).aggScope() instanceof DeclNode) { // error message with name & linenum
@@ -387,11 +383,11 @@ public class TypeRules {
 			return;
 		}
 		UnitNode protoUnit = (UnitNode) p.getUnit();
-		String dbg4 = protoUnit.getQualName();
 		UnitNode implemUnit = (UnitNode) implementor.getUnit();
-		String pfcnName, dbg2, dbg3;		
+		String pfcnName;		
 		for (List<DeclNode.Fcn> protoUnitFcnLst : protoUnit.getFcnMap().values()) {
 			boolean matchSig = false;
+			@SuppressWarnings("unused")
 			boolean dbg = false;
 			
 			implemUnit = (UnitNode) implementor.getUnit();
@@ -403,11 +399,10 @@ public class TypeRules {
 				while (implemUnit != null) {
 					implemUnit.getFcnMap().get(protoUnitFcn.getName().getText());
 					for (String implemUnitFcnName : implemUnit.getFcnMap().keySet()) {	
-						dbg3 = implemUnitFcnName;
 						if (implemUnitFcnName.equals(ParseUnit.CTOR_MODULE_HOST))
 							continue;
-						if (dbg)
-							ParseUnit.current().reportError(implemUnit, "checkImplements names (imple " + implemUnit.getName() + ", proto " + protoUnit.getName() + "): " + implemUnitFcnName + ", " + protoUnitFcn.getName().getText());
+//						if (dbg)
+//							ParseUnit.current().reportError(implemUnit, "checkImplements names (imple " + implemUnit.getName() + ", proto " + protoUnit.getName() + "): " + implemUnitFcnName + ", " + protoUnitFcn.getName().getText());
 
 						if (implemUnitFcnName.equals(protoUnitFcn.getName().getText())) {
 							matchName = true;
@@ -415,8 +410,6 @@ public class TypeRules {
 								Cat ifc = new Cat.Fcn(ifd, ifd.getEnclosingScope());
 								if (pfc == null)
 									pfc = new Cat.Fcn(protoUnitFcn, protoUnitFcn.getEnclosingScope());
-								dbg3 = ifc.sigString();
-								dbg2 = pfc.sigString();
 								if (ifc.sigString() != null && ifc.sigString().equals(pfc.sigString())) {
 									matchSig = true;
 									break;

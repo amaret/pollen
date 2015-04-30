@@ -1,10 +1,9 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.target;
 
 import java.io.File;
-
+/**
+ * @author lucidbee (Megan Adams)
+ */
 public interface ITarget {
 	
 	public static final String P_CCOPTS = "pollen.target.compiler.flags";

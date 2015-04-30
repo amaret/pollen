@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
 
 import java.util.ArrayList;
@@ -16,7 +13,9 @@ import java.util.Set;
 import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.translator.Generator;
-
+/**
+ * @author lucidbee (Megan Adams)
+ */
 public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 		IUnitWrapper, DeclNode.ITypeKind, IOutputName {
 
@@ -58,10 +57,6 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 
 	public void setUnitUsed(boolean unitUsed) {
 
-//		if (unitUsed)
-//			System.out.println("...setting unitUsed TRUE for " +
-//					this.getQualName() + (isGeneratedMetaInstance() ? " generated Meta" :
-//							""));
 		if (unitUsed && !flags.contains(Flags.UNIT_USED))
 			addFlags(EnumSet.of(Flags.UNIT_USED));
 	}
@@ -438,11 +433,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 	 *         specifies meta parms).
 	 */
 	public boolean isMeta() {
-		boolean dbg = false;
 		if (flags.contains(Flags.META)) {
-			// if (!this.isGeneratedMetaInstance())
-			// System.out.println("Unit.isMeta && !isGeneratedMetaInstance: " +
-			// this.getQualName());
 			return true;
 		}
 		return false;
@@ -710,7 +701,6 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 	 * @param curUnit
 	 */
 	private void putBaseUnitImports(UnitNode curUnit) {
-		SymbolEntry newSymbol;
 		// Imports for base types are inserted into the derived type symbol
 		// table.
 		if (this.getUnitType().getBaseType() != null) {
@@ -780,24 +770,6 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 
 	}
 
-	/**
-	 * @param newSymbol
-	 * @param importedSym
-	 */
-	private void isDuplicateSymbol(SymbolEntry newSymbol,
-			Map.Entry<String, SymbolEntry> importedSym) {
-		if (getSymbolTable().get(importedSym.getKey()) != null) {
-			String symName = importedSym.getKey();
-			String oldSc = getSymbolTable().get(importedSym.getKey()).node()
-					.getDefiningScope().getScopeName();
-			String newSc = newSymbol.scope().getScopeName();
-			ParseUnit.current().reportError(
-					this,
-					"  replacing symbol '" + symName + "' in scope " + oldSc
-							+ " with same name symbol in scope " + newSc);
-		}
-	}
-
 	@Override
 	protected void pass1End() {
 		this.importSymbols();
@@ -818,12 +790,8 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 	@Override
 	public void replaceSymbol(Atom name, ISymbolNode node) {
 
-		SymbolEntry r = getSymbolTable().put(name.getText(),
-				new SymbolEntry(definingScope, node));
-		boolean dbg = false;
-		if (r != null) {
-			dbg = true;
-		}
+		getSymbolTable().put(name.getText(),
+				new SymbolEntry(definingScope, node));		
 		node.setDefiningScope(definingScope);
 	}
 

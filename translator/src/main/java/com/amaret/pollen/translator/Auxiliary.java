@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.translator;
 
 import java.util.ArrayList;
@@ -44,6 +41,10 @@ import com.amaret.pollen.parser.TypeNode.Usr;
 import com.amaret.pollen.parser.UnitNode;
 import com.amaret.pollen.parser.pollenParser;
 
+/**
+ * @author lucidbee (Megan Adams)
+ */
+
 public class Auxiliary {
 
 	
@@ -58,7 +59,6 @@ public class Auxiliary {
 	static private final int DEFAULT_INARR = 2;
 	static private final int DEFAULT_INNEW = 3;
 
-	private boolean curSkip;
 	private Generator gen;
 	private boolean isHost;
 	private boolean skipPost = false;
@@ -1011,7 +1011,6 @@ public class Auxiliary {
 		ExprNode proMem = stmt.getPro();
 		TypeNode typ = stmt.getValue();
 					
-		BaseNode b = ParseUnit.current().getPresetExpr(proMem.getSymbol());
 		ISymbolNode n = (proMem != null && proMem.getSymbol() != null) ? proMem.getSymbol().node()
 				: null;		
 		genBind(n, typ, stmt.getBindToUnit());
@@ -1072,6 +1071,7 @@ public class Auxiliary {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void genExpr$Size(ExprNode.Size expr) {
 		switch (expr.getOp()) {
 		case 's':
@@ -1141,6 +1141,7 @@ public class Auxiliary {
 			String sep = " ";
 			
 
+			boolean dbg = false;
 			for (ExprNode e : vals) {
 				gen.getFmt().print(sep);
 				sep = ", ";
@@ -1149,24 +1150,20 @@ public class Auxiliary {
 					// the latter is associated with meta types.
 					String name = ((Cat.Agg) base).aggScope().getScopeName();
 					name = name.substring(name.lastIndexOf('.')+1);
-					String n = ((Cat.Agg) base).aggScope() instanceof UnitNode ? "$units['"
-							+ (((Cat.Agg) base).aggScope()).getScopeName()
-							+ "']."
-							+ name
-							: gen.uname()
-							+ "."
-							+ (((Cat.Agg) base).aggScope())
-							.getScopeName();
+					@SuppressWarnings("unused")
+					String n = "";
+					if (dbg)
+						n = ((Cat.Agg) base).aggScope() instanceof UnitNode ? "$units['"
+								+ (((Cat.Agg) base).aggScope()).getScopeName()
+								+ "']."
+								+ name
+								: gen.uname()
+								+ "."
+								+ (((Cat.Agg) base).aggScope())
+								.getScopeName();
 
 					genHostNew(e);
 					
-
-
-					//					String initElem1 = "(function() {obj = new " + n +  "(); obj." + ParseUnit.CTOR_CLASS_HOST ;
-					//					String initElem2 = "; return obj;}) ()";
-					//					gen.getFmt().print_dbg(initElem1);
-					//					gen.aux.genCallArgs(((ExprNode.New)e).getCall());   
-					//					gen.getFmt().print(initElem2);
 				}
 				else {
 					if (e instanceof ExprNode.Ident) {
@@ -1399,6 +1396,9 @@ public class Auxiliary {
 			break;
 		case pollenParser.S_BREAK:
 			genStmt$Break((StmtNode.Break) stmt);
+			break;
+		case pollenParser.S_CONTINUE:
+			genStmt$Continue((StmtNode.Continue) stmt);
 			break;
 		case pollenParser.S_CASE:
 			genStmt$Case((StmtNode.Case) stmt);
@@ -1898,11 +1898,7 @@ public class Auxiliary {
 	}
 
 	protected void genTitle(String msg) {
-		if (this.curSkip) {
-			gen.getFmt().print("\n");
-		}
 		gen.getFmt().print("\n/*\n * ======== %1 ========\n */\n\n", msg);
-		curSkip = false;
 	}
 
 	/**
@@ -2186,6 +2182,7 @@ public class Auxiliary {
 		this.isHost = ishost;
 	}
 
+	@SuppressWarnings("unused")
 	private boolean isPostExpr(ExprNode e) {
 		if (e.getParent() instanceof ExprNode.Call) {
 			if (e.childIndex > 1) // name, args, deref
@@ -2201,9 +2198,4 @@ public class Auxiliary {
 	public boolean isHost() {
 		return isHost;
 	}
-
-	private void skip() {
-		curSkip = true;
-	}
-
 }

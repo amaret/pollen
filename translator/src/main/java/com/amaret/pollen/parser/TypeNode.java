@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
 
 import java.util.EnumSet;
@@ -13,7 +10,9 @@ import com.amaret.pollen.parser.Cat.Scalar;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.target.ITarget.TypeInfo;
 import com.amaret.pollen.translator.Generator;
-
+/**
+ * @author lucidbee (Megan Adams)
+ */
 public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
 	
     // TypeNode.Arr
@@ -442,7 +441,8 @@ public class TypeNode extends BaseNode implements DeclNode.ITypeInfo {
             }
             
             String u = "In " + ParseUnit.current().getCurrUnitNode().getName().getText();          
-            String dbgStr2 = u + ", entering type " + dbgStr + " into TypeNode symtab, in pass1Begin() : ";
+            @SuppressWarnings("unused")
+			String dbgStr2 = u + ", entering type " + dbgStr + " into TypeNode symtab, in pass1Begin() : ";
             if (snode != null) {
             	String enc = snode.getDefiningScope().getEnclosingScope() != null ? snode.getDefiningScope().getEnclosingScope().getScopeName() + "." : "null.";
             	dbgStr2 +=  " scope " + enc + snode.getDefiningScope().getScopeName();
