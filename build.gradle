@@ -67,7 +67,6 @@ task idea (overwrite: true){
     dependsOn ideaProject, ideaWorkspace
 }
 
-/*
 task runTests(type:Exec) {
   
   commandLine "./Test.sh"
@@ -79,7 +78,7 @@ task runTests(type:Exec) {
      print(output)
   }
 }
-*/
 
-//test.dependsOn runTests
+test.dependsOn runTests
+build.dependsOn.remove(check)
 
