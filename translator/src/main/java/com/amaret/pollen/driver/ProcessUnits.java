@@ -290,44 +290,17 @@ public class ProcessUnits {
 		switch (p) {
 		case DYNAMIC_MEMORY:
 			return false;
-			/*
-			if (pollenDynamicMemoryModule.isEmpty())
-				return false;
-			if (!ParseUnit.current().getFileName()
-					.equals(ParseUnit.POLLEN_DYNAMIC_MEMORY_PROTOCOL + ".p"))
-				return true;
-			else
-				return false;
-			*/
+
 		case SLEEP_WAKE: 
 			return false;
-			/*
-			if (pollenSleepWakeModule.isEmpty())
-				return false;
-			if (!ParseUnit.current().getFileName()
-					.equals(ParseUnit.POLLEN_SLEEP_WAKE_PROTOCOL + ".p"))
-				return true;
-			else
-				return false;
-			*/
+
 		case PRINT:
 			if (isDashPoption()) {
 				if (ParseUnit.current().isParseToplevel())
 					return true;
 				return false;
 			}
-			/*
-			if (pollenPrintModule.isEmpty())
-				return false;
-			// if not using -p, the bind can occur anywhere so we import it for all valid units.
-			// boolean scopeOk = !(ParseUnit.current().getParseUnitFlags()
-			//		.contains(Flags.ENUM) || ParseUnit.current()
-			//		.getParseUnitFlags().contains(Flags.PROTOCOL));
-			boolean currFileIsPrintProtocol = ParseUnit.current().getFileName()
-					.equals(ParseUnit.POLLEN_PRINT_PROTOCOL + ".p");
-			if (!currFileIsPrintProtocol)
-				return true; 
-			*/
+
 			return false;
 		default:
 			ParseUnit.current().reportFailure(
@@ -644,7 +617,7 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.135";  // user release . internal rev . fix number
+	private static String  v = "0.2.137";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -921,6 +894,7 @@ public class ProcessUnits {
 		       
 		// set up the target properties after the args processed
 		String propsFile = getPropsFileName(isCompatibilityMode(), props);
+		
 		if (propsFile != null) {
 			props = new PropsLoader().apply(props, propsFile, System.err);
 			if (props == null) {
