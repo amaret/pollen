@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.translator;
 
 import java.io.File;
@@ -9,6 +6,10 @@ import java.util.Set;
 import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.ParseUnit;
 import com.amaret.pollen.parser.UnitNode;
+
+/**
+ * @author lucidbee (Megan Adams)
+ */
 
 public class ProgJScript {
 

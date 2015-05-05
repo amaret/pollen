@@ -1,12 +1,13 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
 
 import com.amaret.pollen.parser.DeclNode.Formal;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.parser.TypeNode.Usr;
 
+
+/**
+ * @author lucidbee (Megan Adams)
+ */
 
 public class SymbolEntry {
     

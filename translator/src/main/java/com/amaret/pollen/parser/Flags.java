@@ -1,8 +1,7 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
-
+/**
+ * @author lucidbee (Megan Adams)
+ */
 public enum Flags {
 	BIND, CLASS, COMPOSITION, CONST, CONSTRUCTOR, ENUM, ERR, 
 	FIELD, INTRINSIC_VAR, HOST, HOST_NONCONST,

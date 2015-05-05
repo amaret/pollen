@@ -1,13 +1,12 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.target;
 
 import java.io.File;
 import java.util.EnumMap;
 
 import com.amaret.pollen.parser.ParseUnit;
-
+/**
+ * @author lucidbee (Megan Adams)
+ */
 public abstract class GccBase extends BaseTarget {
 
     static final protected EnumMap<TypeId,TypeInfo> typeInfo = new EnumMap<TypeId, TypeInfo>(ITarget.TypeId.class);

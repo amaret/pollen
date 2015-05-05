@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.translator;
 
 import java.util.ArrayList;
@@ -318,7 +315,6 @@ public class UnitJScript {
     	}
     	genDecls(unit.getContainingUnit());
     	genDecls(unit.getImplementedUnit());
-    	String n = unit.getQualName();
     	genDecl(unit.getUnitType());
   
     	if (!unit.isClass()) 

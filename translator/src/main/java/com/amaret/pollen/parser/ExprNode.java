@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
 
 import java.util.EnumSet;
@@ -12,7 +9,9 @@ import com.amaret.pollen.parser.Cat.Arr;
 import com.amaret.pollen.parser.DeclNode.Fcn;
 import com.amaret.pollen.parser.DeclNode.ITypeKind;
 import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
-
+/**
+ * @author lucidbee (Megan Adams)
+ */
 public class ExprNode extends BaseNode {
 
 	public interface AggVal {
@@ -334,9 +333,6 @@ public class ExprNode extends BaseNode {
 				String call = ei.getName().getText();
 				boolean chkHostScope = symtab.currScopeIsHostFcn()
 						|| isConstructorCallOnHostVar();
-				boolean dbg = false;
-				if (call.equals("getF"))
-					dbg = true;
 
 				boolean skipLookup = (call.matches(ParseUnit.POLLEN_PREFIX__
 						+ ".*")) ? true : false;
@@ -560,12 +556,10 @@ public class ExprNode extends BaseNode {
 
 			SymbolEntry fse = null;
 			ISymbolNode fsn = null;
-			boolean dbg = false;
-
 			while (true) {
 				UnitNode impu = imp.getUnit();
-				if (impu == null)
-					dbg = true;
+				if (impu == null) {
+				}
 				if (impu.isComposition()) {
 					fse = impu.lookupExportInUnit(fcn);
 					if (fse == null) {
@@ -591,7 +585,6 @@ public class ExprNode extends BaseNode {
 					u.setText(imp.getUnitName().getText());
 					imp = impu.getImportByName(u, imp.getUnit());
 					if (imp == null) {
-						dbg = true;
 						return null;
 					}
 
@@ -1088,11 +1081,11 @@ public class ExprNode extends BaseNode {
 			if (ParseUnit.isIntrinsicCall(this.getName().getText()))
 				return super.pass2Begin();
 						
-			boolean dbg = false;
-			if (this.getName().getText().equals("TimerManager.Timer.new_host")) {
-				//System.out.println(this.getParent().toStringTree());
-				dbg = true;
-			}
+//			boolean dbg = false;
+//			if (this.getName().getText().equals("TimerManager.Timer.new_host")) {
+//				//System.out.println(this.getParent().toStringTree());
+//				dbg = true;
+//			}
 
 			ExprNode pred = this.getPredecessorExpr();		
 			
@@ -1161,7 +1154,7 @@ public class ExprNode extends BaseNode {
 				unitDcln = unitDcln == ParseUnit.current().getCurrUnitNode() ? null
 						: unitDcln; // don't check
 				unitDcln = (!(symbol.node() instanceof BaseNode)) ? null
-						: unitDcln; // don't check
+						: unitDcln; // don't check
 				unitDcln = symbol.node() instanceof DeclNode.TypedMember
 						&& ((DeclNode.TypedMember) symbol.node())
 								.isProtocolMember() ? null : unitDcln;
@@ -1362,7 +1355,7 @@ public class ExprNode extends BaseNode {
 
 		@Override
 		protected boolean pass2Begin() {
-			ParseUnit currUnit = ParseUnit.current();
+			
 
 			// this used to be pass1Begin() but that creates a requirement
 			// that a variable be declared before it is referenced.
@@ -1545,9 +1538,6 @@ public class ExprNode extends BaseNode {
 		// protected boolean pass2Begin() {
 		protected void pass2End() {
 			Cat basecat = getBase().getCat();
-			boolean dbg = false;
-			if (basecat == null)
-				dbg = true;
 			exprCat = TypeRules.preCheck(basecat);
 			// Cat.Error
 			if (exprCat != null
@@ -1584,6 +1574,7 @@ public class ExprNode extends BaseNode {
 			return (Call) this.getChild(CALL);
 		}
 
+		@SuppressWarnings("unused")
 		private TypeNode getTypeSpec() {
 			if (this.getParent() instanceof DeclNode.Var) {
 				return ((DeclNode.Var) this.getParent()).getTypeSpec();

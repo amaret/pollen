@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
 
 import java.util.EnumSet;
@@ -16,6 +13,10 @@ import com.amaret.pollen.parser.Cat.Agg;
 import com.amaret.pollen.parser.ExprNode.Vec;
 import com.amaret.pollen.target.ITarget.TypeInfo;
 import com.amaret.pollen.translator.Generator;
+
+/**
+ * @author lucidbee (Megan Adams)
+ */
 
 public class DeclNode extends BaseNode implements ISymbolNode {
 
@@ -294,7 +295,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		static final private int NAME = 1;
 		static final private int DIM = 2;
 		static final private int INIT = 3;
-		private boolean initToNull = false;
 		private boolean hasHostDim = false;
 
 		// if the dimension size variable is host, it is calculated at host time
@@ -671,11 +671,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 				ExprNode e = v.getVals().get(0);
 				for (int i = exprs; i < dims; i++) {
 					v.getVals().add(e);
-				}
-				ExprNode.Const vc = e.getConstInitialValue();
-				if (vc != null && vc.getValue().getText().equals("null")) {
-					initToNull = true; // an array of references
-				}
+				}				
 			}
 			return v;
 		}
@@ -842,6 +838,7 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		private DeclNode.Class cls = null;
 		private String cname = "";
 
+		@SuppressWarnings("unused")
 		private int checkArgs() {
 			int res = 0;
 			boolean initFlg = false;
@@ -1012,7 +1009,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 			return scopeDeleg.getEntrySet();
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public TypeNode getTypeSpec() {
 			// TODO
@@ -1931,7 +1927,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 					}
 
 				} else {
-					String n = typeUnit.getName().getText();
 					if (!typeUnit.isClass() && !this.isFcnRef() && !isClassRef
 							&& !isEnum && !isSynthFromMeta) {
 						ParseUnit
@@ -3054,51 +3049,6 @@ public class DeclNode extends BaseNode implements ISymbolNode {
 		return flags.contains(Flags.HOST_NONCONST);
 	}
 
-	/**
-	 * If a public function is called from outside its declaring unit, mark the
-	 * unit containing it as 'used'. Unused units will not have code generated.
-	 * checkInterUnitCall is false for arrays of function references.
-	 * 
-	 * @param calledFcn
-	 *            ISymbolNode of fcn or fcn ref or formal parameter of type
-	 *            function
-	 * @param callSite
-	 *            the unit which is the call site
-	 * @param checkInterUnitCall
-	 *            if true, only set unit used if this is an interunit call
-	 */
-	/*
-	 * public void setUnitUsed(ISymbolNode calledFcn, UnitNode callSite, boolean
-	 * checkInterUnitCall) { if (calledFcn == null) return; IScope sc =
-	 * calledFcn.getDefiningScope();
-	 * 
-	 * if (checkInterUnitCall && calledFcn instanceof DeclNode.Fcn &&
-	 * ((DeclNode.Fcn) calledFcn).getUnit() == callSite) return; // only
-	 * interunit calls create used units.
-	 * 
-	 * // calledFcn is either a function reference or a function or a formal (of
-	 * type function) boolean isPublicFcnOrFcnRef = ((DeclNode)
-	 * calledFcn).isPublic() && calledFcn instanceof DeclNode.Fcn;
-	 * isPublicFcnOrFcnRef |= calledFcn instanceof DeclNode.FcnRef; if
-	 * (calledFcn instanceof DeclNode.Formal) { TypeNode t =
-	 * ((DeclNode.Formal)calledFcn).getTypeSpec(); if (t != null && t instanceof
-	 * TypeNode.Usr) { SymbolEntry se = ((TypeNode.Usr) t).getSymbol();
-	 * ISymbolNode n = se != null ? se.node() : null; isPublicFcnOrFcnRef |= n
-	 * instanceof DeclNode.Fcn; } } System.out.println("...setUnitUsed() for: "
-	 * + this.toStringTree()); if (isPublicFcnOrFcnRef) { if (calledFcn
-	 * instanceof DeclNode.FcnRef) { TypeNode t =
-	 * ((DeclNode.FcnRef)calledFcn).getTypeSpec(); SymbolEntry sym = t
-	 * instanceof TypeNode.Usr && ((TypeNode.Usr) t).getSymbol() != null ?
-	 * ((TypeNode.Usr) t) .getSymbol() : null; this.setUnitUsed(sym.node(),
-	 * callSite, checkInterUnitCall); } else if (sc instanceof DeclNode.Usr ||
-	 * sc instanceof ImportNode) { if (sc instanceof DeclNode.Usr) {
-	 * ((DeclNode.Usr) sc).getUnit().setUnitUsed(true); } else if (sc instanceof
-	 * ImportNode) { ImportNode i = (ImportNode) sc; if (i.getExportedUnit() !=
-	 * null) { IScope isc = i.getExportedUnit(); if (isc instanceof
-	 * DeclNode.Usr) ((DeclNode.Usr)isc).getUnit().setUnitUsed(true); }
-	 * 
-	 * else if (i.getUnit() != null) i.getUnit().setUnitUsed(true); } } } }
-	 */
 	/**
 	 * The starting assumption is that variables declared host will end up as
 	 * const (in flash). But there are numerous cases where this assumption does

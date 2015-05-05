@@ -1,10 +1,11 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
 
 import com.amaret.pollen.parser.StmtNode.Block;
 
+
+/**
+ * @author lucidbee (Megan Adams)
+ */
 
 public class SymbolTable {
 
@@ -19,8 +20,6 @@ public class SymbolTable {
     }
 
     public void enterScope(IScope scope) {
-    	String enc = curScope == null ? "null" : curScope.getScopeName();
-    	//System.out.println("SymbolTable.enterScope: enclosing " + enc + ", entering " + scope.getScopeName());
         scope.setEnclosingScope(curScope);
         curScope = scope;
     }

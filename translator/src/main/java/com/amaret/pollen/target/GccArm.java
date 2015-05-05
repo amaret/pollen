@@ -1,12 +1,13 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.target;
 
 import java.io.File;
 
 import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.parser.ParseUnit;
+
+/**
+ * @author lucidbee (Megan Adams)
+ */
 
 public class GccArm extends GccBase {
 

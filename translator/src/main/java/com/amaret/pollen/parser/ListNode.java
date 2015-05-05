@@ -1,10 +1,11 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
 
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * @author lucidbee (Megan Adams)
+ */
 
 public class ListNode<T> extends BaseNode {
 	

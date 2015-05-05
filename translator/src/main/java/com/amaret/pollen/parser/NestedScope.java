@@ -1,12 +1,13 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+/**
+ * @author lucidbee (Megan Adams)
+ */
 
 public class NestedScope implements IScope {
 	

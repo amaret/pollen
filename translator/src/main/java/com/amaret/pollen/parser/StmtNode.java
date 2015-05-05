@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
 
 import java.util.EnumSet;
@@ -16,6 +13,10 @@ import com.amaret.pollen.parser.DeclNode.ITypeSpecInit;
 import com.amaret.pollen.parser.DeclNode.TypedMember;
 import com.amaret.pollen.parser.DeclNode.Var;
 import com.amaret.pollen.parser.ExprNode.Ident;
+
+/**
+ * @author lucidbee (Megan Adams)
+ */
 
 public class StmtNode extends BaseNode {
 
@@ -34,7 +35,6 @@ public class StmtNode extends BaseNode {
         }
 
         public void pass2End() {
-        	UnitNode u = ParseUnit.current().getCurrUnitNode();
         	ExprNode.Binary b = this.getExpr() instanceof ExprNode.Binary ? ((ExprNode.Binary) this
         			.getExpr())
         			: null;
@@ -593,7 +593,8 @@ public class StmtNode extends BaseNode {
     static public class Peg extends StmtNode {
 
         static final private int REF = 0;
-        static final private int PEG = 1;
+        @SuppressWarnings("unused")
+		static final private int PEG = 1;
         static final private int ARR = 2;
         private TypeNode refType = null;
         

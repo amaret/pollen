@@ -1,10 +1,12 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.util;
 
+/**
+ * @author lucidbee (Megan Adams)
+ */
+@SuppressWarnings("unused")
 public class ErrorRecord {
 
+	
 	private String message = "";
 	private String fileName = "";
 	private int location = 0;

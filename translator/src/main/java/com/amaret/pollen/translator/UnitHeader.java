@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 /**
  * 
  */
@@ -152,7 +149,7 @@ public class UnitHeader {
 		gen.getFmt().print(";\n");
 		String braces = "";
         if (decl instanceof DeclNode.Arr) {
-        	for (ExprNode e : ((DeclNode.Arr)decl).getDim().getElems()) {
+        	for (@SuppressWarnings("unused") ExprNode e : ((DeclNode.Arr)decl).getDim().getElems()) {
         		braces += "[]";
         	}
         }
@@ -384,7 +381,7 @@ public class UnitHeader {
     		gen.getFmt().print("extern ");
     		gen.aux.genTypeWithVarName(decl.getTypeSpec(), gen.uname_target() + decl.getName() + gen.aux.mkSuf(decl), EnumSet.noneOf(Flags.class));
     		if (decl instanceof DeclNode.Arr) {
-    			for (ExprNode e : ((DeclNode.Arr)decl).getDim().getElems()) {
+    			for (@SuppressWarnings("unused") ExprNode e : ((DeclNode.Arr)decl).getDim().getElems()) {
     				gen.getFmt().print("[]");
     			}
     		}
@@ -586,7 +583,7 @@ public class UnitHeader {
         	gen.getFmt().print("void %1();\n",ParseUnit.current().getPollenIntrinsicFcnOutputName(ParseUnit.POLLEN_READY));
         }
         if (gen.curUnit().lookupFcn(ParseUnit.POLLEN_PREFIX__ + "shutdown") == null) {
-        	gen.getFmt().print("void %1(uint8 id);\n",ParseUnit.current().getPollenIntrinsicFcnOutputName(ParseUnit.POLLEN_SHUTDOWN));
+        	gen.getFmt().print("void %1(uint8 i);\n",ParseUnit.current().getPollenIntrinsicFcnOutputName(ParseUnit.POLLEN_SHUTDOWN));
         }
     }
     

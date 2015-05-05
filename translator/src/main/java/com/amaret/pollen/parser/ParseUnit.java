@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.parser;
 
 import java.io.File;
@@ -24,7 +21,9 @@ import org.antlr.runtime.tree.TreeAdaptor;
 
 import com.amaret.pollen.driver.ProcessUnits;
 import com.amaret.pollen.driver.ProcessUnits.Termination;
-
+/**
+ * @author lucidbee (Megan Adams)
+ */
 public class ParseUnit {
 
 	private String path;
@@ -118,6 +117,52 @@ public class ParseUnit {
 		}
 
 	}
+
+	/**
+	 * Output a list of modules (and classes) used in json format. 
+	 * File is in the output directory with name '.modules_used.json'
+	 * @author lucidbee (Megan Adams)
+	 *
+	 */
+	public static class Modules {
+		
+		public static void jsonModuleList(HashMap<String, UnitNode> unitMap) {
+			Map<String, String> modules = new HashMap<String, String>();
+			for (Map.Entry<String, UnitNode> me: unitMap.entrySet()) {
+				UnitNode u = me.getValue();
+				
+				boolean isModule = false, isMetaModule = false;
+				if (!u.isMeta()) {
+					isModule = u.isModule() || u.isClass(); 
+					
+				} else {
+					isMetaModule = (u.isModule() || u.isClass()) && u.isGeneratedMetaInstance();
+				}
+				if ((isModule || isMetaModule) && u.isUnitUsed()) {		
+					if (!modules.containsKey(u.getUnitType().getUnitQualName()))
+						modules.put(u.getUnitType().getUnitQualName(), u.getUnitType().getUnitQualName());
+				}
+			}
+			StringBuilder sb = new StringBuilder();
+			sb.append("{\"modules_used\":[");
+			String comma = "";
+			for (String key : modules.keySet()) {
+				sb.append(comma);
+				comma = ",";
+				sb.append("{\"name\":" + "\"" + key + "\"}");					
+			}
+			sb.append("]}");	
+			PrintStream jsonStream;
+			try {
+				jsonStream = ParseUnit.current().getJsonModulesStream();
+	            jsonStream.println(sb.toString());
+	            jsonStream.close();
+
+			} catch (FileNotFoundException e) {
+			}		
+		}
+	}
+
 	
 	public UnitNode getTopLevelUnit() {
 		return topLevelUnit;
@@ -395,6 +440,7 @@ public class ParseUnit {
 			if (metaArgs instanceof ListNode) {
 				dbgStr = ", meta args ";
 				String comma = "";
+				@SuppressWarnings("unchecked")
 				ListNode<BaseNode> l = (ListNode<BaseNode>) metaArgs;
 				for (BaseNode b : l.getElems()) {
 					dbgStr += comma;
@@ -526,6 +572,11 @@ public class ParseUnit {
 	public PrintStream getTimesStream() throws FileNotFoundException {
 		PrintStream ti = null;
 		ti = new PrintStream(new FileOutputStream (ProcessUnits.getWorkingDir() + File.separator + ".pollen_times", false));
+		return ti;
+	}
+	public PrintStream getJsonModulesStream() throws FileNotFoundException {
+		PrintStream ti = null;
+		ti = new PrintStream(new FileOutputStream (ProcessUnits.getWorkingDir() + File.separator + ".modules_used.json", false));
 		return ti;
 	}
 
@@ -1401,10 +1452,6 @@ public class ParseUnit {
 			msg = "'" + ((ExprNode.Ident) node).getName() + "': " + msg;
 		}
 
-		String filename = node.getFileName();
-		if (node instanceof ImportNode) {
-			
-		}
 		reportErrorConsole(node.getFileName(), node.getLine(), node
 				.getCharPositionInLine() + 1, msg);
 	}

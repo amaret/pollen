@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.driver;
 
 import java.io.File;
@@ -21,6 +18,10 @@ import com.amaret.pollen.parser.SymbolTable;
 import com.amaret.pollen.parser.UnitNode;
 import com.amaret.pollen.target.ITarget;
 import com.amaret.pollen.translator.Generator;
+
+/**
+ * @author lucidbee (Megan Adams)
+ */
 
 public class ProcessUnits {
 	private static String workingDir = "";
@@ -90,7 +91,9 @@ public class ProcessUnits {
         put(CCompiler.LOCALHOST, TARGET_PREFIX+"localhost");
         put(CCompiler.NONE, TARGET_PREFIX+"NOT_SUPPORTED");
     }};
-	private static HashMap<CCompiler, String > tools_prefix = new HashMap<CCompiler, String>(){{
+	private static HashMap<CCompiler, String > tools_prefix = new HashMap<CCompiler, String>(){
+		private static final long serialVersionUID = 1L;
+	{
         put(CCompiler.ARM, "arm-none-eabi-");
         put(CCompiler.AVR, "avr-");
         put(CCompiler.EFM32, "arm-none-eabi-");
@@ -287,44 +290,17 @@ public class ProcessUnits {
 		switch (p) {
 		case DYNAMIC_MEMORY:
 			return false;
-			/*
-			if (pollenDynamicMemoryModule.isEmpty())
-				return false;
-			if (!ParseUnit.current().getFileName()
-					.equals(ParseUnit.POLLEN_DYNAMIC_MEMORY_PROTOCOL + ".p"))
-				return true;
-			else
-				return false;
-			*/
+
 		case SLEEP_WAKE: 
 			return false;
-			/*
-			if (pollenSleepWakeModule.isEmpty())
-				return false;
-			if (!ParseUnit.current().getFileName()
-					.equals(ParseUnit.POLLEN_SLEEP_WAKE_PROTOCOL + ".p"))
-				return true;
-			else
-				return false;
-			*/
+
 		case PRINT:
 			if (isDashPoption()) {
 				if (ParseUnit.current().isParseToplevel())
 					return true;
 				return false;
 			}
-			/*
-			if (pollenPrintModule.isEmpty())
-				return false;
-			// if not using -p, the bind can occur anywhere so we import it for all valid units.
-			// boolean scopeOk = !(ParseUnit.current().getParseUnitFlags()
-			//		.contains(Flags.ENUM) || ParseUnit.current()
-			//		.getParseUnitFlags().contains(Flags.PROTOCOL));
-			boolean currFileIsPrintProtocol = ParseUnit.current().getFileName()
-					.equals(ParseUnit.POLLEN_PRINT_PROTOCOL + ".p");
-			if (!currFileIsPrintProtocol)
-				return true; 
-			*/
+
 			return false;
 		default:
 			ParseUnit.current().reportFailure(
@@ -538,13 +514,6 @@ public class ProcessUnits {
 	 */
 	private HashMap<String, String> getPackages(final String bundlePath) {
 		
-		String bundleName = bundlePath.substring(bundlePath.lastIndexOf(File.separator)+1);
-		
-		// later pollenRoot is set from the environment variable - this is irrelevant
-//		if (pollenRoot.isEmpty()
-//				&& (bundleName.equals("pollen-core") /* new */ || bundleName.equals("pollen.core") /* old */ ))	
-//			pollenRoot = bundlePath;
-
 		File bundle = new File(bundlePath);
 
 		HashMap<String, String>	map = new HashMap<String, String>();	
@@ -648,7 +617,7 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.133";  // user release . internal rev . fix number
+	private static String  v = "0.2.137";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -925,6 +894,7 @@ public class ProcessUnits {
 		       
 		// set up the target properties after the args processed
 		String propsFile = getPropsFileName(isCompatibilityMode(), props);
+		
 		if (propsFile != null) {
 			props = new PropsLoader().apply(props, propsFile, System.err);
 			if (props == null) {
@@ -1040,6 +1010,8 @@ public class ProcessUnits {
 
 			} catch (FileNotFoundException e) {
 			}
+			
+			ParseUnit.Modules.jsonModuleList(unitMap);
            
             if (ParseUnit.getSeriousErrorCount() > 0) {
                 return 1;

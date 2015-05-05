@@ -1,6 +1,3 @@
-// Copyright Amaret, Inc 2011-2015
-// See https://github.com/amaret/pollen/blob/master/LICENSE
-
 package com.amaret.pollen.translator;
 
 import java.util.ArrayList;
@@ -34,6 +31,10 @@ import com.amaret.pollen.parser.UnitNode;
 import com.amaret.pollen.parser.pollenParser;
 import com.amaret.pollen.script.Value;
 import com.amaret.pollen.script.Value.Obj;
+
+/**
+ * @author lucidbee (Megan Adams)
+ */
 
 public class ProgCCode {
 
@@ -174,8 +175,8 @@ public class ProgCCode {
             gen.getFmt().print("%-}\n");
         }
         if (!ParseUnit.current().foundUserDefinedIntrinsicFunction(ParseUnit.POLLEN_PREFIX__ + "shutdown")) {
-        	gen.aux.genTitle(ParseUnit.POLLEN_SHUTDOWN + "(uint8 id)");
-            gen.getFmt().print("%tvoid %1" + ParseUnit.POLLEN__SHUTDOWN + "__E(uint8 id) {\n%+", gen.uname_target());
+        	gen.aux.genTitle(ParseUnit.POLLEN_SHUTDOWN + "(uint8)");
+            gen.getFmt().print("%tvoid %1" + ParseUnit.POLLEN__SHUTDOWN + "__E(uint8 i) {\n%+", gen.uname_target());
             gen.getFmt().print("%tvolatile int dummy = 0xCAFE;\n");
             gen.getFmt().print("%twhile (dummy) ;\n");
             gen.getFmt().print("%-}\n");
@@ -454,7 +455,8 @@ public class ProgCCode {
 
     }
     
-    private void genProtocolMemberDefines(UnitNode protocol, String pcn, String dcn) {
+    @SuppressWarnings("unused")
+	private void genProtocolMemberDefines(UnitNode protocol, String pcn, String dcn) {
         
     	for (DeclNode idecl : protocol.getFeatures()) {
 
@@ -523,7 +525,7 @@ public class ProgCCode {
         
         gen.getFmt().print("%1__TYPE %1%2", gen.uname_target() + decl.getName(), gen.aux.mkSuf(decl));
         if (decl instanceof DeclNode.Arr) {
-        	for (ExprNode e : ((DeclNode.Arr)decl).getDim().getElems()) {
+        	for (@SuppressWarnings("unused") ExprNode e : ((DeclNode.Arr)decl).getDim().getElems()) {
         		gen.getFmt().print("[]");
         	}
         }
@@ -720,10 +722,6 @@ public class ProgCCode {
         	if (cat.isFcnRef() ) {       		
         		// For variables, function refs are DeclNode.FcnRef but for parameters
         		// they are simply DeclNode.TypedMember. So can't assume aggScope is a FcnRef.
-        		BaseNode b = (BaseNode) ((Cat.Agg) cat).aggScope();
-				boolean isHost = b instanceof DeclNode ? ((DeclNode) b).isHost() : false;
-
-				String fn =	b instanceof DeclNode ? ((DeclNode) b).getName().getText() : "";
 				Value.Obj valObj = (Obj) (Value.toVal(val) instanceof Value.Obj ? Value.toVal(val) : null);
 				String strVal = valObj != null && vobj != null ? ((Value.Obj) Value.toVal(val)).getStr("$$text") : ParseUnit.JAVASCRIPT_OBJECT_NOT_FOUND;
 				if (val instanceof Value.Obj
@@ -739,6 +737,8 @@ public class ProgCCode {
 				else { 
 					gen.getFmt().print("%1", "null");
 					if (vobj instanceof Undefined) {       // too confusing
+		        		//BaseNode b = (BaseNode) ((Cat.Agg) cat).aggScope();
+						//String fn =	b instanceof DeclNode ? ((DeclNode) b).getName().getText() : "";
 						//ParseUnit.current().reportError(b, fn + ": value not found");
 					}
 					// should I do something if vobj is not Undefined??
@@ -809,7 +809,8 @@ public class ProgCCode {
 
         
     }
-    private static void debugNativeObjectProperties(NativeObject obj) {
+    @SuppressWarnings("unused")
+	private static void debugNativeObjectProperties(NativeObject obj) {
         HashMap<String, String> mapParams = new HashMap<String, String>();
 
         if(obj != null) {
