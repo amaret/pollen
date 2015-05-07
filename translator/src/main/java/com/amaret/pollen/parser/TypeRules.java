@@ -76,15 +76,14 @@ public class TypeRules {
 			return Cat.fromError("expr problem", left, right);
 		}		
 		
-		if (right instanceof Cat.Fcn && !(left instanceof Cat.Fcn)) {
-			// assume that right should have Cat of function return
-			//right = ((Cat.Fcn)right).retCat();
-		}
-		
 		Cat rtn =  checkBinary(op, left, right, "operand type error");
 		@SuppressWarnings("unused")
 		boolean dbg = false;
 		if (rtn instanceof Cat.Error) {
+			if (op.equals("=") || op.equals("==")) {
+				if (left.isScalarNotVoid() && right.isScalarNotVoid())
+					((Cat.Error) rtn).setWarning(true);
+			}
 			dbg = true;
 		}
 		
@@ -149,14 +148,19 @@ public class TypeRules {
 		
 		Cat rtn =  mkResult(matchRules(opKinds, codes, binaryRules), left, right, err);
 		
+		if (rtn instanceof Cat.Error && (op.equals("=") || op.equals("=="))) {
+			if (left.isScalarNotVoid() && right.isScalarNotVoid())
+				((Cat.Error) rtn).setWarning(true);
+		}
+		
 		return rtn;
 	}
 	static private String matchRules(int opKinds, String codes, Rule[] rules) {
 		int domain = ParseUnit.current().getCurrUnitNode().isHostScope() ? HOST_DOMAIN : TARG_DOMAIN;
-		//System.out.println("Begin new match:");
+		
 		for (Rule rule : rules) {
 			if ((rule.opKinds & opKinds) != 0 && (rule.domain & domain) != 0) {
-				//System.out.println("rule pattern " + rule.pat.pattern());
+				
 				Matcher m = rule.pat.matcher(codes);				
 				if (m.matches()) {
 					return rule.result;
@@ -456,8 +460,8 @@ public class TypeRules {
 
 	static {
 
-		// I THINK... PADD, PSUB are pointer ops and can be deleted. 
-		// I THINK... SADD is a string addition: keep.
+		// OP_PADD, OP_PSUB are pointer ops. 
+		// OP_SADD is a string addition.
 		
 		bryOpTab.put("=",   OP_ASSIGN);
 		bryOpTab.put("+=",  OP_ASSIGN|OP_ADD|OP_PADD);
@@ -508,14 +512,13 @@ public class TypeRules {
 				mkBinary(OP_ASSIGN, "i.+", "FA\\1", "$1"),
 				mkBinary(OP_ASSIGN, "f", "FA\\1", "$1"),
 				mkBinary(OP_ASSIGN, "C.+|X.+", "C.+|X.+|v", "$1"),
-				mkBinary(OP_ASSIGN, "C.+", "u1|i1", "$1"),
 				mkBinary(OP_ASSIGN, "s|F.+|A.+", "\\1|v", "$1"),
 				mkBinary(OP_ASSIGN, "A.+", "\\1", "$1"),
 				mkBinary(OP_ASSIGN, "A(.+)", "V\\2", "$1"),
 				mkBinary(OP_ASSIGN, "s", "u1", "$1"),
 
 				
-				// p, r, P, R, ua, ui bygone types
+				// p, r, P, R, ua, ui unused currently.
 				//mkBinary(OP_ASSIGN, "u4", "ua", "$1"),
 				//mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "ia", "ia|i0|n", "$1"),
 				//mkBinary(OP_ADD|OP_MULT, "n|ia|i0", "ia", "$2"),
@@ -538,7 +541,7 @@ public class TypeRules {
 				//mkBinary(OP_EQ, "p|s|X.+|A.+|P.+|F.+|R.+", "v", "b"),
 				//mkBinary(OP_EQ, "v", "p|s|X.+|A.+|P.+|F.+|R.+", "b"),
 				//mkBinary(OP_EQ, "A.+|R.+", "\\1", "b"),
-
+				
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "i0", "i0|n", "$1"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "i1", "i0|i1|n", "$1"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "i2", "i0|i1|i2|n", "$1"),
@@ -559,7 +562,7 @@ public class TypeRules {
 				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n|u1|u2|u4", "u4", "$2"),
 				mkBinary(OP_ADD|OP_MULT|OP_BOOL, "n", "n", "$1"),
 				
-				// float: are these right?
+				// float
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT, "f", "i0|i1|i2|i4|n|f", "$1"),
 				mkBinary(OP_ADD|OP_MULT, "i0|i1|i2|i4|n|f", "f", "$2"),
 				mkBinary(OP_ASSIGN|OP_ADD|OP_MULT|OP_BOOL, "f", "n|u1|u2|u4|f", "$1"),

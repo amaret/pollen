@@ -374,7 +374,6 @@ public class Auxiliary {
 	 * @param expr
 	 */
 	protected void mkPostExpr(ExprNode expr) {
-		//System.out.println("mkPostExpr: " + expr.toStringTree());
 		for (int i = expr.getChildCount()-1; i > -1; i--) {
 			BaseNode b = (BaseNode) expr.getChild(i);
 
@@ -638,7 +637,6 @@ public class Auxiliary {
 		int argc = 0;
 		
 		if (thisExpr != null) {
-			//System.out.println("callArgs: thisExpr " + thisExpr.toStringTree());
 			Cat uc = thisExpr.getUltimateCat();
 			if (uc instanceof Cat.Fcn) {
 				uc = ((Cat.Fcn)uc).retCat();
@@ -896,9 +894,6 @@ public class Auxiliary {
 		if (expr.getQualifier() == null && expr.getName().getText().indexOf('.') != -1)
 			System.out.println("ExprIdent: no qualifier symbol for " + expr.getName().getText());		
 		
-//		if (expr.getName().getText().equals("pin.get")) {
-//			System.out.println("xyz");			
-//		}
 
 		ISymbolNode snode = sym.node();
 		IScope scopeOfDcln = sym.scope();
@@ -2049,12 +2044,12 @@ public class Auxiliary {
 				if (!hasLeftIndexExpr && !hasRightIndexExpr) {
 					if (!((Cat.Arr)targCat).isNoDim()) {				
 						// Assigning array to array. 
-						ParseUnit.current().reportError(srcExpr, "An array declared with dimensions cannot be the LHS of an assignment to another array");
+						ParseUnit.current().reportError(srcExpr, "An array declared with dimensions cannot be the target of an assignment from another array");
 					}
 					else {
 						// source of assignment to the no dim array can be a target array (just ptr assignment) but not a host array. 
 						if (srcCat.isHostClassRef()) {
-							ParseUnit.current().reportError(srcExpr, "An array declared without dimensions cannot be the LHS of an assignment to a host array");						
+							ParseUnit.current().reportError(srcExpr, "An array declared without dimensions cannot be the target of an assignment from a host array");						
 						}					
 					}
 					return "";

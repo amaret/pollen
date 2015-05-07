@@ -87,7 +87,6 @@ public class NestedScope implements IScope {
     public SymbolEntry lookupName(String name, boolean checkHostScope) {
     	String enc = ", enclosing scope = ";
     	enc = enclosingScope == null ? enc+"null" : enc+enclosingScope.getScopeName();
-    	//System.out.println("NestedScope.lookupName: " + name + " in scope "+ this.getScopeName() + enc);
     	SymbolEntry result = symbolTable.get(name);
         if (result != null) {
             return result;

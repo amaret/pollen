@@ -617,7 +617,7 @@ public class ProcessUnits {
 
 		return pollenHelp;    
 	}
-	private static String  v = "0.2.137";  // user release . internal rev . fix number
+	private static String  v = "0.2.138";  // user release . internal rev . fix number
 	public static String version() {
 		return "pollen version " + v;		
 	}
@@ -727,9 +727,7 @@ public class ProcessUnits {
 				continue;
 			}
 			if (p.equals("-verbose")) {
-				value = (args.length > (++i) ? args[i] : "");
-				if (value.isEmpty())	
-					continue;
+				// currently used to specify print stack trace
 				ProcessUnits.setVerbose(true);
 				continue;
 			}

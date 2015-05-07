@@ -553,10 +553,6 @@ public class StmtNode extends BaseNode {
         	}
         	
         	if (getVec() == null && !BodyNode.current().getFcn().isVoid()) {
-        		System.out.println(this.toStringTree());
-        		System.out.println(BodyNode.current().getFcn().toStringTree());
-        		System.out.println(BodyNode.current().toStringTree());
-       		
         		ParseUnit.current().reportError(this, "Missing return value");
         	}
            

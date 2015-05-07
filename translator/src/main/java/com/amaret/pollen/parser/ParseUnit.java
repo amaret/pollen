@@ -1239,7 +1239,6 @@ public class ParseUnit {
 		if (theImport != null && theImport.getMeta() != null) {
 			String n = client.indexOf('.') != -1 ? client.substring(0, client.lastIndexOf('.')) : client;
 			n = client + "/" + n + "." + theImport.getName();
-			//System.out.println("metaInstancePath: " + n + ", inputPath " + inputPath);
 
 			if (metaInstancePaths.contains(n) && isDebugMode()) // I no longer think this is an error 
 				// TODO track if there are circumstances where meta type instantiations can collide and break resulting code
@@ -1454,6 +1453,23 @@ public class ParseUnit {
 
 		reportErrorConsole(node.getFileName(), node.getLine(), node
 				.getCharPositionInLine() + 1, msg);
+	}
+	/**
+	 * 
+	 * @param token
+	 * @param msg
+	 */
+	public void reportWarning(CommonToken token, String msg) {
+		if (!ProcessUnits.isWarnings())
+			return;
+		String quote = "'";
+		msg = quote + token.getText() + quote + ": " + msg;
+		String fname = token instanceof Atom ? ((Atom) token).getFileName()
+				: getFileName();
+		if (fname == null)
+			fname = getFileName();
+		reportErrorConsole(fname, token.getLine(), token
+				.getCharPositionInLine() + 1, "(warning) " + msg);
 	}
 	/**
 	 * 

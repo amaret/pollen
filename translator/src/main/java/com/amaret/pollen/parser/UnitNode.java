@@ -200,12 +200,7 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 		if (resolveSymbol(name) != null) {
 			return false;
 		}
-		// if (ParseUnit.isDebugMode()) {
-		// if (node instanceof ImportNode) {
-		// System.out.println("********** enter import of " + name.getText() +
-		// " into symtab (scope) of unit " + this.getName().getText());
-		// }
-		// }
+
 		getSymbolTable().put(name.getText(), new SymbolEntry(this, node));
 		node.setDefiningScope(this);
 		return true;
@@ -569,8 +564,6 @@ public class UnitNode extends BaseNode implements ISymbolNode, IScope,
 
 	@Override
 	protected boolean pass1Begin() {
-		// System.out.println("**UnitNode " + this.getQualName() +
-		// " pass1Begin()");
 		int idxPrintProtocol = -1;
 		int idxPrintImpl = -1;
 		// Excessive imports for print protocol assignment with 'bind'. We don't

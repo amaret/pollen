@@ -278,7 +278,6 @@ public class UnitJScript {
     	if (decl.isHost() || isHostInit(decl)) {
     		
     		if (decl.isBoundOnDcln() && decl.getInit() != null) { // initialized protocol member
-    			//System.out.println("bind js " + decl.toStringTree());
     			ExprNode init = decl.getInit();
     			TypeNode t = ((ExprNode.Typ) init).getTyp();
     			UnitNode u = ((DeclNode.TypedMember) decl).getBindToUnit();

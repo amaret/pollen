@@ -1,5 +1,6 @@
 package com.amaret.pollen.parser;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -220,7 +221,7 @@ public class ExprNode extends BaseNode {
 
 			if (!providedTypeTest && getLeft().getCat() != null
 					&& getRight().getCat() != null) {
-				if (right instanceof Cat.Arr
+				if ((right instanceof Cat.Arr && !(left instanceof Cat.Arr) )
 						|| (right instanceof Cat.Fcn && ((Cat.Fcn) right)
 								.retCat() instanceof Cat.Arr)) {
 					Cat baseCat = right instanceof Cat.Arr ? ((Cat.Arr) right)
@@ -232,8 +233,12 @@ public class ExprNode extends BaseNode {
 				} else
 					exprCat = TypeRules.checkBinary(getOp().getText(), left,
 							right);
+				
 				if (exprCat instanceof Cat.Error) {
-					ParseUnit.current().reportError(getOp(),
+					if (((Cat.Error) exprCat).isWarning())
+						ParseUnit.current().reportWarning(getOp(),
+								((Cat.Error) exprCat).getMsg());
+					else ParseUnit.current().reportError(getOp(),
 							((Cat.Error) exprCat).getMsg());
 				}
 			}
@@ -311,7 +316,11 @@ public class ExprNode extends BaseNode {
 
 		@SuppressWarnings("unchecked")
 		public List<ExprNode> getArgs() {
-			return ((ListNode<ExprNode>) getChild(ARGS)).getElems();
+			
+			if (getChild(ARGS) instanceof ListNode<?>)
+				return ((ListNode<ExprNode>) getChild(ARGS)).getElems();
+			else
+				return new ArrayList<ExprNode>(); // for parse error recovery
 		}
 
 		public ExprNode getName() {
@@ -642,8 +651,11 @@ public class ExprNode extends BaseNode {
 
 				Cat res = TypeRules.checkBinary("=", formalCat, actualCat,
 						"formal / actual parameter type conflict");
-				if (res instanceof Cat.Error) {
-					ParseUnit.current().reportError(this.getName(),
+				if (res instanceof Cat.Error) {					
+					if (((Cat.Error) res).isWarning())
+						ParseUnit.current().reportWarning(this.getName(),
+								((Cat.Error) res).getMsg());
+					else ParseUnit.current().reportError(this.getName(),
 							((Cat.Error) res).getMsg());
 				}
 			}
@@ -664,7 +676,7 @@ public class ExprNode extends BaseNode {
 				}
 
 			}
-			//System.out.println(this.toStringTree());
+			
 			for (int i = 0; i < this.getChildCount(); i++) {
 				BaseNode b = (BaseNode) this.getChild(i);
 				if (b instanceof ExprNode.Call)
@@ -752,17 +764,6 @@ public class ExprNode extends BaseNode {
 			if ((exprCat = TypeRules.preCheck(leftCat, rightCat)) != null) {
 				return;
 			}
-//			if ((exprCat = TypeRules.preCheck(testCat)) != null) {
-//				return;
-//			}
-//
-//			exprCat = TypeRules
-//					.checkUnary("!", testCat, "condition type error");
-//			if (exprCat instanceof Cat.Error) {
-//				ParseUnit.current().reportError((BaseNode) getParent(),
-//						((Cat.Error) exprCat).getMsg());
-//				return;
-//			}
 
 			exprCat = TypeRules.checkBinary("==", leftCat, rightCat,
 					"condition result types must match");
@@ -1081,12 +1082,6 @@ public class ExprNode extends BaseNode {
 			if (ParseUnit.isIntrinsicCall(this.getName().getText()))
 				return super.pass2Begin();
 						
-//			boolean dbg = false;
-//			if (this.getName().getText().equals("TimerManager.Timer.new_host")) {
-//				//System.out.println(this.getParent().toStringTree());
-//				dbg = true;
-//			}
-
 			ExprNode pred = this.getPredecessorExpr();		
 			
 			if (pred != null) {
@@ -1259,7 +1254,7 @@ public class ExprNode extends BaseNode {
 				exprCat = this.getCat(); 
 
 			}
-			//System.out.println(this.toStringTree());
+			
 			for (int i = 0; i < this.getChildCount(); i++) {
 				BaseNode b = (BaseNode) this.getChild(i);
 				if (b instanceof ExprNode.Call)
@@ -1826,7 +1821,6 @@ public class ExprNode extends BaseNode {
 	 */
     protected ExprNode getPredecessorExpr() {
     	
-    	//System.out.println("getPred: " + this.getParent().toStringTree());
     	
     	if (!(this instanceof ExprNode.Call || this instanceof ExprNode.Ident))
     		return null;
@@ -1905,6 +1899,12 @@ public class ExprNode extends BaseNode {
 		boolean isHostScope = curFcn != null ? curFcn.isHost() : false;
 		return isHostScope;
 	}
+	
+	protected boolean isWarning() {
+		// Cat res = TypeRules.checkBinary("=", formalCat, actualCat,"formal / actual parameter type conflict");
+		return false;
+	
+	}
 
 	/**
 	 * True when this expr or ident is to the right of a '.' else false
@@ -1974,7 +1974,6 @@ public class ExprNode extends BaseNode {
 			ex = (ExprNode) (rtn instanceof ExprNode ? rtn : ex);
 		}
 
-		//System.out.println("ultimateCat ex: " + (rtn != null ? rtn.toStringTree() : ex.toStringTree()));
 		return ex.getCat();
 	}
 

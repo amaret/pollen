@@ -301,10 +301,20 @@ public class Cat implements Cloneable {
     static public class Error extends Cat {
         
         private String msg;
+        private boolean warning = false;
         
-        private Error(String msg) {
+        public boolean isWarning() {
+			return warning;
+		}
+		public void setWarning(boolean warning) {
+			this.warning = warning;
+		}
+
+
+		private Error(String msg) {
             this.msg = msg;
         }
+        
         
         public String getMsg() {
             return msg;
@@ -598,7 +608,6 @@ public class Cat implements Cloneable {
 
     public static Cat fromSymbolNode(ISymbolNode snode, IScope defScope, boolean isRef, boolean isFcnRef) {
     	
-    	//System.out.println("Cat.fromSymbolNode(): " + snode.getName().getText());
     	
         if (snode instanceof UnitNode) {
             return new Cat.Agg((UnitNode) snode, defScope, isRef, false);
@@ -654,7 +663,6 @@ public class Cat implements Cloneable {
     }
     
     static Cat fromType(TypeNode typeNode, boolean isRef, IScope sc) {
-    	//System.out.println("Cat.fromTypeNode(): " + typeNode.getName().getText() + (typeNode.getType() == pollenParser.T_ARR ? " array" : ""));
         switch (typeNode.getType()) {
         case pollenParser.T_ARR:
             return new Cat.Arr((TypeNode.Arr) typeNode);
@@ -721,6 +729,12 @@ public class Cat implements Cloneable {
     }
     public boolean isTargetClassRef() {        
     	return false;      
+    }
+    public boolean isScalarNotVoid() {
+    	if (this instanceof Scalar
+    			&& ((Cat.Scalar)this).kind() != 'v')
+    		return true;
+    	return false;
     }
     public boolean isClassRef() {        
     	return false;    
