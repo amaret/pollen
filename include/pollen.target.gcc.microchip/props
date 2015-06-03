@@ -1,0 +1,19 @@
+pollen.target.class = com.amaret.pollen.target.GccMicrochip
+pollen.target.compiler.flags = -fwhole-program -ffunction-sections -fdata-sections -g -Os -std=gnu99 -Wl,--relax -Wl,--gc-sections -omf=elf
+pollen.target.compiler.flags.prefix =
+pollen.target.compiler.flags.suffix =
+# echo commands to stdout
+pollen.target.echo = yes
+pollen.target.name = pollen.target.gcc.microchip
+pollen.target.tools.prefix = xc16-
+pollen.target.mcu = 24F16KL402
+pollen.target.tools.home = /opt/microchip/xc16/v1.24/bin
+pollen.target.loader = 
+pollen.target.loader.flags = 
+pollen.target.objformat.input = elf32-avr
+pollen.target.objformat.output = ihex
+
+
+
+
+
