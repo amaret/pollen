@@ -25,7 +25,7 @@ public class GccMicrochip extends GccBase {
 
     @Override
     public String getGcc() {
-        String gcc = curr.getProperty(ITarget.P_TOOLSDIR) + File.separator + curr.getProperty(ITarget.P_TOOLPREFIX)
+        String gcc = curr.getProperty(ITarget.P_TOOLSDIR) + File.separator + curr.getProperty(ITarget.P_TOOLPREFIX);
 
         if (curr.getProperty(ITarget.P_TOOLPREFIX).equals("xc16-")) {
             gcc +=  "gcc";
