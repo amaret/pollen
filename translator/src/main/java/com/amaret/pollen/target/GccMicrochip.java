@@ -38,30 +38,21 @@ public class GccMicrochip extends GccBase {
     }
     protected String addCcMcu(String cmd) {
       String mcu = ProcessUnits.getMcu();
-    if (mcu == null || mcu.isEmpty())
-      mcu = ParseUnit.current().getProperty(ITarget.P_MCU);
-    if (mcu == null || mcu.isEmpty())
-        mcu = "EFM32ZG108F32";
-      cmd += " -D" + mcu; 
+      if (mcu == null || mcu.isEmpty())
+        mcu = ParseUnit.current().getProperty(ITarget.P_MCU);
+      if (mcu != null && !mcu.isEmpty())
+        cmd += " -mcpu=" + mcu; 
       return cmd;
     }   
     protected String addObjCopyFiles(String cmd, File srcFile) {
         String srcFilePath = srcFile.getAbsolutePath();       
         String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
         String outFile = baseFile + ".elf";
-        String hexFile = baseFile + ".bin";
-        cmd += " " + outFile + " " + hexFile;
+        cmd += " " + outFile;
         return cmd;
     }
 
     protected String addObjCopyOpts(String cmd) {
-      String input = ParseUnit.current().getProperty(ITarget.P_OBJFORMAT_IN);
-      String output = ParseUnit.current().getProperty(ITarget.P_OBJFORMAT_OUT);
-      if (input == null || input.isEmpty())
-        curr.reportFailure("property file does not specifiy a valid objcopy input format");
-      if (output == null || output.isEmpty())
-        curr.reportFailure("property file does not specifiy a valid objcopy output format");
-      cmd += " -I " + input + " -O " + output;
         return cmd;
     }
     /**
