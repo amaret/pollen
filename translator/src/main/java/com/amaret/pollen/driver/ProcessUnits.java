@@ -79,15 +79,15 @@ public class ProcessUnits {
 	private static void setMcu(String mcu) {
 		ProcessUnits.mcu = mcu;
 	}
-	private enum CCompiler { NONE, LOCALHOST, AVR, EFM32, MSP430, ARM };
+	private enum CCompiler { NONE, LOCALHOST, AVR, MSP430, ARM, MICROCHIP };
 	static private EnumSet<CCompiler> cCompiler = EnumSet.of(CCompiler.NONE);
 	static private final String TARGET_PREFIX = "pollen.target.gcc.";
 	@SuppressWarnings("serial")
 	private static HashMap<CCompiler, String > targets = new HashMap<CCompiler, String>(){{
         put(CCompiler.ARM, TARGET_PREFIX+"arm");
         put(CCompiler.AVR, TARGET_PREFIX+"avr");
-        put(CCompiler.EFM32, TARGET_PREFIX+"efm32");
         put(CCompiler.MSP430, TARGET_PREFIX+"msp430");
+        put(CCompiler.MICROCHIP, TARGET_PREFIX+"microchip");
         put(CCompiler.LOCALHOST, TARGET_PREFIX+"localhost");
         put(CCompiler.NONE, TARGET_PREFIX+"NOT_SUPPORTED");
     }};
@@ -96,8 +96,8 @@ public class ProcessUnits {
 	{
         put(CCompiler.ARM, "arm-none-eabi-");
         put(CCompiler.AVR, "avr-");
-        put(CCompiler.EFM32, "arm-none-eabi-");
         put(CCompiler.MSP430, "msp430-");
+        put(CCompiler.MICROCHIP, "xc16-");
         put(CCompiler.LOCALHOST, "");
         put(CCompiler.NONE, "NOT_SUPPORTED");
     }};
@@ -185,8 +185,8 @@ public class ProcessUnits {
 			return cCompiler.contains(CCompiler.LOCALHOST);
 		if (cf.contains(CCompiler.MSP430))
 			return cCompiler.contains(CCompiler.MSP430);
-		if (cf.contains(CCompiler.EFM32))
-			return cCompiler.contains(CCompiler.EFM32);
+		if (cf.contains(CCompiler.MICROCHIP))
+			return cCompiler.contains(CCompiler.MICROCHIP);
 		return false;
 	}
 
@@ -604,11 +604,11 @@ public class ProcessUnits {
         pollenHelp += "\n" + "\tbe available either under $POLLEN_TARGET or at the location";
         pollenHelp += "\n" + "\tspecified by the '-props <path>' option. The available";
         pollenHelp += "\n" + "\tplatforms and their compilers are:";
-        pollenHelp += "\n" + "\t    arm-none-eabi-gcc  gcc for arm";
-        pollenHelp += "\n" + "\t    avr-gcc            gcc for avr";
-        pollenHelp += "\n" + "\t    efm32-gcc          gcc for efm32";  
+        pollenHelp += "\n" + "\t    arm-gcc  					 gcc for arm";
+        pollenHelp += "\n" + "\t    avr-gcc            gcc for atmel avr";
+        pollenHelp += "\n" + "\t    msp430-gcc         gcc for ti msp430";
+        pollenHelp += "\n" + "\t    microchip-gcc      gcc for microchip pic";        
         pollenHelp += "\n" + "\t    localhost-gcc      gcc for localhost";
-        //pollenHelp += "\n" + "\t    msp430-gcc         gcc for msp430"; in but undoc
         pollenHelp += "\n" + "\tIf no '-t' option is specified only C files are produced.";  
  		pollenHelp += "\n" + "  -v\tOutput translator version and exit.";
  		pollenHelp += "\n" + "  -verbose";
@@ -741,14 +741,14 @@ public class ProcessUnits {
 				else if (value.equals("msp430-gcc")) {
 					ProcessUnits.setTargetCompiler(CCompiler.MSP430);
 				}
-				else if (value.equals("efm32-gcc"))	{
-					ProcessUnits.setTargetCompiler(CCompiler.EFM32);
-				}
 				else if (value.equals("localhost-gcc"))	{
 					ProcessUnits.setTargetCompiler(CCompiler.LOCALHOST);
 				}
-				else if (value.equals("arm-none-eabi-gcc"))	{
+				else if (value.equals("arm-gcc"))	{
 					ProcessUnits.setTargetCompiler(CCompiler.ARM);
+				}
+				else if (value.equals("microchip-gcc"))	{
+					ProcessUnits.setTargetCompiler(CCompiler.MICROCHIP);
 				}
 				else {
 					throw new Termination ("Invalid translator option '-t " + value + "': no properties file for this target");				
