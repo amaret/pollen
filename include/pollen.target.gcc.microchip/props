@@ -13,7 +13,3 @@ pollen.target.loader.flags =
 pollen.target.objformat.input = elf32-avr
 pollen.target.objformat.output = ihex
 
-
-
-
-

@@ -1149,7 +1149,7 @@ public class ExprNode extends BaseNode {
 				unitDcln = unitDcln == ParseUnit.current().getCurrUnitNode() ? null
 						: unitDcln; // don't check
 				unitDcln = (!(symbol.node() instanceof BaseNode)) ? null
-						: unitDcln; // don't check
+						: unitDcln; // don't check
 				unitDcln = symbol.node() instanceof DeclNode.TypedMember
 						&& ((DeclNode.TypedMember) symbol.node())
 								.isProtocolMember() ? null : unitDcln;

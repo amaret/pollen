@@ -87,6 +87,7 @@ public class ProcessUnits {
         put(CCompiler.ARM, TARGET_PREFIX+"arm");
         put(CCompiler.AVR, TARGET_PREFIX+"avr");
         put(CCompiler.MSP430, TARGET_PREFIX+"msp430");
+        put(CCompiler.MICROCHIP, TARGET_PREFIX+"microchip");
         put(CCompiler.LOCALHOST, TARGET_PREFIX+"localhost");
         put(CCompiler.MICROCHIP, TARGET_PREFIX+"microchip");
         put(CCompiler.NONE, TARGET_PREFIX+"NOT_SUPPORTED");
@@ -598,18 +599,18 @@ public class ProcessUnits {
 		pollenHelp += "\n" + "  -props <pollen path>";
 		pollenHelp += "\n" + "\tSpecifies fully qualified path to a properties file for a \n\ttarget hardware platform. Default properties files are";
 		pollenHelp += "\n" + "\tfound under the directory specified by $POLLEN_TARGET.";
-        pollenHelp += "\n" + "  -t <target platform and C compiler>";
-        pollenHelp += "\n" + "\tThe translator will build the output using the compiler and";
-        pollenHelp += "\n" + "\tplatform specified. A properties file for the platform must";
-        pollenHelp += "\n" + "\tbe available either under $POLLEN_TARGET or at the location";
-        pollenHelp += "\n" + "\tspecified by the '-props <path>' option. The available";
-        pollenHelp += "\n" + "\tplatforms and their compilers are:";
-        pollenHelp += "\n" + "\t    arm-gcc  gcc for arm";        
-        pollenHelp += "\n" + "\t    avr-gcc            gcc for avr";
-				pollenHelp += "\n" + "\t    microchip-gcc  gcc for microchip pic gcc";        
-        pollenHelp += "\n" + "\t    localhost-gcc      gcc for localhost";
-        //pollenHelp += "\n" + "\t    msp430-gcc         gcc for msp430"; in but undoc
-        pollenHelp += "\n" + "\tIf no '-t' option is specified only C files are produced.";  
+    pollenHelp += "\n" + "  -t <target platform and C compiler>";
+    pollenHelp += "\n" + "\tThe translator will build the output using the compiler and";
+    pollenHelp += "\n" + "\tplatform specified. A properties file for the platform must";
+    pollenHelp += "\n" + "\tbe available either under $POLLEN_TARGET or at the location";
+    pollenHelp += "\n" + "\tspecified by the '-props <path>' option. The available";
+    pollenHelp += "\n" + "\tplatforms and their compilers are:";
+    pollenHelp += "\n" + "\t    arm-gcc  					 gcc for arm";
+    pollenHelp += "\n" + "\t    avr-gcc            gcc for atmel avr";
+    pollenHelp += "\n" + "\t    msp430-gcc         gcc for ti msp430";
+    pollenHelp += "\n" + "\t    microchip-gcc      gcc for microchip pic";        
+    pollenHelp += "\n" + "\t    localhost-gcc      gcc for localhost";
+    pollenHelp += "\n" + "\tIf no '-t' option is specified only C files are produced.";  
  		pollenHelp += "\n" + "  -v\tOutput translator version and exit.";
  		pollenHelp += "\n" + "  -verbose";
  		pollenHelp += "\n" + "  \tVerbose output.";
@@ -744,12 +745,14 @@ public class ProcessUnits {
 				else if (value.equals("localhost-gcc"))	{
 					ProcessUnits.setTargetCompiler(CCompiler.LOCALHOST);
 				}
-				else if (value.equals("arm-none-eabi-gcc"))	{
+				else if (value.equals("arm-gcc"))	{
 					ProcessUnits.setTargetCompiler(CCompiler.ARM);
 				}
+
 				else if (value.equals("arm-gcc"))	{
 					ProcessUnits.setTargetCompiler(CCompiler.ARM);
 				}				
+
 				else if (value.equals("microchip-gcc"))	{
 					ProcessUnits.setTargetCompiler(CCompiler.MICROCHIP);
 				}
