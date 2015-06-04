@@ -30,12 +30,7 @@ public class GccMicrochip extends GccBase {
         cmd += " -Wl,-Map=" + mapFile;
         return cmd;
     }
-    protected String cmdObjCopy() {
-    String objcopy = ParseUnit.current().getProperty(ITarget.P_OBJCOPY);
-        if (!new File(objcopy).exists())
-          curr.reportFailure("property file does not specifiy a valid objcopy tool path");
-    return objcopy;
-    }
+
     protected String addCcMcu(String cmd) {
       String mcu = ProcessUnits.getMcu();
       if (mcu == null || mcu.isEmpty())
@@ -43,7 +38,17 @@ public class GccMicrochip extends GccBase {
       if (mcu != null && !mcu.isEmpty())
         cmd += " -mcpu=" + mcu; 
       return cmd;
-    }   
+    }
+
+    @Override
+    protected String cmdObjCopy() {
+    String objcopy = ParseUnit.current().getProperty(ITarget.P_OBJCOPY);
+        if (!new File(objcopy).exists())
+          curr.reportFailure("property file does not specifiy a valid objcopy tool path: " + objcopy);
+    return objcopy;
+    }
+
+    @Override   
     protected String addObjCopyFiles(String cmd, File srcFile) {
         String srcFilePath = srcFile.getAbsolutePath();       
         String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
@@ -52,6 +57,7 @@ public class GccMicrochip extends GccBase {
         return cmd;
     }
 
+    @Override
     protected String addObjCopyOpts(String cmd) {
         return cmd;
     }
