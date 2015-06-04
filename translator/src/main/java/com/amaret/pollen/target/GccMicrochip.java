@@ -22,6 +22,20 @@ public class GccMicrochip extends GccBase {
         typeInfo.put(TypeId.UINT32,  new TypeInfo(2, 1));
                       
     }
+
+    @Override
+    public String getGcc() {
+        String gcc = curr.getProperty(ITarget.P_TOOLSDIR) + File.separator + curr.getProperty(ITarget.P_TOOLPREFIX)
+
+        if (curr.getProperty(ITarget.P_TOOLPREFIX).equals("xc16-")) {
+            gcc +=  "gcc";
+        }
+
+        if (!new File(gcc).exists())
+            curr.reportFailure("property file does not specifiy a valid c compiler path");
+        return gcc;
+    }
+
     protected String addMapFile(String cmd, File srcFile) {
         
         String srcFilePath = srcFile.getAbsolutePath();       
