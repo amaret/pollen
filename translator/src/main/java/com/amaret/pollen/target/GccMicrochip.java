@@ -36,12 +36,15 @@ public class GccMicrochip extends GccBase {
         return gcc;
     }
 
+    @Override
     protected String addMapFile(String cmd, File srcFile) {
         
-        String srcFilePath = srcFile.getAbsolutePath();       
-        String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
-        String mapFile = baseFile + ".map";
-        cmd += " -Wl,-Map=" + mapFile;
+        if (!"xc8".equals(curr.getProperty(ITarget.P_TOOLPREFIX))) {
+            String srcFilePath = srcFile.getAbsolutePath();       
+            String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
+            String mapFile = baseFile + ".map";
+            cmd += " -Wl,-Map=" + mapFile;            
+        }
         return cmd;
     }
 
@@ -84,7 +87,12 @@ public class GccMicrochip extends GccBase {
         String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
         cmd += " " + srcFile;
         String outFile = baseFile + ".elf";
-        cmd += " -o " + outFile;
+
+        if ("xc8".equals(curr.getProperty(ITarget.P_TOOLPREFIX))) {
+            cmd += "-O" + outFile; 
+        } else {
+            cmd += " -o " + outFile;        
+        }
         return cmd;
     }
 
