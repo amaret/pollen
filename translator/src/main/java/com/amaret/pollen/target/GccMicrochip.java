@@ -89,7 +89,7 @@ public class GccMicrochip extends GccBase {
         String outFile = baseFile + ".elf";
 
         if ("xc8".equals(curr.getProperty(ITarget.P_TOOLPREFIX))) {
-            cmd += "-O" + outFile; 
+            cmd += " -O" + outFile; 
         } else {
             cmd += " -o " + outFile;        
         }
