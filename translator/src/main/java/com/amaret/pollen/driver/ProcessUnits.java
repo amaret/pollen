@@ -79,7 +79,7 @@ public class ProcessUnits {
 	private static void setMcu(String mcu) {
 		ProcessUnits.mcu = mcu;
 	}
-	private enum CCompiler { NONE, LOCALHOST, AVR, MSP430, ARM, MICROCHIP };
+	private enum CCompiler { NONE, LOCALHOST, AVR, MSP430, ARM, XC8, XC16 };
 	static private EnumSet<CCompiler> cCompiler = EnumSet.of(CCompiler.NONE);
 	static private final String TARGET_PREFIX = "pollen.target.gcc.";
 	@SuppressWarnings("serial")
@@ -87,9 +87,9 @@ public class ProcessUnits {
         put(CCompiler.ARM, TARGET_PREFIX+"arm");
         put(CCompiler.AVR, TARGET_PREFIX+"avr");
         put(CCompiler.MSP430, TARGET_PREFIX+"msp430");
-        put(CCompiler.MICROCHIP, TARGET_PREFIX+"microchip");
         put(CCompiler.LOCALHOST, TARGET_PREFIX+"localhost");
-        put(CCompiler.MICROCHIP, TARGET_PREFIX+"microchip");
+        put(CCompiler.XC8, TARGET_PREFIX+"microchip");
+        put(CCompiler.XC16, TARGET_PREFIX+"microchip");        
         put(CCompiler.NONE, TARGET_PREFIX+"NOT_SUPPORTED");
     }};
 	private static HashMap<CCompiler, String > tools_prefix = new HashMap<CCompiler, String>(){
@@ -98,7 +98,8 @@ public class ProcessUnits {
         put(CCompiler.ARM, "arm-");
         put(CCompiler.AVR, "avr-");
         put(CCompiler.MSP430, "msp430-");
-        put(CCompiler.MICROCHIP, "xc16-");
+        put(CCompiler.XC8, "xc8");							// no additional text on the xc8 compiler
+        put(CCompiler.XC16, "xc16-");
         put(CCompiler.LOCALHOST, "");
         put(CCompiler.NONE, "NOT_SUPPORTED");
     }};
@@ -186,8 +187,10 @@ public class ProcessUnits {
 			return cCompiler.contains(CCompiler.LOCALHOST);
 		if (cf.contains(CCompiler.MSP430))
 			return cCompiler.contains(CCompiler.MSP430);
-		if (cf.contains(CCompiler.MICROCHIP))
-			return cCompiler.contains(CCompiler.MICROCHIP);
+		if (cf.contains(CCompiler.XC8))
+			return cCompiler.contains(CCompiler.XC8);
+		if (cf.contains(CCompiler.XC16))
+			return cCompiler.contains(CCompiler.XC16);		
 		return false;
 	}
 
@@ -608,7 +611,8 @@ public class ProcessUnits {
     pollenHelp += "\n" + "\t    arm-gcc  					 gcc for arm";
     pollenHelp += "\n" + "\t    avr-gcc            gcc for atmel avr";
     pollenHelp += "\n" + "\t    msp430-gcc         gcc for ti msp430";
-    pollenHelp += "\n" + "\t    microchip-gcc      gcc for microchip pic";        
+    pollenHelp += "\n" + "\t    xc8                xc8 for microchip PIC 10/12/16/18";    
+    pollenHelp += "\n" + "\t    xc16               gcc-based for microchip PIC24/dsPIC"; 
     pollenHelp += "\n" + "\t    localhost-gcc      gcc for localhost";
     pollenHelp += "\n" + "\tIf no '-t' option is specified only C files are produced.";  
  		pollenHelp += "\n" + "  -v\tOutput translator version and exit.";
@@ -753,8 +757,11 @@ public class ProcessUnits {
 					ProcessUnits.setTargetCompiler(CCompiler.ARM);
 				}				
 
-				else if (value.equals("microchip-gcc"))	{
-					ProcessUnits.setTargetCompiler(CCompiler.MICROCHIP);
+				else if (value.equals("xc8"))	{
+					ProcessUnits.setTargetCompiler(CCompiler.XC8);
+				}
+				else if (value.equals("xc16"))	{
+					ProcessUnits.setTargetCompiler(CCompiler.XC16);
 				}
 				else {
 					throw new Termination ("Invalid translator option '-t " + value + "': no properties file for this target");				
