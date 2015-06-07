@@ -77,7 +77,7 @@ public class GccMicrochip extends GccBase {
         String outFile = baseFile;
         if ("xc8".equals(curr.getProperty(ITarget.P_TOOLPREFIX))) {
             return "";
-        } {
+        } 
 
         cmd += " " + outFile + ".elf";
         return cmd;
