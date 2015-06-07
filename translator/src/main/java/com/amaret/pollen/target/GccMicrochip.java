@@ -59,10 +59,15 @@ public class GccMicrochip extends GccBase {
 
     @Override
     protected String cmdObjCopy() {
-    String objcopy = ParseUnit.current().getProperty(ITarget.P_OBJCOPY);
-        if (!new File(objcopy).exists())
-          curr.reportFailure("property file does not specifiy a valid objcopy tool path: " + objcopy);
-    return objcopy;
+        if (!"xc8".equals(curr.getProperty(ITarget.P_TOOLPREFIX))) {
+            String objcopy = ParseUnit.current().getProperty(ITarget.P_OBJCOPY);
+                if (!new File(objcopy).exists())
+                    curr.reportFailure("property file does not specifiy a valid objcopy tool path: " + objcopy);
+            return objcopy;            
+        } else {
+            return "";
+        }
+
     }
 
     @Override   
