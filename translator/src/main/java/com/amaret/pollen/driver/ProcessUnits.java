@@ -916,7 +916,7 @@ public class ProcessUnits {
 				if (!props.get(ITarget.P_TOOLPREFIX)
 						.equals(tools_prefix.get(c))) {
 					throw new Termination(
-							"Invalid input: compiler specified in props file does not match compiler selected by translator option");
+							"Invalid input: compiler specified (" + props.get(ITarget.P_TOOLPREFIX) + ") in props file does not match compiler selected by translator option");
 				}
 			}
 		}
