@@ -95,12 +95,12 @@ public class GccMicrochip extends GccBase {
         String srcFilePath = srcFile.getAbsolutePath();       
         String baseFile = srcFilePath.substring(0, srcFilePath.lastIndexOf(".c"));
         cmd += " " + srcFile;
-        String outFile = baseFile;
+        String outFile = baseFile + ".elf";
 
         if ("xc8".equals(curr.getProperty(ITarget.P_TOOLPREFIX))) {
-            cmd += " -O" + outFile + ".obj";
+            cmd += " -O" + outFile;
         } else {
-            cmd += " -o " + outFile + ".elf";        
+            cmd += " -o " + outFile;
         }
         return cmd;
     }
