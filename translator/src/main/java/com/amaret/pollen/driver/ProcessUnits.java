@@ -95,7 +95,7 @@ public class ProcessUnits {
 	private static HashMap<CCompiler, String > tools_prefix = new HashMap<CCompiler, String>(){
 		private static final long serialVersionUID = 1L;
 	{
-        put(CCompiler.ARM, "arm-");
+        put(CCompiler.ARM, "arm-none-eabi-");
         put(CCompiler.AVR, "avr-");
         put(CCompiler.MSP430, "msp430-");
         put(CCompiler.XC8, "xc8");							// no additional text on the xc8 compiler
